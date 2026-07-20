@@ -17,6 +17,11 @@ const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
 const map = new Image();
 map.src = './public/assets/maps/foundry.png';
+// Arena frame 2 carries the missing foreground platforms, forge and the
+// authored node overlay.  Its stage-black pixels were keyed to transparent
+// when exported, so it can sit over the original Foundry backdrop.
+const foundryForeground = new Image();
+foundryForeground.src = './public/assets/maps/foundry-foreground.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
 // Each frame is the complete lower UnitMC instance, cropped from the
 // original 449-frame SWF export.  This preserves all limbs and the actual
@@ -309,6 +314,13 @@ function render() {
     const sourceWidth = source.width / world.config.width * map.naturalWidth;
     const sourceHeight = source.height / world.config.height * map.naturalHeight;
     ctx.drawImage(map, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
+    if (foundryForeground.complete && foundryForeground.naturalWidth) {
+      const foregroundX = source.x / world.config.width * foundryForeground.naturalWidth;
+      const foregroundY = source.y / world.config.height * foundryForeground.naturalHeight;
+      const foregroundWidth = source.width / world.config.width * foundryForeground.naturalWidth;
+      const foregroundHeight = source.height / world.config.height * foundryForeground.naturalHeight;
+      ctx.drawImage(foundryForeground, foregroundX, foregroundY, foregroundWidth, foregroundHeight, 0, 0, canvas.width, canvas.height);
+    }
   } else {
     ctx.fillStyle = '#19202a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);

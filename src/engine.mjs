@@ -212,6 +212,15 @@ function resolveHorizontalCollision(world, actor, previousX) {
       && (direction > 0 ? previousRight <= edge.left && currentRight > edge.left : previousLeft >= edge.right && currentLeft < edge.right)
     )).sort((a, b) => direction > 0 ? a.edge.left - b.edge.left : b.edge.right - a.edge.right)[0];
     if (!hit) return null;
+    // The original controller lets the centre foot settle onto a small rise
+    // before treating the leading torso as blocked.  Keep the authored box
+    // unchanged; only lift the actor onto a reachable top face.
+    const rise = actor.y - hit.edge.top;
+    if (actor.grounded && actor.vy >= 0 && rise > 0 && rise <= 18) {
+      actor.y = hit.edge.top;
+      actor.vy = 0;
+      return null;
+    }
     actor.x = direction > 0 ? hit.edge.left - actor.hitbox.halfWidth : hit.edge.right + actor.hitbox.halfWidth;
     actor.vx = 0;
     return { ...hit.edge, x: hit.edge.left, y: hit.edge.top, width: hit.box.width, height: hit.box.height, box: true };

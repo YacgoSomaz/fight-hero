@@ -61,6 +61,19 @@ test('Foundry rectangles land on their exact top edge and block their side face'
   assert.equal(p1.x, left - p1.hitbox.halfWidth);
 });
 
+test('a small blue-box rise lifts the foot instead of blocking horizontal movement', () => {
+  const world = createWorld({ foundry: true, bots: false });
+  const p1 = world.players[0];
+  world.collisionBoxes = [{ x: 550, y: 638, width: 60, height: 60 }];
+  p1.x = 502; p1.y = 620; p1.vy = 0; p1.grounded = true;
+
+  step(world, { p1: { right: true } }, .05);
+
+  assert.ok(p1.x > 502, 'the actor crosses the box face');
+  assert.equal(p1.y, 608, 'the centre foot settles onto the reachable top edge');
+  assert.equal(p1.grounded, true);
+});
+
 test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
   const world = createWorld({ foundry: true });
   const bot = world.bots[0];

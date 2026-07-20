@@ -1,25 +1,34 @@
-# 迁移状态（2026-07-20）
+# 迁移状态（2026-07-21）
 
-本文件是当前实现的交接基线；`AI_HANDOFF.md` 中标为“未接入/后续”的段落属于迁移前的逆向笔记，不覆盖本文件。
+此文件描述仓库的当前运行时基线；更详细的解包依据、数值和接手步骤见 [AI_HANDOFF.md](AI_HANDOFF.md)。
 
-| 范围 | 当前实现 | 原始依据 |
-|---|---|---|
-| UnitMC | 449 张导出帧已在 `assets/reverse/unitmc-frames/`；引擎按原始帧标签区间选帧，渲染层取可玩单位裁剪。 | `UnitMC.as`，符号 669 |
-| 动作 | `run`、`jump`、`fall`、`duck`、`duckrun`、`getup`、`climbsmall`、`climbbig`、`landhard`、`reload` 状态。 | `UnitMC.as`、`Movement.as`、`Guns.as` |
-| 武器/受击 | 30 发弹匣、90 发备弹、自动/手动换弹、子弹命中、受击闪烁、击倒、计分和复活。 | `Guns.as`、`Unit.as` |
-| 墙体 | 浏览器从符号 1261 的 PNG alpha 解码墙体；角色、子弹和 AI 统一查询它。 | `Arena.as`、`Movement.hitTest()` |
-| AI | 12 帧错峰选敌、450 距离限制、墙体视线、平滑追瞄、射击及近距离蹲伏。 | `AI.as` |
-| 菜单/音频/存档 | 难度、菜单音乐/静音、开始与重置；174 条原 SWF 音频；`localStorage` 保存设置和计分。 | `Menu.as`、DefineSound 导出 |
-| 多人 | 两席私有房间。`POST /api/rooms/:room/join` 分配令牌；`input` 接口在服务器引擎中验证并推进状态，客户端只绘制快照。 | 新增的服务器权威适配层 |
+| 范围 | 已实现 | 依据/备注 |
+| --- | --- | --- |
+| Foundry 地图 | 背景、前景、33 个 `NodePhysBox`、出生点、路径/动作/补给节点。 | `Arena`（1413）显示列表；物理盒原始坐标在 `foundry-layout.mjs`。 |
+| 地图碰撞 | 浏览器 Foundry 使用解出的蓝色 `NodePhysBox`；公共偏移为 X `+18`、Y `+24`。 | 以吊箱视觉校准。调试层直接绘制同一盒，禁止单独改图形或物理。 |
+| 步阶/攀爬 | 小于等于 28px 的盒顶抬脚；跳起下落接触 20–56px 的盒沿会进入 `climbsmall`/`climbbig`。 | `Movement.as` 探针语义与蓝色盒适配；44 项测试覆盖墙体和盒子攀爬。 |
+| UnitMC | 449 帧离散显示列表矩阵，按原标签区间播放。腿、脚、躯干和头使用解出的局部边界。 | 符号 669；运行时数据 `public/assets/unitmc-timeline.json`。 |
+| 上半身/M4 | 501/668 的 `rifle` 待机标签第 77 帧，375 的 `M4` 标签第 20 帧，Medic 皮肤子层第 51 帧；枪口、枪火和弹道共线。 | 合成/注册点详见交接报告；额外 `rife_clip` 子层已排除。 |
+| 动作 | idle、run/runback、jump、fall/fallloop、duck、duckrun、getup、climbsmall、climbbig、landhard、reload。 | `UNITMC_FRAMES` 采用原始 30 FPS 标签边界。 |
+| 武器/对局 | 弹药、换弹、射击、后坐、命中、计分和复活。 | 目前固定为 M4 风格验证武器，不是全枪械表迁移。 |
+| AI | 本地 AI 的目标扫描、墙体/盒碰撞视线、巡逻和开火近似。 | 不等同于所有原版模式 AI。 |
+| 音频/菜单/存档 | 已接入基本菜单、音频、难度和 `localStorage`。 | 私有本地验证用途。 |
+| 私有房间 | HTTP 快照式两席房间原型。 | 新增兼容层，非原版联机实现，也不是公网服务。 |
 
 ## 已验证
 
-- `npm test`：24/24 通过。
-- `node --check server.mjs`、`src/main.mjs`、`src/audio.mjs`、`src/online.mjs` 通过。
-- 本机端到端验证：两个客户端加入同一房间分别得到 `p1`/`p2`；提交输入返回两个玩家快照；墙体 PNG 与 MP3 均返回 HTTP 200。
+```text
+npm test  # 44/44 pass（2026-07-21）
+```
 
-## 有意保留的差异
+并已对 `src/main.mjs`、`src/engine.mjs` 运行语法检查，且本地服务返回 HTTP 200。
 
-- 这是 Canvas/Node 迁移，不是 Flash 运行时；复杂职业、战役目标、完整导航网与原版所有枪械并未逐项复刻。
-- 单机测试保留矩形平台回退；浏览器 Foundry 场景加载墙体 alpha 后使用像素碰撞。
-- 私有房间目前是 HTTP 快照同步，适合本机或受控网络验证，不是公网匹配服务。
+## 尚未完整迁移
+
+- 所有职业、皮肤、武器、换枪、开火/换弹子时间轴和声音帧；
+- 原版像素 wall mask 在 Foundry 的最终运行时取代策略：当前可玩层以蓝色盒为准，alpha wall 仍是解包证据与通用回退；
+- 所有地图、战役、CTF/DOM 目标、完整导航图和原版 Bot 随机档案；
+- 精确逐帧的上半身武器状态、屏幕滤镜、粒子、音频混音和存档格式；
+- 生产级联机、鉴权、匹配与公网部署。
+
+下一项工作应从上述清单中选一个可测行为，而不是同时大改地图、角色与武器。

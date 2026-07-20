@@ -1,68 +1,58 @@
-# 战火英雄：本地网页技术验证
+# 战火英雄：Foundry 私有网页迁移验证
 
-> 这是一个用于研究 Canvas 2D、平台物理、镜头与 SWF 时间轴迁移方法的本地技术验证。
+> 私有、已授权的 Canvas/Node 迁移研究项目。原始游戏素材仅可在本私有仓库和授权范围内使用，不得公开发布、出售或再分发。
 
-## 当前完成度
+## 当前状态（2026-07-21）
 
-已实现并可运行的 Foundry 私有验证场景：
+Foundry 场景已可运行，并包含：
 
-- A / D 移动、W 跳跃、S 蹲伏、R 换弹；鼠标瞄准，鼠标左键或 F 射击；
-- 平滑局部跟随镜头，不会因鼠标跨越人物而突然反向切屏；
-- `UnitMC` 的 449 帧时间轴已按二进制标签校正播放；完整原始姿态用于保证腿、躯干、手臂和枪械不发生错误拼接，部件矩阵采样见深度解包报告；
-- 提取的 Foundry `wall` alpha 遮罩以原版的完全不透明像素统一驱动角色碰撞、子弹阻挡和 AI 视线；无 mask 时保留平台回退，便于单元测试；
-- Arena 的调试实例已按符号解析：33 个物理框、21 个 AI 行动点、17 个路径点、31 个出生点与 4 个补给点；正常游戏遵循原版脚本将这些辅助标记隐藏。
-- 弹匣/备弹、换弹、命中反馈、死亡计分、复活和动态准星；
-- 一个按原版 12 帧错峰扫描目标、同墙体遮挡检测的本地 AI；
-- 菜单、难度、菜单音乐/静音、本地 `localStorage` 进度；从 SWF 导出的 174 条音频；
-- 私有双人房间：客户端只发送输入，`server.mjs` 在服务端执行物理、命中、换弹与计分后返回快照；
-- Node 内置测试覆盖移动、碰撞、攀爬、镜头、瞄准、射击、换弹、蹲伏、像素墙体、AI 目标遮挡、受击与复活。
+- A/D 移动、W 跳跃、S 蹲伏、R 换弹、鼠标瞄准、左键/F 射击；
+- Foundry 背景/前景，以及从 `Arena` 解出的蓝色 `NodePhysBox` 碰撞盒、出生点、路径点、AI 动作点和补给点；
+- 可视化的青色真实碰撞盒与黄色玩家碰撞盒；
+- 原 `UnitMC` 449 帧显示列表矩阵的离散回放，包含跑、跳、坠落、蹲伏、起身、攀爬和硬着陆标签；
+- 从 SWF 标签组合的 Medic + M4 待机手臂组件，枪口、枪火与弹道共用同一坐标计算；
+- 弹药、换弹、命中、复活、计分、AI、菜单音乐/本地存档和私有房间原型；
+- `npm test` 当前为 **44/44 通过**。
 
-## 快速开始
+它仍是迁移验证，不是像素级完整复刻。下一位接手者必须先阅读 [AI 交接报告](docs/AI_HANDOFF.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
 
-需要 Node.js 20+。
+## 运行
+
+需要 Node.js 20+：
 
 ```powershell
-cd fight-hero
 npm test
-npm run test:coverage
 npm start
 ```
 
-打开 <http://127.0.0.1:4173>，或在 Windows 双击 `启动原型.cmd`。
+打开 <http://127.0.0.1:4173>。Windows 下也可运行 `启动原型.cmd`。
 
-## 项目结构
+## 目录
 
 ```text
 src/
-  engine.mjs       输入、物理、碰撞、AI、射击、换弹、伤害与复活
-  camera.mjs       大地图局部窗口、平滑跟随、坐标转换
-  unit-rig.mjs     UnitMC 部件状态机（纯函数，可单测）
-  audio.mjs        原 SWF 导出音频的浏览器播放层
-  online.mjs       私有房间的服务器权威客户端
-  main.mjs         Canvas 渲染、菜单、存档与浏览器输入
-tests/
-  engine.test.mjs  33 个 Node 单元/集成测试
+  engine.mjs         输入、物理、蓝色碰撞盒、攀爬、射击、AI、伤害
+  foundry-layout.mjs Arena 解析出的节点和 NodePhysBox 原始坐标
+  main.mjs           Canvas 渲染、UnitMC 部件矩阵、输入、HUD、调试绘制
+  camera.mjs         世界/屏幕坐标与局部跟随镜头
+  unit-rig.mjs       旧的纯函数姿态辅助与单元测试接口
+  online.mjs         私有房间客户端
+public/assets/
+  unitmc-timeline.json 449 帧 UnitMC 显示列表数据
+  unit-parts/          运行时部件与 M4 手臂合成图
+  maps/                Foundry 背景与前景
+tests/engine.test.mjs 44 个行为回归测试
 docs/
-  AI_HANDOFF.md            给下一位 AI 的详细项目交接报告
-  PRIVATE_ASSET_SETUP.md   本机私有素材准备与 SWF 符号索引
-assets/reverse/            授权原始 SWF 与逆向参考导出
-public/assets/             浏览器运行时使用的已分离资源和音频
-server.mjs          静态服务与私有房间权威模拟
+  AI_HANDOFF.md        当前交接报告、解包结论、坐标计算和下一步
+  MIGRATION_STATUS.md  已迁移/未迁移范围
+  SWF_DEEP_UNPACK_REPORT.md 证据与二进制解包报告
 ```
 
-## 开发与验证
+## 接手规则
 
-```powershell
-npm test
-npm run test:coverage
-```
+1. 先运行 `npm test`；任何物理、动画或素材定位改动都要新增/更新相应测试。
+2. Foundry 的可玩碰撞以 `FOUNDRY_COLLISION_BOXES` 为准；不要为修视觉而移动蓝色盒子。
+3. 角色根脚点、`arm1hold`、枪口和裁切图注册点是不同坐标系；不要用任意全局平移掩盖它们。
+4. 运行时不读取 `private-assets/`；该目录以及 `assets/reverse/ffdec-deep-*` 是本机解包证据，保持忽略且不要提交。
 
-当前基线：33/33 通过。每次改变 `engine.mjs`、`camera.mjs` 或 `unit-rig.mjs` 时，先新增会失败的测试，再写实现。
-
-## 交接入口
-
-请先阅读 [迁移状态](docs/MIGRATION_STATUS.md)，再按需查看 [AI_HANDOFF.md](docs/AI_HANDOFF.md) 中保留的 SWF 符号、时间轴、ActionScript 公式与历史逆向笔记。
-
-## 版权与用途
-
-原作及其名称、角色、美术、音频和资源均归原权利人。仓库中的素材仅依据本项目持有的授权在私有环境中使用；不得公开发布、出售或重新分发。
+详见 [AI 交接报告](docs/AI_HANDOFF.md)。

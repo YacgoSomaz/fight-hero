@@ -292,7 +292,7 @@ function drawPlayer(player) {
     // was the source of the visible broken skeleton.
     // Composite source-label assemblies retain the original hand/gun
     // placement, rather than freezing arm1/arm2 on an unrelated reload frame.
-    drawPart('arm1', unitParts.rifleArm, -8, -5, 1);
+    drawPart('arm1', unitParts.rifleArm, -8, -23, 1);
     drawPart('foot2', unitParts.foot, 1.5, 0);
     drawPart('leglow2', unitParts.legLower, -9.45, -3.3);
     drawPart('legup2', unitParts.legUpper, -5.5, -2.95);

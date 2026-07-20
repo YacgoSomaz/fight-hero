@@ -216,7 +216,11 @@ function resolveHorizontalCollision(world, actor, previousX) {
     // before treating the leading torso as blocked.  Keep the authored box
     // unchanged; only lift the actor onto a reachable top face.
     const rise = actor.y - hit.edge.top;
-    if (actor.grounded && actor.vy >= 0 && rise > 0 && rise <= 18) {
+    // The furnace-right ramp is authored as two overlapping NodePhysBox
+    // rectangles whose top edges differ by 25.5px (#26 -> #24).  The Flash
+    // wall underneath is a continuous slope, so this remains a walkable
+    // foot lift rather than becoming a vertical wall in the box fallback.
+    if (actor.grounded && actor.vy >= 0 && rise > 0 && rise <= 28) {
       actor.y = hit.edge.top;
       actor.vy = 0;
       return null;

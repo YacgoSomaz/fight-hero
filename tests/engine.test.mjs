@@ -74,6 +74,23 @@ test('a small blue-box rise lifts the foot instead of blocking horizontal moveme
   assert.equal(p1.grounded, true);
 });
 
+test('the adjacent Foundry furnace-ramp blue boxes remain directly walkable', () => {
+  const world = createWorld({ foundry: true, bots: false });
+  const p1 = world.players[0];
+  const lower = world.collisionBoxes[26];
+  const upper = world.collisionBoxes[24];
+  const lowerTop = lower.y - lower.height / 2;
+  const upperTop = upper.y - upper.height / 2;
+
+  p1.x = 1490; p1.y = lowerTop; p1.vx = 300; p1.grounded = true;
+  step(world, { p1: { right: true } }, .05);
+
+  assert.ok(upperTop < lowerTop && lowerTop - upperTop > 18 && lowerTop - upperTop < 28);
+  assert.ok(p1.x > 1490, 'the player crosses the shared box edge');
+  assert.equal(p1.y, upperTop, 'the foot follows the continuous visible ramp');
+  assert.equal(p1.grounded, true);
+});
+
 test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
   const world = createWorld({ foundry: true });
   const bot = world.bots[0];

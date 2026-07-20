@@ -260,15 +260,7 @@ function drawPlayer(player) {
       const anchor = name === 'head' ? headHold : (name === 'arm1' || name === 'arm2' ? armHold : item);
       if (!anchor) return;
       ctx.save();
-      // FFDec's tight leg crops preserve their SWF registration point but
-      // omit the original transparent canvas above the feet.  Apply that
-      // calibration in world space so rotated run frames stay attached.
-      // FFDec cropped the fixed Medic leg symbols but retained their original
-      // UnitMC matrix origins.  Keep the measured -26px registration-point
-      // correction from the original frame exports; using the actor collider
-      // here (the former -10px value) separates both legs from the body.
-      const legLift = name.startsWith('leg') || name.startsWith('foot') ? -26 : 0;
-      ctx.translate(anchor.x, anchor.y + legLift);
+      ctx.translate(anchor.x, anchor.y);
       if (aimFactor === null) {
         // A SWF MATRIX maps to Canvas as [scaleX, rotateSkew0,
         // rotateSkew1, scaleY].  The earlier b/c swap reversed the leg
@@ -288,17 +280,19 @@ function drawPlayer(player) {
       ctx.restore();
     };
 
-    // Offsets are calibrated from UnitMC frame 1: they retain the original
-    // registration point after FFDec cropped the fixed Medic part images.
+    // These are the exact local Shape bounds read from the child UnitMC
+    // sprites (506/539/569/599/632).  The same child symbol is used for both
+    // legs, so each pair deliberately shares an origin; per-leg hand tuning
+    // was the source of the visible broken skeleton.
     drawPart('arm1', unitParts.rifleArm, 4.7, -19.5, 1);
-    drawPart('foot2', unitParts.foot, -0.6, 5.2);
-    drawPart('leglow2', unitParts.legLower, -10.75, 0.6);
-    drawPart('legup2', unitParts.legUpper, -5.85, -11.8);
-    drawPart('foot1', unitParts.foot, 2.95, 6.2);
-    drawPart('leglow1', unitParts.legLower, -11.95, -3);
-    drawPart('legup1', unitParts.legUpper, -12.15, -12.35);
-    drawPart('body', unitParts.body, -13, -24.25);
-    drawPart('head', unitParts.head, -14.4, -30.1, .6);
+    drawPart('foot2', unitParts.foot, 1.5, 0);
+    drawPart('leglow2', unitParts.legLower, -9.45, -3.3);
+    drawPart('legup2', unitParts.legUpper, -5.5, -2.95);
+    drawPart('foot1', unitParts.foot, 1.5, 0);
+    drawPart('leglow1', unitParts.legLower, -9.45, -3.3);
+    drawPart('legup1', unitParts.legUpper, -5.5, -2.95);
+    drawPart('body', unitParts.body, -11.95, -15);
+    drawPart('head', unitParts.head, -5.6, -18, .6);
     drawPart('arm2', unitParts.frontArm, 4.7, -25.5, 1);
   } else if (unitSkin.complete && unitSkin.naturalWidth) {
     ctx.drawImage(unitSkin, -37, -84, 75, 90);

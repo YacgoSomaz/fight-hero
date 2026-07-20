@@ -87,7 +87,9 @@ export const UNITMC_FRAMES = Object.freeze({
 // canvas: the alpha tip of the rifle barrel is at (172, 72.5) and that canvas
 // registers at (-92.13406066894532, -105.37676849365235).
 const ARM1_PIVOT = Object.freeze({ x: 0.3, y: -42 });
-const RIFLE_MUZZLE = Object.freeze({ forward: 79.86593933105469, lateral: 9.12323150634765 });
+const RIFLE_BARREL_TIP = Object.freeze({ x: 79.86593933105469, y: -32.87676849365235 });
+export const RIFLE_ARM_BASE_ANGLE = Math.atan2(RIFLE_BARREL_TIP.y, RIFLE_BARREL_TIP.x);
+const RIFLE_MUZZLE_DISTANCE = Math.hypot(RIFLE_BARREL_TIP.x, RIFLE_BARREL_TIP.y);
 
 export function getAimPivot(actor, facing = actor.facing) {
   return { x: actor.x + ARM1_PIVOT.x * facing, y: actor.y + ARM1_PIVOT.y };
@@ -95,14 +97,14 @@ export function getAimPivot(actor, facing = actor.facing) {
 
 export function getMuzzleOrigin(actor) {
   const pivot = getAimPivot(actor);
-  // The renderer mirrors the local arm canvas when facing left.  Preserve the
-  // same handedness for the barrel's small local vertical offset.
-  const lateral = RIFLE_MUZZLE.lateral * actor.facing;
-  const cosine = Math.cos(actor.aimAngle);
-  const sine = Math.sin(actor.aimAngle);
+  // The renderer compensates this exported canvas's built-in barrel tilt by
+  // RIFLE_ARM_BASE_ANGLE.  Its visible tip therefore lies exactly on the
+  // actor aim ray for either mirrored facing direction.
+  const cosine = Math.cos(actor.aimAngle) * RIFLE_MUZZLE_DISTANCE;
+  const sine = Math.sin(actor.aimAngle) * RIFLE_MUZZLE_DISTANCE;
   return {
-    x: pivot.x + cosine * RIFLE_MUZZLE.forward - sine * lateral,
-    y: pivot.y + sine * RIFLE_MUZZLE.forward + cosine * lateral,
+    x: pivot.x + cosine,
+    y: pivot.y + sine,
   };
 }
 

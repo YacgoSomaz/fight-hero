@@ -1,4 +1,4 @@
-import { UNITMC_FRAMES, createWorld, step } from './engine.mjs';
+import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
@@ -275,7 +275,11 @@ function drawPlayer(player) {
         const scaleX = Math.hypot(item.scaleX, item.skewX);
         const scaleY = Math.hypot(item.skewY, item.scaleY);
         ctx.scale(scaleX, scaleY);
-        ctx.rotate(localAim * aimFactor);
+        // The complete decoded rifle canvas has a -22.36° barrel tilt in its
+        // zero pose.  Cancel it for the two arm assemblies so the rendered
+        // barrel points along the same ray used by engine.mjs for bullets.
+        const armCorrection = name === 'arm1' || name === 'arm2' ? -RIFLE_ARM_BASE_ANGLE : 0;
+        ctx.rotate(localAim * aimFactor + armCorrection);
         if (name === 'arm1') ctx.translate(-player.recoil * 2, 0);
       }
       ctx.drawImage(sprite, offsetX, offsetY);

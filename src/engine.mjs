@@ -76,14 +76,16 @@ export const UNITMC_FRAMES = Object.freeze({
 export function createWorld(options = {}) {
   const foundry = Boolean(options.foundry);
   const baseConfig = foundry ? FOUNDRY_CONFIG : CONFIG;
-  const p1Spawn = foundry ? FOUNDRY_LAYOUT.spawns.p1 : { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
-  const p2Spawn = foundry ? FOUNDRY_LAYOUT.spawns.p2 : { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
+  const p1Spawn = foundry ? FOUNDRY_LAYOUT.spawns.find((spawn) => spawn.name === 'b_0') : { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
+  const p2Spawn = foundry ? FOUNDRY_LAYOUT.spawns.find((spawn) => spawn.name === 'g_0') : { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
   const p1 = makeActor('p1', p1Spawn.x, p1Spawn.y, '#48b7ff', false, baseConfig);
   const humans = options.multiplayer ? [makeActor('p2', p2Spawn.x, p2Spawn.y, '#f4a35f', false, baseConfig)] : [];
   const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig)];
   return {
     config: { ...baseConfig, playerHitbox: { ...baseConfig.playerHitbox }, platforms: baseConfig.platforms.map((platform) => ({ ...platform })) },
     navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
+    actions: foundry ? FOUNDRY_LAYOUT.actions.map((point) => ({ ...point })) : [],
+    pickups: foundry ? FOUNDRY_LAYOUT.pickups.map((point) => ({ ...point })) : [],
     // `wall.isSolid(x, y)` is the direct equivalent of Arena.wall.getPixel32(...).
     // It is installed by the browser after it decodes the extracted Foundry wall PNG.
     wall: options.wall ?? null,
@@ -125,14 +127,42 @@ function overlapsPlatformVertically(world, actor, platform) {
 function overlapsPlatformHorizontally(actor, platform) {
   return actor.x + actor.hitbox.halfWidth > platform.x && actor.x - actor.hitbox.halfWidth < platform.x + platform.width;
 }
+function wallBodyBlocked(world, actor, x, y, direction) {
+  const edge = x + direction * actor.hitbox.halfWidth;
+  return [-4, -actorHeight(actor) / 2, -actorHeight(actor) + 5].some((offset) => isSolid(world, edge, y + offset));
+}
+function wallHasFloor(world, actor, x, y) {
+  return [x - actor.hitbox.halfWidth + 2, x, x + actor.hitbox.halfWidth - 2].some((sampleX) => isSolid(world, sampleX, y + 1));
+}
+function findWallStep(world, actor, direction) {
+  // Movement.as settles the feet against the alpha mask; this lets shallow
+  // ramps rise smoothly instead of behaving like an abrupt vertical wall.
+  for (let rise = 1; rise <= 18; rise += 1) {
+    const y = actor.y - rise;
+    if (wallHasFloor(world, actor, actor.x, y) && !wallBodyBlocked(world, actor, actor.x, y, direction)) return y;
+  }
+  return null;
+}
+function findWallLedge(world, actor, direction) {
+  // Original probes are 20px and 40px high and select the corresponding
+  // climb animation. Search that same small/big-climb height range.
+  const targetX = actor.x + direction * (actor.hitbox.halfWidth + 12);
+  for (let rise = 20; rise <= 56; rise += 1) {
+    const targetY = actor.y - rise;
+    if (wallHasFloor(world, actor, targetX, targetY) && !wallBodyBlocked(world, actor, targetX, targetY, direction)) {
+      return { wall: true, x: targetX, y: targetY };
+    }
+  }
+  return null;
+}
 function resolveHorizontalCollision(world, actor, previousX) {
   if (world.wall?.isSolid) {
     const direction = Math.sign(actor.x - previousX);
-    if (direction) {
-      const edge = actor.x + direction * actor.hitbox.halfWidth;
-      for (const yOffset of [-4, -actorHeight(actor) / 2, -actorHeight(actor) + 5]) {
-        if (isSolid(world, edge, actor.y + yOffset)) { actor.x = previousX; actor.vx = 0; return { x: actor.x, y: actor.y }; }
-      }
+    if (direction && wallBodyBlocked(world, actor, actor.x, actor.y, direction)) {
+      const stepY = findWallStep(world, actor, direction);
+      if (stepY !== null) { actor.y = stepY; actor.grounded = true; actor.vy = 0; return null; }
+      actor.x = previousX; actor.vx = 0;
+      return findWallLedge(world, actor, direction) ?? { wall: true, x: actor.x, y: actor.y };
     }
     return null;
   }
@@ -151,7 +181,8 @@ function beginLedgeClimb(world, actor, platform, direction) {
   const ledgeHeight = actor.y - platform.y;
   if (actor.grounded || actor.vy < 0 || ledgeHeight < 20 || ledgeHeight > 56) return false;
   const big = ledgeHeight >= 38;
-  actor.climb = { elapsed: 0, startX: actor.x, startY: actor.y, targetX: direction > 0 ? platform.x + actor.hitbox.halfWidth + 8 : platform.x + platform.width - actor.hitbox.halfWidth - 8, targetY: platform.y, animation: big ? 'climbbig' : 'climbsmall' };
+  const targetX = platform.wall ? platform.x : direction > 0 ? platform.x + actor.hitbox.halfWidth + 8 : platform.x + platform.width - actor.hitbox.halfWidth - 8;
+  actor.climb = { elapsed: 0, startX: actor.x, startY: actor.y, targetX, targetY: platform.y, animation: big ? 'climbbig' : 'climbsmall' };
   actor.vx = 0; actor.vy = 0; actor.grounded = false; setAnimation(actor, actor.climb.animation); return true;
 }
 function updateClimb(world, actor, dt) {
@@ -234,8 +265,8 @@ function botInput(world, bot) {
   }
   const target = world.players.find((actor) => actor.id === ai.targetId);
   if (!target) {
-    // Arena's hidden NodeWaypoint/NodeJump clips are the original patrol
-    // anchors.  Their decoded coordinates replace the former sine-wave walk.
+    // Arena's NodeWaypoint connectors are the original patrol anchors; its
+    // NodeAiAction instances add jump/crouch instructions at those anchors.
     const nodes = world.navigation;
     if (nodes.length) {
       if (ai.navIndex === null) ai.navIndex = nodes.reduce((closest, point, index) => (
@@ -247,7 +278,8 @@ function botInput(world, bot) {
         node = nodes[ai.navIndex];
       }
       const dx = node.x - bot.x;
-      return { left: dx < -12, right: dx > 12, jump: node.type === 'jump' && Math.abs(dx) < 32 && bot.grounded, aimX: node.x, aimY: node.y - 40 };
+      const action = world.actions.find((item) => item.name.startsWith('j_') && item.connections.includes(node.id) && Math.abs(item.x - bot.x) < 42 && Math.abs(item.y - bot.y) < 70);
+      return { left: dx < -12, right: dx > 12, jump: Boolean(action) && bot.grounded, aimX: node.x, aimY: node.y - 40 };
     }
     return { left: Math.sin(world.elapsed * .7 + ai.scanFrame) < 0, right: Math.sin(world.elapsed * .7 + ai.scanFrame) >= 0, aimX: bot.x + bot.facing * 80, aimY: bot.y - 45 };
   }

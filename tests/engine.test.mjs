@@ -19,10 +19,12 @@ test('Foundry uses the decoded Arena wall dimensions, spawns, and navigation nod
 
   assert.equal(world.config.width, 2874);
   assert.equal(world.config.height, 863);
-  assert.deepEqual({ x: world.players[0].spawnX, y: world.players[0].spawnY }, FOUNDRY_LAYOUT.spawns.p1);
-  assert.equal(world.navigation.length, 38);
-  assert.deepEqual(world.navigation.filter((point) => point.type === 'waypoint').length, 21);
-  assert.deepEqual(world.navigation.filter((point) => point.type === 'jump').length, 17);
+  const p1Spawn = FOUNDRY_LAYOUT.spawns.find((spawn) => spawn.name === 'b_0');
+  assert.deepEqual({ x: world.players[0].spawnX, y: world.players[0].spawnY }, { x: p1Spawn.x, y: p1Spawn.y });
+  assert.equal(world.navigation.length, 17);
+  assert.equal(world.actions.length, 21);
+  assert.equal(FOUNDRY_LAYOUT.spawns.length, 31);
+  assert.equal(world.pickups.length, 4);
 });
 
 test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
@@ -32,8 +34,34 @@ test('Foundry AI patrols through decoded Arena nodes when it has no target', () 
 
   step(world, {}, 1 / 60);
 
-  assert.equal(bot.ai.navIndex, 28);
+  assert.equal(bot.ai.navIndex, 7);
   assert.ok(bot.vx > 0);
+});
+
+test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
+  const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && y >= 608) };
+  const world = createWorld({ bots: false, wall });
+  const p1 = world.players[0];
+  p1.x = 496; p1.y = 620; p1.grounded = true;
+
+  step(world, { p1: { right: true } }, 0.05);
+
+  assert.ok(p1.x > 496);
+  assert.ok(p1.y < 620);
+  assert.equal(p1.grounded, true);
+});
+
+test('the alpha wall triggers the original small/big climb state on a reachable ledge', () => {
+  const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && y >= 570) };
+  const world = createWorld({ bots: false, wall });
+  const p1 = world.players[0];
+  p1.x = 496; p1.y = 620; p1.grounded = false; p1.vy = 80;
+
+  step(world, { p1: { right: true } }, 1 / 60);
+
+  assert.equal(p1.animation, 'climbbig');
+  for (let frame = 0; frame < 18; frame += 1) step(world, { p1: { right: true } }, 1 / 60);
+  assert.equal(p1.y, 573);
 });
 
 test('the single player responds to independent left and right input', () => {

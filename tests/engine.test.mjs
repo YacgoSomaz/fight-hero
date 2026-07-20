@@ -164,6 +164,22 @@ test('the alpha wall triggers the original small/big climb state on a reachable 
   assert.ok(p1.y <= 573, 'the climb completes on top of the raised wall');
 });
 
+test('a reachable decoded blue collision box triggers the original climb state', () => {
+  const world = createWorld({ bots: false });
+  world.config.platforms = [];
+  // Centre/size form matches the Foundry NodePhysBox layer: left 510, top 570.
+  world.collisionBoxes = [{ x: 540, y: 595, width: 60, height: 50 }];
+  const p1 = world.players[0];
+  p1.x = 493; p1.y = 620; p1.grounded = false; p1.vy = 80;
+
+  step(world, { p1: { right: true } }, 1 / 60);
+
+  assert.equal(p1.animation, 'climbbig');
+  for (let frame = 0; frame < 18; frame += 1) step(world, { p1: { right: true } }, 1 / 60);
+  assert.equal(p1.y, 570);
+  assert.equal(p1.grounded, true);
+});
+
 test('the single player responds to independent left and right input', () => {
   const world = createWorld();
   const p1 = world.players[0];

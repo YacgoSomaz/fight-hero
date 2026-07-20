@@ -278,9 +278,10 @@ function resolveHorizontalCollision(world, actor, previousX) {
 }
 
 function beginLedgeClimb(world, actor, platform, direction) {
-  // NodePhysBox is a physical-object rectangle, not the wall mask used by
-  // Movement.as for a player climb.
-  if (platform.box) return false;
+  // Foundry's authored blue NodePhysBox rectangles are the active terrain
+  // layer.  They must therefore be eligible climb faces just like an alpha
+  // wall; excluding them made a box block horizontal movement but prevented
+  // its reachable top edge from ever entering climbsmall/climbbig.
   const ledgeHeight = actor.y - platform.y;
   if (actor.grounded || actor.vy < 0 || ledgeHeight < 20 || ledgeHeight > 56) return false;
   const big = ledgeHeight >= 38;

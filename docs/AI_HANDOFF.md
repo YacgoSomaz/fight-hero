@@ -148,8 +148,8 @@ AI 只能在第 4.2 节的真实碰撞/路点完成后接入；否则寻路和�
 
 ## 7. 已知风险与不可做事项
 
-- 不能把导出的 PNG、`game.swf` 或 `work/` 目录推到 Public GitHub；
-- 当前 `server.mjs` 的 `/source-assets/` 是本机私有提取目录映射，克隆后没有私有素材时会 404，属于预期；
+- `assets/reverse/` 与 `public/assets/` 含授权素材；仓库必须保持 Private，且只能向获授权成员授予访问权限；
+- 当前 `server.mjs` 的 `/source-assets/` 映射到受版本控制的 `public/assets/unit-parts/`；
 - 不要用“整帧 PNG 播放”修复动画，它会回到重影/错误持枪的老问题；
 - 不要在没有 wall mask 的情况下声称碰撞或 AI 行为与原版一致；
 - 不要在未完成 P0/P1 前花时间做双人、远端服务器或手机端。

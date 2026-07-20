@@ -1,10 +1,10 @@
-# 私有素材准备（不要提交）
+# 授权素材准备
 
 ## 用途与边界
 
-这份说明仅用于在你**已合法持有**的原始 SWF 上进行本机研究。不要把原 SWF、导出的 PNG、音频或任何第三方游戏资源放进公共 Git 仓库。
+这份说明用于在项目**已获授权**的原始 SWF 上进行内部研究。原 SWF、导出的 PNG、音频及其他素材只能留在本私有仓库和获授权的本地环境中，绝不能转为公开可访问内容。
 
-当前 `main.mjs` 会从本地服务的 `/source-assets/` 路径读取两张已分离的手臂资源；`server.mjs` 默认将此路径映射到仓库上两层目录的 `work/ffdec_unit_parts/`。这是现有工作区的本地约定，不是公开仓库的运行前提。
+当前 `main.mjs` 会从本地服务的 `/source-assets/` 路径读取两张已分离的手臂资源；`server.mjs` 将此路径映射到 `public/assets/unit-parts/`。原始 SWF 和参考导出存放在 `assets/reverse/`。
 
 ## 已确认的 SWF 符号
 
@@ -22,14 +22,14 @@
 
 ## 本机 FFDec 导出示例
 
-假设已经安装 JRE 与 JPEXS FFDec，并把原 SWF 放在本机私有路径。下列命令只导出到本机，不应把输出提交。
+假设已经安装 JRE 与 JPEXS FFDec，并在私有工作区中使用原始 SWF。下列命令用于重新生成运行时手臂资源。
 
 ```powershell
 java -jar ffdec-cli.jar `
   -selectid 501,668 `
   -select '501:1,668:1' `
   -ignorebackground `
-  -export sprite .\work\ffdec_unit_parts .\game.swf
+  -export sprite .\public\assets\unit-parts .\assets\reverse\4399-90433-25.swf
 ```
 
 全帧导出可用于离线对照，但体积很大：
@@ -39,7 +39,7 @@ java -jar ffdec-cli.jar `
   -selectid 669 `
   -select '669:1-' `
   -ignorebackground `
-  -export sprite .\work\unitmc_frames .\game.swf
+  -export sprite .\assets\reverse\unitmc-frames .\assets\reverse\4399-90433-25.swf
 ```
 
 ## 重要提醒

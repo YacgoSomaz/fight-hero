@@ -4,7 +4,7 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('./', import.meta.url));
-const extractedRoot = fileURLToPath(new URL('../../work/ffdec_unit_parts/', import.meta.url));
+const extractedRoot = fileURLToPath(new URL('./public/assets/unit-parts/', import.meta.url));
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png' };
 http.createServer(async (request, response) => {
   const pathname = request.url === '/' ? 'index.html' : decodeURIComponent(request.url.split('?')[0]).replace(/^\/+/, '');

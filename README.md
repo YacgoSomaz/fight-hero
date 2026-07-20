@@ -56,6 +56,6 @@ assets/reverse/
 1. 先运行 `npm test`；任何物理、动画或素材定位改动都要新增/更新相应测试。
 2. Foundry 的可玩碰撞以 `FOUNDRY_COLLISION_BOXES` 为准；不要为修视觉而移动蓝色盒子。
 3. 角色根脚点、`arm1hold`、枪口和裁切图注册点是不同坐标系；不要用任意全局平移掩盖它们。
-4. 运行时不读取 `private-assets/`。它只容纳本机预览、实验和可再生中间文件，保持忽略；可复现的深度解包证据已在私有仓库的 `assets/reverse/ffdec-deep-20260720/` 中版本化。
+4. 运行时不读取 `private-assets/`。私有仓库只版本化其中的小型研究包（提取脚本、JSON 和对齐截图）；`private-assets/extracted/` 的完整 3.2 GiB 逐帧导出继续保持本地忽略。可复现的深度解包证据在 `assets/reverse/ffdec-deep-20260720/`。
 
 详见 [AI 交接报告](docs/AI_HANDOFF.md)。

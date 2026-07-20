@@ -11,8 +11,11 @@
 | `assets/reverse/unitmc-frames/` | `UnitMC` 669 的 449 帧参考导出 | 动画逐帧对照，非运行时播放素材 |
 | `assets/reverse/foundry-wall/` | Foundry 墙体参考导出 | 墙体与碰撞对照 |
 | `public/assets/` | 642 个浏览器就绪的地图、角色部件、时间轴和音频资源 | 网页运行时唯一读取的资源根 |
+| `private-assets/`（根目录） | 提取/解析脚本、UnitMC 与 Foundry JSON、对齐截图和被拒绝方案 | 小型研究交接包，供复核结论与重跑工具 |
 
-`private-assets/` 不入库：其约 3.2 GiB 内容混有重复导出、截图、预览和提取实验，既不能作为稳定输入，也不应让下一位接手者误把它当作权威资产包。需要新增原始资源时，应从上表的 SWF 重导出，并把经过核验的结果放入 `assets/reverse/`（参考）或 `public/assets/`（运行时）。
+`private-assets/extracted/` 的完整 FFDec Sprite 导出约 3.2 GiB、19,801 个文件，因此刻意不上传。它的核心用途是逐帧检查：Flash 会把一个静止图像重复放在多个帧号上以保持时间轴、标签和显示列表顺序；即使 PNG 的像素相同，删除该帧也会破坏“第几帧显示什么”的证据。网页运行时不需要整帧轮播，使用的是 449 帧显示列表矩阵和少量裁切部件；需要新的原始资源时，从已版本化的 SWF 重导出即可。
+
+仓库只保留 `private-assets/` 根目录约 27 MiB 的脚本、JSON 和人工复核图片。它们记录了 UnitMC 的 `PlaceObject2/3` / `RemoveObject2` 解析、Foundry 节点/碰撞提取、枪口与手臂对齐过程，以及被排除的错误拼接方案；这比上传大量可再生 PNG 更适合交接。
 
 ## 已确认的 SWF 符号
 

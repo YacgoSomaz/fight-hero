@@ -85,19 +85,6 @@ test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
   assert.equal(p1.grounded, true);
 });
 
-test('a continuous alpha-mask ramp does not become a side wall at its foot', () => {
-  const floorAt = (x) => x < 1100 ? 700 : x < 1300 ? 700 - (x - 1100) * .25 : 650;
-  const world = createWorld({ foundry: true, bots: false, wall: { isSolid: (x, y) => y >= floorAt(x) } });
-  const p1 = world.players[0];
-  p1.x = 1070; p1.y = floorAt(p1.x); p1.grounded = true;
-
-  for (let frame = 0; frame < 100; frame += 1) step(world, { p1: { right: true, aimX: 2000, aimY: 600 } }, 1 / 60);
-
-  assert.ok(p1.x > 1450, 'the player passes the full ramp instead of sticking at its first pixel');
-  assert.equal(p1.grounded, true);
-  assert.ok(Math.abs(p1.y - floorAt(p1.x)) <= 1, 'the centre foot remains attached to the ramp surface');
-});
-
 test('a side collision with a tall crate does not hoist the centre foot onto its top', () => {
   const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && x <= 570 && y >= 570) };
   const world = createWorld({ bots: false, wall });

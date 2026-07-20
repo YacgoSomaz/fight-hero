@@ -21,58 +21,6 @@ map.src = './public/assets/maps/foundry.png';
 // physics/spawn/pickup nodes are deliberately excluded from this normal view.
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
-// Movement.as does not walk on NodePhysBox.  It probes the fully opaque pixels
-// in Arena.wall (drawn from wallMC), which carries the authored ramps and
-// irregular terrain.  Keep that source mask separate from visual foreground
-// artwork, then install it on each local Foundry world once it has loaded.
-const foundryWall = new Image();
-foundryWall.src = './public/assets/maps/foundry-wall.png';
-let foundryWallMask = null;
-let foundryWallOutline = null;
-function createFoundryWallMask() {
-  const maskCanvas = document.createElement('canvas');
-  maskCanvas.width = foundryWall.naturalWidth;
-  maskCanvas.height = foundryWall.naturalHeight;
-  const maskContext = maskCanvas.getContext('2d', { willReadFrequently: true });
-  maskContext.drawImage(foundryWall, 0, 0);
-  const pixels = maskContext.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-  const width = maskCanvas.width;
-  const height = maskCanvas.height;
-  const opaqueAt = (x, y) => x >= 0 && x < width && y >= 0 && y < height && pixels[(y * width + x) * 4 + 3] === 255;
-  foundryWallMask = Object.freeze({
-    isSolid(x, y) { return opaqueAt(Math.floor(x), Math.floor(y)); },
-  });
-
-  // Draw only the source wall boundary in cyan.  This is the exact terrain
-  // that Movement.as hitTest sees, including the large forge ramp.
-  const outlinePixels = new Uint8ClampedArray(pixels.length);
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      if (!opaqueAt(x, y)) continue;
-      if (opaqueAt(x - 1, y) && opaqueAt(x + 1, y) && opaqueAt(x, y - 1) && opaqueAt(x, y + 1)) continue;
-      const index = (y * width + x) * 4;
-      outlinePixels[index] = 32;
-      outlinePixels[index + 1] = 208;
-      outlinePixels[index + 2] = 255;
-      outlinePixels[index + 3] = 210;
-    }
-  }
-  foundryWallOutline = document.createElement('canvas');
-  foundryWallOutline.width = width;
-  foundryWallOutline.height = height;
-  foundryWallOutline.getContext('2d').putImageData(new ImageData(outlinePixels, width, height), 0, 0);
-}
-function installFoundryWall(target) {
-  if (foundryWallMask) target.wall = foundryWallMask;
-  return target;
-}
-function createFoundryWorld(options = {}) {
-  return installFoundryWall(createWorld({ ...options, foundry: true }));
-}
-foundryWall.addEventListener('load', () => {
-  createFoundryWallMask();
-  installFoundryWall(world);
-});
 function image(source) { const result = new Image(); result.src = source; return result; }
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
@@ -94,7 +42,7 @@ const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
-let world = createFoundryWorld();
+let world = createWorld({ foundry: true });
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
 const held = new Set();
@@ -121,7 +69,7 @@ start.addEventListener('click', async () => {
     const room = roomInput.value.trim();
     if (room) {
       online = await joinPrivateRoom(room);
-      world = createFoundryWorld({ multiplayer: true });
+      world = createWorld({ multiplayer: true, foundry: true });
       applyRoomState(world, online.state);
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
     } else {
@@ -145,7 +93,7 @@ for (const type of ['keydown', 'keyup']) {
 window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFirePressed = false; });
 reset.addEventListener('click', () => {
   online = null;
-  world = createFoundryWorld();
+  world = createWorld({ foundry: true });
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;
@@ -420,17 +368,24 @@ function drawMuzzleFlash(flash) {
   ctx.restore();
 }
 
-// Cyan now means the actual Movement.as collision boundary, not a convenient
-// rectangle approximation.  NodePhysBox is retained in world data for its
-// original Box2D purpose, but character movement follows wallMC's alpha mask.
+// The translucent cyan boxes are the exact NodePhysBox placements decoded
+// from the Foundry SWF.  They deliberately use the same world rectangles as
+// engine.mjs, so visual inspection and live collision cannot drift apart.
 function drawCollisionBoxes() {
-  if (!foundryWallOutline) return;
-  const source = getMapSourceRect(camera, canvas.width, canvas.height);
-  ctx.drawImage(
-    foundryWallOutline,
-    source.x, source.y, source.width, source.height,
-    0, 0, canvas.width, canvas.height,
-  );
+  if (!world.collisionBoxes?.length) return;
+  ctx.save();
+  ctx.lineWidth = 1.25;
+  for (const box of world.collisionBoxes) {
+    const topLeft = worldToScreen({ x: box.x - box.width / 2, y: box.y - box.height / 2 }, camera, canvas.width, canvas.height);
+    const bottomRight = worldToScreen({ x: box.x + box.width / 2, y: box.y + box.height / 2 }, camera, canvas.width, canvas.height);
+    const width = bottomRight.x - topLeft.x;
+    const height = bottomRight.y - topLeft.y;
+    ctx.fillStyle = 'rgba(42, 193, 255, .18)';
+    ctx.strokeStyle = 'rgba(42, 211, 255, .9)';
+    ctx.fillRect(topLeft.x, topLeft.y, width, height);
+    ctx.strokeRect(topLeft.x + .5, topLeft.y + .5, width - 1, height - 1);
+  }
+  ctx.restore();
 }
 
 function render() {

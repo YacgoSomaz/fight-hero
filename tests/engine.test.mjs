@@ -85,6 +85,18 @@ test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
   assert.equal(p1.grounded, true);
 });
 
+test('wall movement leaves the leading foot free on a shallow source-style ramp', () => {
+  const floorAt = (x) => x < 510 ? 620 : 620 - (x - 510) * .2;
+  const world = createWorld({ bots: false, wall: { isSolid: (x, y) => y >= floorAt(x) } });
+  const p1 = world.players[0];
+  p1.x = 496; p1.y = floorAt(p1.x); p1.grounded = true;
+
+  step(world, { p1: { right: true } }, .05);
+
+  assert.ok(p1.x > 496, 'the -4px foot is not used as a horizontal wall probe');
+  assert.equal(p1.grounded, true);
+});
+
 test('a side collision with a tall crate does not hoist the centre foot onto its top', () => {
   const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && x <= 570 && y >= 570) };
   const world = createWorld({ bots: false, wall });

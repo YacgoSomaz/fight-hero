@@ -155,7 +155,11 @@ function overlapsPlatformHorizontally(actor, platform) {
 }
 function wallBodyBlocked(world, actor, x, y, direction) {
   const edge = x + direction * actor.hitbox.halfWidth;
-  return [-4, -actorHeight(actor) / 2, -actorHeight(actor) + 5].some((offset) => isSolid(world, edge, y + offset));
+  // Movement.as tests the leading torso at these exact offsets.  The foot is
+  // deliberately excluded: it may overlap the next pixel column while the
+  // centre-foot probe settles onto a shallow slope.
+  const probes = actor.crouching ? [-20, -25, -35] : [-20, -25, -35, -45];
+  return probes.some((offset) => isSolid(world, edge, y + offset));
 }
 function wallHasFloor(world, actor, x, y) {
   // Movement.as resolves standing/stepping from the centre-foot probe.  Side
@@ -234,6 +238,9 @@ function resolveHorizontalCollision(world, actor, previousX) {
 }
 
 function beginLedgeClimb(world, actor, platform, direction) {
+  // NodePhysBox is a physical-object rectangle, not the wall mask used by
+  // Movement.as for a player climb.
+  if (platform.box) return false;
   const ledgeHeight = actor.y - platform.y;
   if (actor.grounded || actor.vy < 0 || ledgeHeight < 20 || ledgeHeight > 56) return false;
   const big = ledgeHeight >= 38;
@@ -246,7 +253,13 @@ function updateClimb(world, actor, dt) {
   const climb = actor.climb; climb.elapsed += dt;
   const progress = Math.min(1, climb.elapsed / world.config.climbDuration); const eased = 1 - (1 - progress) ** 2;
   actor.x = climb.startX + (climb.targetX - climb.startX) * eased; actor.y = climb.startY + (climb.targetY - climb.startY) * eased; actor.animationTime += dt; syncAnimationFrame(actor);
-  if (progress === 1) { actor.x = climb.targetX; actor.y = climb.targetY; actor.grounded = true; actor.climb = null; setAnimation(actor, 'idle'); }
+  if (progress === 1) {
+    actor.x = climb.targetX; actor.y = climb.targetY;
+    // Movement.as clears the centre foot from the wall before returning to
+    // normal gravity, rather than gradually sinking/jittering onto the ledge.
+    if (world.wall?.isSolid) for (let lift = 0; lift < 160 && isSolid(world, actor.x, actor.y); lift += 1) actor.y -= .5;
+    actor.grounded = true; actor.climb = null; setAnimation(actor, 'idle');
+  }
   return true;
 }
 function applyPlatformPhysics(world, actor, dt) {
@@ -330,7 +343,7 @@ function updateActor(world, actor, input, dt) {
   const blocked = resolveHorizontalCollision(world, actor, previousX); const direction = right ? 1 : left ? -1 : 0;
   if (blocked && direction && beginLedgeClimb(world, actor, blocked, direction)) { updateClimb(world, actor, dt); return; }
   applyPlatformPhysics(world, actor, dt);
-  if (!actor.grounded && actor.vy >= 0 && direction) {
+  if (!actor.grounded && actor.vy >= 0 && direction && (world.wall?.isSolid || !world.collisionBoxes?.length)) {
     const ledge = findWallLedge(world, actor, direction);
     if (ledge && beginLedgeClimb(world, actor, ledge, direction)) { updateClimb(world, actor, dt); return; }
   }

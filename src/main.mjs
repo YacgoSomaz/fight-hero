@@ -1,4 +1,4 @@
-import { createWorld, step } from './engine.mjs';
+import { UNITMC_FRAMES, createWorld, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
@@ -246,7 +246,16 @@ function drawPlayer(player) {
     // row comes from the original SWF frame after Place/Remove tags have been
     // resolved.  The fixed Medic art is selected once (frame 51), while the
     // original root matrices continue to drive every body part per frame.
-    const items = Object.fromEntries(frame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => [name, { x, y, scaleX, scaleY, skewX, skewY }]));
+    const range = UNITMC_FRAMES[player.animation] ?? UNITMC_FRAMES.idle;
+    const nextFrameNumber = player.animationFrame >= range[1] ? range[0] : player.animationFrame + 1;
+    const nextFrame = unitTimeline.frames[nextFrameNumber - 1] ?? frame;
+    const blend = Math.max(0, Math.min(1, player.animationBlend ?? 0));
+    const nextByName = Object.fromEntries(nextFrame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => [name, { x, y, scaleX, scaleY, skewX, skewY }]));
+    const items = Object.fromEntries(frame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => {
+      const next = nextByName[name] ?? { x, y, scaleX, scaleY, skewX, skewY };
+      const lerp = (from, to) => from + (to - from) * blend;
+      return [name, { x: lerp(x, next.x), y: lerp(y, next.y), scaleX: lerp(scaleX, next.scaleX), scaleY: lerp(scaleY, next.scaleY), skewX: lerp(skewX, next.skewX), skewY: lerp(skewY, next.skewY) }];
+    }));
     const headHold = items.headhold;
     const armHold = items.arm1hold;
     let localAim = player.aimAngle;
@@ -307,6 +316,33 @@ function drawPlayer(player) {
   ctx.textAlign = 'center';
   ctx.fillText(player.isBot ? 'AI' : 'P1', screen.x, screen.y - height - 8);
   ctx.textAlign = 'left';
+}
+
+function drawPlayerCollider(player) {
+  if (!player.alive) return;
+  const screen = worldToScreen(player, camera, canvas.width, canvas.height);
+  const height = player.crouching ? player.hitbox.crouchHeight : player.hitbox.height;
+  const radius = player.hitbox.halfWidth;
+  const top = screen.y - height;
+  const middleTop = top + radius;
+  const middleBottom = screen.y - radius;
+  ctx.save();
+  ctx.fillStyle = 'rgba(255, 205, 66, .16)';
+  ctx.strokeStyle = 'rgba(255, 224, 99, .95)';
+  ctx.lineWidth = 1.25;
+  ctx.beginPath();
+  ctx.arc(screen.x, middleTop, radius, Math.PI, 0);
+  ctx.lineTo(screen.x + radius, middleBottom);
+  ctx.arc(screen.x, middleBottom, radius, 0, Math.PI);
+  ctx.lineTo(screen.x - radius, middleTop);
+  ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  // Movement.as uses these bottom probes: centre for ground, ±17 for sides.
+  ctx.fillStyle = '#fff4a9';
+  for (const x of [screen.x - radius, screen.x, screen.x + radius]) {
+    ctx.beginPath(); ctx.arc(x, screen.y, 2.2, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
 }
 
 function drawTracer(bullet) {
@@ -380,6 +416,7 @@ function render() {
   drawCollisionBoxes();
   for (const bullet of world.bullets) drawTracer(bullet);
   for (const player of world.players) drawPlayer(player);
+  for (const player of world.players) drawPlayerCollider(player);
   for (const flash of world.muzzleFlashes) drawMuzzleFlash(flash);
   for (const hit of world.hitEffects) {
     const point = worldToScreen(hit, camera, canvas.width, canvas.height);

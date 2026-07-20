@@ -33,8 +33,13 @@ const CONFIG = {
 // The cyan NodePhysBox layer is the Foundry editor's authored collision data.
 // Keep its complete rectangles, including crates and side walls: reducing it
 // to thin floor strips made the unit walk through visible blue volumes.
+// NodePhysBox's physical centre is 24px below the visible crate/platform
+// registration in this Arena export.  The value is calibrated on the hanging
+// crate at (491.15, 552.55), then applied once here to every decoded box so
+// drawing, player physics, bullets and AI all use the same aligned geometry.
+const FOUNDRY_COLLISION_Y_OFFSET = 24;
 const FOUNDRY_COLLISION_BOXES = Object.freeze(
-  FOUNDRY_LAYOUT.collisionBoxes.map((box) => Object.freeze({ ...box })),
+  FOUNDRY_LAYOUT.collisionBoxes.map((box) => Object.freeze({ ...box, y: box.y + FOUNDRY_COLLISION_Y_OFFSET })),
 );
 
 const FOUNDRY_CONFIG = Object.freeze({
@@ -59,7 +64,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
   return {
     id, spawnX, spawnY, x: spawnX, y: spawnY, vx: 0, vy: 0, facing: 1,
     aimX: spawnX + 100, aimY: spawnY - 47, aimAngle: 0,
-    animation: 'idle', animationTime: 0, animationFrame: 1, climb: null,
+    animation: 'idle', animationTime: 0, animationFrame: 1, animationBlend: 0, climb: null,
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
     fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration },
@@ -106,11 +111,16 @@ export function createWorld(options = {}) {
 }
 
 function actorHeight(actor) { return actor.crouching ? actor.hitbox.crouchHeight : actor.hitbox.height; }
+function syncAnimationFrame(actor) {
+  const range = UNITMC_FRAMES[actor.animation] ?? UNITMC_FRAMES.idle;
+  const frameTime = actor.animationTime * 30;
+  actor.animationFrame = range[0] + Math.floor(frameTime) % (range[1] - range[0] + 1);
+  actor.animationBlend = frameTime - Math.floor(frameTime);
+}
 function setAnimation(actor, animation) {
   if (actor.animation !== animation) actor.animationTime = 0;
   actor.animation = animation;
-  const range = UNITMC_FRAMES[animation] ?? UNITMC_FRAMES.idle;
-  actor.animationFrame = range[0] + Math.floor(actor.animationTime * 30) % (range[1] - range[0] + 1);
+  syncAnimationFrame(actor);
 }
 
 function platformSolid(world, x, y) {
@@ -232,7 +242,7 @@ function updateClimb(world, actor, dt) {
   if (!actor.climb) return false;
   const climb = actor.climb; climb.elapsed += dt;
   const progress = Math.min(1, climb.elapsed / world.config.climbDuration); const eased = 1 - (1 - progress) ** 2;
-  actor.x = climb.startX + (climb.targetX - climb.startX) * eased; actor.y = climb.startY + (climb.targetY - climb.startY) * eased; actor.animationTime += dt;
+  actor.x = climb.startX + (climb.targetX - climb.startX) * eased; actor.y = climb.startY + (climb.targetY - climb.startY) * eased; actor.animationTime += dt; syncAnimationFrame(actor);
   if (progress === 1) { actor.x = climb.targetX; actor.y = climb.targetY; actor.grounded = true; actor.climb = null; setAnimation(actor, 'idle'); }
   return true;
 }
@@ -329,6 +339,10 @@ function updateActor(world, actor, input, dt) {
   const crouchAnimation = actor.animation === 'duck' && actor.animationTime >= (UNITMC_FRAMES.duck[1] - UNITMC_FRAMES.duck[0] + 1) / 30 ? 'duckloop' : actor.animation === 'duckloop' ? 'duckloop' : 'duck';
   if (!actor.grounded) setAnimation(actor, actor.vy < 0 ? 'jump' : fallingAnimation); else if (actor.weapon.reloadRemaining) setAnimation(actor, 'reload'); else if (actor.crouching) setAnimation(actor, Math.abs(actor.vx) > 1 ? movingBackward ? 'duckrunback' : 'duckrun' : crouchAnimation); else if (Math.abs(actor.vx) > 1) setAnimation(actor, movingBackward ? 'runback' : 'run'); else setAnimation(actor, 'idle');
   actor.animationTime += dt;
+  // The SWF runs at 30 fps while this browser loop is normally 60 fps.
+  // Keep the original frame range, but expose the fractional frame so its
+  // per-part matrices can blend smoothly instead of snapping every 33 ms.
+  syncAnimationFrame(actor);
 }
 
 function botInput(world, bot) {

@@ -82,6 +82,30 @@ export const UNITMC_FRAMES = Object.freeze({
   duckrunback: [355, 387], climbsmall: [392, 396], climbbig: [397, 408], landhard: [409, 449],
 });
 
+// Unit.as aims from MC.arm1, not from the unit's foot/centre.  These values
+// are decoded from UnitMC's idle holder and the complete arm_gun_316 frame 51
+// canvas: the alpha tip of the rifle barrel is at (172, 72.5) and that canvas
+// registers at (-92.13406066894532, -105.37676849365235).
+const ARM1_PIVOT = Object.freeze({ x: 0.3, y: -42 });
+const RIFLE_MUZZLE = Object.freeze({ forward: 79.86593933105469, lateral: 9.12323150634765 });
+
+export function getAimPivot(actor, facing = actor.facing) {
+  return { x: actor.x + ARM1_PIVOT.x * facing, y: actor.y + ARM1_PIVOT.y };
+}
+
+export function getMuzzleOrigin(actor) {
+  const pivot = getAimPivot(actor);
+  // The renderer mirrors the local arm canvas when facing left.  Preserve the
+  // same handedness for the barrel's small local vertical offset.
+  const lateral = RIFLE_MUZZLE.lateral * actor.facing;
+  const cosine = Math.cos(actor.aimAngle);
+  const sine = Math.sin(actor.aimAngle);
+  return {
+    x: pivot.x + cosine * RIFLE_MUZZLE.forward - sine * lateral,
+    y: pivot.y + sine * RIFLE_MUZZLE.forward + cosine * lateral,
+  };
+}
+
 function boxEdges(box) {
   return { left: box.x - box.width / 2, right: box.x + box.width / 2, top: box.y - box.height / 2, bottom: box.y + box.height / 2 };
 }
@@ -330,7 +354,7 @@ function spawnBullet(world, actor) {
   const gun = actor.weapon;
   if (!actor.alive || gun.reloadRemaining || actor.fireTimer > 0) return;
   if (!gun.clip) { reload(world, actor); return; }
-  const muzzleDistance = 35; const muzzleX = actor.x + Math.cos(actor.aimAngle) * muzzleDistance; const muzzleY = actor.y - (actor.crouching ? 27 : 47) + Math.sin(actor.aimAngle) * muzzleDistance;
+  const { x: muzzleX, y: muzzleY } = getMuzzleOrigin(actor);
   gun.clip -= 1;
   world.bullets.push({ owner: actor.id, x: muzzleX, y: muzzleY, px: muzzleX, py: muzzleY, vx: Math.cos(actor.aimAngle) * world.config.bulletSpeed, vy: Math.sin(actor.aimAngle) * world.config.bulletSpeed, ttl: 0.8, damage: 1 });
   world.muzzleFlashes.push({ owner: actor.id, x: muzzleX, y: muzzleY, facing: actor.facing, angle: actor.aimAngle, ttl: world.config.muzzleFlashDuration });
@@ -348,8 +372,10 @@ function updateActor(world, actor, input, dt) {
   if (updateClimb(world, actor, dt)) return;
   updateCrouch(world, actor, input.down);
   const left = Boolean(input.left); const right = Boolean(input.right); actor.vx = ((right ? 1 : 0) - (left ? 1 : 0)) * (actor.crouching ? world.config.crouchSpeed : world.config.moveSpeed);
-  const gunY = actor.y - (actor.crouching ? 27 : 47); const aimX = Number.isFinite(input.aimX) ? input.aimX : actor.aimX; const aimY = Number.isFinite(input.aimY) ? input.aimY : actor.aimY;
-  const dx = aimX - actor.x; const dy = aimY - gunY;
+  const aimX = Number.isFinite(input.aimX) ? input.aimX : actor.aimX; const aimY = Number.isFinite(input.aimY) ? input.aimY : actor.aimY;
+  const aimFacing = aimX >= actor.x ? 1 : -1;
+  const aimPivot = getAimPivot(actor, aimFacing);
+  const dx = aimX - aimPivot.x; const dy = aimY - aimPivot.y;
   if (dx || dy) { actor.aimX = aimX; actor.aimY = aimY; actor.aimAngle = Math.atan2(dy, dx); actor.facing = dx >= 0 ? 1 : -1; }
   if (input.jump && actor.grounded && !actor.crouching) { actor.vy = -world.config.jumpSpeed; actor.grounded = false; }
   const previousX = actor.x; actor.x = Math.max(actor.hitbox.halfWidth, Math.min(world.config.width - actor.hitbox.halfWidth, actor.x + actor.vx * dt));

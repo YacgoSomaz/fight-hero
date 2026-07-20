@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { UNITMC_FRAMES, createWorld, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
+import { UNITMC_FRAMES, createWorld, getAimPivot, getMuzzleOrigin, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
 import { FOUNDRY_LAYOUT } from '../src/foundry-layout.mjs';
 import { getUnitRigPose } from '../src/unit-rig.mjs';
@@ -356,6 +356,24 @@ test('firing creates a brief original-muzzle event independently from its tracer
   step(world, {}, 0.05);
   assert.equal(world.muzzleFlashes.length, 0);
   assert.ok(world.bullets.length > 0);
+});
+
+test('rifle shots start at the decoded arm-canvas barrel tip', () => {
+  const world = createWorld({ bots: false });
+  const p1 = world.players[0];
+  p1.x = 400; p1.y = 500; p1.facing = 1; p1.aimAngle = 0;
+
+  const pivot = getAimPivot(p1);
+  const muzzle = getMuzzleOrigin(p1);
+  assert.ok(Math.abs(pivot.x - 400.3) < 0.001);
+  assert.ok(Math.abs(pivot.y - 458) < 0.001);
+  assert.ok(Math.abs(muzzle.x - (pivot.x + 79.86593933105469)) < 0.001);
+  assert.ok(Math.abs(muzzle.y - (pivot.y + 9.12323150634765)) < 0.001);
+  p1.facing = -1; p1.aimAngle = Math.PI;
+  const leftPivot = getAimPivot(p1);
+  const leftMuzzle = getMuzzleOrigin(p1);
+  assert.ok(Math.abs(leftMuzzle.x - (leftPivot.x - 79.86593933105469)) < 0.001);
+  assert.ok(Math.abs(leftMuzzle.y - (leftPivot.y + 9.12323150634765)) < 0.001);
 });
 
 test('weapon recoil settles independently after the shot so the rig can recover its aim pose', () => {

@@ -14,18 +14,21 @@ export function getUnitRigPose({
   aimAngle = 0,
   facing = 1,
   recoil = 0,
+  reload = 0,
 } = {}) {
-  const state = ['run', 'climbsmall', 'climbbig', 'jump', 'fall'].includes(animation) ? animation : 'idle';
+  const state = ['run', 'climbsmall', 'climbbig', 'jump', 'fall', 'duck', 'duckrun', 'getup', 'landhard', 'reload'].includes(animation) ? animation : 'idle';
   const aim = clamp(degrees(aimAngle), -78, 78);
   const gunKick = clamp(recoil, 0, 1) * 6;
+  // Unit.as: rotReload eases toward 30° while the gun is reloading and aimed low.
+  const reloadLift = clamp(reload, 0, 1) * (aim < 30 ? 30 : 0);
   const pose = {
     state,
     facing: facing < 0 ? -1 : 1,
     torso: part(0, -45),
-    head: part(-1, -67, aim * 0.6),
-    backArm: part(5, -53, aim),
-    frontArm: part(5, -53, aim),
-    gun: part(23 - gunKick, -53, aim),
+    head: part(-1, -67, reloadLift + aim * 0.6),
+    backArm: part(5, -53, reloadLift + aim),
+    frontArm: part(5, -53, reloadLift + aim),
+    gun: part(23 - gunKick, -53, reloadLift + aim),
     backLeg: part(-7, -27),
     frontLeg: part(7, -27),
   };
@@ -36,6 +39,38 @@ export function getUnitRigPose({
     pose.frontLeg.rotation = -swing * 34;
     pose.torso.y += Math.abs(swing) * 1.8;
     pose.head.y += Math.abs(swing) * 1.8;
+    return pose;
+  }
+
+  if (state === 'duck' || state === 'duckrun' || state === 'getup') {
+    const moving = state === 'duckrun';
+    const swing = moving ? Math.sin(animationTime * Math.PI * 10) : 0;
+    pose.torso.y = -31 + Math.abs(swing) * 1.2;
+    pose.head.y = -47 + Math.abs(swing) * 1.2;
+    pose.backArm.y = pose.frontArm.y = pose.gun.y = -39;
+    pose.backLeg = part(-8, -17, 35 + swing * 20);
+    pose.frontLeg = part(8, -17, -30 - swing * 20);
+    if (state === 'getup') {
+      const rise = clamp(animationTime / .2, 0, 1);
+      pose.torso.y = -31 - 14 * rise;
+      pose.head.y = -47 - 20 * rise;
+    }
+    return pose;
+  }
+
+  if (state === 'reload') {
+    pose.backArm.rotation = pose.frontArm.rotation = aim + reloadLift;
+    pose.gun.rotation = aim + reloadLift;
+    pose.frontLeg.rotation = 8;
+    pose.backLeg.rotation = -8;
+    return pose;
+  }
+
+  if (state === 'landhard') {
+    pose.torso.y = -37;
+    pose.head.y = -55;
+    pose.backLeg.rotation = 42;
+    pose.frontLeg.rotation = -38;
     return pose;
   }
 

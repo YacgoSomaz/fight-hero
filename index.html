@@ -3,19 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>战火英雄：单人网页复刻</title>
+    <title>战火英雄：Foundry 私人复刻</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main>
       <section class="intro">
         <p class="eyebrow">PRIVATE LOCAL EXPERIMENT · ORIGINAL SWF ASSET REFERENCE</p>
-        <h1>战火英雄：单人网页复刻</h1>
-        <p>先验证人物、枪械、鼠标瞄准、实体平台和稳定镜头；双人/联机暂不在本阶段范围内。</p>
+        <h1>战火英雄：Foundry 私人复刻</h1>
+        <p>原 SWF 的人物标签、墙体掩码、AI、音效与本地进度均在此处运行。</p>
       </section>
       <canvas id="game" width="1280" height="720" aria-label="单人游戏画面"></canvas>
+      <section id="menu" class="menu" aria-label="游戏菜单">
+        <div>
+          <strong>本地遭遇战</strong>
+          <label>AI 难度 <input id="difficulty" type="range" min="1" max="10" value="6" /><output id="difficultyValue">6</output></label>
+          <label>联机房间 <input id="room" maxlength="32" placeholder="留空=AI 对战" /></label>
+          <label><input id="music" type="checkbox" checked /> 菜单音乐</label>
+          <button id="start" type="button">开始战斗</button>
+        </div>
+        <p id="saveStatus">本地存档尚未创建</p>
+      </section>
       <section class="controls">
-        <div><strong>P1</strong><span>A / D 移动 · W 跳跃 · 鼠标瞄准/左键射击 · F 射击</span></div>
+        <div><strong>P1</strong><span>A / D 移动 · W 跳跃 · S 蹲伏 · R 换弹 · 鼠标瞄准/左键射击 · F 射击 · M 静音</span></div>
         <button id="reset" type="button">重新开始</button>
       </section>
       <p class="notice">仅供本地学习与私人体验；请勿分发本原型或其中的原始游戏素材。</p>

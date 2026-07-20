@@ -1,15 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createWorld, step } from '../src/engine.mjs';
+import { createWorld, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
 import { getUnitRigPose } from '../src/unit-rig.mjs';
 
-test('the web replica starts as a single-player scene with no P2 or AI simulation', () => {
+test('the web replica starts with a local player and a migrated AI opponent', () => {
   const world = createWorld();
 
-  assert.equal(world.players.length, 1);
+  assert.equal(world.players.length, 2);
   assert.equal(world.players[0].id, 'p1');
-  assert.equal(world.bots.length, 0);
+  assert.equal(world.bots.length, 1);
+  assert.equal(world.bots[0].isBot, true);
 });
 
 test('the single player responds to independent left and right input', () => {
@@ -173,6 +174,57 @@ test('a short left-click press is retained long enough to fire exactly once', ()
   step(world, { p1: { firePressed: true } }, 1 / 60);
 
   assert.equal(world.bullets.length, 1);
+});
+
+test('manual and empty-clip reloads preserve the original clip/spare-ammo rule', () => {
+  const world = createWorld({ bots: false });
+  const p1 = world.players[0];
+  p1.weapon.clip = 1;
+  p1.weapon.spare = 7;
+
+  step(world, { p1: { firePressed: true } }, 1 / 60);
+  assert.equal(p1.weapon.clip, 0);
+  assert.ok(p1.weapon.reloadRemaining > 0);
+  for (let frame = 0; frame < 60; frame += 1) step(world, {}, 1 / 60);
+  assert.equal(p1.weapon.clip, 7);
+  assert.equal(p1.weapon.spare, 0);
+});
+
+test('a crouched unit remains crouched if the original two head-clearance samples are solid', () => {
+  const world = createWorld({ bots: false, wall: { isSolid: (x, y) => y >= 620 || (y < 580 && y > 570 && (Math.abs(x - 872) < 20 || Math.abs(x - 838) < 20)) } });
+  const p1 = world.players[0];
+  p1.x = 855;
+  p1.y = 620;
+
+  step(world, { p1: { down: true } }, 1 / 60);
+  step(world, { p1: {} }, 1 / 60);
+  assert.equal(p1.crouching, true);
+  assert.equal(p1.animation, 'duck');
+});
+
+test('the extracted wall mask is used for exact collision, bullets, and AI line of sight', () => {
+  const wall = { isSolid: (x) => x >= 500 && x <= 520 };
+  const world = createWorld({ bots: false, wall });
+
+  assert.equal(isSolid(world, 510, 200), true);
+  assert.equal(hasLineOfSight(world, { x: 400, y: 200 }, { x: 600, y: 200 }), false);
+  assert.equal(hasLineOfSight(world, { x: 400, y: 200 }, { x: 450, y: 200 }), true);
+});
+
+test('a bullet applies hit feedback, damage, a score, and a timed respawn', () => {
+  const world = createWorld();
+  const p1 = world.players[0];
+  const bot = world.bots[0];
+  p1.x = 400; p1.y = 500; bot.x = 500; bot.y = 500; bot.hp = 1;
+
+  step(world, { p1: { aimX: bot.x, aimY: bot.y - 47, firePressed: true } }, 1 / 60);
+  for (let frame = 0; frame < 8; frame += 1) step(world, {}, 1 / 60);
+  assert.equal(bot.alive, false);
+  assert.equal(world.score.p1, 1);
+  assert.ok(world.hitEffects.length > 0);
+  for (let frame = 0; frame < 150; frame += 1) step(world, {}, 1 / 60);
+  assert.equal(bot.alive, true);
+  assert.equal(bot.hp, bot.maxHp);
 });
 
 test('mouse aim turns the player and sends the tracer toward the cursor', () => {

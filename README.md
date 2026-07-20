@@ -4,16 +4,17 @@
 
 ## 当前完成度
 
-已实现并可运行的单人验证场景：
+已实现并可运行的 Foundry 私有验证场景：
 
-- A / D 移动，W 跳跃；鼠标瞄准，鼠标左键或 F 射击；
+- A / D 移动、W 跳跃、S 蹲伏、R 换弹；鼠标瞄准，鼠标左键或 F 射击；
 - 平滑局部跟随镜头，不会因鼠标跨越人物而突然反向切屏；
-- 顶面、侧面、底面实体碰撞，短台下落接触会进入小/大攀爬状态；
-- `UnitMC` 的第一阶段部件状态机：腿部反相跑动、攀爬姿态、头/双臂/枪械向鼠标转向，以及仅作用于上半身的开火后坐；
-- 动态准星扩散、子弹轨迹与枪口火焰事件；
-- Node 内置测试覆盖移动、碰撞、攀爬、镜头、瞄准、射击与部件姿态。
-
-还**没有**迁移：完整逐帧 Flash 矩阵、换弹/受击/蹲伏、精确像素墙体、AI、多人联机、菜单、音频和存档。
+- `UnitMC` 原始 449 帧矩阵按标签区间选择，包含跑动、跳跃、坠落、蹲伏、起身、攀爬、硬着陆与换弹状态；
+- 提取的 Foundry `wall` alpha 遮罩统一驱动角色碰撞、子弹阻挡和 AI 视线；无 mask 时保留平台回退，便于单元测试；
+- 弹匣/备弹、换弹、命中反馈、死亡计分、复活和动态准星；
+- 一个按原版 12 帧错峰扫描目标、同墙体遮挡检测的本地 AI；
+- 菜单、难度、菜单音乐/静音、本地 `localStorage` 进度；从 SWF 导出的 174 条音频；
+- 私有双人房间：客户端只发送输入，`server.mjs` 在服务端执行物理、命中、换弹与计分后返回快照；
+- Node 内置测试覆盖移动、碰撞、攀爬、镜头、瞄准、射击、换弹、蹲伏、像素墙体、AI 目标遮挡、受击与复活。
 
 ## 快速开始
 
@@ -38,18 +39,20 @@ npm start
 
 ```text
 src/
-  engine.mjs       输入、物理、碰撞、攀爬、射击、后坐
+  engine.mjs       输入、物理、碰撞、AI、射击、换弹、伤害与复活
   camera.mjs       大地图局部窗口、平滑跟随、坐标转换
   unit-rig.mjs     UnitMC 部件状态机（纯函数，可单测）
-  main.mjs         Canvas 渲染与浏览器输入
+  audio.mjs        原 SWF 导出音频的浏览器播放层
+  online.mjs       私有房间的服务器权威客户端
+  main.mjs         Canvas 渲染、菜单、存档与浏览器输入
 tests/
-  engine.test.mjs  20 个 Node 单元/集成测试
+  engine.test.mjs  24 个 Node 单元/集成测试
 docs/
   AI_HANDOFF.md            给下一位 AI 的详细项目交接报告
   PRIVATE_ASSET_SETUP.md   本机私有素材准备与 SWF 符号索引
 assets/reverse/            授权原始 SWF 与逆向参考导出
-public/assets/             浏览器运行时使用的已分离资源
-server.mjs          只监听 localhost 的静态服务
+public/assets/             浏览器运行时使用的已分离资源和音频
+server.mjs          静态服务与私有房间权威模拟
 ```
 
 ## 开发与验证
@@ -59,11 +62,11 @@ npm test
 npm run test:coverage
 ```
 
-当前基线：20/20 通过；总行覆盖率 96.94%、分支 89.91%、函数 90.63%。每次改变 `engine.mjs`、`camera.mjs` 或 `unit-rig.mjs` 时，先新增会失败的测试，再写实现。
+当前基线：24/24 通过。每次改变 `engine.mjs`、`camera.mjs` 或 `unit-rig.mjs` 时，先新增会失败的测试，再写实现。
 
 ## 交接入口
 
-请先阅读 [AI_HANDOFF.md](docs/AI_HANDOFF.md)。其中记录了：SWF 的已确认符号与时间轴、原 ActionScript 中的旋转/翻转公式、当前实现与原版的差异、碰撞与 AI 的逆向结论、不可回退的技术决策，以及建议的后续工作顺序。
+请先阅读 [迁移状态](docs/MIGRATION_STATUS.md)，再按需查看 [AI_HANDOFF.md](docs/AI_HANDOFF.md) 中保留的 SWF 符号、时间轴、ActionScript 公式与历史逆向笔记。
 
 ## 版权与用途
 

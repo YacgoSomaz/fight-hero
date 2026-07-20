@@ -1,10 +1,21 @@
 import { createWorld, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { getUnitRigPose } from './unit-rig.mjs';
+import { AudioBank } from './audio.mjs';
+import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
 const reset = document.querySelector('#reset');
+const start = document.querySelector('#start');
+const difficulty = document.querySelector('#difficulty');
+const difficultyValue = document.querySelector('#difficultyValue');
+const roomInput = document.querySelector('#room');
+const music = document.querySelector('#music');
+const saveStatus = document.querySelector('#saveStatus');
+const SAVE_KEY = 'fight-hero/private-foundry-v2';
+const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+const audio = new AudioBank({ muted: Boolean(saved.muted) });
 const map = new Image();
 map.src = './assets/lab-map.jpg';
 const unitSprite = new Image();
@@ -21,26 +32,92 @@ const aimerCenterSprite = new Image();
 aimerCenterSprite.src = './assets/aimer-original.png';
 const hudRifleSprite = new Image();
 hudRifleSprite.src = './assets/hud-rifle-original.png';
+const unitMatrixFrames = new Map();
+function getUnitMatrixFrame(frame) {
+  if (!unitMatrixFrames.has(frame)) {
+    const image = new Image();
+    image.src = `./assets/reverse/unitmc-frames/DefineSprite_669_UnitMC/${frame}.png`;
+    unitMatrixFrames.set(frame, image);
+  }
+  return unitMatrixFrames.get(frame);
+}
+const foundryWall = new Image();
+foundryWall.src = './assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png';
 let world = createWorld();
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
 const held = new Set();
-const controls = { left: 'KeyA', right: 'KeyD', jump: 'KeyW', fire: 'KeyF' };
+const controls = { left: 'KeyA', right: 'KeyD', jump: 'KeyW', down: 'KeyS', reload: 'KeyR', fire: 'KeyF' };
 const pointer = { x: canvas.width * 0.75, y: canvas.height * 0.52 };
 let mouseFire = false;
 let mouseFirePressed = false;
+let running = false;
+let online = null;
+let onlineAccumulator = 0;
+
+function installFoundryMask() {
+  const maskCanvas = document.createElement('canvas');
+  maskCanvas.width = foundryWall.naturalWidth;
+  maskCanvas.height = foundryWall.naturalHeight;
+  const maskContext = maskCanvas.getContext('2d', { willReadFrequently: true });
+  maskContext.drawImage(foundryWall, 0, 0);
+  const pixels = maskContext.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
+  const scaleX = maskCanvas.width / world.config.width;
+  const scaleY = maskCanvas.height / world.config.height;
+  world.wall = { isSolid(x, y) {
+    const sx = Math.floor(x * scaleX);
+    const sy = Math.floor(y * scaleY);
+    return sx >= 0 && sy >= 0 && sx < maskCanvas.width && sy < maskCanvas.height && pixels[(sy * maskCanvas.width + sx) * 4 + 3] === 255;
+  } };
+}
+foundryWall.addEventListener('load', installFoundryMask);
+
+function saveSettings() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify({ muted: audio.muted, difficulty: Number(difficulty.value), score: world.score }));
+  saveStatus.textContent = `已保存：P1 ${world.score.p1 ?? 0} 击倒 · AI ${world.score.bot1 ?? 0} 击倒`;
+}
+difficulty.value = saved.difficulty ?? 6;
+difficultyValue.value = difficulty.value;
+music.checked = !audio.muted;
+saveStatus.textContent = saved.score ? `读取存档：P1 ${saved.score.p1 ?? 0} 击倒` : '本地存档尚未创建';
+difficulty.addEventListener('input', () => { difficultyValue.value = difficulty.value; if (world.bots[0]) world.bots[0].ai.difficulty = Number(difficulty.value); saveSettings(); });
+music.addEventListener('change', () => { audio.setMuted(!music.checked); if (music.checked && !running) audio.startMenu(); saveSettings(); });
+start.addEventListener('click', async () => {
+  try {
+    const room = roomInput.value.trim();
+    if (room) {
+      online = await joinPrivateRoom(room);
+      world = createWorld({ multiplayer: true });
+      applyRoomState(world, online.state);
+      if (foundryWall.complete) installFoundryMask();
+      start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
+    } else {
+      online = null;
+      world.bots[0].ai.difficulty = Number(difficulty.value);
+      start.textContent = '战斗中';
+    }
+    running = true; audio.stopMenu(); audio.play('click'); saveSettings();
+  } catch (error) { saveStatus.textContent = `联机失败：${error.message}`; }
+});
+audio.startMenu();
 
 for (const type of ['keydown', 'keyup']) {
   window.addEventListener(type, (event) => {
     if (Object.values(controls).includes(event.code)) event.preventDefault();
+    if (type === 'keydown' && event.code === 'KeyM') { audio.setMuted(!audio.muted); music.checked = !audio.muted; saveSettings(); }
     if (type === 'keydown') held.add(event.code);
     else held.delete(event.code);
   });
 }
 window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFirePressed = false; });
 reset.addEventListener('click', () => {
+  online = null;
   world = createWorld();
+  world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
+  if (foundryWall.complete) installFoundryMask();
+  running = true;
+  saveSettings();
 });
 
 function updatePointer(event) {
@@ -84,32 +161,34 @@ function drawHud() {
   ctx.fillRect(28 + player.hp / player.maxHp * 210, 20, 210 - player.hp / player.maxHp * 210, 10);
   ctx.fillStyle = '#f3f7ff';
   ctx.font = 'bold 16px system-ui';
-  ctx.fillText(`P1  HP ${player.hp}/${player.maxHp}`, 28, 53);
+  ctx.fillText(`P1  HP ${player.hp}/${player.maxHp}  ·  ${world.score.p1 ?? 0} 击倒`, 28, 53);
   ctx.textAlign = 'center';
   ctx.fillStyle = '#e8edf8';
   ctx.font = '600 16px system-ui';
-  ctx.fillText('单人网页复刻 · 鼠标瞄准 / 实体平台验证', canvas.width / 2, 30);
+  ctx.fillText(`Foundry · AI ${difficulty.value} · ${running ? '战斗进行中' : '菜单'}`, canvas.width / 2, 30);
   ctx.textAlign = 'left';
 }
 
 function drawBottomHud() {
   const hudY = canvas.height - 24;
   const ammoX = canvas.width - 335;
-  const ammo = 78;
+  const ammo = world.players[0].weapon.spare;
+  const clip = world.players[0].weapon.clip;
 
   // These boxes follow the original Hud.setAmmoImage "arifle" layout: 2px gap,
   // 2px width and 10px height, enlarged for the 1280px canvas.
   ctx.save();
   ctx.strokeStyle = 'rgba(255, 255, 255, .72)';
   ctx.fillStyle = 'rgba(255, 255, 255, .22)';
-  for (let index = 0; index < 30; index += 1) {
+  for (let index = 0; index < world.players[0].weapon.clipMax; index += 1) {
     const x = ammoX + index * 7;
-    ctx.fillRect(x, hudY - 48, 5, 25);
+    if (index < clip) ctx.fillRect(x, hudY - 48, 5, 25);
     ctx.strokeRect(x + 0.5, hudY - 47.5, 4, 24);
   }
   ctx.fillStyle = '#f4f2ea';
   ctx.font = '700 17px system-ui';
   ctx.fillText(String(ammo), ammoX + 226, hudY - 27);
+  if (world.players[0].weapon.reloadRemaining) ctx.fillText('RELOAD', ammoX + 123, hudY - 63);
   ctx.strokeStyle = 'rgba(255, 255, 255, .82)';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -163,6 +242,7 @@ function drawAimer(player) {
 }
 
 function drawPlayer(player) {
+  if (!player.alive) return;
   const screen = worldToScreen(player, camera, canvas.width, canvas.height);
   const localAimAngle = player.facing < 0
     ? Math.atan2(Math.sin(Math.PI - player.aimAngle), Math.cos(Math.PI - player.aimAngle))
@@ -173,6 +253,7 @@ function drawPlayer(player) {
     aimAngle: localAimAngle,
     facing: player.facing,
     recoil: player.recoil,
+    reload: player.weapon.reloadRemaining / player.weapon.reloadDuration,
   });
   const scale = 0.94;
   const height = 76;
@@ -198,7 +279,13 @@ function drawPlayer(player) {
   ctx.save();
   ctx.translate(screen.x, screen.y);
   ctx.scale(pose.facing, 1);
-  if (unitSprite.complete && unitSprite.naturalWidth) {
+  const timelineFrame = getUnitMatrixFrame(player.animationFrame);
+  if (timelineFrame.complete && timelineFrame.naturalWidth) {
+    // FFDec exports the UnitMC matrix in a 257×242 stage.  This crop is the
+    // lower playable unit; the upper reference instance is deliberately not
+    // rendered.  Frame selection comes from UnitMC's original label ranges.
+    ctx.drawImage(timelineFrame, 25, 112, 125, 125, -54, -101, 108, 108);
+  } else if (unitSprite.complete && unitSprite.naturalWidth) {
     // UnitMC hierarchy: legup/leglow/foot → body → head → arm2 (back) → arm1 (front+gun).
     // Source crops retain the extracted original pixel art; each crop is now transformed by its own pivot.
     drawIdleCrop(60, 164, 34, 40, pose.backLeg, 31, 42);
@@ -212,10 +299,17 @@ function drawPlayer(player) {
     ctx.fillRect(-12, -56, 24, 56);
   }
   ctx.restore();
-  ctx.fillStyle = '#eaf0d5';
+  if (player.hitTimer) {
+    ctx.save();
+    ctx.globalAlpha = player.hitTimer / .16;
+    ctx.fillStyle = '#ff6d63';
+    ctx.beginPath(); ctx.arc(screen.x, screen.y - 42, 29, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  ctx.fillStyle = player.isBot ? '#ffb7a8' : '#eaf0d5';
   ctx.font = '700 11px system-ui';
   ctx.textAlign = 'center';
-  ctx.fillText('P1', screen.x, screen.y - height - 8);
+  ctx.fillText(player.isBot ? 'AI' : 'P1', screen.x, screen.y - height - 8);
   ctx.textAlign = 'left';
 }
 
@@ -250,8 +344,13 @@ function render() {
   ctx.fillStyle = 'rgba(3, 7, 13, .12)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (const bullet of world.bullets) drawTracer(bullet);
-  drawPlayer(world.players[0]);
+  for (const player of world.players) drawPlayer(player);
   for (const flash of world.muzzleFlashes) drawMuzzleFlash(flash);
+  for (const hit of world.hitEffects) {
+    const point = worldToScreen(hit, camera, canvas.width, canvas.height);
+    ctx.fillStyle = `rgba(255, 196, 128, ${hit.ttl / .16})`;
+    ctx.beginPath(); ctx.arc(point.x, point.y, 7, 0, Math.PI * 2); ctx.fill();
+  }
   drawHud();
   drawBottomHud();
   drawAimer(world.players[0]);
@@ -260,7 +359,21 @@ function render() {
 function frame(now) {
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
-  step(world, { p1: inputForPlayer() }, dt);
+  if (running) {
+    const input = inputForPlayer();
+    if (online) {
+      onlineAccumulator += dt;
+      if (onlineAccumulator >= 1 / 20) {
+        const networkDt = onlineAccumulator;
+        onlineAccumulator = 0;
+        sendRoomInput(online, input, networkDt).then((state) => { if (state) applyRoomState(world, state); }).catch((error) => { saveStatus.textContent = `联机断开：${error.message}`; });
+      }
+    } else {
+      step(world, { p1: input }, dt);
+      for (const event of world.events.splice(0)) audio.play(event.type);
+    }
+    if (Math.floor(world.elapsed) !== Math.floor(world.elapsed - dt)) saveSettings();
+  }
   const targetCamera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   camera = smoothCamera(camera, targetCamera, dt);
   render();

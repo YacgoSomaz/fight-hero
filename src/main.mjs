@@ -246,16 +246,10 @@ function drawPlayer(player) {
     // row comes from the original SWF frame after Place/Remove tags have been
     // resolved.  The fixed Medic art is selected once (frame 51), while the
     // original root matrices continue to drive every body part per frame.
-    const range = UNITMC_FRAMES[player.animation] ?? UNITMC_FRAMES.idle;
-    const nextFrameNumber = player.animationFrame >= range[1] ? range[0] : player.animationFrame + 1;
-    const nextFrame = unitTimeline.frames[nextFrameNumber - 1] ?? frame;
-    const blend = Math.max(0, Math.min(1, player.animationBlend ?? 0));
-    const nextByName = Object.fromEntries(nextFrame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => [name, { x, y, scaleX, scaleY, skewX, skewY }]));
-    const items = Object.fromEntries(frame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => {
-      const next = nextByName[name] ?? { x, y, scaleX, scaleY, skewX, skewY };
-      const lerp = (from, to) => from + (to - from) * blend;
-      return [name, { x: lerp(x, next.x), y: lerp(y, next.y), scaleX: lerp(scaleX, next.scaleX), scaleY: lerp(scaleY, next.scaleY), skewX: lerp(skewX, next.skewX), skewY: lerp(skewY, next.skewY) }];
-    }));
+    // UnitMC uses Flash's 30fps discrete timeline.  Interpolating its
+    // separately authored limb matrices produces poses that never existed in
+    // the SWF, so retain the decoded display-list frame verbatim.
+    const items = Object.fromEntries(frame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => [name, { x, y, scaleX, scaleY, skewX, skewY }]));
     const headHold = items.headhold;
     const armHold = items.arm1hold;
     let localAim = player.aimAngle;
@@ -275,12 +269,17 @@ function drawPlayer(player) {
       // here (the former -10px value) separates both legs from the body.
       const legLift = name.startsWith('leg') || name.startsWith('foot') ? -26 : 0;
       ctx.translate(anchor.x, anchor.y + legLift);
-      if (aimFactor === null) ctx.transform(item.scaleX, item.skewY, item.skewX, item.scaleY, 0, 0);
+      if (aimFactor === null) {
+        // A SWF MATRIX maps to Canvas as [scaleX, rotateSkew0,
+        // rotateSkew1, scaleY].  The earlier b/c swap reversed the leg
+        // rotation and moved its registration point away from the hip.
+        ctx.transform(item.scaleX, item.skewX, item.skewY, item.scaleY, 0, 0);
+      }
       else {
         // Unit.as overwrites only these three rotations every tick; their
         // translation stays on the original head/arm holder of this frame.
-        const scaleX = Math.hypot(item.scaleX, item.skewY);
-        const scaleY = Math.hypot(item.scaleY, item.skewX);
+        const scaleX = Math.hypot(item.scaleX, item.skewX);
+        const scaleY = Math.hypot(item.skewY, item.scaleY);
         ctx.scale(scaleX, scaleY);
         ctx.rotate(localAim * aimFactor);
         if (name === 'arm1') ctx.translate(-player.recoil * 2, 0);

@@ -165,6 +165,15 @@ test('walking selects the original running animation state instead of sliding an
   assert.equal(world.players[0].animation, 'run');
 });
 
+test('UnitMC timing retains discrete original 30fps poses', () => {
+  const world = createWorld({ bots: false });
+
+  step(world, { p1: { right: true } }, 1 / 60);
+
+  assert.equal(world.players[0].animationFrame, UNITMC_FRAMES.run[0]);
+  assert.equal(world.players[0].animationBlend, 0);
+});
+
 test('UnitMC frame labels use the original jump and backwards-running spans', () => {
   assert.deepEqual(UNITMC_FRAMES.run, [21, 38]);
   assert.deepEqual(UNITMC_FRAMES.runback, [58, 75]);

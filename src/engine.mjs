@@ -118,7 +118,7 @@ function syncAnimationFrame(actor) {
   const range = UNITMC_FRAMES[actor.animation] ?? UNITMC_FRAMES.idle;
   const frameTime = actor.animationTime * 30;
   actor.animationFrame = range[0] + Math.floor(frameTime) % (range[1] - range[0] + 1);
-  actor.animationBlend = frameTime - Math.floor(frameTime);
+  actor.animationBlend = 0;
 }
 function setAnimation(actor, animation) {
   if (actor.animation !== animation) actor.animationTime = 0;
@@ -364,9 +364,8 @@ function updateActor(world, actor, input, dt) {
   const crouchAnimation = actor.animation === 'duck' && actor.animationTime >= (UNITMC_FRAMES.duck[1] - UNITMC_FRAMES.duck[0] + 1) / 30 ? 'duckloop' : actor.animation === 'duckloop' ? 'duckloop' : 'duck';
   if (!actor.grounded) setAnimation(actor, actor.vy < 0 ? 'jump' : fallingAnimation); else if (actor.weapon.reloadRemaining) setAnimation(actor, 'reload'); else if (actor.crouching) setAnimation(actor, Math.abs(actor.vx) > 1 ? movingBackward ? 'duckrunback' : 'duckrun' : crouchAnimation); else if (Math.abs(actor.vx) > 1) setAnimation(actor, movingBackward ? 'runback' : 'run'); else setAnimation(actor, 'idle');
   actor.animationTime += dt;
-  // The SWF runs at 30 fps while this browser loop is normally 60 fps.
-  // Keep the original frame range, but expose the fractional frame so its
-  // per-part matrices can blend smoothly instead of snapping every 33 ms.
+  // UnitMC itself advances on Flash's native 30fps timeline.  Its limb
+  // matrices are authored as complete poses, so retain the discrete frame.
   syncAnimationFrame(actor);
 }
 

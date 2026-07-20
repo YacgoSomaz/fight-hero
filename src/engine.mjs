@@ -44,15 +44,6 @@ const FOUNDRY_COLLISION_Y_OFFSET = 24;
 const FOUNDRY_COLLISION_BOXES = Object.freeze(
   FOUNDRY_LAYOUT.collisionBoxes.map((box) => Object.freeze({ ...box, x: box.x + FOUNDRY_COLLISION_X_OFFSET, y: box.y + FOUNDRY_COLLISION_Y_OFFSET })),
 );
-// Four central NodePhysBox rectangles are only a coarse physical proxy. The
-// original wallMC mask carries the real continuous forge ramps.  Keep every
-// other box unchanged and replace just these side-blocking rectangles.
-const FOUNDRY_RAMP_BOX_CENTRES = new Set([1113.65, 1166.1, 1441.1, 1494.35]);
-const FOUNDRY_WALK_BOXES = Object.freeze(FOUNDRY_COLLISION_BOXES.filter((box) => !FOUNDRY_RAMP_BOX_CENTRES.has(box.x - FOUNDRY_COLLISION_X_OFFSET)));
-const FOUNDRY_WALK_SLOPES = Object.freeze([
-  Object.freeze({ x1: 1060 + FOUNDRY_COLLISION_X_OFFSET, y1: 703 + FOUNDRY_COLLISION_Y_OFFSET, x2: 1200 + FOUNDRY_COLLISION_X_OFFSET, y2: 680 + FOUNDRY_COLLISION_Y_OFFSET }),
-  Object.freeze({ x1: 1420 + FOUNDRY_COLLISION_X_OFFSET, y1: 679 + FOUNDRY_COLLISION_Y_OFFSET, x2: 1580 + FOUNDRY_COLLISION_X_OFFSET, y2: 703 + FOUNDRY_COLLISION_Y_OFFSET }),
-]);
 
 const FOUNDRY_CONFIG = Object.freeze({
   width: FOUNDRY_LAYOUT.width,
@@ -114,8 +105,9 @@ export function createWorld(options = {}) {
     navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
     actions: foundry ? FOUNDRY_LAYOUT.actions.map((point) => ({ ...point })) : [],
     pickups: foundry ? FOUNDRY_LAYOUT.pickups.map((point) => ({ ...point })) : [],
-    collisionBoxes: foundry ? FOUNDRY_WALK_BOXES.map((box) => ({ ...box })) : [],
-    slopes: foundry ? FOUNDRY_WALK_SLOPES.map((slope) => ({ ...slope })) : (options.slopes ?? []).map((slope) => ({ ...slope })),
+    // Full source rectangles are retained separately from an optional pixel
+    // wall, so player collision can resolve their top/side faces precisely.
+    collisionBoxes: foundry ? FOUNDRY_COLLISION_BOXES.map((box) => ({ ...box })) : [],
     wall: options.wall ?? null,
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };
@@ -141,7 +133,7 @@ function platformSolid(world, x, y) {
 export function isSolid(world, x, y) {
   if (x < 0 || x >= world.config.width || y < 0 || y >= world.config.height) return true;
   if (world.wall?.isSolid) return Boolean(world.wall.isSolid(x, y));
-  if (world.collisionBoxes?.length || world.slopes?.length) return boxSolid(world.collisionBoxes ?? [], x, y) || slopeSolid(world.slopes ?? [], x, y);
+  if (world.collisionBoxes?.length) return boxSolid(world.collisionBoxes, x, y);
   return platformSolid(world, x, y);
 }
 
@@ -168,16 +160,6 @@ function wallBodyBlocked(world, actor, x, y, direction) {
   // centre-foot probe settles onto a shallow slope.
   const probes = actor.crouching ? [-20, -25, -35] : [-20, -25, -35, -45];
   return probes.some((offset) => isSolid(world, edge, y + offset));
-}
-function slopeTop(slope, x) {
-  if (x < Math.min(slope.x1, slope.x2) || x > Math.max(slope.x1, slope.x2)) return null;
-  return slope.y1 + (x - slope.x1) * (slope.y2 - slope.y1) / (slope.x2 - slope.x1);
-}
-function slopeSolid(slopes, x, y) {
-  return slopes.some((slope) => {
-    const top = slopeTop(slope, x);
-    return top !== null && y >= top;
-  });
 }
 function wallHasFloor(world, actor, x, y) {
   // Movement.as resolves standing/stepping from the centre-foot probe.  Side
@@ -285,17 +267,11 @@ function applyPlatformPhysics(world, actor, dt) {
   if (!world.wall?.isSolid && world.collisionBoxes?.length) {
     const height = actorHeight(actor);
     if (actor.vy >= 0) {
-      const boxLandings = world.collisionBoxes.map((box) => ({ box, edge: boxEdges(box) })).filter(({ edge }) => (
+      const landing = world.collisionBoxes.map((box) => ({ box, edge: boxEdges(box) })).filter(({ edge }) => (
         actor.x + actor.hitbox.halfWidth > edge.left && actor.x - actor.hitbox.halfWidth < edge.right
         && previousY <= edge.top && actor.y >= edge.top
-      )).map(({ edge }) => edge.top);
-      // A slope can lift a grounded centre foot by a small amount in one
-      // tick, then uses its decoded line rather than a rectangle side face.
-      const slopeLandings = (world.slopes ?? []).map((slope) => slopeTop(slope, actor.x)).filter((top) => (
-        top !== null && actor.y >= top && (previousY <= top || actor.y - top <= 18)
-      ));
-      const landing = [...boxLandings, ...slopeLandings].sort((a, b) => a - b)[0];
-      if (landing !== undefined) { actor.y = landing; actor.vy = 0; actor.grounded = true; }
+      )).sort((a, b) => a.edge.top - b.edge.top)[0];
+      if (landing) { actor.y = landing.edge.top; actor.vy = 0; actor.grounded = true; }
     } else {
       const ceiling = world.collisionBoxes.map((box) => ({ box, edge: boxEdges(box) })).filter(({ edge }) => (
         actor.x + actor.hitbox.halfWidth > edge.left && actor.x - actor.hitbox.halfWidth < edge.right

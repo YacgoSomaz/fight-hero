@@ -385,15 +385,6 @@ function drawCollisionBoxes() {
     ctx.fillRect(topLeft.x, topLeft.y, width, height);
     ctx.strokeRect(topLeft.x + .5, topLeft.y + .5, width - 1, height - 1);
   }
-  // The two forge ramps come from wallMC's continuous alpha profile, so draw
-  // them as lines instead of misleading stepped rectangles.
-  ctx.strokeStyle = 'rgba(42, 211, 255, .95)';
-  ctx.lineWidth = 2;
-  for (const slope of world.slopes ?? []) {
-    const start = worldToScreen({ x: slope.x1, y: slope.y1 }, camera, canvas.width, canvas.height);
-    const end = worldToScreen({ x: slope.x2, y: slope.y2 }, camera, canvas.width, canvas.height);
-    ctx.beginPath(); ctx.moveTo(start.x, start.y); ctx.lineTo(end.x, end.y); ctx.stroke();
-  }
   ctx.restore();
 }
 

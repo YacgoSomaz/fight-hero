@@ -22,13 +22,12 @@ map.src = './public/assets/maps/foundry.png';
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
-// The 449 original UnitMC poses are packed as one sheet.  Until every child
-// transform is replayed from the decoded timeline, this is the only faithful
-// visible pose source: it preserves the original body-part composition.
-const UNIT_FRAME_WIDTH = 86;
-const UNIT_FRAME_HEIGHT = 90;
-const UNIT_FRAME_COLUMNS = 19;
-const unitFrameSheet = image('./public/assets/unit-frames.png');
+// FFDec's flattened UnitMC exports are *not* one character's motion frames:
+// ActionScript applies a skin at runtime, so advancing that sheet switches
+// between different unit classes.  Keep one decoded skin until the original
+// per-part timeline matrices are replayed, rather than visibly turning P1
+// into a different character on every animation frame.
+const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
@@ -251,17 +250,16 @@ function drawPlayer(player) {
   if (!player.alive) return;
   const screen = worldToScreen(player, camera, canvas.width, canvas.height);
   const height = 76;
-  const frameIndex = player.animationFrame - 1;
-  const sourceX = frameIndex % UNIT_FRAME_COLUMNS * UNIT_FRAME_WIDTH;
-  const sourceY = Math.floor(frameIndex / UNIT_FRAME_COLUMNS) * UNIT_FRAME_HEIGHT;
 
   ctx.save();
   ctx.translate(screen.x, screen.y);
   ctx.scale(player.facing, 1);
-  if (unitFrameSheet.complete && unitFrameSheet.naturalWidth) {
-    // The lower UnitMC export has its sole at source y=83. A destination y of
-    // -72 anchors that sole on the pixel-wall contact point (not above it).
-    ctx.drawImage(unitFrameSheet, sourceX, sourceY, UNIT_FRAME_WIDTH, UNIT_FRAME_HEIGHT, -38, -72, 76, 80);
+  if (unitSkin.complete && unitSkin.naturalWidth) {
+    // The physical actor point is the original centre-foot wall probe.  The
+    // exported skin's transparent canvas puts its sole at y≈80; draw it 16px
+    // lower than the old flattened-sheet anchor so the visible boot reaches
+    // the same contact surface as the pixel collision probe.
+    ctx.drawImage(unitSkin, -38, -56, 76, 80);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);

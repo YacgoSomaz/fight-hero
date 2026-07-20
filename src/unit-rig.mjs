@@ -16,7 +16,7 @@ export function getUnitRigPose({
   recoil = 0,
   reload = 0,
 } = {}) {
-  const state = ['run', 'climbsmall', 'climbbig', 'jump', 'fall', 'duck', 'duckrun', 'getup', 'landhard', 'reload'].includes(animation) ? animation : 'idle';
+  const state = ['run', 'runback', 'climbsmall', 'climbbig', 'jump', 'fall', 'duck', 'duckrun', 'duckrunback', 'getup', 'landhard', 'reload'].includes(animation) ? animation : 'idle';
   const aim = clamp(degrees(aimAngle), -78, 78);
   const gunKick = clamp(recoil, 0, 1) * 6;
   // Unit.as: rotReload eases toward 30° while the gun is reloading and aimed low.
@@ -33,8 +33,8 @@ export function getUnitRigPose({
     frontLeg: part(7, -27),
   };
 
-  if (state === 'run') {
-    const swing = Math.sin(animationTime * Math.PI * 10);
+  if (state === 'run' || state === 'runback') {
+    const swing = Math.sin(animationTime * Math.PI * 10) * (state === 'runback' ? -1 : 1);
     pose.backLeg.rotation = swing * 34;
     pose.frontLeg.rotation = -swing * 34;
     pose.torso.y += Math.abs(swing) * 1.8;
@@ -42,9 +42,9 @@ export function getUnitRigPose({
     return pose;
   }
 
-  if (state === 'duck' || state === 'duckrun' || state === 'getup') {
-    const moving = state === 'duckrun';
-    const swing = moving ? Math.sin(animationTime * Math.PI * 10) : 0;
+  if (state === 'duck' || state === 'duckrun' || state === 'duckrunback' || state === 'getup') {
+    const moving = state === 'duckrun' || state === 'duckrunback';
+    const swing = moving ? Math.sin(animationTime * Math.PI * 10) * (state === 'duckrunback' ? -1 : 1) : 0;
     pose.torso.y = -31 + Math.abs(swing) * 1.2;
     pose.head.y = -47 + Math.abs(swing) * 1.2;
     pose.backArm.y = pose.frontArm.y = pose.gun.y = -39;

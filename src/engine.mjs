@@ -144,14 +144,24 @@ function findWallStep(world, actor, direction) {
   return null;
 }
 function findWallLedge(world, actor, direction) {
-  // Original probes are 20px and 40px high and select the corresponding
-  // climb animation. Search that same small/big-climb height range.
-  const targetX = actor.x + direction * (actor.hitbox.halfWidth + 12);
-  for (let rise = 20; rise <= 56; rise += 1) {
-    const targetY = actor.y - rise;
+  // Movement.as checks the leading edge at ±17, detecting a small ledge at
+  // -20 or a big ledge at -40 only if the -55 head-clearance point is empty.
+  const probeX = actor.x + direction * 17;
+  const clearAbove = !isSolid(world, probeX, actor.y - 55);
+  const requestedRise = isSolid(world, probeX, actor.y - 40) && clearAbove ? 40
+    : isSolid(world, probeX, actor.y - 20) && clearAbove ? 20 : 0;
+  const targetX = actor.x + direction * 17;
+  if (requestedRise) {
+    const targetY = actor.y - requestedRise;
     if (wallHasFloor(world, actor, targetX, targetY) && !wallBodyBlocked(world, actor, targetX, targetY, direction)) {
       return { wall: true, x: targetX, y: targetY };
     }
+  }
+  // Keep a short scan for sloped authored geometry that lies between the
+  // original 20/40 probes.
+  for (let rise = 20; rise <= 56; rise += 1) {
+    const targetY = actor.y - rise;
+    if (wallHasFloor(world, actor, targetX, targetY) && !wallBodyBlocked(world, actor, targetX, targetY, direction)) return { wall: true, x: targetX, y: targetY };
   }
   return null;
 }
@@ -198,7 +208,13 @@ function applyPlatformPhysics(world, actor, dt) {
   if (world.wall?.isSolid) {
     const height = actorHeight(actor);
     const footSamples = [actor.x - actor.hitbox.halfWidth + 2, actor.x, actor.x + actor.hitbox.halfWidth - 2];
-    if (actor.vy >= 0 && footSamples.some((x) => isSolid(world, x, actor.y))) { actor.y = previousY; actor.vy = 0; actor.grounded = true; }
+    if (actor.vy >= 0) {
+      let contactY = null;
+      for (let y = Math.floor(previousY); y <= Math.ceil(actor.y); y += 1) {
+        if (footSamples.some((x) => isSolid(world, x, y))) { contactY = y; break; }
+      }
+      if (contactY !== null) { actor.y = contactY - 1; actor.vy = 0; actor.grounded = true; }
+    }
     else if (actor.vy < 0 && footSamples.some((x) => isSolid(world, x, actor.y - height))) { actor.y = previousY; actor.vy = 0; }
     return;
   }
@@ -251,6 +267,10 @@ function updateActor(world, actor, input, dt) {
   const blocked = resolveHorizontalCollision(world, actor, previousX); const direction = right ? 1 : left ? -1 : 0;
   if (blocked && direction && beginLedgeClimb(world, actor, blocked, direction)) { updateClimb(world, actor, dt); return; }
   applyPlatformPhysics(world, actor, dt);
+  if (!actor.grounded && actor.vy >= 0 && direction) {
+    const ledge = findWallLedge(world, actor, direction);
+    if (ledge && beginLedgeClimb(world, actor, ledge, direction)) { updateClimb(world, actor, dt); return; }
+  }
   actor.fireTimer = Math.max(0, actor.fireTimer - dt); actor.hitTimer = Math.max(0, actor.hitTimer - dt); actor.crosshairSpread = Math.max(actor.crosshairRestSpread, actor.crosshairSpread - 26 * dt); actor.recoil = Math.max(0, actor.recoil - 7 * dt);
   if (actor.weapon.reloadRemaining) { actor.weapon.reloadRemaining -= dt; if (actor.weapon.reloadRemaining <= 0) completeReload(actor); }
   if (input.reload) reload(world, actor); if ((input.fire || input.firePressed) && !actor.weapon.reloadRemaining) spawnBullet(world, actor);

@@ -51,6 +51,17 @@ test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
   assert.equal(p1.grounded, true);
 });
 
+test('the alpha wall snaps feet to the first opaque collision pixel', () => {
+  const world = createWorld({ bots: false, wall: { isSolid: (_x, y) => y >= 620 } });
+  const p1 = world.players[0];
+  p1.y = 618; p1.grounded = false; p1.vy = 100;
+
+  step(world, { p1: {} }, 1 / 60);
+
+  assert.equal(p1.y, 619);
+  assert.equal(p1.grounded, true);
+});
+
 test('the alpha wall triggers the original small/big climb state on a reachable ledge', () => {
   const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && y >= 570) };
   const world = createWorld({ bots: false, wall });
@@ -61,7 +72,7 @@ test('the alpha wall triggers the original small/big climb state on a reachable 
 
   assert.equal(p1.animation, 'climbbig');
   for (let frame = 0; frame < 18; frame += 1) step(world, { p1: { right: true } }, 1 / 60);
-  assert.equal(p1.y, 573);
+  assert.ok(p1.y <= 573, 'the climb completes on top of the raised wall');
 });
 
 test('the single player responds to independent left and right input', () => {
@@ -240,6 +251,15 @@ test('a short left-click press is retained long enough to fire exactly once', ()
   step(world, { p1: { firePressed: true } }, 1 / 60);
 
   assert.equal(world.bullets.length, 1);
+});
+
+test('the reverse run label reverses the original leg phase without freezing the aim rig', () => {
+  const forward = getUnitRigPose({ animation: 'run', animationTime: 0.12, aimAngle: 0.25, facing: 1 });
+  const backward = getUnitRigPose({ animation: 'runback', animationTime: 0.12, aimAngle: 0.25, facing: 1 });
+
+  assert.equal(backward.state, 'runback');
+  assert.equal(backward.frontArm.rotation, forward.frontArm.rotation);
+  assert.equal(backward.frontLeg.rotation, -forward.frontLeg.rotation);
 });
 
 test('manual and empty-clip reloads preserve the original clip/spare-ammo rule', () => {

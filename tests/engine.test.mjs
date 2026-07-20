@@ -211,6 +211,17 @@ test('the browser receives every decoded UnitMC body-part matrix without skin sw
   }
 });
 
+test('the UnitMC renderer ships complete decoded arm assemblies', () => {
+  for (const asset of [
+    '../public/assets/unit-parts/full/rifle_arm_51.png',
+    '../public/assets/unit-parts/full/front_arm_51.png',
+  ]) {
+    const data = fs.readFileSync(new URL(asset, import.meta.url));
+    assert.deepEqual([...data.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+    assert.ok(data.length > 1000);
+  }
+});
+
 test('moving opposite the aiming direction selects UnitMC runback frames', () => {
   const world = createWorld({ bots: false });
   const player = world.players[0];

@@ -25,8 +25,10 @@ function image(source) { const result = new Image(); result.src = source; return
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
 const unitParts = {
-  rifleArm: image('./public/assets/unit-parts/tight/rifle_arm.png'),
-  frontArm: image('./public/assets/unit-parts/tight/front_arm.png'),
+  // These are the complete fixed-skin UnitMC arm canvases, rather than the
+  // cropped hand fragments.  Their registration offsets are applied below.
+  rifleArm: image('./public/assets/unit-parts/full/rifle_arm_51.png'),
+  frontArm: image('./public/assets/unit-parts/full/front_arm_51.png'),
   body: image('./public/assets/unit-parts/tight/body.png'),
   head: image('./public/assets/unit-parts/tight/head.png'),
   foot: image('./public/assets/unit-parts/tight/foot.png'),
@@ -284,7 +286,10 @@ function drawPlayer(player) {
     // sprites (506/539/569/599/632).  The same child symbol is used for both
     // legs, so each pair deliberately shares an origin; per-leg hand tuning
     // was the source of the visible broken skeleton.
-    drawPart('arm1', unitParts.rifleArm, 4.7, -19.5, 1);
+    // Full arm canvases exported from UnitMC child sprites 501/668 at the
+    // selected Medic skin frame.  Their offsets are the decoded visual-bound
+    // registration points, so gun, hands and upper arm stay one assembly.
+    drawPart('arm1', unitParts.rifleArm, -92.13406066894532, -105.37676849365235, 1);
     drawPart('foot2', unitParts.foot, 1.5, 0);
     drawPart('leglow2', unitParts.legLower, -9.45, -3.3);
     drawPart('legup2', unitParts.legUpper, -5.5, -2.95);
@@ -293,7 +298,7 @@ function drawPlayer(player) {
     drawPart('legup1', unitParts.legUpper, -5.5, -2.95);
     drawPart('body', unitParts.body, -11.95, -15);
     drawPart('head', unitParts.head, -5.6, -18, .6);
-    drawPart('arm2', unitParts.frontArm, 4.7, -25.5, 1);
+    drawPart('arm2', unitParts.frontArm, -76.03631820678712, -47.00885772705078, 1);
   } else if (unitSkin.complete && unitSkin.naturalWidth) {
     ctx.drawImage(unitSkin, -37, -84, 75, 90);
   } else {

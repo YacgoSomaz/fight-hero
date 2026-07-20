@@ -61,6 +61,21 @@ test('Foundry rectangles land on their exact top edge and block their side face'
   assert.equal(p1.x, left - p1.hitbox.halfWidth);
 });
 
+test('Foundry forge ramps replace their blocking source rectangles with a continuous surface', () => {
+  const world = createWorld({ foundry: true, bots: false });
+  const p1 = world.players[0];
+  const [ramp] = world.slopes;
+
+  assert.equal(world.slopes.length, 2);
+  assert.equal(world.collisionBoxes.length, 29);
+  p1.x = ramp.x1 - 10; p1.y = ramp.y1 + 3; p1.grounded = true;
+  for (let frame = 0; frame < 12; frame += 1) step(world, { p1: { right: true, aimX: 2000, aimY: 500 } }, 1 / 60);
+
+  assert.ok(p1.x > ramp.x1 + 30, 'the former rectangle side cannot stop the player at the ramp foot');
+  assert.ok(p1.y < ramp.y1, 'the centre foot rises along the decoded ramp profile');
+  assert.equal(p1.grounded, true);
+});
+
 test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
   const world = createWorld({ foundry: true });
   const bot = world.bots[0];

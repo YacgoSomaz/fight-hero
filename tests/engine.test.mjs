@@ -51,6 +51,19 @@ test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
   assert.equal(p1.grounded, true);
 });
 
+test('a side collision with a tall crate does not hoist the centre foot onto its top', () => {
+  const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && x <= 570 && y >= 570) };
+  const world = createWorld({ bots: false, wall });
+  const p1 = world.players[0];
+  p1.x = 493; p1.y = 619; p1.grounded = true;
+
+  step(world, { p1: { right: true } }, 0.05);
+
+  assert.equal(p1.x, 493, 'the horizontal body probe stops at the crate face');
+  assert.equal(p1.y, 619, 'only the centre foot can start a step onto the crate');
+  assert.equal(p1.grounded, true);
+});
+
 test('the alpha wall snaps feet to the first opaque collision pixel', () => {
   const world = createWorld({ bots: false, wall: { isSolid: (_x, y) => y >= 620 } });
   const p1 = world.players[0];

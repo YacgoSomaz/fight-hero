@@ -133,7 +133,10 @@ function wallBodyBlocked(world, actor, x, y, direction) {
   return [-4, -actorHeight(actor) / 2, -actorHeight(actor) + 5].some((offset) => isSolid(world, edge, y + offset));
 }
 function wallHasFloor(world, actor, x, y) {
-  return [x - actor.hitbox.halfWidth + 2, x, x + actor.hitbox.halfWidth - 2].some((sampleX) => isSolid(world, sampleX, y + 1));
+  // Movement.as resolves standing/stepping from the centre-foot probe.  Side
+  // probes belong to body collision only: treating either side as a floor
+  // raises a unit while it is merely pressed against a tall crate.
+  return isSolid(world, x, y + 1);
 }
 function findWallStep(world, actor, direction) {
   // Movement.as settles the feet against the alpha mask; this lets shallow

@@ -259,7 +259,18 @@ function drawPlayer(player) {
     // exported skin's transparent canvas puts its sole at y≈80; draw it 16px
     // lower than the old flattened-sheet anchor so the visible boot reaches
     // the same contact surface as the pixel collision probe.
-    ctx.drawImage(unitSkin, -38, -56, 76, 80);
+    const walking = ['run', 'runback', 'duckrun', 'duckrunback'].includes(player.animation);
+    if (walking) {
+      // This is deliberately rendered from one fixed skin, not the broken
+      // flattened UnitMC sheet.  Separating the pelvis/legs gives a visible
+      // walk cycle while the deeper nested part-timeline decoder is finished.
+      const stride = Math.sin(player.animationTime * Math.PI * 10) * 2.2;
+      const bob = Math.abs(Math.sin(player.animationTime * Math.PI * 10)) * 1.3;
+      ctx.drawImage(unitSkin, 0, 0, 86, 54, -38, -56 + bob, 76, 48);
+      ctx.drawImage(unitSkin, 0, 49, 86, 41, -38 + stride, -13 + bob * .4, 76, 37);
+    } else {
+      ctx.drawImage(unitSkin, -38, -56, 76, 80);
+    }
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);

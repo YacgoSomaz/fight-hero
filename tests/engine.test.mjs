@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createWorld, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
+import { UNITMC_FRAMES, createWorld, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
 import { FOUNDRY_LAYOUT } from '../src/foundry-layout.mjs';
 import { getUnitRigPose } from '../src/unit-rig.mjs';
@@ -80,6 +80,21 @@ test('walking selects the original running animation state instead of sliding an
   step(world, { p1: { right: true } }, 1 / 60);
 
   assert.equal(world.players[0].animation, 'run');
+});
+
+test('UnitMC frame labels use the original jump and backwards-running spans', () => {
+  assert.deepEqual(UNITMC_FRAMES.run, [20, 37]);
+  assert.deepEqual(UNITMC_FRAMES.runback, [57, 74]);
+  assert.deepEqual(UNITMC_FRAMES.jump, [190, 207]);
+  assert.deepEqual(UNITMC_FRAMES.fall, [208, 263]);
+});
+
+test('moving opposite the aiming direction selects UnitMC runback frames', () => {
+  const world = createWorld({ bots: false });
+  const player = world.players[0];
+  step(world, { p1: { left: true, aimX: player.x + 150, aimY: player.y - 40 } }, 1 / 60);
+  assert.equal(player.animation, 'runback');
+  assert.equal(player.animationFrame, UNITMC_FRAMES.runback[0]);
 });
 
 test('the UnitMC rig drives opposite original-style leg phases while running', () => {

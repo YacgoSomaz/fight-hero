@@ -68,7 +68,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
 }
 
 export const UNITMC_FRAMES = Object.freeze({
-  idle: [1, 19], run: [20, 37], runback: [57, 74], jump: [208, 220], fall: [221, 263],
+  idle: [1, 19], run: [20, 37], runback: [57, 74], jump: [190, 207], fall: [208, 263],
   duck: [290, 300], duckloop: [301, 304], getup: [305, 320], duckrun: [321, 353],
   duckrunback: [354, 386], climbsmall: [387, 390], climbbig: [391, 395], landhard: [408, 448],
 });
@@ -254,7 +254,8 @@ function updateActor(world, actor, input, dt) {
   actor.fireTimer = Math.max(0, actor.fireTimer - dt); actor.hitTimer = Math.max(0, actor.hitTimer - dt); actor.crosshairSpread = Math.max(actor.crosshairRestSpread, actor.crosshairSpread - 26 * dt); actor.recoil = Math.max(0, actor.recoil - 7 * dt);
   if (actor.weapon.reloadRemaining) { actor.weapon.reloadRemaining -= dt; if (actor.weapon.reloadRemaining <= 0) completeReload(actor); }
   if (input.reload) reload(world, actor); if ((input.fire || input.firePressed) && !actor.weapon.reloadRemaining) spawnBullet(world, actor);
-  if (!actor.grounded) setAnimation(actor, actor.vy < 0 ? 'jump' : 'fall'); else if (actor.weapon.reloadRemaining) setAnimation(actor, 'reload'); else if (actor.crouching) setAnimation(actor, Math.abs(actor.vx) > 1 ? 'duckrun' : 'duck'); else if (Math.abs(actor.vx) > 1) setAnimation(actor, 'run'); else setAnimation(actor, 'idle');
+  const movingBackward = actor.vx * actor.facing < -1;
+  if (!actor.grounded) setAnimation(actor, actor.vy < 0 ? 'jump' : 'fall'); else if (actor.weapon.reloadRemaining) setAnimation(actor, 'reload'); else if (actor.crouching) setAnimation(actor, Math.abs(actor.vx) > 1 ? movingBackward ? 'duckrunback' : 'duckrun' : 'duck'); else if (Math.abs(actor.vx) > 1) setAnimation(actor, movingBackward ? 'runback' : 'run'); else setAnimation(actor, 'idle');
   actor.animationTime += dt;
 }
 

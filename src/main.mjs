@@ -17,20 +17,17 @@ const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
 const map = new Image();
 map.src = './public/assets/maps/foundry.png';
-// Arena frame 2 carries the missing foreground platforms, forge and the
-// authored node overlay.  Its stage-black pixels were keyed to transparent
-// when exported, so it can sit over the original Foundry backdrop.
+// Original Foundry foreground art: platforms, forge and lava. The editor-only
+// physics/spawn/pickup nodes are deliberately excluded from this normal view.
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
-// Each frame is the complete lower UnitMC instance, cropped from the
-// original 449-frame SWF export.  This preserves all limbs and the actual
-// run/jump/crouch/climb poses without drawing its upper reference instance.
-const unitFrames = new Map();
-function getUnitFrame(frame) {
-  if (!unitFrames.has(frame)) unitFrames.set(frame, image(`./public/assets/unit-frames/${frame}.png`));
-  return unitFrames.get(frame);
-}
+// Every complete lower UnitMC frame is packed into one preloaded sheet. The
+// previous one-image-per-frame path could show a late-loading pose mid-run.
+const UNIT_FRAME_WIDTH = 86;
+const UNIT_FRAME_HEIGHT = 90;
+const UNIT_FRAME_COLUMNS = 19;
+const unitFrameSheet = image('./public/assets/unit-frames.png');
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
@@ -62,7 +59,9 @@ function installFoundryMask() {
   world.wall = { isSolid(x, y) {
     const sx = Math.floor(x);
     const sy = Math.floor(y);
-    return sx >= 0 && sy >= 0 && sx < maskCanvas.width && sy < maskCanvas.height && pixels[(sy * maskCanvas.width + sx) * 4 + 3] > 0;
+    // Original Movement.hitTest accepts only an FF alpha byte. Translucent
+    // antialiasing above terrain must not become a collision surface.
+    return sx >= 0 && sy >= 0 && sx < maskCanvas.width && sy < maskCanvas.height && pixels[(sy * maskCanvas.width + sx) * 4 + 3] === 255;
   } };
 }
 foundryWall.addEventListener('load', installFoundryMask);
@@ -251,15 +250,17 @@ function drawPlayer(player) {
   if (!player.alive) return;
   const screen = worldToScreen(player, camera, canvas.width, canvas.height);
   const height = 76;
-  const frame = getUnitFrame(player.animationFrame);
+  const frameIndex = player.animationFrame - 1;
+  const sourceX = frameIndex % UNIT_FRAME_COLUMNS * UNIT_FRAME_WIDTH;
+  const sourceY = Math.floor(frameIndex / UNIT_FRAME_COLUMNS) * UNIT_FRAME_HEIGHT;
 
   ctx.save();
   ctx.translate(screen.x, screen.y);
   ctx.scale(player.facing, 1);
-  if (frame.complete && frame.naturalWidth) {
+  if (unitFrameSheet.complete && unitFrameSheet.naturalWidth) {
     // Full original UnitMC pose for this label/frame: running, jumping,
     // falling, crouching and the two climbing sequences remain intact.
-    ctx.drawImage(frame, -38, -78, 76, 80);
+    ctx.drawImage(unitFrameSheet, sourceX, sourceY, UNIT_FRAME_WIDTH, UNIT_FRAME_HEIGHT, -38, -78, 76, 80);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);

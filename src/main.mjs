@@ -1,6 +1,5 @@
 import { createWorld, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
-import { getUnitRigPose } from './unit-rig.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
 
@@ -23,17 +22,13 @@ map.src = './public/assets/maps/foundry.png';
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
-// Tight crops of UnitMC's original child symbols. The timeline drives the
-// lower body while Unit.as rotates the head and arms toward the aim point.
-const unitParts = Object.freeze({
-  backArm: image('./public/assets/unit-parts/tight/back_arm.png'),
-  foot: image('./public/assets/unit-parts/tight/foot.png'),
-  legLower: image('./public/assets/unit-parts/tight/leg_lower.png'),
-  legUpper: image('./public/assets/unit-parts/tight/leg_upper.png'),
-  torso: image('./public/assets/unit-parts/tight/body.png'),
-  head: image('./public/assets/unit-parts/tight/head.png'),
-  frontArm: image('./public/assets/unit-parts/tight/front_arm.png'),
-});
+// The 449 original UnitMC poses are packed as one sheet.  Until every child
+// transform is replayed from the decoded timeline, this is the only faithful
+// visible pose source: it preserves the original body-part composition.
+const UNIT_FRAME_WIDTH = 86;
+const UNIT_FRAME_HEIGHT = 90;
+const UNIT_FRAME_COLUMNS = 19;
+const unitFrameSheet = image('./public/assets/unit-frames.png');
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
@@ -255,51 +250,18 @@ function drawAimer(player) {
 function drawPlayer(player) {
   if (!player.alive) return;
   const screen = worldToScreen(player, camera, canvas.width, canvas.height);
-  const localAimAngle = player.facing < 0
-    ? Math.atan2(Math.sin(Math.PI - player.aimAngle), Math.cos(Math.PI - player.aimAngle))
-    : player.aimAngle;
-  const pose = getUnitRigPose({
-    animation: player.animation,
-    animationTime: player.animationTime,
-    aimAngle: localAimAngle,
-    facing: player.facing,
-    recoil: player.recoil,
-    reload: player.weapon.reloadRemaining / player.weapon.reloadDuration,
-  });
   const height = 76;
-  const scale = 1;
-
-  function drawPart(sprite, part, width, heightPart, pivotX = width / 2, pivotY = heightPart / 2) {
-    if (!sprite.complete || !sprite.naturalWidth) return;
-    ctx.save();
-    ctx.translate(part.x * scale, part.y * scale);
-    ctx.rotate(part.rotation * Math.PI / 180);
-    ctx.drawImage(sprite, -pivotX, -pivotY, width, heightPart);
-    ctx.restore();
-  }
-
-  function drawLeg(part) {
-    drawPart(unitParts.legUpper, part, 18, 18, 9, 9);
-    const radians = part.rotation * Math.PI / 180;
-    const lower = { x: part.x + Math.sin(radians) * 7, y: part.y + 13, rotation: part.rotation };
-    drawPart(unitParts.legLower, lower, 15, 20, 7, 2);
-    const foot = { x: lower.x + Math.sin(radians) * 10, y: lower.y + 18, rotation: part.rotation };
-    drawPart(unitParts.foot, foot, 14, 14, 7, 10);
-  }
+  const frameIndex = player.animationFrame - 1;
+  const sourceX = frameIndex % UNIT_FRAME_COLUMNS * UNIT_FRAME_WIDTH;
+  const sourceY = Math.floor(frameIndex / UNIT_FRAME_COLUMNS) * UNIT_FRAME_HEIGHT;
 
   ctx.save();
-  // The original foot symbol's pivot sits 7px above its painted sole. Align
-  // that sole with the collision world's actor.y contact point.
-  ctx.translate(screen.x, screen.y - 7);
-  ctx.scale(pose.facing, 1);
-  if (unitParts.torso.complete && unitParts.torso.naturalWidth) {
-    // Original display order: rear leg/arm, body, front leg, head, front arm.
-    drawLeg(pose.backLeg);
-    drawPart(unitParts.backArm, pose.backArm, 32, 17, 0, 8.5);
-    drawPart(unitParts.torso, pose.torso, 24, 27, 12, 13.5);
-    drawLeg(pose.frontLeg);
-    drawPart(unitParts.head, pose.head, 23, 25, 11.5, 12.5);
-    drawPart(unitParts.frontArm, pose.frontArm, 24, 29, 0, 14.5);
+  ctx.translate(screen.x, screen.y);
+  ctx.scale(player.facing, 1);
+  if (unitFrameSheet.complete && unitFrameSheet.naturalWidth) {
+    // The lower UnitMC export has its sole at source y=83. A destination y of
+    // -72 anchors that sole on the pixel-wall contact point (not above it).
+    ctx.drawImage(unitFrameSheet, sourceX, sourceY, UNIT_FRAME_WIDTH, UNIT_FRAME_HEIGHT, -38, -72, 76, 80);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);

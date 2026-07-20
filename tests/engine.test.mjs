@@ -94,10 +94,11 @@ test('walking selects the original running animation state instead of sliding an
 });
 
 test('UnitMC frame labels use the original jump and backwards-running spans', () => {
-  assert.deepEqual(UNITMC_FRAMES.run, [20, 37]);
-  assert.deepEqual(UNITMC_FRAMES.runback, [57, 74]);
-  assert.deepEqual(UNITMC_FRAMES.jump, [190, 207]);
-  assert.deepEqual(UNITMC_FRAMES.fall, [208, 263]);
+  assert.deepEqual(UNITMC_FRAMES.run, [21, 38]);
+  assert.deepEqual(UNITMC_FRAMES.runback, [58, 75]);
+  assert.deepEqual(UNITMC_FRAMES.jump, [191, 208]);
+  assert.deepEqual(UNITMC_FRAMES.fall, [209, 229]);
+  assert.deepEqual(UNITMC_FRAMES.climbbig, [397, 408]);
 });
 
 test('moving opposite the aiming direction selects UnitMC runback frames', () => {
@@ -141,12 +142,12 @@ test('recoil pushes only the aim assembly back while preserving the lower-body w
   assert.equal(recoil.frontLeg.rotation, normal.frontLeg.rotation);
 });
 
-test('the player uses a narrow foot hitbox rather than the old circular body radius', () => {
+test('the player uses the original centre foot point and ±17 side probes', () => {
   const world = createWorld();
   const p1 = world.players[0];
 
-  assert.equal(p1.hitbox.halfWidth, 13);
-  assert.equal(p1.hitbox.height, 62);
+  assert.equal(p1.hitbox.halfWidth, 17);
+  assert.equal(p1.hitbox.height, 55);
 });
 
 test('a falling player lands with feet exactly on a visible platform top', () => {

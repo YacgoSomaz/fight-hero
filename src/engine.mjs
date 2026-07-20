@@ -20,7 +20,8 @@ const CONFIG = {
   respawnDuration: 2,
   muzzleFlashDuration: 0.075,
   climbDuration: 0.28,
-  playerHitbox: { halfWidth: 13, height: 62, crouchHeight: 38 },
+  // Movement.as uses the centre foot probe and ±17px side probes.
+  playerHitbox: { halfWidth: 17, height: 55, crouchHeight: 38 },
   // Compatibility fallback used before the Foundry alpha mask is decoded in the browser.
   platforms: [
     makePlatform(0, 714, 1280, 22), makePlatform(268, 551, 283), makePlatform(0, 579, 189),
@@ -46,7 +47,7 @@ const FOUNDRY_CONFIG = Object.freeze({
   respawnDuration: 2,
   muzzleFlashDuration: 0.075,
   climbDuration: 0.28,
-  playerHitbox: { halfWidth: 13, height: 62, crouchHeight: 38 },
+  playerHitbox: { halfWidth: 17, height: 55, crouchHeight: 38 },
   // The alpha wall replaces this after it loads.  These are only safe
   // footholds for the small interval before the image is decoded.
   platforms: [
@@ -68,9 +69,9 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
 }
 
 export const UNITMC_FRAMES = Object.freeze({
-  idle: [1, 19], run: [20, 37], runback: [57, 74], jump: [190, 207], fall: [208, 263],
-  duck: [290, 300], duckloop: [301, 304], getup: [305, 320], duckrun: [321, 353],
-  duckrunback: [354, 386], climbsmall: [387, 390], climbbig: [391, 395], landhard: [408, 448],
+  idle: [1, 20], run: [21, 38], runback: [58, 75], jump: [191, 208], fall: [209, 229], fallloop: [230, 264],
+  duck: [302, 305], duckloop: [306, 321], getup: [388, 391], duckrun: [322, 354],
+  duckrunback: [355, 387], climbsmall: [392, 396], climbbig: [397, 408], landhard: [409, 449],
 });
 
 export function createWorld(options = {}) {
@@ -207,7 +208,7 @@ function applyPlatformPhysics(world, actor, dt) {
   const previousY = actor.y; actor.vy += world.config.gravity * dt; actor.y += actor.vy * dt; actor.grounded = false;
   if (world.wall?.isSolid) {
     const height = actorHeight(actor);
-    const footSamples = [actor.x - actor.hitbox.halfWidth + 2, actor.x, actor.x + actor.hitbox.halfWidth - 2];
+    const footSamples = [actor.x];
     if (actor.vy >= 0) {
       let contactY = null;
       for (let y = Math.floor(previousY); y <= Math.ceil(actor.y); y += 1) {
@@ -275,7 +276,9 @@ function updateActor(world, actor, input, dt) {
   if (actor.weapon.reloadRemaining) { actor.weapon.reloadRemaining -= dt; if (actor.weapon.reloadRemaining <= 0) completeReload(actor); }
   if (input.reload) reload(world, actor); if ((input.fire || input.firePressed) && !actor.weapon.reloadRemaining) spawnBullet(world, actor);
   const movingBackward = actor.vx * actor.facing < -1;
-  if (!actor.grounded) setAnimation(actor, actor.vy < 0 ? 'jump' : 'fall'); else if (actor.weapon.reloadRemaining) setAnimation(actor, 'reload'); else if (actor.crouching) setAnimation(actor, Math.abs(actor.vx) > 1 ? movingBackward ? 'duckrunback' : 'duckrun' : 'duck'); else if (Math.abs(actor.vx) > 1) setAnimation(actor, movingBackward ? 'runback' : 'run'); else setAnimation(actor, 'idle');
+  const fallingAnimation = actor.animation === 'fall' && actor.animationTime >= (UNITMC_FRAMES.fall[1] - UNITMC_FRAMES.fall[0] + 1) / 30 ? 'fallloop' : 'fall';
+  const crouchAnimation = actor.animation === 'duck' && actor.animationTime >= (UNITMC_FRAMES.duck[1] - UNITMC_FRAMES.duck[0] + 1) / 30 ? 'duckloop' : actor.animation === 'duckloop' ? 'duckloop' : 'duck';
+  if (!actor.grounded) setAnimation(actor, actor.vy < 0 ? 'jump' : fallingAnimation); else if (actor.weapon.reloadRemaining) setAnimation(actor, 'reload'); else if (actor.crouching) setAnimation(actor, Math.abs(actor.vx) > 1 ? movingBackward ? 'duckrunback' : 'duckrun' : crouchAnimation); else if (Math.abs(actor.vx) > 1) setAnimation(actor, movingBackward ? 'runback' : 'run'); else setAnimation(actor, 'idle');
   actor.animationTime += dt;
 }
 

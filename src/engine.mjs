@@ -155,19 +155,7 @@ function overlapsPlatformHorizontally(actor, platform) {
 }
 function wallBodyBlocked(world, actor, x, y, direction) {
   const edge = x + direction * actor.hitbox.halfWidth;
-  // The original Movement.as uses side torso probes only.  The foot is left
-  // free to enter the next pixel column of a shallow authored ramp.
-  const offsets = actor.crouching ? [-20, -25, -35] : [-20, -25, -35, -45];
-  if (offsets.some((offset) => isSolid(world, edge, y + offset))) return true;
-  // Preserve a hard stop for a low sheer wall, while accepting a gradual
-  // change between the centre and leading-foot surfaces.
-  const surfaceRise = (sampleX) => {
-    for (let rise = 60; rise >= 0; rise -= 1) if (isSolid(world, sampleX, y - rise + 1)) return rise;
-    return null;
-  };
-  const centreRise = surfaceRise(x);
-  const edgeRise = surfaceRise(edge);
-  return edgeRise !== null && (centreRise === null || edgeRise - centreRise > 10);
+  return [-4, -actorHeight(actor) / 2, -actorHeight(actor) + 5].some((offset) => isSolid(world, edge, y + offset));
 }
 function wallHasFloor(world, actor, x, y) {
   // Movement.as resolves standing/stepping from the centre-foot probe.  Side
@@ -246,7 +234,6 @@ function resolveHorizontalCollision(world, actor, previousX) {
 }
 
 function beginLedgeClimb(world, actor, platform, direction) {
-  if (platform.box) return false;
   const ledgeHeight = actor.y - platform.y;
   if (actor.grounded || actor.vy < 0 || ledgeHeight < 20 || ledgeHeight > 56) return false;
   const big = ledgeHeight >= 38;
@@ -259,13 +246,7 @@ function updateClimb(world, actor, dt) {
   const climb = actor.climb; climb.elapsed += dt;
   const progress = Math.min(1, climb.elapsed / world.config.climbDuration); const eased = 1 - (1 - progress) ** 2;
   actor.x = climb.startX + (climb.targetX - climb.startX) * eased; actor.y = climb.startY + (climb.targetY - climb.startY) * eased; actor.animationTime += dt; syncAnimationFrame(actor);
-  if (progress === 1) {
-    actor.x = climb.targetX; actor.y = climb.targetY;
-    // Original Movement.as removes centre-foot overlap immediately when a
-    // climb ends instead of letting repeated gravity ticks shake it upward.
-    if (world.wall?.isSolid) for (let lift = 0; lift < 160 && isSolid(world, actor.x, actor.y); lift += 1) actor.y -= .5;
-    actor.grounded = true; actor.climb = null; setAnimation(actor, 'idle');
-  }
+  if (progress === 1) { actor.x = climb.targetX; actor.y = climb.targetY; actor.grounded = true; actor.climb = null; setAnimation(actor, 'idle'); }
   return true;
 }
 function applyPlatformPhysics(world, actor, dt) {
@@ -349,7 +330,7 @@ function updateActor(world, actor, input, dt) {
   const blocked = resolveHorizontalCollision(world, actor, previousX); const direction = right ? 1 : left ? -1 : 0;
   if (blocked && direction && beginLedgeClimb(world, actor, blocked, direction)) { updateClimb(world, actor, dt); return; }
   applyPlatformPhysics(world, actor, dt);
-  if (!actor.grounded && actor.vy >= 0 && direction && (world.wall?.isSolid || !world.collisionBoxes?.length)) {
+  if (!actor.grounded && actor.vy >= 0 && direction) {
     const ledge = findWallLedge(world, actor, direction);
     if (ledge && beginLedgeClimb(world, actor, ledge, direction)) { updateClimb(world, actor, dt); return; }
   }

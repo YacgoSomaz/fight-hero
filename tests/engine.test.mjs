@@ -368,12 +368,12 @@ test('rifle shots start at the decoded arm-canvas barrel tip', () => {
   assert.ok(RIFLE_ARM_BASE_ANGLE > 0);
   assert.ok(Math.abs(pivot.x - 400.3) < 0.001);
   assert.ok(Math.abs(pivot.y - 458) < 0.001);
-  assert.ok(Math.abs(muzzle.x - (pivot.x + 76.4198926981712)) < 0.001);
+  assert.ok(Math.abs(muzzle.x - (pivot.x + 66.48308055437865)) < 0.001);
   assert.ok(Math.abs(muzzle.y - pivot.y) < 0.001);
   p1.facing = -1; p1.aimAngle = Math.PI;
   const leftPivot = getAimPivot(p1);
   const leftMuzzle = getMuzzleOrigin(p1);
-  assert.ok(Math.abs(leftMuzzle.x - (leftPivot.x - 76.4198926981712)) < 0.001);
+  assert.ok(Math.abs(leftMuzzle.x - (leftPivot.x - 66.48308055437865)) < 0.001);
   assert.ok(Math.abs(leftMuzzle.y - leftPivot.y) < 0.001);
 });
 

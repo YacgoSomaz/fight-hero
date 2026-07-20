@@ -86,7 +86,9 @@ export const UNITMC_FRAMES = Object.freeze({
 // is reconstructed from the original rifle idle label (501/668 frame 77),
 // its M4 gun child (375 frame 20), and the fixed Medic skin subparts.
 const ARM1_PIVOT = Object.freeze({ x: 0.3, y: -42 });
-const RIFLE_BARREL_TIP = Object.freeze({ x: 76, y: 8 });
+// M4 child is shifted 10px left inside the composite so its magazine sits in
+// the Medic hand; keep the ballistic origin on the resulting barrel tip.
+const RIFLE_BARREL_TIP = Object.freeze({ x: 66, y: 8 });
 export const RIFLE_ARM_BASE_ANGLE = Math.atan2(RIFLE_BARREL_TIP.y, RIFLE_BARREL_TIP.x);
 const RIFLE_MUZZLE_DISTANCE = Math.hypot(RIFLE_BARREL_TIP.x, RIFLE_BARREL_TIP.y);
 

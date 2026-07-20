@@ -269,7 +269,10 @@ function drawPlayer(player) {
       // FFDec's tight leg crops preserve their SWF registration point but
       // omit the original transparent canvas above the feet.  Apply that
       // calibration in world space so rotated run frames stay attached.
-      const legLift = name.startsWith('leg') || name.startsWith('foot') ? -26 : 0;
+      // Re-anchor the decoded leg artwork at the actor's real centre-foot
+      // contact.  The prior -26px crop correction left visible boots above
+      // the physical foot point and made a grounded player look airborne.
+      const legLift = name.startsWith('leg') || name.startsWith('foot') ? -10 : 0;
       ctx.translate(anchor.x, anchor.y + legLift);
       if (aimFactor === null) ctx.transform(item.scaleX, item.skewY, item.skewX, item.scaleY, 0, 0);
       else {
@@ -324,19 +327,15 @@ function drawPlayerCollider(player) {
   const height = player.crouching ? player.hitbox.crouchHeight : player.hitbox.height;
   const radius = player.hitbox.halfWidth;
   const top = screen.y - height;
-  const middleTop = top + radius;
-  const middleBottom = screen.y - radius;
   ctx.save();
   ctx.fillStyle = 'rgba(255, 205, 66, .16)';
   ctx.strokeStyle = 'rgba(255, 224, 99, .95)';
   ctx.lineWidth = 1.25;
-  ctx.beginPath();
-  ctx.arc(screen.x, middleTop, radius, Math.PI, 0);
-  ctx.lineTo(screen.x + radius, middleBottom);
-  ctx.arc(screen.x, middleBottom, radius, 0, Math.PI);
-  ctx.lineTo(screen.x - radius, middleTop);
-  ctx.closePath();
-  ctx.fill(); ctx.stroke();
+  // The runtime collision is a 34×55 AABB, not a capsule.  Display the same
+  // rectangle that horizontal/vertical resolution uses so the debug view is
+  // trustworthy.
+  ctx.fillRect(screen.x - radius, top, radius * 2, height);
+  ctx.strokeRect(screen.x - radius + .5, top + .5, radius * 2 - 1, height - 1);
   // Movement.as uses these bottom probes: centre for ground, ±17 for sides.
   ctx.fillStyle = '#fff4a9';
   for (const x of [screen.x - radius, screen.x, screen.x + radius]) {

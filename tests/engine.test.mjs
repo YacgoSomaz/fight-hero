@@ -32,13 +32,13 @@ test('Foundry uses the decoded Arena wall dimensions, spawns, and navigation nod
 test('Foundry player collision uses the complete decoded blue rectangles', () => {
   const world = createWorld({ foundry: true, bots: false });
   const crate = FOUNDRY_LAYOUT.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
-  const calibratedCrate = world.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
+  const calibratedCrate = world.collisionBoxes.find((box) => Math.abs(box.x - 509.15) < .01);
   const floor = world.collisionBoxes.find((box) => box.x < 600 && box.width > 900 && box.y > 690);
 
   assert.ok(crate);
   assert.ok(calibratedCrate);
   assert.ok(floor);
-  assert.equal(calibratedCrate.y, crate.y + 24, 'all rendered/physical rectangles share the crate registration calibration');
+  assert.deepEqual({ x: calibratedCrate.x, y: calibratedCrate.y }, { x: crate.x + 18, y: crate.y + 24 }, 'all rendered/physical rectangles share the crate registration calibration');
   assert.equal(isSolid(world, 485, floor.y), true);
   assert.equal(isSolid(world, crate.x, crate.y), true, 'the crate is a decoded blue collision volume');
   assert.equal(isSolid(world, 1200, 550), false, 'unmarked Foundry artwork cannot create a wall');
@@ -47,7 +47,7 @@ test('Foundry player collision uses the complete decoded blue rectangles', () =>
 test('Foundry rectangles land on their exact top edge and block their side face', () => {
   const world = createWorld({ foundry: true, bots: false });
   const p1 = world.players[0];
-  const crate = world.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
+  const crate = world.collisionBoxes.find((box) => Math.abs(box.x - 509.15) < .01);
   const top = crate.y - crate.height / 2;
   const left = crate.x - crate.width / 2;
 

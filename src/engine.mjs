@@ -37,9 +37,12 @@ const CONFIG = {
 // registration in this Arena export.  The value is calibrated on the hanging
 // crate at (491.15, 552.55), then applied once here to every decoded box so
 // drawing, player physics, bullets and AI all use the same aligned geometry.
+// The Foundry art is additionally 18px right of the editor's physics origin;
+// retain every decoded width/height and correct only that shared translation.
+const FOUNDRY_COLLISION_X_OFFSET = 18;
 const FOUNDRY_COLLISION_Y_OFFSET = 24;
 const FOUNDRY_COLLISION_BOXES = Object.freeze(
-  FOUNDRY_LAYOUT.collisionBoxes.map((box) => Object.freeze({ ...box, y: box.y + FOUNDRY_COLLISION_Y_OFFSET })),
+  FOUNDRY_LAYOUT.collisionBoxes.map((box) => Object.freeze({ ...box, x: box.x + FOUNDRY_COLLISION_X_OFFSET, y: box.y + FOUNDRY_COLLISION_Y_OFFSET })),
 );
 
 const FOUNDRY_CONFIG = Object.freeze({

@@ -235,3 +235,9 @@ FFDec 的变量名在部分时间轴绑定中已有混淆痕迹；本报告只�
 `UnitMC.EnterFrame()` 会把 `head` 对齐到 `headhold`，并把 `arm1` / `arm2` 对齐到 `arm1hold`；`Unit.as` 才继续施加瞄准、后坐、翻转和整体坡度。因而正确的浏览器实现必须先回放上述每帧矩阵，再在 holder 之上施加瞄准变换。把裁出的手脚按猜测的关节长度相连会产生脱节，不能作为迁移结果。
 
 标签的二进制扫描结果也已重新校验：`idle` 1、`run1` 21、`runback1` 58、`jump` 191、`fall` 209、`fallloop` 230、`duck` 302、`duckrun` 322、`getup` 388、`climbsmall` 392、`climbbig` 397、`landhard` 409。这些数字是标签的起始帧；结束帧是下一标签前一帧。此前使用的 20/57/190/387 等起点属于 off-by-one 错误，应废弃。
+
+## 12. 解析器修正与运行时导出（2026-07-20）
+
+逐帧复核发现旧提取器将 SWF tag `28`（`RemoveObject2`）误当成 `PlaceObject2`。这会把已经移除的旧实例保留在后续显示列表中，导致网页端出现“肢体残影、拼错零件或跨帧换人物”的假象。提取器现已按 SWF 格式处理：`PlaceObject2` 为 tag 26、`PlaceObject3` 为 tag 70（含第二个 flags byte）、`RemoveObject2` 为 tag 28、`RemoveObject` 为 tag 5。
+
+修正后的 `DefineSprite 669` 显示列表被压缩导出为运行时数据 `public/assets/unitmc-timeline.json`：449 帧，每帧只保留角色的两臂、两腿、脚、躯干、头以及两个 holder 的原始矩阵。网页使用固定 Medic 的第 51 帧部件图，而不再使用会把不同职业烘焙在一起的整帧贴图；每一帧仍回放其原 SWF 矩阵，头和双臂再遵循 `UnitMC.EnterFrame()` / `Unit.as` 的 holder 与瞄准规则。该数据和图像素材均只应在已授权的私有仓库中使用。

@@ -22,9 +22,22 @@ map.src = './public/assets/maps/foundry.png';
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
-// One fixed Medic skin is used for the render-side rig.  The flattened UnitMC
-// sheet mixes runtime skins, so it cannot be used as a player animation atlas.
+// Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
+const unitParts = {
+  rifleArm: image('./public/assets/unit-parts/tight/rifle_arm.png'),
+  frontArm: image('./public/assets/unit-parts/tight/front_arm.png'),
+  body: image('./public/assets/unit-parts/tight/body.png'),
+  head: image('./public/assets/unit-parts/tight/head.png'),
+  foot: image('./public/assets/unit-parts/tight/foot.png'),
+  legLower: image('./public/assets/unit-parts/tight/leg_lower.png'),
+  legUpper: image('./public/assets/unit-parts/tight/leg_upper.png'),
+};
+let unitTimeline = null;
+fetch('./public/assets/unitmc-timeline.json').then((response) => {
+  if (!response.ok) throw new Error(`UnitMC timeline ${response.status}`);
+  return response.json();
+}).then((data) => { unitTimeline = data; }).catch(() => { unitTimeline = null; });
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
@@ -226,34 +239,57 @@ function drawPlayer(player) {
 
   ctx.save();
   ctx.translate(screen.x, screen.y);
-  ctx.scale(player.facing * .884, .884);
-  if (unitSkin.complete && unitSkin.naturalWidth) {
-    const moving = ['run', 'runback', 'duckrun', 'duckrunback'].includes(player.animation);
-    const airborne = ['jump', 'fall', 'fallloop', 'climbsmall', 'climbbig'].includes(player.animation);
-    const phase = player.animationTime * Math.PI * 10;
-    const stride = moving ? Math.sin(phase) * .48 : airborne ? .24 : 0;
-    const crouch = player.crouching ? 11 : 0;
-    const baseY = -63 + crouch;
-    const localAim = Math.max(-.72, Math.min(.72, player.aimAngle * player.facing));
-    const drawJointSlice = (sourceX, sourceY, sourceWidth, sourceHeight, pivotX, pivotY, anchorX, anchorY, rotation) => {
+  ctx.scale(player.facing, 1);
+  const frame = unitTimeline?.frames?.[player.animationFrame - 1];
+  if (frame && Object.values(unitParts).every((sprite) => sprite.complete && sprite.naturalWidth)) {
+    // This is the UnitMC root display list, not a synthetic walk cycle.  Each
+    // row comes from the original SWF frame after Place/Remove tags have been
+    // resolved.  The fixed Medic art is selected once (frame 51), while the
+    // original root matrices continue to drive every body part per frame.
+    const items = Object.fromEntries(frame.map(([name, x, y, scaleX, scaleY, skewX, skewY]) => [name, { x, y, scaleX, scaleY, skewX, skewY }]));
+    const headHold = items.headhold;
+    const armHold = items.arm1hold;
+    let localAim = player.aimAngle;
+    if (player.facing < 0) localAim = Math.atan2(Math.sin(Math.PI - localAim), Math.cos(Math.PI - localAim));
+    const drawPart = (name, sprite, offsetX, offsetY, aimFactor = null) => {
+      const item = items[name];
+      if (!item) return;
+      const anchor = name === 'head' ? headHold : (name === 'arm1' || name === 'arm2' ? armHold : item);
+      if (!anchor) return;
       ctx.save();
-      ctx.translate(anchorX, anchorY);
-      ctx.rotate(rotation);
-      ctx.drawImage(unitSkin, sourceX, sourceY, sourceWidth, sourceHeight, -pivotX, -pivotY, sourceWidth, sourceHeight);
+      // FFDec's tight leg crops preserve their SWF registration point but
+      // omit the original transparent canvas above the feet.  Apply that
+      // calibration in world space so rotated run frames stay attached.
+      const legLift = name.startsWith('leg') || name.startsWith('foot') ? -26 : 0;
+      ctx.translate(anchor.x, anchor.y + legLift);
+      if (aimFactor === null) ctx.transform(item.scaleX, item.skewY, item.skewX, item.scaleY, 0, 0);
+      else {
+        // Unit.as overwrites only these three rotations every tick; their
+        // translation stays on the original head/arm holder of this frame.
+        const scaleX = Math.hypot(item.scaleX, item.skewY);
+        const scaleY = Math.hypot(item.scaleY, item.skewX);
+        ctx.scale(scaleX, scaleY);
+        ctx.rotate(localAim * aimFactor);
+        if (name === 'arm1') ctx.translate(-player.recoil * 2, 0);
+      }
+      ctx.drawImage(sprite, offsetX, offsetY);
       ctx.restore();
     };
 
-    // Lower body is intentionally rebuilt as two independent legs.  It keeps
-    // a single skin while producing a real alternating gait instead of moving
-    // one complete bitmap across the map.
-    drawJointSlice(7, 51, 30, 37, 18, 5, -17, baseY + 56, -stride - (airborne ? .18 : 0));
-    drawJointSlice(31, 52, 31, 37, 9, 5, -3, baseY + 57, stride + (airborne ? .18 : 0));
-    // Torso is drawn above the legs so their roots remain clean when walking.
-    ctx.drawImage(unitSkin, 8, 29, 39, 31, -35, baseY + 29, 39, 31);
-    // The weapon arm and head are separate pivots.  They follow the pointer
-    // without changing the selected Medic skin.
-    drawJointSlice(36, 28, 31, 25, 6, 8, -1, baseY + 36, localAim * .58);
-    drawJointSlice(23, 7, 30, 24, 16, 20, -3, baseY + 30, localAim * .34);
+    // Offsets are calibrated from UnitMC frame 1: they retain the original
+    // registration point after FFDec cropped the fixed Medic part images.
+    drawPart('arm1', unitParts.rifleArm, 4.7, -19.5, 1);
+    drawPart('foot2', unitParts.foot, -0.6, 5.2);
+    drawPart('leglow2', unitParts.legLower, -10.75, 0.6);
+    drawPart('legup2', unitParts.legUpper, -5.85, -11.8);
+    drawPart('foot1', unitParts.foot, 2.95, 6.2);
+    drawPart('leglow1', unitParts.legLower, -11.95, -3);
+    drawPart('legup1', unitParts.legUpper, -12.15, -12.35);
+    drawPart('body', unitParts.body, -13, -24.25);
+    drawPart('head', unitParts.head, -14.4, -30.1, .6);
+    drawPart('arm2', unitParts.frontArm, 4.7, -25.5, 1);
+  } else if (unitSkin.complete && unitSkin.naturalWidth) {
+    ctx.drawImage(unitSkin, -37, -84, 75, 90);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);
@@ -297,6 +333,26 @@ function drawMuzzleFlash(flash) {
   ctx.restore();
 }
 
+// The translucent cyan boxes are the exact NodePhysBox placements decoded
+// from the Foundry SWF.  They deliberately use the same world rectangles as
+// engine.mjs, so visual inspection and live collision cannot drift apart.
+function drawCollisionBoxes() {
+  if (!world.collisionBoxes?.length) return;
+  ctx.save();
+  ctx.lineWidth = 1.25;
+  for (const box of world.collisionBoxes) {
+    const topLeft = worldToScreen({ x: box.x - box.width / 2, y: box.y - box.height / 2 }, camera, canvas.width, canvas.height);
+    const bottomRight = worldToScreen({ x: box.x + box.width / 2, y: box.y + box.height / 2 }, camera, canvas.width, canvas.height);
+    const width = bottomRight.x - topLeft.x;
+    const height = bottomRight.y - topLeft.y;
+    ctx.fillStyle = 'rgba(42, 193, 255, .18)';
+    ctx.strokeStyle = 'rgba(42, 211, 255, .9)';
+    ctx.fillRect(topLeft.x, topLeft.y, width, height);
+    ctx.strokeRect(topLeft.x + .5, topLeft.y + .5, width - 1, height - 1);
+  }
+  ctx.restore();
+}
+
 function render() {
   if (map.complete && map.naturalWidth) {
     const source = getMapSourceRect(camera, canvas.width, canvas.height);
@@ -321,6 +377,7 @@ function render() {
   }
   ctx.fillStyle = 'rgba(3, 7, 13, .12)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawCollisionBoxes();
   for (const bullet of world.bullets) drawTracer(bullet);
   for (const player of world.players) drawPlayer(player);
   for (const flash of world.muzzleFlashes) drawMuzzleFlash(flash);

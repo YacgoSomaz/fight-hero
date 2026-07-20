@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { UNITMC_FRAMES, createWorld, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
 import { FOUNDRY_LAYOUT } from '../src/foundry-layout.mjs';
@@ -28,16 +29,33 @@ test('Foundry uses the decoded Arena wall dimensions, spawns, and navigation nod
   assert.equal(world.pickups.length, 4);
 });
 
-test('Foundry player collision uses calibrated horizontal blue-box landing surfaces', () => {
+test('Foundry player collision uses the complete decoded blue rectangles', () => {
   const world = createWorld({ foundry: true, bots: false });
   const crate = FOUNDRY_LAYOUT.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
-  const floor = world.config.platforms.find((platform) => platform.x < 485 && platform.x + platform.width > 485 && platform.y > 690);
+  const floor = world.collisionBoxes.find((box) => box.x < 600 && box.width > 900 && box.y > 690);
 
   assert.ok(crate);
   assert.ok(floor);
   assert.equal(isSolid(world, 485, floor.y), true);
-  assert.equal(isSolid(world, crate.x, crate.y), false, 'tall PhysWorld boxes cannot lift a live player');
+  assert.equal(isSolid(world, crate.x, crate.y), true, 'the crate is a decoded blue collision volume');
   assert.equal(isSolid(world, 1200, 550), false, 'unmarked Foundry artwork cannot create a wall');
+});
+
+test('Foundry rectangles land on their exact top edge and block their side face', () => {
+  const world = createWorld({ foundry: true, bots: false });
+  const p1 = world.players[0];
+  const crate = world.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
+  const top = crate.y - crate.height / 2;
+  const left = crate.x - crate.width / 2;
+
+  p1.x = crate.x; p1.y = top - 5; p1.vy = 200; p1.grounded = false;
+  step(world, {}, .05);
+  assert.equal(p1.y, top);
+  assert.equal(p1.grounded, true);
+
+  p1.x = left - p1.hitbox.halfWidth - 1; p1.y = crate.y; p1.vy = 0; p1.grounded = false;
+  step(world, { p1: { right: true } }, .05);
+  assert.equal(p1.x, left - p1.hitbox.halfWidth);
 });
 
 test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
@@ -125,6 +143,18 @@ test('UnitMC frame labels use the original jump and backwards-running spans', ()
   assert.deepEqual(UNITMC_FRAMES.jump, [191, 208]);
   assert.deepEqual(UNITMC_FRAMES.fall, [209, 229]);
   assert.deepEqual(UNITMC_FRAMES.climbbig, [397, 408]);
+});
+
+test('the browser receives every decoded UnitMC body-part matrix without skin switching', () => {
+  const timeline = JSON.parse(fs.readFileSync(new URL('../public/assets/unitmc-timeline.json', import.meta.url), 'utf8'));
+  const required = ['arm1', 'foot2', 'leglow2', 'legup2', 'foot1', 'leglow1', 'legup1', 'body', 'headhold', 'arm1hold', 'head', 'arm2'];
+
+  assert.equal(timeline.sourceSymbol, 669);
+  assert.equal(timeline.frames.length, 449);
+  for (const frame of [timeline.frames[0], timeline.frames[20], timeline.frames[190], timeline.frames[391]]) {
+    assert.deepEqual(frame.map((item) => item[0]), required);
+    assert.ok(frame.every((item) => item.length === 7 && item.slice(1).every(Number.isFinite)));
+  }
 });
 
 test('moving opposite the aiming direction selects UnitMC runback frames', () => {

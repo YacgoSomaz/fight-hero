@@ -30,21 +30,11 @@ const CONFIG = {
   ],
 };
 
-// Player movement needs only the walkable, horizontal tops of the editor's
-// blue boxes.  The full NodePhysBox volume is for PhysWorld (ragdolls), and
-// treating its tall/vertical boxes as unit walls is what lifted players into
-// empty space beside background props.
-const FOUNDRY_PLAYER_PLATFORMS = Object.freeze(
-  FOUNDRY_LAYOUT.collisionBoxes
-    .filter((box) => box.y > 100 && box.y < 800 && box.width >= box.height * 2)
-    .map((box) => Object.freeze({
-      x: box.x - box.width / 2,
-      y: box.y - box.height / 2,
-      width: box.width,
-      // A thin solid strip preserves the decoded upper edge as the exact
-      // landing height without turning the whole debug volume into a wall.
-      height: 6,
-    })),
+// The cyan NodePhysBox layer is the Foundry editor's authored collision data.
+// Keep its complete rectangles, including crates and side walls: reducing it
+// to thin floor strips made the unit walk through visible blue volumes.
+const FOUNDRY_COLLISION_BOXES = Object.freeze(
+  FOUNDRY_LAYOUT.collisionBoxes.map((box) => Object.freeze({ ...box })),
 );
 
 const FOUNDRY_CONFIG = Object.freeze({
@@ -62,7 +52,7 @@ const FOUNDRY_CONFIG = Object.freeze({
   muzzleFlashDuration: 0.075,
   climbDuration: 0.28,
   playerHitbox: { halfWidth: 17, height: 55, crouchHeight: 38 },
-  platforms: FOUNDRY_PLAYER_PLATFORMS,
+  platforms: [],
 });
 
 function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
@@ -84,9 +74,14 @@ export const UNITMC_FRAMES = Object.freeze({
   duckrunback: [355, 387], climbsmall: [392, 396], climbbig: [397, 408], landhard: [409, 449],
 });
 
-function foundryPhysicsSolid(x, y) {
-  return FOUNDRY_PLAYER_PLATFORMS.some((platform) => x >= platform.x && x <= platform.x + platform.width
-    && y >= platform.y && y <= platform.y + platform.height);
+function boxEdges(box) {
+  return { left: box.x - box.width / 2, right: box.x + box.width / 2, top: box.y - box.height / 2, bottom: box.y + box.height / 2 };
+}
+function boxSolid(boxes, x, y) {
+  return boxes.some((box) => {
+    const edge = boxEdges(box);
+    return x >= edge.left && x <= edge.right && y >= edge.top && y <= edge.bottom;
+  });
 }
 
 export function createWorld(options = {}) {
@@ -102,9 +97,10 @@ export function createWorld(options = {}) {
     navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
     actions: foundry ? FOUNDRY_LAYOUT.actions.map((point) => ({ ...point })) : [],
     pickups: foundry ? FOUNDRY_LAYOUT.pickups.map((point) => ({ ...point })) : [],
-    // The blue NodePhysBox layer supplies calibrated player landing surfaces;
-    // hanging artwork and tall ragdoll boxes do not block player movement.
-    wall: options.wall ?? (foundry ? { isSolid: foundryPhysicsSolid } : null),
+    // Full source rectangles are retained separately from an optional pixel
+    // wall, so player collision can resolve their top/side faces precisely.
+    collisionBoxes: foundry ? FOUNDRY_COLLISION_BOXES.map((box) => ({ ...box })) : [],
+    wall: options.wall ?? null,
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };
 }
@@ -124,6 +120,7 @@ function platformSolid(world, x, y) {
 export function isSolid(world, x, y) {
   if (x < 0 || x >= world.config.width || y < 0 || y >= world.config.height) return true;
   if (world.wall?.isSolid) return Boolean(world.wall.isSolid(x, y));
+  if (world.collisionBoxes?.length) return boxSolid(world.collisionBoxes, x, y);
   return platformSolid(world, x, y);
 }
 
@@ -185,6 +182,23 @@ function findWallLedge(world, actor, direction) {
   return null;
 }
 function resolveHorizontalCollision(world, actor, previousX) {
+  if (!world.wall?.isSolid && world.collisionBoxes?.length) {
+    const direction = Math.sign(actor.x - previousX);
+    if (!direction) return null;
+    const height = actorHeight(actor);
+    const previousLeft = previousX - actor.hitbox.halfWidth;
+    const previousRight = previousX + actor.hitbox.halfWidth;
+    const currentLeft = actor.x - actor.hitbox.halfWidth;
+    const currentRight = actor.x + actor.hitbox.halfWidth;
+    const hit = world.collisionBoxes.map((box) => ({ box, edge: boxEdges(box) })).filter(({ edge }) => (
+      actor.y > edge.top && actor.y - height < edge.bottom
+      && (direction > 0 ? previousRight <= edge.left && currentRight > edge.left : previousLeft >= edge.right && currentLeft < edge.right)
+    )).sort((a, b) => direction > 0 ? a.edge.left - b.edge.left : b.edge.right - a.edge.right)[0];
+    if (!hit) return null;
+    actor.x = direction > 0 ? hit.edge.left - actor.hitbox.halfWidth : hit.edge.right + actor.hitbox.halfWidth;
+    actor.vx = 0;
+    return { ...hit.edge, x: hit.edge.left, y: hit.edge.top, width: hit.box.width, height: hit.box.height, box: true };
+  }
   if (world.wall?.isSolid) {
     const direction = Math.sign(actor.x - previousX);
     if (direction && wallBodyBlocked(world, actor, actor.x, actor.y, direction)) {
@@ -224,6 +238,23 @@ function updateClimb(world, actor, dt) {
 }
 function applyPlatformPhysics(world, actor, dt) {
   const previousY = actor.y; actor.vy += world.config.gravity * dt; actor.y += actor.vy * dt; actor.grounded = false;
+  if (!world.wall?.isSolid && world.collisionBoxes?.length) {
+    const height = actorHeight(actor);
+    if (actor.vy >= 0) {
+      const landing = world.collisionBoxes.map((box) => ({ box, edge: boxEdges(box) })).filter(({ edge }) => (
+        actor.x + actor.hitbox.halfWidth > edge.left && actor.x - actor.hitbox.halfWidth < edge.right
+        && previousY <= edge.top && actor.y >= edge.top
+      )).sort((a, b) => a.edge.top - b.edge.top)[0];
+      if (landing) { actor.y = landing.edge.top; actor.vy = 0; actor.grounded = true; }
+    } else {
+      const ceiling = world.collisionBoxes.map((box) => ({ box, edge: boxEdges(box) })).filter(({ edge }) => (
+        actor.x + actor.hitbox.halfWidth > edge.left && actor.x - actor.hitbox.halfWidth < edge.right
+        && previousY - height >= edge.bottom && actor.y - height < edge.bottom
+      )).sort((a, b) => b.edge.bottom - a.edge.bottom)[0];
+      if (ceiling) { actor.y = ceiling.edge.bottom + height; actor.vy = 0; }
+    }
+    return;
+  }
   if (world.wall?.isSolid) {
     const height = actorHeight(actor);
     const footSamples = [actor.x];

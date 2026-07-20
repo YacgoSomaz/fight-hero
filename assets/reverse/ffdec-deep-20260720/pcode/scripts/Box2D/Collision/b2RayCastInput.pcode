@@ -1,0 +1,168 @@
+package Box2D.Collision
+{
+   import Box2D.Common.Math.b2Vec2;
+   
+   public class b2RayCastInput
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var p1:b2Vec2;
+      
+      public var p2:b2Vec2;
+      
+      public var maxFraction:Number;
+      
+      public function b2RayCastInput(param1:b2Vec2 = null, param2:b2Vec2 = null, param3:Number = 1)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+            param QName(PackageNamespace(""),"Number")
+            optional Null()
+            optional Null()
+            optional Integer(1)
+            returns null
+            
+            body
+               maxstack 52
+               localcount 4
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  jump ofs0020
+                  instanceof
+                  pushundefined
+                  bitor
+                  increment
+                  getlocal3
+         ofs0020:
+                  initproperty QName(PackageNamespace(""),"p1")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"p2")
+                  getlocal0
+                  constructsuper 0
+                  getlocal1
+                  iffalse ofs005d
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"p1")
+                  jump ofs0041
+                  convert_d
+                  setlocal1
+                  coerce_s
+                  bitand
+                  lessthan
+         ofs0041:
+                  getlocal1
+                  jump ofs004b
+                  bitxor
+                  decrement
+                  instanceof
+                  pushnull
+                  increment
+         ofs004b:
+                  pushfalse
+                  iffalse ofs0059
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs005d
+         ofs0059:
+                  callpropvoid QName(PackageNamespace(""),"SetV"), 1
+         ofs005d:
+                  getlocal2
+                  iffalse ofs0079
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"p2")
+                  getlocal2
+                  pushfalse
+                  iffalse ofs0075
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0079
+         ofs0075:
+                  callpropvoid QName(PackageNamespace(""),"SetV"), 1
+         ofs0079:
+                  getlocal0
+                  getlocal3
+                  initproperty QName(PackageNamespace(""),"maxFraction")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2RayCastInput",[PackageNamespace("Box2D.Collision")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 65
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

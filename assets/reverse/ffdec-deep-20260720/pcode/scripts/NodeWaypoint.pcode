@@ -1,0 +1,710 @@
+package
+{
+   import flash.display.Sprite;
+   import flash.text.TextField;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1273")]
+   public class NodeWaypoint extends Sprite
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 8
+            maxscopedepth 9
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var txt_con:TextField;
+      
+      public var txt_id:TextField;
+      
+      public var arena:Arena;
+      
+      public var id:String;
+      
+      public var con:String;
+      
+      public var connects:Array;
+      
+      public var actionBoxes:Array;
+      
+      public function NodeWaypoint()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 2
+               initscopedepth 9
+               maxscopedepth 10
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  constructprop QName(PackageNamespace(""),"Array"), 0
+                  initproperty QName(PackageNamespace(""),"actionBoxes")
+                  getlocal0
+                  jump ofs0027
+                  getlocal1
+                  nextvalue
+                  increment_i
+                  coerce_s
+                  lessequals
+         ofs0027:
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  constructprop QName(PackageNamespace(""),"Array"), 0
+                  initproperty QName(PackageNamespace(""),"connects")
+                  getlex QName(PackageNamespace(""),"name")
+                  pushstring "_"
+                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                  coerce QName(PackageNamespace(""),"Array")
+                  setlocal1
+                  getlocal0
+                  getlocal1
+                  pushbyte 0
+                  getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  initproperty QName(PackageNamespace(""),"id")
+                  getlocal0
+                  getlocal1
+                  pushbyte 1
+                  getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  initproperty QName(PackageNamespace(""),"con")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_id")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"id")
+                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toUpperCase"), 0
+                  pushfalse
+                  iffalse ofs006a
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs006d
+         ofs006a:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs006d:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_con")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"con")
+                  pushfalse
+                  iffalse ofs0083
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0086
+         ofs0083:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs0086:
+                  findproperty QName(PackageNamespace(""),"visible")
+                  pushfalse
+                  initproperty QName(PackageNamespace(""),"visible")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function setConnectors(param1:Object) : void
+      {
+         trait method QName(PackageNamespace(""),"setConnectors")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace(""),"Object")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 54
+                  localcount 3
+                  initscopedepth 9
+                  maxscopedepth 10
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     pushbyte 0
+                     convert_u
+                     setlocal2
+                     nop
+            ofs0016:
+                     label
+                     getlocal2
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"con")
+                     getproperty QName(PackageNamespace(""),"length")
+                     iflt ofs0027
+                     jump ofs002b
+            ofs0027:
+                     jump ofs002f
+            ofs002b:
+                     jump ofs007f
+            ofs002f:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"connects")
+                     getlocal1
+                     getlocal0
+                     jump ofs0040
+                     nextname
+                     negate_i
+                     checkfilter
+                     instanceof
+                     popscope
+                     bitor
+                     convert_i
+            ofs0040:
+                     getproperty QName(PackageNamespace(""),"con")
+                     getlocal2
+                     callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                     jump ofs0053
+                     pushscope
+                     pushwith
+                     negate
+                     getlocal3
+                     multiply_i
+                     divide
+                     equals
+            ofs0053:
+                     getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     pushfalse
+                     iffalse ofs0064
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0068
+            ofs0064:
+                     callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+            ofs0068:
+                     getlocal2
+                     jump ofs0074
+                     coerce_a
+                     bitand
+                     bitand
+                     getglobalscope
+                     setlocal1
+                     convert_o
+                     getlocal3
+            ofs0074:
+                     increment
+                     convert_u
+                     setlocal2
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs0016
+            ofs007f:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function showConnectors(param1:Boolean) : void
+         {
+            trait method QName(PackageNamespace(""),"showConnectors")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace(""),"Boolean")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 55
+                     localcount 3
+                     initscopedepth 9
+                     maxscopedepth 10
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushbyte 0
+                        convert_u
+                        setlocal2
+                        getlocal1
+                        iffalse ofs022f
+                        pushbyte 0
+                        convert_u
+                        setlocal2
+                        nop
+               ofs001f:
+                        label
+                        getlocal2
+                        getlocal0
+                        jump ofs002a
+                        astypelate
+                        greaterthan
+                        lshift
+                        modulo
+               ofs002a:
+                        getproperty QName(PackageNamespace(""),"connects")
+                        getproperty QName(PackageNamespace(""),"length")
+                        iflt ofs0038
+                        jump ofs003c
+               ofs0038:
+                        jump ofs0040
+               ofs003c:
+                        jump ofs011d
+               ofs0040:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"arena")
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        pushbyte 3
+                        pushint 16776960
+                        jump ofs005a
+                        nextname
+                        lshift
+                        getlocal0
+                        getlocal3
+                        divide
+                        hasnext
+                        increment
+               ofs005a:
+                        pushdouble 0.3
+                        pushfalse
+                        iffalse ofs006c
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0070
+               ofs006c:
+                        callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+               ofs0070:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"arena")
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        jump ofs0082
+                        pushscope
+                        increment_i
+                        decrement_i
+                        getglobalscope
+                        subtract
+                        getlocal2
+                        typeof
+               ofs0082:
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        getlex QName(PackageNamespace(""),"x")
+                        getlex QName(PackageNamespace(""),"y")
+                        pushbyte 20
+                        subtract
+                        pushfalse
+                        iffalse ofs009d
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs00a1
+               ofs009d:
+                        callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+               ofs00a1:
+                        getlocal0
+                        jump ofs00ad
+                        coerce_a
+                        subtract
+                        getlocal3
+                        pushtrue
+                        instanceof
+                        nextvalue
+                        not
+               ofs00ad:
+                        getproperty QName(PackageNamespace(""),"arena")
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        getlex QName(PackageNamespace(""),"x")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"connects")
+                        getlocal2
+                        getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getproperty Multiname("x",[PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        jump ofs00cf
+                        pop
+                        divide
+                        pushscope
+                        popscope
+                        strictequals
+                        bitxor
+                        decrement_i
+               ofs00cf:
+                        add
+                        pushdouble 0.5
+                        multiply
+                        getlex QName(PackageNamespace(""),"y")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"connects")
+                        getlocal2
+                        getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getproperty Multiname("y",[PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        add
+                        pushdouble 0.5
+                        multiply
+                        pushbyte 20
+                        jump ofs00f2
+                        checkfilter
+                        lessthan
+                        pushundefined
+                        instanceof
+                        coerce_a
+                        setlocal3
+                        pushundefined
+               ofs00f2:
+                        subtract
+                        pushfalse
+                        iffalse ofs0102
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0106
+               ofs0102:
+                        callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+               ofs0106:
+                        getlocal2
+                        jump ofs0112
+                        modulo
+                        setlocal0
+                        astypelate
+                        setlocal0
+                        coerce_s
+                        subtract
+                        pushnan
+               ofs0112:
+                        increment
+                        convert_u
+                        setlocal2
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs001f
+               ofs011d:
+                        pushbyte 0
+                        convert_u
+                        setlocal2
+                        nop
+               ofs0122:
+                        label
+                        getlocal2
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"actionBoxes")
+                        getproperty QName(PackageNamespace(""),"length")
+                        iflt ofs0133
+                        jump ofs0137
+               ofs0133:
+                        jump ofs013b
+               ofs0137:
+                        jump ofs022b
+               ofs013b:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"arena")
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        jump ofs014d
+                        dup
+                        convert_u
+                        pushwith
+                        equals
+               ofs014d:
+                        pushbyte 3
+                        pushint 16751103
+                        pushdouble 0.3
+                        pushfalse
+                        iffalse ofs0164
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0168
+               ofs0164:
+                        callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+               ofs0168:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"arena")
+                        jump ofs0174
+                        dup
+                        convert_u
+                        pushwith
+                        equals
+               ofs0174:
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        getlex QName(PackageNamespace(""),"x")
+                        getlex QName(PackageNamespace(""),"y")
+                        pushbyte 20
+                        jump ofs018a
+                        subtract_i
+                        negate_i
+                        nextvalue
+                        convert_s
+               ofs018a:
+                        subtract
+                        jump ofs0193
+                        not
+                        pushwith
+                        setlocal1
+                        convert_i
+               ofs0193:
+                        pushfalse
+                        iffalse ofs01a2
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs01a6
+               ofs01a2:
+                        callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+               ofs01a6:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"arena")
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        jump ofs01b8
+                        not
+                        pushwith
+                        setlocal1
+                        convert_i
+               ofs01b8:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"actionBoxes")
+                        getlocal2
+                        getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        jump ofs01c8
+                        coerce_s
+                        bitand
+                        checkfilter
+                        setlocal0
+               ofs01c8:
+                        getproperty Multiname("x",[PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"actionBoxes")
+                        getlocal2
+                        jump ofs01d8
+                        coerce_s
+                        bitand
+                        checkfilter
+                        setlocal0
+               ofs01d8:
+                        getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getproperty Multiname("width",[PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        pushbyte 2
+                        divide
+                        jump ofs01e9
+                        pushfalse
+                        multiply
+                        negate
+                        modulo
+               ofs01e9:
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"actionBoxes")
+                        getlocal2
+                        getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getproperty Multiname("y",[PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"actionBoxes")
+                        getlocal2
+                        getproperty MultinameL([PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        getproperty Multiname("height",[PrivateNamespace(null,"207"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"208"),PackageInternalNs(""),ProtectedNamespace("NodeWaypoint"),StaticProtectedNs("NodeWaypoint"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        pushbyte 2
+                        jump ofs020a
+                        convert_s
+                        pushfalse
+                        not
+                        equals
+               ofs020a:
+                        divide
+                        add
+                        pushfalse
+                        iffalse ofs021b
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs021f
+               ofs021b:
+                        callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+               ofs021f:
+                        getlocal2
+                        increment
+                        convert_u
+                        setlocal2
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0122
+               ofs022b:
+                        jump ofs0252
+               ofs022f:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"arena")
+                        jump ofs023b
+                        negate_i
+                        pop
+                        dxnslate
+                        convert_s
+               ofs023b:
+                        getproperty QName(PackageNamespace(""),"botCont")
+                        getproperty QName(PackageNamespace(""),"graphics")
+                        pushfalse
+                        iffalse ofs024e
+                        pushbyte 5
+                        pop
+                        pop
+                        jump ofs0252
+               ofs024e:
+                        callpropvoid QName(PackageNamespace(""),"clear"), 0
+               ofs0252:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function setActionBox(param1:NodeAiAction) : void
+            {
+               trait method QName(PackageNamespace(""),"setActionBox")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"NodeAiAction")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 52
+                        localcount 2
+                        initscopedepth 9
+                        maxscopedepth 10
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"actionBoxes")
+                           getlocal1
+                           pushfalse
+                           iffalse ofs0024
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0028
+                  ofs0024:
+                           callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                  ofs0028:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 8
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("NodeWaypoint",[PackageNamespace("")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"Sprite")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"Sprite")
+                  newclass 340
+                  popscope
+                  jump ofs0038
+                  multiply
+                  dup
+                  bitxor
+                  convert_u
+                  dxnslate
+                  convert_o
+                  bitxor
+         ofs0038:
+                  popscope
+                  popscope
+                  popscope
+                  popscope
+                  popscope
+                  initproperty QName(PackageNamespace(""),"NodeWaypoint")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

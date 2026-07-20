@@ -1,0 +1,465 @@
+package
+{
+   import flash.display.MovieClip;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1240")]
+   public class NodeHoldpoint extends MovieClip
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 9
+            maxscopedepth 10
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var flag:MovieClip;
+      
+      public var curTeam:uint;
+      
+      public var unitCaptured:*;
+      
+      private var flagPos:Number;
+      
+      private var flagSpd:Number;
+      
+      public var letter:String = "X";
+      
+      public function NodeHoldpoint()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 1
+               initscopedepth 10
+               maxscopedepth 11
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PackageNamespace(""),"curTeam")
+                  getlocal0
+                  pushbyte -65
+                  initproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                  getlocal0
+                  pushbyte 1
+                  jump ofs002c
+                  pushwith
+                  convert_u
+                  decrement_i
+                  setlocal0
+                  nextvalue
+         ofs002c:
+                  initproperty QName(PrivateNamespace(null,"69"),"flagSpd")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"flag")
+                  jump ofs003c
+                  convert_s
+                  getlocal3
+                  setlocal0
+                  modulo
+                  pushscope
+         ofs003c:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                  pushfalse
+                  iffalse ofs004e
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0051
+         ofs004e:
+                  setproperty QName(PackageNamespace(""),"y")
+         ofs0051:
+                  findpropstrict QName(PackageNamespace(""),"gotoAndStop")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"curTeam")
+                  pushbyte 1
+                  jump ofs0063
+                  negate_i
+                  pushnan
+                  pushscope
+                  equals
+                  not
+         ofs0063:
+                  add
+                  pushfalse
+                  iffalse ofs0072
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0076
+         ofs0072:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs0076:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"flag")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"curTeam")
+                  pushbyte 1
+                  add
+                  jump ofs008a
+                  negate_i
+                  pushnan
+                  pushscope
+                  equals
+                  not
+         ofs008a:
+                  pushfalse
+                  iffalse ofs0098
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs009c
+         ofs0098:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs009c:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function capture(param1:*) : void
+      {
+         trait method QName(PackageNamespace(""),"capture")
+            dispid 0
+            method
+               name null
+               param null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 53
+                  localcount 4
+                  initscopedepth 10
+                  maxscopedepth 11
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal1
+                     getproperty Multiname("team",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"curTeam")
+                     ifeq ofs010d
+                     getlocal0
+                     getlocal0
+                     jump ofs0029
+                     add_i
+                     greaterequals
+                     bitand
+                     nextvalue
+                     pushwith
+                     increment
+            ofs0029:
+                     getproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"69"),"flagSpd")
+                     add
+                     initproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     pushbyte -10
+                     jump ofs0045
+                     typeof
+                     getlocal1
+                     dxnslate
+                     istypelate
+                     getlocal3
+                     pushundefined
+                     setlocal2
+            ofs0045:
+                     ifnge ofs0109
+                     getlocal0
+                     getlocal1
+                     getproperty Multiname("team",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs0059
+                     typeof
+                     getlocal1
+                     dxnslate
+                     istypelate
+                     getlocal3
+                     pushundefined
+                     setlocal2
+            ofs0059:
+                     initproperty QName(PackageNamespace(""),"curTeam")
+                     findpropstrict QName(PackageNamespace(""),"gotoAndStop")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"curTeam")
+                     jump ofs006e
+                     pushnan
+                     istypelate
+                     decrement
+                     astypelate
+                     lessthan
+                     setlocal0
+                     pushundefined
+            ofs006e:
+                     pushbyte 1
+                     add
+                     pushfalse
+                     iffalse ofs007f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0083
+            ofs007f:
+                     callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+            ofs0083:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"flag")
+                     getlocal0
+                     jump ofs0093
+                     bitnot
+                     convert_o
+                     newactivation
+                     increment_i
+                     increment
+                     decrement
+                     pushwith
+            ofs0093:
+                     getproperty QName(PackageNamespace(""),"curTeam")
+                     pushbyte 1
+                     add
+                     pushfalse
+                     iffalse ofs00a7
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00ab
+            ofs00a7:
+                     callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+            ofs00ab:
+                     getlocal0
+                     jump ofs00b7
+                     getlocal3
+                     setlocal1
+                     setlocal0
+                     negate_i
+                     setlocal2
+                     convert_u
+                     getlocal2
+            ofs00b7:
+                     getlocal1
+                     initproperty QName(PackageNamespace(""),"unitCaptured")
+                     getlocal1
+                     getproperty Multiname("game",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("hud",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal1
+                     pushstring "holdpoint"
+                     pushfalse
+                     iffalse ofs00d5
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs00d9
+            ofs00d5:
+                     callpropvoid Multiname("addCustomFeed",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")]), 2
+            ofs00d9:
+                     getlocal1
+                     getproperty Multiname("human",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     iffalse ofs0103
+                     getlocal1
+                     getproperty Multiname("score",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     dup
+                     setlocal2
+                     getproperty Multiname("domCap",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     increment
+                     setlocal3
+                     getlocal2
+                     getlocal3
+                     pushfalse
+                     iffalse ofs00fc
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00ff
+            ofs00fc:
+                     setproperty Multiname("domCap",[PrivateNamespace(null,"69"),PackageNamespace(""),PrivateNamespace(null,"222"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("NodeHoldpoint"),StaticProtectedNs("NodeHoldpoint"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+            ofs00ff:
+                     kill 3
+                     kill 2
+            ofs0103:
+                     getlocal0
+                     pushbyte -15
+                     initproperty QName(PrivateNamespace(null,"69"),"flagPos")
+            ofs0109:
+                     jump ofs0135
+            ofs010d:
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     jump ofs011d
+                     decrement
+                     decrement
+                     dup
+                     nextvalue
+                     convert_i
+                     typeof
+                     dxnslate
+            ofs011d:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"69"),"flagSpd")
+                     subtract
+                     initproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     pushbyte -65
+                     ifnlt ofs0135
+                     getlocal0
+                     pushbyte -65
+                     initproperty QName(PrivateNamespace(null,"69"),"flagPos")
+            ofs0135:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"flag")
+                     getlocal0
+                     jump ofs0145
+                     convert_u
+                     convert_s
+                     greaterequals
+                     istypelate
+                     nextname
+                     pushwith
+                     setlocal0
+            ofs0145:
+                     getproperty QName(PrivateNamespace(null,"69"),"flagPos")
+                     jump ofs0153
+                     setlocal1
+                     urshift
+                     convert_s
+                     popscope
+                     subtract_i
+                     popscope
+                     popscope
+            ofs0153:
+                     pushfalse
+                     iffalse ofs0161
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0164
+            ofs0161:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0164:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 9
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("NodeHoldpoint",[PackageNamespace("")])
+            jump ofs001c
+            setlocal1
+            negate
+            add_i
+            multiply
+   ofs001c:
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+            pushscope
+            getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+            pushscope
+            getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+            pushscope
+            getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+            jump ofs0033
+            greaterthan
+            add
+            swap
+            convert_d
+   ofs0033:
+            pushscope
+            getlex QName(PackageNamespace("flash.display"),"Sprite")
+            pushscope
+            getlex QName(PackageNamespace("flash.display"),"MovieClip")
+            pushscope
+            jump ofs0043
+            convert_o
+            divide
+            decrement
+            decrement
+            urshift
+   ofs0043:
+            getlex QName(PackageNamespace("flash.display"),"MovieClip")
+            newclass 363
+            popscope
+            popscope
+            popscope
+            popscope
+            popscope
+            popscope
+            popscope
+            initproperty QName(PackageNamespace(""),"NodeHoldpoint")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

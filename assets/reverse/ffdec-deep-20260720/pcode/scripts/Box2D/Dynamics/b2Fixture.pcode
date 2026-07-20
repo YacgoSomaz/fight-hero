@@ -1,0 +1,1525 @@
+package Box2D.Dynamics
+{
+   import Box2D.Collision.IBroadPhase;
+   import Box2D.Collision.Shapes.b2MassData;
+   import Box2D.Collision.Shapes.b2Shape;
+   import Box2D.Collision.b2AABB;
+   import Box2D.Collision.b2RayCastInput;
+   import Box2D.Collision.b2RayCastOutput;
+   import Box2D.Common.Math.b2Math;
+   import Box2D.Common.Math.b2Transform;
+   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2internal;
+   import Box2D.Dynamics.Contacts.b2Contact;
+   import Box2D.Dynamics.Contacts.b2ContactEdge;
+   
+   use namespace b2internal;
+   
+   public class b2Fixture
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var m_massData:b2MassData;
+      
+      b2internal var m_aabb:b2AABB;
+      
+      b2internal var m_density:Number;
+      
+      b2internal var m_next:b2Fixture;
+      
+      b2internal var m_body:b2Body;
+      
+      b2internal var m_shape:b2Shape;
+      
+      b2internal var m_friction:Number;
+      
+      b2internal var m_restitution:Number;
+      
+      b2internal var m_proxy:*;
+      
+      b2internal var m_filter:b2FilterData;
+      
+      b2internal var m_isSensor:Boolean;
+      
+      b2internal var m_userData:*;
+      
+      public function b2Fixture()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData")
+                  constructprop QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData"), 0
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_filter")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  jump ofs0027
+                  modulo
+                  checkfilter
+                  negate_i
+                  setlocal0
+                  getlocal1
+         ofs0027:
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"b2AABB"), 0
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_aabb")
+                  getlocal0
+                  pushnull
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_userData")
+                  getlocal0
+                  pushnull
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                  getlocal0
+                  jump ofs0043
+                  astypelate
+                  coerce_a
+                  pushnull
+                  modulo
+                  greaterequals
+         ofs0043:
+                  pushnull
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_next")
+                  getlocal0
+                  pushnull
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                  getlocal0
+                  pushdouble 0
+                  jump ofs0058
+                  dup
+                  nextname
+                  convert_o
+                  equals
+                  equals
+         ofs0058:
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_density")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_friction")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_restitution")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function GetType() : int
+      {
+         trait method QName(PackageNamespace(""),"GetType")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"int")
+               
+               body
+                  maxstack 51
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                     jump ofs001e
+                     negate_i
+                     convert_d
+                     modulo
+                     hasnext
+                     nextvalue
+            ofs001e:
+                     callproperty QName(PackageNamespace(""),"GetType"), 0
+                     jump ofs002b
+                     multiply_i
+                     dxnslate
+                     convert_b
+                     pushundefined
+                     pushscope
+            ofs002b:
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function GetShape() : b2Shape
+         {
+            trait method QName(PackageNamespace(""),"GetShape")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace("Box2D.Collision.Shapes"),"b2Shape")
+                  
+                  body
+                     maxstack 51
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function SetSensor(param1:Boolean) : void
+            {
+               trait method QName(PackageNamespace(""),"SetSensor")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Boolean")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 53
+                        localcount 6
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           jump ofs001a
+                           instanceof
+                           nextvalue
+                           convert_i
+                           lshift
+                           setlocal3
+                           equals
+                  ofs001a:
+                           pushscope
+                           pushnull
+                           coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                           setlocal3
+                           pushnull
+                           coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                           setlocal 4
+                           pushnull
+                           coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                           setlocal 5
+                           getlocal0
+                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_isSensor")
+                           getlocal1
+                           ifne ofs0033
+                           returnvoid
+                  ofs0033:
+                           getlocal0
+                           getlocal1
+                           initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_isSensor")
+                           getlocal0
+                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                           pushnull
+                           ifne ofs0042
+                           returnvoid
+                  ofs0042:
+                           getlocal0
+                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                           callproperty QName(PackageNamespace(""),"GetContactList"), 0
+                           coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactEdge")
+                           setlocal2
+                           nop
+                  ofs004e:
+                           label
+                           getlocal2
+                           iftrue ofs0058
+                           jump ofs005c
+                  ofs0058:
+                           jump ofs0060
+                  ofs005c:
+                           jump ofs00e0
+                  ofs0060:
+                           getlocal2
+                           getproperty QName(PackageNamespace(""),"contact")
+                           coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                           setlocal3
+                           getlocal3
+                           callproperty QName(PackageNamespace(""),"GetFixtureA"), 0
+                           coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                           setlocal 4
+                           getlocal3
+                           jump ofs007b
+                           bitxor
+                           pushnull
+                           hasnext
+                           lessequals
+                           nextvalue
+                           getlocal1
+                  ofs007b:
+                           callproperty QName(PackageNamespace(""),"GetFixtureB"), 0
+                           coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                           setlocal 5
+                           getlocal 4
+                           getlocal0
+                           equals
+                           dup
+                           iftrue ofs009b
+                           pop
+                           getlocal 5
+                           getlocal0
+                           jump ofs009a
+                           pushnull
+                           convert_b
+                           pushtrue
+                           getlocal1
+                           pushscope
+                           greaterthan
+                  ofs009a:
+                           equals
+                  ofs009b:
+                           iffalse ofs00d1
+                           getlocal3
+                           getlocal 4
+                           callproperty QName(PackageNamespace(""),"IsSensor"), 0
+                           convert_b
+                           jump ofs00b2
+                           decrement_i
+                           equals
+                           subtract_i
+                           subtract_i
+                           not
+                           bitnot
+                           convert_d
+                  ofs00b2:
+                           dup
+                           iftrue ofs00bf
+                           pop
+                           getlocal 5
+                           callproperty QName(PackageNamespace(""),"IsSensor"), 0
+                           convert_b
+                  ofs00bf:
+                           pushfalse
+                           iffalse ofs00cd
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs00d1
+                  ofs00cd:
+                           callpropvoid QName(PackageNamespace(""),"SetSensor"), 1
+                  ofs00d1:
+                           getlocal2
+                           getproperty QName(PackageNamespace(""),"next")
+                           coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactEdge")
+                           setlocal2
+                           pushbyte 2
+                           pushbyte 3
+                           ifne ofs004e
+                  ofs00e0:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function IsSensor() : Boolean
+               {
+                  trait method QName(PackageNamespace(""),"IsSensor")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"Boolean")
+                        
+                        body
+                           maxstack 51
+                           localcount 1
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              jump ofs001a
+                              nextname
+                              nextvalue
+                              getlocal2
+                              urshift
+                              subtract_i
+                              nextname
+                     ofs001a:
+                              pushscope
+                              getlocal0
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_isSensor")
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function SetFilterData(param1:b2FilterData) : void
+                  {
+                     trait method QName(PackageNamespace(""),"SetFilterData")
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData")
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 52
+                              localcount 6
+                              initscopedepth 4
+                              maxscopedepth 5
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 pushnull
+                                 jump ofs001a
+                                 setlocal1
+                                 setlocal0
+                                 divide
+                                 modulo
+                        ofs001a:
+                                 coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                                 setlocal3
+                                 pushnull
+                                 coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                                 jump ofs0028
+                                 greaterthan
+                                 greaterthan
+                                 pushfalse
+                                 equals
+                        ofs0028:
+                                 setlocal 4
+                                 pushnull
+                                 coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                                 setlocal 5
+                                 getlocal0
+                                 getlocal1
+                                 callproperty QName(PackageNamespace(""),"Copy"), 0
+                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_filter")
+                                 getlocal0
+                                 getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                                 iffalse ofs0041
+                                 returnvoid
+                        ofs0041:
+                                 getlocal0
+                                 getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                                 callproperty QName(PackageNamespace(""),"GetContactList"), 0
+                                 coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactEdge")
+                                 setlocal2
+                                 nop
+                        ofs004d:
+                                 label
+                                 getlocal2
+                                 iftrue ofs0057
+                                 jump ofs005b
+                        ofs0057:
+                                 jump ofs005f
+                        ofs005b:
+                                 jump ofs00c3
+                        ofs005f:
+                                 getlocal2
+                                 getproperty QName(PackageNamespace(""),"contact")
+                                 coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                                 setlocal3
+                                 getlocal3
+                                 callproperty QName(PackageNamespace(""),"GetFixtureA"), 0
+                                 coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                                 setlocal 4
+                                 getlocal3
+                                 callproperty QName(PackageNamespace(""),"GetFixtureB"), 0
+                                 coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                                 setlocal 5
+                                 getlocal 4
+                                 getlocal0
+                                 equals
+                                 jump ofs0084
+                                 setlocal0
+                                 getlocal3
+                                 urshift
+                                 convert_i
+                        ofs0084:
+                                 dup
+                                 iftrue ofs009e
+                                 pop
+                                 getlocal 5
+                                 jump ofs0094
+                                 setlocal0
+                                 getlocal3
+                                 urshift
+                                 convert_i
+                        ofs0094:
+                                 getlocal0
+                                 equals
+                                 jump ofs009e
+                                 istypelate
+                                 pushnan
+                                 convert_i
+                                 setlocal0
+                        ofs009e:
+                                 iffalse ofs00b4
+                                 getlocal3
+                                 pushfalse
+                                 iffalse ofs00b0
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 jump ofs00b4
+                        ofs00b0:
+                                 callpropvoid QName(PackageNamespace(""),"FlagForFiltering"), 0
+                        ofs00b4:
+                                 getlocal2
+                                 getproperty QName(PackageNamespace(""),"next")
+                                 coerce QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactEdge")
+                                 setlocal2
+                                 pushbyte 2
+                                 pushbyte 3
+                                 ifne ofs004d
+                        ofs00c3:
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function GetFilterData() : b2FilterData
+                     {
+                        trait method QName(PackageNamespace(""),"GetFilterData")
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData")
+                              
+                              body
+                                 maxstack 51
+                                 localcount 1
+                                 initscopedepth 4
+                                 maxscopedepth 5
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    jump ofs001a
+                                    istypelate
+                                    checkfilter
+                                    convert_i
+                                    negate
+                                    pushnan
+                                    setlocal0
+                           ofs001a:
+                                    pushscope
+                                    getlocal0
+                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_filter")
+                                    jump ofs0029
+                                    lessthan
+                                    newactivation
+                                    lessthan
+                                    multiply
+                                    setlocal0
+                                    decrement
+                           ofs0029:
+                                    callproperty QName(PackageNamespace(""),"Copy"), 0
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function GetBody() : b2Body
+                        {
+                           trait method QName(PackageNamespace(""),"GetBody")
+                              dispid 0
+                              method
+                                 name null
+                                 returns QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+                                 
+                                 body
+                                    maxstack 51
+                                    localcount 1
+                                    initscopedepth 4
+                                    maxscopedepth 5
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       getlocal0
+                                       getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                                       returnvalue
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function GetNext() : b2Fixture
+                           {
+                              trait method QName(PackageNamespace(""),"GetNext")
+                                 dispid 0
+                                 method
+                                    name null
+                                    returns QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                                    
+                                    body
+                                       maxstack 51
+                                       localcount 1
+                                       initscopedepth 4
+                                       maxscopedepth 5
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          getlocal0
+                                          getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_next")
+                                          returnvalue
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public function GetUserData() : *
+                              {
+                                 trait method QName(PackageNamespace(""),"GetUserData")
+                                    dispid 0
+                                    method
+                                       name null
+                                       returns null
+                                       
+                                       body
+                                          maxstack 51
+                                          localcount 1
+                                          initscopedepth 4
+                                          maxscopedepth 5
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             getlocal0
+                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_userData")
+                                             returnvalue
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public function SetUserData(param1:*) : void
+                                 {
+                                    trait method QName(PackageNamespace(""),"SetUserData")
+                                       dispid 0
+                                       method
+                                          name null
+                                          param null
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 52
+                                             localcount 2
+                                             initscopedepth 4
+                                             maxscopedepth 5
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                getlocal0
+                                                getlocal1
+                                                initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_userData")
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public function TestPoint(param1:b2Vec2) : Boolean
+                                    {
+                                       trait method QName(PackageNamespace(""),"TestPoint")
+                                          dispid 0
+                                          method
+                                             name null
+                                             param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                             returns QName(PackageNamespace(""),"Boolean")
+                                             
+                                             body
+                                                maxstack 53
+                                                localcount 2
+                                                initscopedepth 4
+                                                maxscopedepth 5
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushbyte 37
+                                                   pushbyte 34
+                                                   ifne ofs0010
+                                                   returnvoid
+                                                   newobject 536870911
+                                          ofs0010:
+                                                   pushscope
+                                                   getlocal0
+                                                   getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                   getlocal0
+                                                   getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                                                   callproperty QName(PackageNamespace(""),"GetTransform"), 0
+                                                   getlocal1
+                                                   callproperty QName(PackageNamespace(""),"TestPoint"), 2
+                                                   returnvalue
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public function RayCast(param1:b2RayCastOutput, param2:b2RayCastInput) : Boolean
+                                       {
+                                          trait method QName(PackageNamespace(""),"RayCast")
+                                             dispid 0
+                                             method
+                                                name null
+                                                param QName(PackageNamespace("Box2D.Collision"),"b2RayCastOutput")
+                                                param QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+                                                returns QName(PackageNamespace(""),"Boolean")
+                                                
+                                                body
+                                                   maxstack 54
+                                                   localcount 3
+                                                   initscopedepth 4
+                                                   maxscopedepth 5
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      jump ofs001a
+                                                      equals
+                                                      lessequals
+                                                      urshift
+                                                      modulo
+                                                      add
+                                                      istypelate
+                                             ofs001a:
+                                                      pushscope
+                                                      getlocal0
+                                                      getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                      getlocal1
+                                                      getlocal2
+                                                      getlocal0
+                                                      getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                                                      callproperty QName(PackageNamespace(""),"GetTransform"), 0
+                                                      callproperty QName(PackageNamespace(""),"RayCast"), 3
+                                                      jump ofs0037
+                                                      increment_i
+                                                      convert_d
+                                                      instanceof
+                                                      equals
+                                                      increment_i
+                                                      convert_u
+                                             ofs0037:
+                                                      returnvalue
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          public function GetMassData(param1:b2MassData = null) : b2MassData
+                                          {
+                                             trait method QName(PackageNamespace(""),"GetMassData")
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   flag HAS_OPTIONAL
+                                                   param QName(PackageNamespace("Box2D.Collision.Shapes"),"b2MassData")
+                                                   optional Null()
+                                                   returns QName(PackageNamespace("Box2D.Collision.Shapes"),"b2MassData")
+                                                   
+                                                   body
+                                                      maxstack 53
+                                                      localcount 2
+                                                      initscopedepth 4
+                                                      maxscopedepth 5
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushbyte 37
+                                                         pushbyte 34
+                                                         ifne ofs0010
+                                                         returnvoid
+                                                         newobject 536870911
+                                                ofs0010:
+                                                         jump ofs001a
+                                                         dxnslate
+                                                         convert_s
+                                                         pushundefined
+                                                         subtract_i
+                                                         pushtrue
+                                                         pushscope
+                                                ofs001a:
+                                                         pushscope
+                                                         getlocal1
+                                                         jump ofs0026
+                                                         instanceof
+                                                         urshift
+                                                         popscope
+                                                         lshift
+                                                         convert_b
+                                                         newactivation
+                                                ofs0026:
+                                                         pushnull
+                                                         ifne ofs003d
+                                                         findpropstrict QName(PackageNamespace("Box2D.Collision.Shapes"),"b2MassData")
+                                                         constructprop QName(PackageNamespace("Box2D.Collision.Shapes"),"b2MassData"), 0
+                                                         coerce QName(PackageNamespace("Box2D.Collision.Shapes"),"b2MassData")
+                                                         jump ofs003c
+                                                         convert_d
+                                                         subtract_i
+                                                         lshift
+                                                         convert_u
+                                                         pushnull
+                                                         swap
+                                                ofs003c:
+                                                         setlocal1
+                                                ofs003d:
+                                                         getlocal0
+                                                         getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                         getlocal1
+                                                         getlocal0
+                                                         getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_density")
+                                                         pushfalse
+                                                         iffalse ofs0055
+                                                         pushbyte 5
+                                                         pop
+                                                         pop
+                                                         pop
+                                                         pop
+                                                         jump ofs0059
+                                                ofs0055:
+                                                         callpropvoid QName(PackageNamespace(""),"ComputeMass"), 2
+                                                ofs0059:
+                                                         getlocal1
+                                                         returnvalue
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             public function SetDensity(param1:Number) : void
+                                             {
+                                                trait method QName(PackageNamespace(""),"SetDensity")
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      param QName(PackageNamespace(""),"Number")
+                                                      returns QName(PackageNamespace(""),"void")
+                                                      
+                                                      body
+                                                         maxstack 52
+                                                         localcount 2
+                                                         initscopedepth 4
+                                                         maxscopedepth 5
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushbyte 37
+                                                            pushbyte 34
+                                                            ifne ofs0010
+                                                            returnvoid
+                                                            newobject 536870911
+                                                   ofs0010:
+                                                            pushscope
+                                                            getlocal0
+                                                            getlocal1
+                                                            initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_density")
+                                                            returnvoid
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                public function GetDensity() : Number
+                                                {
+                                                   trait method QName(PackageNamespace(""),"GetDensity")
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         returns QName(PackageNamespace(""),"Number")
+                                                         
+                                                         body
+                                                            maxstack 51
+                                                            localcount 1
+                                                            initscopedepth 4
+                                                            maxscopedepth 5
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushbyte 37
+                                                               pushbyte 34
+                                                               ifne ofs0010
+                                                               returnvoid
+                                                               newobject 536870911
+                                                      ofs0010:
+                                                               pushscope
+                                                               getlocal0
+                                                               jump ofs001a
+                                                               convert_b
+                                                               setlocal0
+                                                               convert_u
+                                                               multiply_i
+                                                      ofs001a:
+                                                               getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_density")
+                                                               returnvalue
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                   
+                                                   public function GetFriction() : Number
+                                                   {
+                                                      trait method QName(PackageNamespace(""),"GetFriction")
+                                                         dispid 0
+                                                         method
+                                                            name null
+                                                            returns QName(PackageNamespace(""),"Number")
+                                                            
+                                                            body
+                                                               maxstack 51
+                                                               localcount 1
+                                                               initscopedepth 4
+                                                               maxscopedepth 5
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushbyte 37
+                                                                  pushbyte 34
+                                                                  ifne ofs0010
+                                                                  returnvoid
+                                                                  newobject 536870911
+                                                         ofs0010:
+                                                                  pushscope
+                                                                  getlocal0
+                                                                  getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_friction")
+                                                                  returnvalue
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                      }
+                                                      
+                                                      public function SetFriction(param1:Number) : void
+                                                      {
+                                                         trait method QName(PackageNamespace(""),"SetFriction")
+                                                            dispid 0
+                                                            method
+                                                               name null
+                                                               param QName(PackageNamespace(""),"Number")
+                                                               returns QName(PackageNamespace(""),"void")
+                                                               
+                                                               body
+                                                                  maxstack 52
+                                                                  localcount 2
+                                                                  initscopedepth 4
+                                                                  maxscopedepth 5
+                                                                  
+                                                                  code
+                                                                     getlocal0
+                                                                     pushbyte 37
+                                                                     pushbyte 34
+                                                                     ifne ofs0010
+                                                                     returnvoid
+                                                                     newobject 536870911
+                                                            ofs0010:
+                                                                     pushscope
+                                                                     getlocal0
+                                                                     getlocal1
+                                                                     initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_friction")
+                                                                     returnvoid
+                                                                  end ; code
+                                                               end ; body
+                                                            end ; method
+                                                         }
+                                                         
+                                                         public function GetRestitution() : Number
+                                                         {
+                                                            trait method QName(PackageNamespace(""),"GetRestitution")
+                                                               dispid 0
+                                                               method
+                                                                  name null
+                                                                  returns QName(PackageNamespace(""),"Number")
+                                                                  
+                                                                  body
+                                                                     maxstack 51
+                                                                     localcount 1
+                                                                     initscopedepth 4
+                                                                     maxscopedepth 5
+                                                                     
+                                                                     code
+                                                                        getlocal0
+                                                                        pushbyte 37
+                                                                        pushbyte 34
+                                                                        ifne ofs0010
+                                                                        returnvoid
+                                                                        newobject 536870911
+                                                               ofs0010:
+                                                                        pushscope
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_restitution")
+                                                                        returnvalue
+                                                                     end ; code
+                                                                  end ; body
+                                                               end ; method
+                                                            }
+                                                            
+                                                            public function SetRestitution(param1:Number) : void
+                                                            {
+                                                               trait method QName(PackageNamespace(""),"SetRestitution")
+                                                                  dispid 0
+                                                                  method
+                                                                     name null
+                                                                     param QName(PackageNamespace(""),"Number")
+                                                                     returns QName(PackageNamespace(""),"void")
+                                                                     
+                                                                     body
+                                                                        maxstack 52
+                                                                        localcount 2
+                                                                        initscopedepth 4
+                                                                        maxscopedepth 5
+                                                                        
+                                                                        code
+                                                                           getlocal0
+                                                                           pushbyte 37
+                                                                           pushbyte 34
+                                                                           ifne ofs0010
+                                                                           returnvoid
+                                                                           newobject 536870911
+                                                                  ofs0010:
+                                                                           pushscope
+                                                                           getlocal0
+                                                                           getlocal1
+                                                                           initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_restitution")
+                                                                           returnvoid
+                                                                        end ; code
+                                                                     end ; body
+                                                                  end ; method
+                                                               }
+                                                               
+                                                               public function GetAABB() : b2AABB
+                                                               {
+                                                                  trait method QName(PackageNamespace(""),"GetAABB")
+                                                                     dispid 0
+                                                                     method
+                                                                        name null
+                                                                        returns QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                                        
+                                                                        body
+                                                                           maxstack 51
+                                                                           localcount 1
+                                                                           initscopedepth 4
+                                                                           maxscopedepth 5
+                                                                           
+                                                                           code
+                                                                              getlocal0
+                                                                              pushbyte 37
+                                                                              pushbyte 34
+                                                                              ifne ofs0010
+                                                                              returnvoid
+                                                                              newobject 536870911
+                                                                     ofs0010:
+                                                                              pushscope
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_aabb")
+                                                                              returnvalue
+                                                                           end ; code
+                                                                        end ; body
+                                                                     end ; method
+                                                                  }
+                                                                  
+                                                                  b2internal function Create(param1:b2Body, param2:b2Transform, param3:b2FixtureDef) : void
+                                                                  {
+                                                                     trait method QName(Namespace("http://www.box2d.org/ns/b2internal"),"Create")
+                                                                        dispid 0
+                                                                        method
+                                                                           name null
+                                                                           param QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+                                                                           param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                                                                           param QName(PackageNamespace("Box2D.Dynamics"),"b2FixtureDef")
+                                                                           returns QName(PackageNamespace(""),"void")
+                                                                           
+                                                                           body
+                                                                              maxstack 52
+                                                                              localcount 4
+                                                                              initscopedepth 4
+                                                                              maxscopedepth 5
+                                                                              
+                                                                              code
+                                                                                 getlocal0
+                                                                                 pushbyte 37
+                                                                                 pushbyte 34
+                                                                                 ifne ofs0010
+                                                                                 returnvoid
+                                                                                 newobject 536870911
+                                                                        ofs0010:
+                                                                                 pushscope
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"userData")
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_userData")
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"friction")
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_friction")
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"restitution")
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_restitution")
+                                                                                 getlocal0
+                                                                                 getlocal1
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                                                                                 getlocal0
+                                                                                 pushnull
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_next")
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"filter")
+                                                                                 callproperty QName(PackageNamespace(""),"Copy"), 0
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_filter")
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"isSensor")
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_isSensor")
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"shape")
+                                                                                 jump ofs0054
+                                                                                 bitor
+                                                                                 typeof
+                                                                                 strictequals
+                                                                                 lessthan
+                                                                        ofs0054:
+                                                                                 callproperty QName(PackageNamespace(""),"Copy"), 0
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                                                 getlocal0
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"density")
+                                                                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_density")
+                                                                                 returnvoid
+                                                                              end ; code
+                                                                           end ; body
+                                                                        end ; method
+                                                                     }
+                                                                     
+                                                                     b2internal function Destroy() : void
+                                                                     {
+                                                                        trait method QName(Namespace("http://www.box2d.org/ns/b2internal"),"Destroy")
+                                                                           dispid 0
+                                                                           method
+                                                                              name null
+                                                                              returns QName(PackageNamespace(""),"void")
+                                                                              
+                                                                              body
+                                                                                 maxstack 52
+                                                                                 localcount 1
+                                                                                 initscopedepth 4
+                                                                                 maxscopedepth 5
+                                                                                 
+                                                                                 code
+                                                                                    getlocal0
+                                                                                    pushbyte 37
+                                                                                    pushbyte 34
+                                                                                    ifne ofs0010
+                                                                                    returnvoid
+                                                                                    newobject 536870911
+                                                                           ofs0010:
+                                                                                    pushscope
+                                                                                    getlocal0
+                                                                                    jump ofs001a
+                                                                                    bitxor
+                                                                                    getlocal3
+                                                                                    pushwith
+                                                                                    newactivation
+                                                                           ofs001a:
+                                                                                    pushnull
+                                                                                    initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                                                    returnvoid
+                                                                                 end ; code
+                                                                              end ; body
+                                                                           end ; method
+                                                                        }
+                                                                        
+                                                                        b2internal function CreateProxy(param1:IBroadPhase, param2:b2Transform) : void
+                                                                        {
+                                                                           trait method QName(Namespace("http://www.box2d.org/ns/b2internal"),"CreateProxy")
+                                                                              dispid 0
+                                                                              method
+                                                                                 name null
+                                                                                 param QName(PackageNamespace("Box2D.Collision"),"IBroadPhase")
+                                                                                 param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                                                                                 returns QName(PackageNamespace(""),"void")
+                                                                                 
+                                                                                 body
+                                                                                    maxstack 54
+                                                                                    localcount 3
+                                                                                    initscopedepth 4
+                                                                                    maxscopedepth 5
+                                                                                    
+                                                                                    code
+                                                                                       getlocal0
+                                                                                       pushbyte 37
+                                                                                       pushbyte 34
+                                                                                       ifne ofs0010
+                                                                                       returnvoid
+                                                                                       newobject 536870911
+                                                                              ofs0010:
+                                                                                       pushscope
+                                                                                       getlocal0
+                                                                                       getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                                                       getlocal0
+                                                                                       getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_aabb")
+                                                                                       getlocal2
+                                                                                       pushfalse
+                                                                                       iffalse ofs0029
+                                                                                       pushbyte 5
+                                                                                       pop
+                                                                                       pop
+                                                                                       pop
+                                                                                       pop
+                                                                                       jump ofs002d
+                                                                              ofs0029:
+                                                                                       callpropvoid QName(PackageNamespace(""),"ComputeAABB"), 2
+                                                                              ofs002d:
+                                                                                       getlocal0
+                                                                                       getlocal1
+                                                                                       getlocal0
+                                                                                       getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_aabb")
+                                                                                       getlocal0
+                                                                                       callproperty QName(Namespace("Box2D.Collision:IBroadPhase"),"CreateProxy"), 2
+                                                                                       initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_proxy")
+                                                                                       returnvoid
+                                                                                    end ; code
+                                                                                 end ; body
+                                                                              end ; method
+                                                                           }
+                                                                           
+                                                                           b2internal function DestroyProxy(param1:IBroadPhase) : void
+                                                                           {
+                                                                              trait method QName(Namespace("http://www.box2d.org/ns/b2internal"),"DestroyProxy")
+                                                                                 dispid 0
+                                                                                 method
+                                                                                    name null
+                                                                                    param QName(PackageNamespace("Box2D.Collision"),"IBroadPhase")
+                                                                                    returns QName(PackageNamespace(""),"void")
+                                                                                    
+                                                                                    body
+                                                                                       maxstack 52
+                                                                                       localcount 2
+                                                                                       initscopedepth 4
+                                                                                       maxscopedepth 5
+                                                                                       
+                                                                                       code
+                                                                                          getlocal0
+                                                                                          pushbyte 37
+                                                                                          pushbyte 34
+                                                                                          ifne ofs0010
+                                                                                          returnvoid
+                                                                                          newobject 536870911
+                                                                                 ofs0010:
+                                                                                          pushscope
+                                                                                          getlocal0
+                                                                                          getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_proxy")
+                                                                                          pushnull
+                                                                                          ifne ofs001b
+                                                                                          returnvoid
+                                                                                 ofs001b:
+                                                                                          getlocal1
+                                                                                          getlocal0
+                                                                                          getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_proxy")
+                                                                                          pushfalse
+                                                                                          iffalse ofs002e
+                                                                                          pushbyte 5
+                                                                                          pop
+                                                                                          pop
+                                                                                          pop
+                                                                                          jump ofs0032
+                                                                                 ofs002e:
+                                                                                          callpropvoid QName(Namespace("Box2D.Collision:IBroadPhase"),"DestroyProxy"), 1
+                                                                                 ofs0032:
+                                                                                          getlocal0
+                                                                                          pushnull
+                                                                                          jump ofs003c
+                                                                                          decrement_i
+                                                                                          multiply_i
+                                                                                          increment
+                                                                                          lshift
+                                                                                 ofs003c:
+                                                                                          initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_proxy")
+                                                                                          returnvoid
+                                                                                       end ; code
+                                                                                    end ; body
+                                                                                 end ; method
+                                                                              }
+                                                                              
+                                                                              b2internal function Synchronize(param1:IBroadPhase, param2:b2Transform, param3:b2Transform) : void
+                                                                              {
+                                                                                 trait method QName(Namespace("http://www.box2d.org/ns/b2internal"),"Synchronize")
+                                                                                    dispid 0
+                                                                                    method
+                                                                                       name null
+                                                                                       param QName(PackageNamespace("Box2D.Collision"),"IBroadPhase")
+                                                                                       param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                                                                                       param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                                                                                       returns QName(PackageNamespace(""),"void")
+                                                                                       
+                                                                                       body
+                                                                                          maxstack 54
+                                                                                          localcount 7
+                                                                                          initscopedepth 4
+                                                                                          maxscopedepth 5
+                                                                                          
+                                                                                          code
+                                                                                             getlocal0
+                                                                                             pushbyte 37
+                                                                                             pushbyte 34
+                                                                                             ifne ofs0010
+                                                                                             returnvoid
+                                                                                             newobject 536870911
+                                                                                    ofs0010:
+                                                                                             pushscope
+                                                                                             getlocal0
+                                                                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_proxy")
+                                                                                             iftrue ofs001a
+                                                                                             returnvoid
+                                                                                    ofs001a:
+                                                                                             findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                                                             constructprop QName(PackageNamespace("Box2D.Collision"),"b2AABB"), 0
+                                                                                             coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                                                             setlocal 4
+                                                                                             findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                                                             constructprop QName(PackageNamespace("Box2D.Collision"),"b2AABB"), 0
+                                                                                             coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                                                             setlocal 5
+                                                                                             getlocal0
+                                                                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                                                             getlocal 4
+                                                                                             getlocal2
+                                                                                             pushfalse
+                                                                                             iffalse ofs0042
+                                                                                             pushbyte 5
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             jump ofs0046
+                                                                                    ofs0042:
+                                                                                             callpropvoid QName(PackageNamespace(""),"ComputeAABB"), 2
+                                                                                    ofs0046:
+                                                                                             getlocal0
+                                                                                             jump ofs0050
+                                                                                             convert_s
+                                                                                             nextvalue
+                                                                                             multiply
+                                                                                             pushundefined
+                                                                                             dxnslate
+                                                                                    ofs0050:
+                                                                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_shape")
+                                                                                             getlocal 5
+                                                                                             jump ofs005f
+                                                                                             negate_i
+                                                                                             swap
+                                                                                             setlocal3
+                                                                                             coerce_s
+                                                                                             nextvalue
+                                                                                             coerce_s
+                                                                                    ofs005f:
+                                                                                             getlocal3
+                                                                                             pushfalse
+                                                                                             iffalse ofs006f
+                                                                                             pushbyte 5
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             jump ofs0073
+                                                                                    ofs006f:
+                                                                                             callpropvoid QName(PackageNamespace(""),"ComputeAABB"), 2
+                                                                                    ofs0073:
+                                                                                             getlocal0
+                                                                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_aabb")
+                                                                                             getlocal 4
+                                                                                             getlocal 5
+                                                                                             pushfalse
+                                                                                             iffalse ofs008a
+                                                                                             pushbyte 5
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             jump ofs008e
+                                                                                    ofs008a:
+                                                                                             callpropvoid QName(PackageNamespace(""),"Combine"), 2
+                                                                                    ofs008e:
+                                                                                             getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                                                                                             getlocal3
+                                                                                             getproperty QName(PackageNamespace(""),"position")
+                                                                                             getlocal2
+                                                                                             getproperty QName(PackageNamespace(""),"position")
+                                                                                             callproperty QName(PackageNamespace(""),"SubtractVV"), 2
+                                                                                             coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                                                             setlocal 6
+                                                                                             getlocal1
+                                                                                             getlocal0
+                                                                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_proxy")
+                                                                                             getlocal0
+                                                                                             getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_aabb")
+                                                                                             getlocal 6
+                                                                                             pushfalse
+                                                                                             iffalse ofs00bc
+                                                                                             pushbyte 5
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             pop
+                                                                                             jump ofs00c0
+                                                                                    ofs00bc:
+                                                                                             callpropvoid QName(Namespace("Box2D.Collision:IBroadPhase"),"MoveProxy"), 3
+                                                                                    ofs00c0:
+                                                                                             returnvoid
+                                                                                          end ; code
+                                                                                       end ; body
+                                                                                    end ; method
+                                                                                 }
+                                                                              }
+                                                                           }
+                                                                           
+                                                                           method
+                                                                              name null
+                                                                              returns null
+                                                                              
+                                                                              body
+                                                                                 maxstack 52
+                                                                                 localcount 1
+                                                                                 initscopedepth 1
+                                                                                 maxscopedepth 3
+                                                                                 
+                                                                                 code
+                                                                                    getlocal0
+                                                                                    pushbyte 37
+                                                                                    pushbyte 34
+                                                                                    ifne ofs0010
+                                                                                    returnvoid
+                                                                                    newobject 536870911
+                                                                           ofs0010:
+                                                                                    pushscope
+                                                                                    findpropstrict Multiname("b2Fixture",[PackageNamespace("Box2D.Dynamics")])
+                                                                                    jump ofs001f
+                                                                                    convert_b
+                                                                                    setlocal0
+                                                                                    dxnslate
+                                                                                    getlocal3
+                                                                                    setlocal2
+                                                                                    convert_d
+                                                                                    negate
+                                                                           ofs001f:
+                                                                                    getlex QName(PackageNamespace(""),"Object")
+                                                                                    pushscope
+                                                                                    getlex QName(PackageNamespace(""),"Object")
+                                                                                    newclass 55
+                                                                                    popscope
+                                                                                    initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                                                                                    returnvoid
+                                                                                 end ; code
+                                                                              end ; body
+                                                                           end ; method
+                                                                           

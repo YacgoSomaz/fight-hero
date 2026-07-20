@@ -46,6 +46,9 @@ docs/
   AI_HANDOFF.md        当前交接报告、解包结论、坐标计算和下一步
   MIGRATION_STATUS.md  已迁移/未迁移范围
   SWF_DEEP_UNPACK_REPORT.md 证据与二进制解包报告
+assets/reverse/
+  4399-90433-25.swf           已授权的原始 SWF 样本
+  ffdec-deep-20260720/        FFDec 导出的 AS3、P-code、符号、音频和文本证据
 ```
 
 ## 接手规则
@@ -53,6 +56,6 @@ docs/
 1. 先运行 `npm test`；任何物理、动画或素材定位改动都要新增/更新相应测试。
 2. Foundry 的可玩碰撞以 `FOUNDRY_COLLISION_BOXES` 为准；不要为修视觉而移动蓝色盒子。
 3. 角色根脚点、`arm1hold`、枪口和裁切图注册点是不同坐标系；不要用任意全局平移掩盖它们。
-4. 运行时不读取 `private-assets/`；该目录以及 `assets/reverse/ffdec-deep-*` 是本机解包证据，保持忽略且不要提交。
+4. 运行时不读取 `private-assets/`。它只容纳本机预览、实验和可再生中间文件，保持忽略；可复现的深度解包证据已在私有仓库的 `assets/reverse/ffdec-deep-20260720/` 中版本化。
 
 详见 [AI 交接报告](docs/AI_HANDOFF.md)。

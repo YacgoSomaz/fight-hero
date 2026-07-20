@@ -1,0 +1,387 @@
+package Box2D.Dynamics.Joints
+{
+   import Box2D.Common.Math.b2Vec2;
+   
+   public class b2Jacobian
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var linearA:b2Vec2;
+      
+      public var angularA:Number;
+      
+      public var linearB:b2Vec2;
+      
+      public var angularB:Number;
+      
+      public function b2Jacobian()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  jump ofs001c
+                  checkfilter
+                  equals
+                  pushnan
+                  bitnot
+         ofs001c:
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"linearA")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"linearB")
+                  getlocal0
+                  jump ofs0034
+                  checkfilter
+                  equals
+                  pushnan
+                  bitnot
+         ofs0034:
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function SetZero() : void
+      {
+         trait method QName(PackageNamespace(""),"SetZero")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     jump ofs001a
+                     increment_i
+                     pushfalse
+                     dxnslate
+                     instanceof
+                     increment_i
+                     subtract
+            ofs001a:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"linearA")
+                     jump ofs0029
+                     convert_b
+                     not
+                     multiply_i
+                     getlocal3
+                     bitxor
+                     equals
+            ofs0029:
+                     pushfalse
+                     iffalse ofs0036
+                     pushbyte 5
+                     pop
+                     pop
+                     jump ofs003a
+            ofs0036:
+                     callpropvoid QName(PackageNamespace(""),"SetZero"), 0
+            ofs003a:
+                     getlocal0
+                     jump ofs0045
+                     bitxor
+                     pushscope
+                     newactivation
+                     getglobalscope
+                     newactivation
+                     negate
+            ofs0045:
+                     pushdouble 0
+                     initproperty QName(PackageNamespace(""),"angularA")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"linearB")
+                     pushfalse
+                     iffalse ofs005b
+                     pushbyte 5
+                     pop
+                     pop
+                     jump ofs005f
+            ofs005b:
+                     callpropvoid QName(PackageNamespace(""),"SetZero"), 0
+            ofs005f:
+                     getlocal0
+                     pushdouble 0
+                     initproperty QName(PackageNamespace(""),"angularB")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function Set(param1:b2Vec2, param2:Number, param3:b2Vec2, param4:Number) : void
+         {
+            trait method QName(PackageNamespace(""),"Set")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  param QName(PackageNamespace(""),"Number")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 52
+                     localcount 5
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"linearA")
+                        getlocal1
+                        pushfalse
+                        iffalse ofs0024
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0028
+               ofs0024:
+                        callpropvoid QName(PackageNamespace(""),"SetV"), 1
+               ofs0028:
+                        getlocal0
+                        jump ofs0034
+                        pop
+                        nextname
+                        convert_o
+                        bitor
+                        checkfilter
+                        getlocal1
+                        pushwith
+               ofs0034:
+                        getlocal2
+                        initproperty QName(PackageNamespace(""),"angularA")
+                        getlocal0
+                        jump ofs0044
+                        checkfilter
+                        getlocal2
+                        nextname
+                        getlocal0
+                        popscope
+                        greaterthan
+                        checkfilter
+               ofs0044:
+                        getproperty QName(PackageNamespace(""),"linearB")
+                        getlocal3
+                        pushfalse
+                        iffalse ofs0056
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs005a
+               ofs0056:
+                        callpropvoid QName(PackageNamespace(""),"SetV"), 1
+               ofs005a:
+                        getlocal0
+                        getlocal 4
+                        initproperty QName(PackageNamespace(""),"angularB")
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function Compute(param1:b2Vec2, param2:Number, param3:b2Vec2, param4:Number) : Number
+            {
+               trait method QName(PackageNamespace(""),"Compute")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     param QName(PackageNamespace(""),"Number")
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     param QName(PackageNamespace(""),"Number")
+                     returns QName(PackageNamespace(""),"Number")
+                     
+                     body
+                        maxstack 54
+                        localcount 5
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           jump ofs001a
+                           pushundefined
+                           typeof
+                           strictequals
+                           greaterthan
+                           subtract
+                           convert_d
+                  ofs001a:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"linearA")
+                           getproperty QName(PackageNamespace(""),"x")
+                           getlocal1
+                           jump ofs002d
+                           add
+                           multiply_i
+                           greaterthan
+                           pop
+                           instanceof
+                           lshift
+                  ofs002d:
+                           getproperty QName(PackageNamespace(""),"x")
+                           multiply
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"linearA")
+                           getproperty QName(PackageNamespace(""),"y")
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"y")
+                           multiply
+                           add
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"angularA")
+                           getlocal2
+                           multiply
+                           add
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"linearB")
+                           getproperty QName(PackageNamespace(""),"x")
+                           jump ofs0056
+                           pushtrue
+                           popscope
+                           modulo
+                           greaterequals
+                           strictequals
+                           greaterequals
+                  ofs0056:
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"x")
+                           multiply
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"linearB")
+                           getproperty QName(PackageNamespace(""),"y")
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"y")
+                           jump ofs0070
+                           negate
+                           coerce_s
+                           bitor
+                           urshift
+                           coerce_a
+                           subtract
+                  ofs0070:
+                           multiply
+                           add
+                           add
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"angularB")
+                           getlocal 4
+                           multiply
+                           add
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("b2Jacobian",[PackageNamespace("Box2D.Dynamics.Joints")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 110
+                  popscope
+                  initproperty QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2Jacobian")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

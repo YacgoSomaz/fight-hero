@@ -1,0 +1,1312 @@
+package Playtomic
+{
+   import flash.utils.describeType;
+   
+   public class JSONEncoder
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var jsonString:String;
+      
+      public function JSONEncoder(param1:*)
+      {
+         method
+            name null
+            param null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 2
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal0
+                  jump ofs001f
+                  multiply_i
+                  getlocal1
+                  coerce_s
+                  pushtrue
+                  add
+         ofs001f:
+                  getlocal1
+                  callproperty QName(PrivateNamespace(null,"22"),"convertToString"), 1
+                  jump ofs002d
+                  multiply_i
+                  getlocal1
+                  coerce_s
+                  pushtrue
+                  add
+         ofs002d:
+                  initproperty QName(PrivateNamespace(null,"22"),"jsonString")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function getString() : String
+      {
+         trait method QName(PackageNamespace(""),"getString")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"String")
+               
+               body
+                  maxstack 51
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"22"),"jsonString")
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         private function convertToString(param1:*) : String
+         {
+            trait method QName(PrivateNamespace(null,"22"),"convertToString")
+               dispid 0
+               method
+                  name null
+                  param null
+                  returns QName(PackageNamespace(""),"String")
+                  
+                  body
+                     maxstack 53
+                     localcount 2
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"String")
+                        istypelate
+                        iffalse ofs0023
+                        getlocal0
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"String")
+                        astypelate
+                        callproperty QName(PrivateNamespace(null,"22"),"escapeString"), 1
+                        returnvalue
+               ofs0023:
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"Number")
+                        jump ofs0031
+                        setlocal3
+                        convert_o
+                        coerce_a
+                        pushundefined
+                        add
+                        popscope
+                        modulo
+               ofs0031:
+                        istypelate
+                        jump ofs003d
+                        setlocal2
+                        setlocal1
+                        add
+                        coerce_s
+                        increment_i
+                        dup
+                        convert_i
+               ofs003d:
+                        iffalse ofs0078
+                        findpropstrict QName(PackageNamespace(""),"isFinite")
+                        jump ofs004f
+                        setlocal2
+                        setlocal1
+                        add
+                        coerce_s
+                        increment_i
+                        dup
+                        convert_i
+               ofs004f:
+                        getlocal1
+                        jump ofs005b
+                        swap
+                        decrement
+                        multiply
+                        setlocal2
+                        bitxor
+                        subtract_i
+                        pushtrue
+               ofs005b:
+                        getlex QName(PackageNamespace(""),"Number")
+                        astypelate
+                        callproperty QName(PackageNamespace(""),"isFinite"), 1
+                        iffalse ofs0070
+                        getlocal1
+                        callproperty Multiname("toString",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 0
+                        coerce_s
+                        jump ofs0073
+               ofs0070:
+                        pushstring "null"
+               ofs0073:
+                        returnvalue
+                        jump ofs0078
+               ofs0078:
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"Boolean")
+                        istypelate
+                        iffalse ofs0094
+                        getlocal1
+                        iffalse ofs008c
+                        pushstring "true"
+                        jump ofs008f
+               ofs008c:
+                        pushstring "false"
+               ofs008f:
+                        returnvalue
+                        jump ofs0094
+               ofs0094:
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"Array")
+                        istypelate
+                        iffalse ofs00b1
+                        getlocal0
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"Array")
+                        astypelate
+                        callproperty QName(PrivateNamespace(null,"22"),"arrayToString"), 1
+                        jump ofs00b0
+                        convert_i
+                        convert_s
+                        setlocal3
+                        greaterthan
+                        newactivation
+                        pop
+                        negate_i
+               ofs00b0:
+                        returnvalue
+               ofs00b1:
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"Object")
+                        istypelate
+                        dup
+                        iffalse ofs00ca
+                        pop
+                        getlocal1
+                        pushnull
+                        equals
+                        jump ofs00c9
+                        nextvalue
+                        urshift
+                        bitnot
+                        pop
+                        checkfilter
+                        getlocal2
+                        astypelate
+               ofs00c9:
+                        not
+               ofs00ca:
+                        iffalse ofs00d5
+                        getlocal0
+                        getlocal1
+                        callproperty QName(PrivateNamespace(null,"22"),"objectToString"), 1
+                        returnvalue
+               ofs00d5:
+                        pushstring "null"
+                        jump ofs00e3
+                        strictequals
+                        getlocal0
+                        strictequals
+                        greaterequals
+                        popscope
+                        nextvalue
+                        convert_d
+               ofs00e3:
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            private function escapeString(param1:String) : String
+            {
+               trait method QName(PrivateNamespace(null,"22"),"escapeString")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     returns QName(PackageNamespace(""),"String")
+                     
+                     body
+                        maxstack 53
+                        localcount 9
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           pushnull
+                           coerce_s
+                           setlocal3
+                           pushnull
+                           coerce_s
+                           setlocal 6
+                           pushnull
+                           coerce_s
+                           setlocal 7
+                           pushstring ""
+                           setlocal2
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"length")
+                           convert_d
+                           jump ofs002d
+                           istypelate
+                           newactivation
+                           subtract_i
+                           pushscope
+                           equals
+                  ofs002d:
+                           setlocal 4
+                           pushbyte 0
+                           setlocal 5
+                           nop
+                  ofs0034:
+                           label
+                           getlocal 5
+                           getlocal 4
+                           iflt ofs0041
+                           jump ofs0045
+                  ofs0041:
+                           jump ofs0049
+                  ofs0045:
+                           jump ofs01ed
+                  ofs0049:
+                           getlocal1
+                           getlocal 5
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                           coerce_s
+                           jump ofs005b
+                           lessthan
+                           strictequals
+                           subtract
+                           bitor
+                           convert_d
+                           increment_i
+                  ofs005b:
+                           setlocal3
+                           jump ofs0134
+                  ofs0060:
+                           label
+                           getlocal2
+                           pushstring "\\\""
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs006b:
+                           label
+                           getlocal2
+                           pushstring "\\\\"
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs0076:
+                           label
+                           getlocal2
+                           pushstring "\\b"
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs0081:
+                           label
+                           getlocal2
+                           pushstring "\\f"
+                           jump ofs0090
+                           divide
+                           decrement_i
+                           pushnull
+                           bitxor
+                           pop
+                           divide
+                  ofs0090:
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs0096:
+                           label
+                           getlocal2
+                           pushstring "\\n"
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs00a1:
+                           label
+                           getlocal2
+                           pushstring "\\r"
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs00ac:
+                           label
+                           getlocal2
+                           pushstring "\\t"
+                           add
+                           setlocal2
+                           jump ofs01e3
+                  ofs00b7:
+                           label
+                           getlocal3
+                           pushstring " "
+                           ifnlt ofs0117
+                           getlocal3
+                           pushbyte 0
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charCodeAt"), 1
+                           pushbyte 16
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toString"), 1
+                           coerce_s
+                           dup
+                           setlocal 6
+                           getproperty QName(PackageNamespace(""),"length")
+                           pushbyte 2
+                           jump ofs00e0
+                           pushundefined
+                           bitxor
+                           convert_o
+                           convert_u
+                           pushfalse
+                           convert_o
+                  ofs00e0:
+                           equals
+                           iffalse ofs00ec
+                           pushstring "00"
+                           jump ofs00ef
+                  ofs00ec:
+                           pushstring "000"
+                  ofs00ef:
+                           coerce_s
+                           setlocal 7
+                           getlocal2
+                           jump ofs00fd
+                           add
+                           increment_i
+                           nextname
+                           pushscope
+                           negate_i
+                           getlocal3
+                  ofs00fd:
+                           pushstring "\\u"
+                           getlocal 7
+                           add
+                           getlocal 6
+                           jump ofs010f
+                           add
+                           increment_i
+                           nextname
+                           pushscope
+                           negate_i
+                           getlocal3
+                  ofs010f:
+                           add
+                           add
+                           coerce_s
+                           setlocal2
+                           jump ofs0130
+                  ofs0117:
+                           getlocal2
+                           jump ofs0122
+                           pushtrue
+                           subtract
+                           increment
+                           bitor
+                           add_i
+                           decrement
+                  ofs0122:
+                           getlocal3
+                           jump ofs012d
+                           negate
+                           increment
+                           pushfalse
+                           getlocal0
+                           greaterthan
+                           add_i
+                  ofs012d:
+                           add
+                           coerce_s
+                           setlocal2
+                  ofs0130:
+                           jump ofs01e3
+                  ofs0134:
+                           getlocal3
+                           setlocal 8
+                           pushstring "\""
+                           getlocal 8
+                           ifstrictne ofs0146
+                           pushbyte 0
+                           jump ofs01b6
+                  ofs0146:
+                           pushstring "\\"
+                           getlocal 8
+                           ifstrictne ofs0155
+                           pushbyte 1
+                           jump ofs01b6
+                  ofs0155:
+                           pushstring "\b"
+                           jump ofs0162
+                           bitor
+                           negate
+                           convert_b
+                           bitxor
+                           add
+                           urshift
+                  ofs0162:
+                           getlocal 8
+                           ifstrictne ofs016e
+                           pushbyte 2
+                           jump ofs01b6
+                  ofs016e:
+                           pushstring "\f"
+                           getlocal 8
+                           ifstrictne ofs017d
+                           pushbyte 3
+                           jump ofs01b6
+                  ofs017d:
+                           pushstring "\n"
+                           getlocal 8
+                           ifstrictne ofs018c
+                           pushbyte 4
+                           jump ofs01b6
+                  ofs018c:
+                           pushstring "\r"
+                           getlocal 8
+                           ifstrictne ofs019b
+                           pushbyte 5
+                           jump ofs01b6
+                  ofs019b:
+                           pushstring "\t"
+                           getlocal 8
+                           ifstrictne ofs01aa
+                           pushbyte 6
+                           jump ofs01b6
+                  ofs01aa:
+                           jump ofs01b4
+                           pushbyte 7
+                           jump ofs01b4
+                  ofs01b4:
+                           pushbyte 7
+                  ofs01b6:
+                           kill 8
+                           jump ofs01c3
+                           increment
+                           add
+                           typeof
+                           lessthan
+                           increment_i
+                           pushfalse
+                           pushnull
+                  ofs01c3:
+                           pushbyte 2
+                           pop
+                           lookupswitch ofs00b7, [ofs0060, ofs006b, ofs0076, ofs0081, ofs0096, ofs00a1, ofs00ac, ofs00b7]
+                  ofs01e3:
+                           inclocal_i 5
+                           pushbyte 2
+                           pushbyte 3
+                           ifne ofs0034
+                  ofs01ed:
+                           pushstring "\""
+                           getlocal2
+                           jump ofs01fc
+                           greaterequals
+                           greaterthan
+                           convert_i
+                           dup
+                           bitxor
+                           astypelate
+                           divide
+                  ofs01fc:
+                           add
+                           pushstring "\""
+                           add
+                           jump ofs020c
+                           subtract
+                           convert_u
+                           lessthan
+                           convert_b
+                           newactivation
+                           dup
+                           urshift
+                  ofs020c:
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               private function arrayToString(param1:Array) : String
+               {
+                  trait method QName(PrivateNamespace(null,"22"),"arrayToString")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"Array")
+                        returns QName(PackageNamespace(""),"String")
+                        
+                        body
+                           maxstack 54
+                           localcount 5
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              pushstring ""
+                              jump ofs001e
+                              getlocal1
+                              newactivation
+                              increment_i
+                              getlocal3
+                              instanceof
+                              pushwith
+                              nextname
+                     ofs001e:
+                              setlocal2
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"length")
+                              convert_i
+                              setlocal3
+                              pushbyte 0
+                              setlocal 4
+                              nop
+                     ofs002a:
+                              label
+                              getlocal 4
+                              getlocal3
+                              iflt ofs0036
+                              jump ofs003a
+                     ofs0036:
+                              jump ofs003e
+                     ofs003a:
+                              jump ofs008a
+                     ofs003e:
+                              getlocal2
+                              jump ofs004a
+                              divide
+                              strictequals
+                              bitand
+                              getglobalscope
+                              strictequals
+                              popscope
+                              convert_d
+                     ofs004a:
+                              getproperty QName(PackageNamespace(""),"length")
+                              jump ofs0055
+                              pushundefined
+                              convert_i
+                              dxnslate
+                              pushtrue
+                     ofs0055:
+                              pushbyte 0
+                              ifngt ofs0069
+                              getlocal2
+                              pushstring ","
+                              add
+                              jump ofs0068
+                              add
+                              decrement_i
+                              decrement
+                              popscope
+                     ofs0068:
+                              setlocal2
+                     ofs0069:
+                              getlocal2
+                              getlocal0
+                              getlocal1
+                              getlocal 4
+                              getproperty MultinameL([PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                              callproperty QName(PrivateNamespace(null,"22"),"convertToString"), 1
+                              jump ofs007d
+                              add
+                              decrement_i
+                              decrement
+                              popscope
+                     ofs007d:
+                              add
+                              coerce_s
+                              setlocal2
+                              inclocal_i 4
+                              pushbyte 2
+                              pushbyte 3
+                              ifne ofs002a
+                     ofs008a:
+                              pushstring "["
+                              getlocal2
+                              jump ofs0096
+                              pushtrue
+                              bitxor
+                              newactivation
+                              instanceof
+                     ofs0096:
+                              add
+                              pushstring "]"
+                              add
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  private function objectToString(param1:Object) : String
+                  {
+                     trait method QName(PrivateNamespace(null,"22"),"objectToString")
+                        dispid 0
+                        method
+                           name null
+                           flag NEED_ACTIVATION
+                           param QName(PackageNamespace(""),"Object")
+                           returns QName(PackageNamespace(""),"String")
+                           
+                           body
+                              maxstack 56
+                              localcount 10
+                              initscopedepth 5
+                              maxscopedepth 8
+                              trait slot QName(PackageInternalNs("Playtomic"),"o")
+                                 slotid 1
+                                 type QName(PackageNamespace(""),"Object")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("Playtomic"),"s")
+                                 slotid 2
+                                 type QName(PackageNamespace(""),"String")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("Playtomic"),"classInfo")
+                                 slotid 3
+                                 type QName(PackageNamespace(""),"XML")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("Playtomic"),"value")
+                                 slotid 4
+                                 type QName(PackageNamespace(""),"Object")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("Playtomic"),"key")
+                                 slotid 5
+                                 type QName(PackageNamespace(""),"String")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("Playtomic"),"v")
+                                 slotid 6
+                                 type QName(PackageNamespace(""),"XML")
+                              end ; trait
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 newactivation
+                                 dup
+                                 jump ofs001c
+                                 getlocal0
+                                 setlocal1
+                                 coerce_s
+                                 increment
+                                 getlocal1
+                        ofs001c:
+                                 setlocal2
+                                 pushscope
+                                 getscopeobject 1
+                                 pushnull
+                                 coerce QName(PackageNamespace(""),"Object")
+                                 jump ofs002c
+                                 bitand
+                                 decrement
+                                 increment_i
+                                 bitand
+                                 greaterequals
+                        ofs002c:
+                                 setslot 4
+                                 getscopeobject 1
+                                 pushnull
+                                 coerce_s
+                                 setslot 5
+                                 getscopeobject 1
+                                 pushnull
+                                 coerce QName(PackageNamespace(""),"XML")
+                                 setslot 6
+                                 getscopeobject 1
+                                 getlocal1
+                                 setslot 1
+                                 getscopeobject 1
+                                 pushstring ""
+                                 setslot 2
+                                 getscopeobject 1
+                                 findpropstrict QName(PackageNamespace("flash.utils"),"describeType")
+                                 getscopeobject 1
+                                 getslot 1
+                                 callproperty QName(PackageNamespace("flash.utils"),"describeType"), 1
+                                 jump ofs005c
+                                 urshift
+                                 bitnot
+                                 bitand
+                                 pushnull
+                                 dxnslate
+                        ofs005c:
+                                 coerce QName(PackageNamespace(""),"XML")
+                                 setslot 3
+                                 getscopeobject 1
+                                 getslot 3
+                                 getproperty MultinameA("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 callproperty Multiname("toString",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 0
+                                 pushstring "Object"
+                                 ifne ofs0135
+                                 pushbyte 0
+                                 setlocal3
+                                 getscopeobject 1
+                                 getslot 1
+                                 coerce_a
+                                 setlocal 4
+                                 nop
+                        ofs007c:
+                                 label
+                                 hasnext2 4, 3
+                                 iftrue ofs0088
+                                 jump ofs008c
+                        ofs0088:
+                                 jump ofs0090
+                        ofs008c:
+                                 jump ofs012d
+                        ofs0090:
+                                 getscopeobject 1
+                                 getlocal 4
+                                 getlocal3
+                                 nextname
+                                 coerce_s
+                                 setslot 5
+                                 getscopeobject 1
+                                 getscopeobject 1
+                                 getslot 1
+                                 jump ofs00a9
+                                 pushwith
+                                 typeof
+                                 swap
+                                 setlocal1
+                                 nextvalue
+                                 instanceof
+                        ofs00a9:
+                                 getscopeobject 1
+                                 getslot 5
+                                 getproperty MultinameL([PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 jump ofs00ba
+                                 convert_s
+                                 getlocal0
+                                 decrement
+                                 coerce_a
+                                 pushscope
+                                 convert_b
+                        ofs00ba:
+                                 coerce QName(PackageNamespace(""),"Object")
+                                 setslot 4
+                                 getscopeobject 1
+                                 getslot 4
+                                 getlex QName(PackageNamespace(""),"Function")
+                                 istypelate
+                                 iffalse ofs00cd
+                                 jump ofs007c
+                        ofs00cd:
+                                 getscopeobject 1
+                                 getslot 2
+                                 jump ofs00db
+                                 getlocal3
+                                 popscope
+                                 coerce_a
+                                 increment
+                                 not
+                                 lshift
+                        ofs00db:
+                                 getproperty QName(PackageNamespace(""),"length")
+                                 pushbyte 0
+                                 ifngt ofs00f0
+                                 getscopeobject 1
+                                 getscopeobject 1
+                                 getslot 2
+                                 pushstring ","
+                                 add
+                                 setslot 2
+                        ofs00f0:
+                                 getscopeobject 1
+                                 getscopeobject 1
+                                 getslot 2
+                                 jump ofs0100
+                                 decrement
+                                 coerce_s
+                                 add
+                                 bitand
+                                 pushwith
+                                 greaterequals
+                        ofs0100:
+                                 getlocal0
+                                 getscopeobject 1
+                                 getslot 5
+                                 jump ofs010f
+                                 convert_u
+                                 subtract_i
+                                 dup
+                                 pushnull
+                                 getlocal3
+                                 add
+                        ofs010f:
+                                 callproperty QName(PrivateNamespace(null,"22"),"escapeString"), 1
+                                 pushstring ":"
+                                 add
+                                 getlocal0
+                                 getscopeobject 1
+                                 getslot 4
+                                 callproperty QName(PrivateNamespace(null,"22"),"convertToString"), 1
+                                 add
+                                 add
+                                 coerce_s
+                                 setslot 2
+                                 pushbyte 2
+                                 pushbyte 3
+                                 ifne ofs007c
+                        ofs012d:
+                                 kill 4
+                                 kill 3
+                                 jump ofs0369
+                        ofs0135:
+                                 pushbyte 0
+                                 setlocal3
+                                 pushbyte 0
+                                 setlocal 6
+                                 getscopeobject 1
+                                 getslot 3
+                                 getdescendants Multiname(null,[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 checkfilter
+                                 coerce_a
+                                 setlocal 7
+                                 getlex QName(PackageNamespace(""),"XMLList")
+                                 pushstring ""
+                                 construct 1
+                                 setlocal 5
+                                 nop
+                        ofs0151:
+                                 label
+                                 hasnext2 7, 6
+                                 iftrue ofs015d
+                                 jump ofs0161
+                        ofs015d:
+                                 jump ofs0165
+                        ofs0161:
+                                 jump ofs01e4
+                        ofs0165:
+                                 getlocal 7
+                                 getlocal 6
+                                 nextvalue
+                                 dup
+                                 setlocal 8
+                                 dup
+                                 setlocal 9
+                                 pushwith
+                                 findpropstrict Multiname("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 callproperty Multiname("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 0
+                                 pushstring "variable"
+                                 equals
+                                 dup
+                                 iftrue ofs01bb
+                                 pop
+                                 findpropstrict Multiname("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 callproperty Multiname("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 0
+                                 pushstring "accessor"
+                                 jump ofs0196
+                                 setlocal1
+                                 astypelate
+                                 setlocal3
+                                 setlocal1
+                                 lessthan
+                                 istypelate
+                        ofs0196:
+                                 equals
+                                 jump ofs01a1
+                                 greaterthan
+                                 getlocal2
+                                 convert_s
+                                 coerce_a
+                                 divide
+                                 convert_u
+                        ofs01a1:
+                                 dup
+                                 iffalse ofs01bb
+                                 pop
+                                 findpropstrict Multiname("attribute",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 pushstring "access"
+                                 callproperty Multiname("attribute",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 1
+                                 pushbyte 0
+                                 callproperty Multiname("charAt",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 1
+                                 pushstring "r"
+                                 equals
+                        ofs01bb:
+                                 iffalse ofs01d7
+                                 getlocal 5
+                                 getlocal 6
+                                 getlocal 8
+                                 pushfalse
+                                 iffalse ofs01d4
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs01d7
+                        ofs01d4:
+                                 setproperty MultinameL([PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                        ofs01d7:
+                                 popscope
+                                 kill 9
+                                 kill 8
+                                 pushbyte 2
+                                 pushbyte 3
+                                 ifne ofs0151
+                        ofs01e4:
+                                 kill 7
+                                 kill 6
+                                 getlocal 5
+                                 kill 5
+                                 coerce_a
+                                 setlocal 4
+                                 nop
+                        ofs01f0:
+                                 label
+                                 hasnext2 4, 3
+                                 iftrue ofs01fc
+                                 jump ofs0200
+                        ofs01fc:
+                                 jump ofs0204
+                        ofs0200:
+                                 jump ofs0365
+                        ofs0204:
+                                 getscopeobject 1
+                                 getlocal 4
+                                 jump ofs0213
+                                 setlocal0
+                                 strictequals
+                                 greaterthan
+                                 add_i
+                                 instanceof
+                                 pushnan
+                                 pushnull
+                        ofs0213:
+                                 getlocal3
+                                 nextvalue
+                                 coerce QName(PackageNamespace(""),"XML")
+                                 jump ofs0222
+                                 setlocal0
+                                 strictequals
+                                 greaterthan
+                                 add_i
+                                 instanceof
+                                 pushnan
+                                 pushnull
+                        ofs0222:
+                                 setslot 6
+                                 getscopeobject 1
+                                 getslot 6
+                                 getproperty Multiname("metadata",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 jump ofs0236
+                                 istypelate
+                                 convert_i
+                                 modulo
+                                 lessequals
+                                 strictequals
+                                 convert_s
+                                 increment
+                        ofs0236:
+                                 convert_b
+                                 dup
+                                 iffalse ofs02f7
+                                 pop
+                                 pushbyte 0
+                                 setlocal 6
+                                 getscopeobject 1
+                                 getslot 6
+                                 jump ofs0250
+                                 lessthan
+                                 decrement_i
+                                 bitor
+                                 getlocal1
+                                 coerce_a
+                                 multiply
+                                 typeof
+                        ofs0250:
+                                 getproperty Multiname("metadata",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 checkfilter
+                                 coerce_a
+                                 setlocal 7
+                                 getlex QName(PackageNamespace(""),"XMLList")
+                                 jump ofs0265
+                                 getlocal1
+                                 lshift
+                                 coerce_s
+                                 subtract_i
+                                 coerce_s
+                                 subtract_i
+                                 pop
+                        ofs0265:
+                                 pushstring ""
+                                 construct 1
+                                 setlocal 5
+                                 nop
+                        ofs026c:
+                                 label
+                                 hasnext2 7, 6
+                                 iftrue ofs0278
+                                 jump ofs027c
+                        ofs0278:
+                                 jump ofs0280
+                        ofs027c:
+                                 jump ofs02c7
+                        ofs0280:
+                                 getlocal 7
+                                 getlocal 6
+                                 nextvalue
+                                 dup
+                                 setlocal 8
+                                 dup
+                                 setlocal 9
+                                 jump ofs0296
+                                 divide
+                                 increment_i
+                                 instanceof
+                                 lshift
+                                 convert_s
+                                 not
+                                 decrement_i
+                        ofs0296:
+                                 pushwith
+                                 getlex MultinameA("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 pushstring "Transient"
+                                 equals
+                                 iffalse ofs02ba
+                                 getlocal 5
+                                 getlocal 6
+                                 getlocal 8
+                                 pushfalse
+                                 iffalse ofs02b7
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs02ba
+                        ofs02b7:
+                                 setproperty MultinameL([PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                        ofs02ba:
+                                 popscope
+                                 kill 9
+                                 kill 8
+                                 pushbyte 2
+                                 pushbyte 3
+                                 ifne ofs026c
+                        ofs02c7:
+                                 kill 7
+                                 kill 6
+                                 getlocal 5
+                                 kill 5
+                                 callproperty Multiname("length",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 0
+                                 jump ofs02de
+                                 pushundefined
+                                 subtract
+                                 add_i
+                                 add_i
+                                 decrement
+                                 checkfilter
+                                 pushundefined
+                        ofs02de:
+                                 pushbyte 0
+                                 jump ofs02eb
+                                 add
+                                 increment
+                                 hasnext
+                                 lessequals
+                                 getlocal1
+                                 getglobalscope
+                                 pushwith
+                        ofs02eb:
+                                 greaterthan
+                                 jump ofs02f7
+                                 pushtrue
+                                 negate
+                                 istypelate
+                                 getlocal1
+                                 greaterequals
+                                 strictequals
+                                 checkfilter
+                        ofs02f7:
+                                 iffalse ofs02ff
+                                 jump ofs01f0
+                        ofs02ff:
+                                 getscopeobject 1
+                                 getslot 2
+                                 getproperty QName(PackageNamespace(""),"length")
+                                 pushbyte 0
+                                 ifngt ofs0323
+                                 getscopeobject 1
+                                 getscopeobject 1
+                                 jump ofs031b
+                                 pushtrue
+                                 negate
+                                 istypelate
+                                 getlocal1
+                                 greaterequals
+                                 strictequals
+                                 checkfilter
+                        ofs031b:
+                                 getslot 2
+                                 pushstring ","
+                                 add
+                                 setslot 2
+                        ofs0323:
+                                 getscopeobject 1
+                                 getscopeobject 1
+                                 getslot 2
+                                 jump ofs0331
+                                 increment_i
+                                 setlocal0
+                                 subtract_i
+                                 subtract_i
+                        ofs0331:
+                                 getlocal0
+                                 getscopeobject 1
+                                 getslot 6
+                                 getproperty MultinameA("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 callproperty Multiname("toString",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")]), 0
+                                 callproperty QName(PrivateNamespace(null,"22"),"escapeString"), 1
+                                 pushstring ":"
+                                 add
+                                 getlocal0
+                                 getscopeobject 1
+                                 getslot 1
+                                 getscopeobject 1
+                                 getslot 6
+                                 getproperty MultinameA("name",[PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 getproperty MultinameL([PrivateNamespace(null,"22"),PackageNamespace(""),PrivateNamespace(null,"164"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:JSONEncoder"),StaticProtectedNs("Playtomic:JSONEncoder"),StaticProtectedNs("Object")])
+                                 callproperty QName(PrivateNamespace(null,"22"),"convertToString"), 1
+                                 add
+                                 add
+                                 coerce_s
+                                 setslot 2
+                                 pushbyte 2
+                                 pushbyte 3
+                                 ifne ofs01f0
+                        ofs0365:
+                                 kill 4
+                                 kill 3
+                        ofs0369:
+                                 pushstring "{"
+                                 getscopeobject 1
+                                 getslot 2
+                                 add
+                                 pushstring "}"
+                                 add
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                  }
+               }
+               
+               method
+                  name null
+                  returns null
+                  
+                  body
+                     maxstack 52
+                     localcount 1
+                     initscopedepth 1
+                     maxscopedepth 3
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        findpropstrict Multiname("JSONEncoder",[PackageNamespace("Playtomic")])
+                        getlex QName(PackageNamespace(""),"Object")
+                        pushscope
+                        getlex QName(PackageNamespace(""),"Object")
+                        newclass 83
+                        popscope
+                        initproperty QName(PackageNamespace("Playtomic"),"JSONEncoder")
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+               

@@ -1,0 +1,2092 @@
+package mochi.as3
+{
+   import flash.events.Event;
+   import flash.events.TimerEvent;
+   import flash.utils.Proxy;
+   import flash.utils.Timer;
+   import flash.utils.flash_proxy;
+   
+   use namespace flash_proxy;
+   
+   public dynamic class MochiInventory extends Proxy
+   {
+      
+      private static const CONSUMER_KEY:String = "MochiConsumables";
+      
+      private static const KEY_SALT:String = " syncMaint\x01";
+      
+      public static const READY:String = "InvReady";
+      
+      public static const WRITTEN:String = "InvWritten";
+      
+      public static const ERROR:String = "Error";
+      
+      public static const IO_ERROR:String = "IoError";
+      
+      public static const VALUE_ERROR:String = "InvValueError";
+      
+      public static const NOT_READY:String = "InvNotReady";
+      
+      private static var _dispatcher:MochiEventDispatcher;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PrivateNamespace(null,"48"),"CONSUMER_KEY")
+               pushstring "MochiConsumables"
+               jump ofs0020
+               pushwith
+               convert_d
+               equals
+               greaterthan
+               getglobalscope
+      ofs0020:
+               initproperty QName(PrivateNamespace(null,"48"),"CONSUMER_KEY")
+               findproperty QName(PrivateNamespace(null,"48"),"KEY_SALT")
+               pushstring " syncMaint\x01"
+               initproperty QName(PrivateNamespace(null,"48"),"KEY_SALT")
+               findproperty QName(PackageNamespace(""),"READY")
+               pushstring "InvReady"
+               initproperty QName(PackageNamespace(""),"READY")
+               findproperty QName(PackageNamespace(""),"WRITTEN")
+               jump ofs0041
+               convert_s
+               equals
+               multiply_i
+               pop
+               dup
+      ofs0041:
+               pushstring "InvWritten"
+               jump ofs004d
+               negate_i
+               greaterequals
+               decrement_i
+               greaterequals
+               not
+      ofs004d:
+               initproperty QName(PackageNamespace(""),"WRITTEN")
+               findproperty QName(PackageNamespace(""),"ERROR")
+               pushstring "Error"
+               jump ofs005f
+               multiply_i
+               bitor
+               getlocal3
+               urshift
+               pushwith
+      ofs005f:
+               initproperty QName(PackageNamespace(""),"ERROR")
+               findproperty QName(PackageNamespace(""),"IO_ERROR")
+               pushstring "IoError"
+               initproperty QName(PackageNamespace(""),"IO_ERROR")
+               findproperty QName(PackageNamespace(""),"VALUE_ERROR")
+               pushstring "InvValueError"
+               initproperty QName(PackageNamespace(""),"VALUE_ERROR")
+               findproperty QName(PackageNamespace(""),"NOT_READY")
+               pushstring "InvNotReady"
+               initproperty QName(PackageNamespace(""),"NOT_READY")
+               findproperty QName(PrivateNamespace(null,"48"),"_dispatcher")
+               findpropstrict QName(PackageNamespace("mochi.as3"),"MochiEventDispatcher")
+               constructprop QName(PackageNamespace("mochi.as3"),"MochiEventDispatcher"), 0
+               pushfalse
+               iffalse ofs0095
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0098
+      ofs0095:
+               setproperty QName(PrivateNamespace(null,"48"),"_dispatcher")
+      ofs0098:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var _timer:Timer;
+      
+      private var _consumableProperties:Object;
+      
+      private var _syncPending:Boolean;
+      
+      private var _outstandingID:Number;
+      
+      private var _syncID:Number;
+      
+      private var _names:Array;
+      
+      private var _storeSync:Object;
+      
+      public function MochiInventory()
+      {
+         method
+            name null
+            returns QName(PackageNamespace(""),"void")
+            
+            body
+               maxstack 53
+               localcount 1
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  jump ofs001d
+                  typeof
+                  strictequals
+                  negate
+                  pushundefined
+                  setlocal0
+                  lessthan
+                  getlocal1
+         ofs001d:
+                  constructsuper 0
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiCoins")
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiCoins")
+                  getproperty QName(PackageNamespace(""),"ITEM_OWNED")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"48"),"itemOwned")
+                  pushfalse
+                  iffalse ofs003b
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs003f
+         ofs003b:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs003f:
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiCoins")
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiCoins")
+                  getproperty QName(PackageNamespace(""),"ITEM_NEW")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"48"),"newItems")
+                  pushfalse
+                  iffalse ofs005b
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs005f
+         ofs005b:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs005f:
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                  getproperty QName(PackageNamespace(""),"LOGGED_IN")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"48"),"loggedIn")
+                  pushfalse
+                  iffalse ofs007b
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs007f
+         ofs007b:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs007f:
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                  getproperty QName(PackageNamespace(""),"LOGGED_OUT")
+                  getlocal0
+                  jump ofs0094
+                  pushnan
+                  instanceof
+                  not
+                  coerce_s
+                  lessthan
+                  setlocal1
+                  bitand
+         ofs0094:
+                  getproperty QName(PrivateNamespace(null,"48"),"loggedOut")
+                  pushfalse
+                  iffalse ofs00a6
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs00aa
+         ofs00a6:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs00aa:
+                  getlocal0
+                  jump ofs00b6
+                  bitnot
+                  setlocal2
+                  dxnslate
+                  setlocal2
+                  increment
+                  pushnan
+                  coerce_a
+         ofs00b6:
+                  findpropstrict QName(PackageNamespace(""),"Object")
+                  jump ofs00c3
+                  getlocal3
+                  lshift
+                  multiply_i
+                  pushnan
+                  setlocal2
+                  convert_s
+                  setlocal3
+         ofs00c3:
+                  constructprop QName(PackageNamespace(""),"Object"), 0
+                  jump ofs00d1
+                  decrement
+                  increment_i
+                  newactivation
+                  hasnext
+                  convert_i
+                  multiply
+                  greaterthan
+         ofs00d1:
+                  initproperty QName(PrivateNamespace(null,"48"),"_storeSync")
+                  getlocal0
+                  pushfalse
+                  jump ofs00e1
+                  decrement
+                  increment_i
+                  newactivation
+                  hasnext
+                  convert_i
+                  multiply
+                  greaterthan
+         ofs00e1:
+                  initproperty QName(PrivateNamespace(null,"48"),"_syncPending")
+                  getlocal0
+                  pushbyte 0
+                  jump ofs00f2
+                  convert_u
+                  subtract
+                  setlocal0
+                  pushundefined
+                  nextname
+                  getlocal0
+                  urshift
+         ofs00f2:
+                  initproperty QName(PrivateNamespace(null,"48"),"_outstandingID")
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PrivateNamespace(null,"48"),"_syncID")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.utils"),"Timer")
+                  pushshort 1000
+                  constructprop QName(PackageNamespace("flash.utils"),"Timer"), 1
+                  initproperty QName(PrivateNamespace(null,"48"),"_timer")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"48"),"_timer")
+                  getlex QName(PackageNamespace("flash.events"),"TimerEvent")
+                  getproperty QName(PackageNamespace(""),"TIMER")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"48"),"sync")
+                  pushfalse
+                  iffalse ofs0125
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0129
+         ofs0125:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs0129:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"48"),"_timer")
+                  pushfalse
+                  iffalse ofs013a
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs013e
+         ofs013a:
+                  callpropvoid QName(PackageNamespace(""),"start"), 0
+         ofs013e:
+                  getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                  getproperty QName(PackageNamespace(""),"loggedIn")
+                  iffalse ofs015e
+                  getlocal0
+                  pushfalse
+                  iffalse ofs0156
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs015a
+         ofs0156:
+                  callpropvoid QName(PrivateNamespace(null,"48"),"loggedIn"), 0
+         ofs015a:
+                  jump ofs0170
+         ofs015e:
+                  getlocal0
+                  pushfalse
+                  iffalse ofs016c
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs0170
+         ofs016c:
+                  callpropvoid QName(PrivateNamespace(null,"48"),"loggedOut"), 0
+         ofs0170:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function addEventListener(param1:String, param2:Function) : void
+      {
+         trait method QName(PackageNamespace(""),"addEventListener")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               param QName(PackageNamespace(""),"Function")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 3
+                  localcount 3
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlex QName(PrivateNamespace(null,"48"),"_dispatcher")
+                     getlocal1
+                     getlocal2
+                     callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function triggerEvent(param1:String, param2:Object) : void
+         {
+            trait method QName(PackageNamespace(""),"triggerEvent")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"Object")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 3
+                     localcount 3
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(PrivateNamespace(null,"48"),"_dispatcher")
+                        getlocal1
+                        getlocal2
+                        callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function removeEventListener(param1:String, param2:Function) : void
+            {
+               trait method QName(PackageNamespace(""),"removeEventListener")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     param QName(PackageNamespace(""),"Function")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 3
+                        localcount 3
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlex QName(PrivateNamespace(null,"48"),"_dispatcher")
+                           getlocal1
+                           getlocal2
+                           callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function release() : void
+               {
+                  trait method QName(PackageNamespace(""),"release")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 53
+                           localcount 1
+                           initscopedepth 5
+                           maxscopedepth 6
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiCoins")
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiCoins")
+                              getproperty QName(PackageNamespace(""),"ITEM_NEW")
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"48"),"newItems")
+                              pushfalse
+                              iffalse ofs002d
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              pop
+                              jump ofs0031
+                     ofs002d:
+                              callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                     ofs0031:
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                              getproperty QName(PackageNamespace(""),"LOGGED_IN")
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"48"),"loggedIn")
+                              pushfalse
+                              iffalse ofs004d
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              pop
+                              jump ofs0051
+                     ofs004d:
+                              callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                     ofs0051:
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                              getproperty QName(PackageNamespace(""),"LOGGED_OUT")
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"48"),"loggedOut")
+                              pushfalse
+                              iffalse ofs006d
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              pop
+                              jump ofs0071
+                     ofs006d:
+                              callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                     ofs0071:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  private function loggedOut(param1:Object = null) : void
+                  {
+                     trait method QName(PrivateNamespace(null,"48"),"loggedOut")
+                        dispid 0
+                        method
+                           name null
+                           flag HAS_OPTIONAL
+                           param QName(PackageNamespace(""),"Object")
+                           optional Null()
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 52
+                              localcount 2
+                              initscopedepth 5
+                              maxscopedepth 6
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 getlocal0
+                                 jump ofs001b
+                                 bitor
+                                 getlocal2
+                                 convert_i
+                                 strictequals
+                                 decrement_i
+                        ofs001b:
+                                 pushnull
+                                 initproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     private function loggedIn(param1:Object = null) : void
+                     {
+                        trait method QName(PrivateNamespace(null,"48"),"loggedIn")
+                           dispid 0
+                           method
+                              name null
+                              flag HAS_OPTIONAL
+                              param QName(PackageNamespace(""),"Object")
+                              optional Null()
+                              returns QName(PackageNamespace(""),"void")
+                              
+                              body
+                                 maxstack 53
+                                 localcount 2
+                                 initscopedepth 5
+                                 maxscopedepth 6
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    pushscope
+                                    getlex QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                                    getlex QName(PrivateNamespace(null,"48"),"CONSUMER_KEY")
+                                    getlocal0
+                                    getproperty QName(PrivateNamespace(null,"48"),"getConsumableBag")
+                                    pushfalse
+                                    iffalse ofs0029
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs002d
+                           ofs0029:
+                                    callpropvoid QName(PackageNamespace(""),"get"), 2
+                           ofs002d:
+                                    returnvoid
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        private function newItems(param1:Object) : void
+                        {
+                           trait method QName(PrivateNamespace(null,"48"),"newItems")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"Object")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 55
+                                    localcount 2
+                                    initscopedepth 5
+                                    maxscopedepth 6
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlex QName(PrivateNamespace(null,"48"),"KEY_SALT")
+                                       add
+                                       getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       iftrue ofs0052
+                                       getlocal0
+                                       getlocal1
+                                       jump ofs002d
+                                       lshift
+                                       setlocal3
+                                       swap
+                                       subtract
+                                       hasnext
+                                       swap
+                              ofs002d:
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlex QName(PrivateNamespace(null,"48"),"KEY_SALT")
+                                       jump ofs003d
+                                       setlocal3
+                                       bitor
+                                       decrement
+                                       pushwith
+                                       getglobalscope
+                                       instanceof
+                              ofs003d:
+                                       add
+                                       pushbyte 0
+                                       pushfalse
+                                       iffalse ofs004f
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs0052
+                              ofs004f:
+                                       setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                              ofs0052:
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       iftrue ofs0081
+                                       getlocal0
+                                       getlocal1
+                                       jump ofs006a
+                                       setlocal2
+                                       pushtrue
+                                       newactivation
+                                       hasnext
+                                       dup
+                                       convert_b
+                              ofs006a:
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       pushbyte 0
+                                       pushfalse
+                                       iffalse ofs007e
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs0081
+                              ofs007e:
+                                       setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                              ofs0081:
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlex QName(PrivateNamespace(null,"48"),"KEY_SALT")
+                                       add
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlex QName(PrivateNamespace(null,"48"),"KEY_SALT")
+                                       add
+                                       getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       jump ofs00a0
+                                       dxnslate
+                                       pushundefined
+                                       add
+                                       pushundefined
+                                       bitand
+                                       increment
+                              ofs00a0:
+                                       getlocal1
+                                       getproperty Multiname("count",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       add
+                                       pushfalse
+                                       iffalse ofs00b4
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs00b7
+                              ofs00b4:
+                                       setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                              ofs00b7:
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlocal1
+                                       getproperty Multiname("count",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       add
+                                       pushfalse
+                                       iffalse ofs00d8
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs00db
+                              ofs00d8:
+                                       setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                              ofs00db:
+                                       getlocal1
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       convert_b
+                                       jump ofs00ea
+                                       instanceof
+                                       getlocal1
+                                       dup
+                                       coerce_s
+                                       pushnan
+                                       greaterequals
+                              ofs00ea:
+                                       dup
+                                       jump ofs00f5
+                                       convert_d
+                                       istypelate
+                                       setlocal3
+                                       setlocal2
+                                       setlocal0
+                                       add
+                              ofs00f5:
+                                       iffalse ofs0102
+                                       pop
+                                       getlocal1
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty Multiname("consumable",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       convert_b
+                              ofs0102:
+                                       iffalse ofs0178
+                                       getlocal0
+                                       getlocal1
+                                       jump ofs0112
+                                       bitxor
+                                       bitnot
+                                       convert_s
+                                       pushnan
+                                       negate
+                                       istypelate
+                              ofs0112:
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty Multiname("tag",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       iftrue ofs013b
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty Multiname("tag",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       pushbyte 0
+                                       pushfalse
+                                       iffalse ofs0138
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs013b
+                              ofs0138:
+                                       setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                              ofs013b:
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty Multiname("tag",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       jump ofs014e
+                                       pushnull
+                                       typeof
+                                       strictequals
+                                       hasnext
+                                       lshift
+                                       convert_u
+                                       lessequals
+                              ofs014e:
+                                       getlocal0
+                                       getlocal1
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty Multiname("tag",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlocal1
+                                       getproperty Multiname("privateProperties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getproperty Multiname("inc",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       getlocal1
+                                       getproperty Multiname("count",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                       multiply
+                                       add
+                                       pushfalse
+                                       iffalse ofs0175
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs0178
+                              ofs0175:
+                                       setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                              ofs0178:
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           private function itemOwned(param1:Object) : void
+                           {
+                              trait method QName(PrivateNamespace(null,"48"),"itemOwned")
+                                 dispid 0
+                                 method
+                                    name null
+                                    param QName(PackageNamespace(""),"Object")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 56
+                                       localcount 2
+                                       initscopedepth 5
+                                       maxscopedepth 6
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"48"),"_storeSync")
+                                          getlocal1
+                                          jump ofs001f
+                                          modulo
+                                          multiply
+                                          convert_b
+                                          checkfilter
+                                          pushnull
+                                 ofs001f:
+                                          getproperty Multiname("id",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                          pushstring "properties"
+                                          getlocal1
+                                          getproperty Multiname("properties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                          pushstring "count"
+                                          getlocal1
+                                          getproperty Multiname("count",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                          newobject 2
+                                          pushfalse
+                                          iffalse ofs0041
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0044
+                                 ofs0041:
+                                          setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                 ofs0044:
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              private function getConsumableBag(param1:MochiUserData) : void
+                              {
+                                 trait method QName(PrivateNamespace(null,"48"),"getConsumableBag")
+                                    dispid 0
+                                    method
+                                       name null
+                                       param QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 58
+                                          localcount 6
+                                          initscopedepth 5
+                                          maxscopedepth 6
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             pushnull
+                                             coerce_s
+                                             setlocal2
+                                             pushnan
+                                             setlocal3
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"error")
+                                             iffalse ofs0064
+                                             findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                             getlex QName(PackageNamespace(""),"ERROR")
+                                             pushstring "type"
+                                             jump ofs0030
+                                             increment
+                                             modulo
+                                             pushscope
+                                             pushnan
+                                             getlocal0
+                                    ofs0030:
+                                             getlex QName(PackageNamespace(""),"IO_ERROR")
+                                             pushstring "error"
+                                             getlocal1
+                                             jump ofs0041
+                                             greaterequals
+                                             pop
+                                             greaterequals
+                                             hasnext
+                                             typeof
+                                             getlocal0
+                                    ofs0041:
+                                             getproperty QName(PackageNamespace(""),"error")
+                                             jump ofs004e
+                                             setlocal2
+                                             pushscope
+                                             popscope
+                                             pushundefined
+                                             convert_o
+                                             not
+                                    ofs004e:
+                                             newobject 2
+                                             pushfalse
+                                             iffalse ofs005f
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs0063
+                                    ofs005f:
+                                             callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                    ofs0063:
+                                             returnvoid
+                                    ofs0064:
+                                             getlocal0
+                                             newobject 0
+                                             initproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                             getlocal0
+                                             findpropstrict QName(PackageNamespace(""),"Array")
+                                             constructprop QName(PackageNamespace(""),"Array"), 0
+                                             initproperty QName(PrivateNamespace(null,"48"),"_names")
+                                             getlocal1
+                                             jump ofs007e
+                                             dxnslate
+                                             getglobalscope
+                                             lshift
+                                             coerce_s
+                                             pushtrue
+                                             checkfilter
+                                    ofs007e:
+                                             getproperty QName(PackageNamespace(""),"data")
+                                             iffalse ofs0109
+                                             pushbyte 0
+                                             setlocal 4
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"data")
+                                             coerce_a
+                                             setlocal 5
+                                             nop
+                                    ofs0091:
+                                             label
+                                             hasnext2 5, 4
+                                             iftrue ofs009d
+                                             jump ofs00a1
+                                    ofs009d:
+                                             jump ofs00a5
+                                    ofs00a1:
+                                             jump ofs0105
+                                    ofs00a5:
+                                             getlocal 5
+                                             getlocal 4
+                                             nextname
+                                             coerce_s
+                                             jump ofs00b5
+                                             instanceof
+                                             swap
+                                             pushnan
+                                             setlocal2
+                                             convert_b
+                                             modulo
+                                    ofs00b5:
+                                             setlocal2
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"48"),"_names")
+                                             getlocal2
+                                             pushfalse
+                                             iffalse ofs00c9
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs00cd
+                                    ofs00c9:
+                                             callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                                    ofs00cd:
+                                             getlocal0
+                                             jump ofs00d8
+                                             convert_d
+                                             pushnull
+                                             nextvalue
+                                             pushnan
+                                             pushnull
+                                             nextname
+                                    ofs00d8:
+                                             getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                             getlocal2
+                                             findpropstrict QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"data")
+                                             getlocal2
+                                             getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             constructprop QName(PackageNamespace("mochi.as3"),"MochiDigits"), 1
+                                             pushfalse
+                                             iffalse ofs00fa
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs00fd
+                                    ofs00fa:
+                                             setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                    ofs00fd:
+                                             pushbyte 2
+                                             pushbyte 3
+                                             ifne ofs0091
+                                    ofs0105:
+                                             kill 5
+                                             kill 4
+                                    ofs0109:
+                                             pushbyte 0
+                                             setlocal 4
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"48"),"_storeSync")
+                                             coerce_a
+                                             setlocal 5
+                                             nop
+                                    ofs0115:
+                                             label
+                                             hasnext2 5, 4
+                                             iftrue ofs0121
+                                             jump ofs0125
+                                    ofs0121:
+                                             jump ofs0129
+                                    ofs0125:
+                                             jump ofs01bc
+                                    ofs0129:
+                                             getlocal 5
+                                             jump ofs0135
+                                             bitxor
+                                             convert_d
+                                             getlocal1
+                                             hasnext
+                                             hasnext
+                                             lessequals
+                                    ofs0135:
+                                             getlocal 4
+                                             nextname
+                                             coerce_s
+                                             setlocal2
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"48"),"_storeSync")
+                                             getlocal2
+                                             getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             getproperty Multiname("count",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             convert_d
+                                             setlocal3
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                             getlocal2
+                                             getlex QName(PrivateNamespace(null,"48"),"KEY_SALT")
+                                             add
+                                             getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             iffalse ofs0174
+                                             getlocal3
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                             getlocal2
+                                             getlex QName(PrivateNamespace(null,"48"),"KEY_SALT")
+                                             add
+                                             getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             getproperty Multiname("value",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             jump ofs0171
+                                             pushnull
+                                             dxnslate
+                                             checkfilter
+                                             pushundefined
+                                             modulo
+                                             decrement_i
+                                    ofs0171:
+                                             subtract
+                                             convert_d
+                                             setlocal3
+                                    ofs0174:
+                                             getlocal3
+                                             pushbyte 0
+                                             ifne ofs017f
+                                             jump ofs0115
+                                    ofs017f:
+                                             getlocal0
+                                             pushstring "id"
+                                             getlocal2
+                                             pushstring "count"
+                                             getlocal3
+                                             pushstring "properties"
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"48"),"_storeSync")
+                                             getlocal2
+                                             jump ofs019a
+                                             decrement_i
+                                             setlocal3
+                                             increment_i
+                                             coerce_s
+                                             multiply
+                                             dxnslate
+                                    ofs019a:
+                                             getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             getproperty Multiname("properties",[PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                             newobject 3
+                                             pushfalse
+                                             iffalse ofs01b0
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs01b4
+                                    ofs01b0:
+                                             callpropvoid QName(PrivateNamespace(null,"48"),"newItems"), 1
+                                    ofs01b4:
+                                             pushbyte 2
+                                             pushbyte 3
+                                             ifne ofs0115
+                                    ofs01bc:
+                                             kill 5
+                                             kill 4
+                                             findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                             getlex QName(PackageNamespace(""),"READY")
+                                             newobject 0
+                                             pushfalse
+                                             iffalse ofs01d7
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs01db
+                                    ofs01d7:
+                                             callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                    ofs01db:
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 private function putConsumableBag(param1:MochiUserData) : void
+                                 {
+                                    trait method QName(PrivateNamespace(null,"48"),"putConsumableBag")
+                                       dispid 0
+                                       method
+                                          name null
+                                          param QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 56
+                                             localcount 2
+                                             initscopedepth 5
+                                             maxscopedepth 6
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                getlocal0
+                                                pushfalse
+                                                initproperty QName(PrivateNamespace(null,"48"),"_syncPending")
+                                                getlocal1
+                                                getproperty QName(PackageNamespace(""),"error")
+                                                iffalse ofs004c
+                                                findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                                getlex QName(PackageNamespace(""),"ERROR")
+                                                pushstring "type"
+                                                getlex QName(PackageNamespace(""),"IO_ERROR")
+                                                pushstring "error"
+                                                getlocal1
+                                                getproperty QName(PackageNamespace(""),"error")
+                                                newobject 2
+                                                pushfalse
+                                                iffalse ofs0042
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0046
+                                       ofs0042:
+                                                callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                       ofs0046:
+                                                getlocal0
+                                                pushbyte -1
+                                                initproperty QName(PrivateNamespace(null,"48"),"_outstandingID")
+                                       ofs004c:
+                                                findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                                getlex QName(PackageNamespace(""),"WRITTEN")
+                                                newobject 0
+                                                jump ofs005e
+                                                setlocal1
+                                                bitxor
+                                                swap
+                                                divide
+                                                add
+                                                subtract
+                                       ofs005e:
+                                                pushfalse
+                                                iffalse ofs006d
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0071
+                                       ofs006d:
+                                                callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                       ofs0071:
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    private function sync(param1:Event = null) : void
+                                    {
+                                       trait method QName(PrivateNamespace(null,"48"),"sync")
+                                          dispid 0
+                                          method
+                                             name null
+                                             flag HAS_OPTIONAL
+                                             param QName(PackageNamespace("flash.events"),"Event")
+                                             optional Null()
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 55
+                                                localcount 6
+                                                initscopedepth 5
+                                                maxscopedepth 6
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushbyte 37
+                                                   pushbyte 34
+                                                   ifne ofs0010
+                                                   returnvoid
+                                                   newobject 536870911
+                                          ofs0010:
+                                                   jump ofs001a
+                                                   negate_i
+                                                   pushnan
+                                                   multiply
+                                                   setlocal2
+                                                   pushfalse
+                                                   strictequals
+                                          ofs001a:
+                                                   pushscope
+                                                   pushnull
+                                                   coerce_s
+                                                   setlocal3
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"48"),"_syncPending")
+                                                   convert_b
+                                                   dup
+                                                   iftrue ofs0032
+                                                   pop
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"48"),"_syncID")
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"48"),"_outstandingID")
+                                                   equals
+                                          ofs0032:
+                                                   iffalse ofs0037
+                                                   returnvoid
+                                          ofs0037:
+                                                   getlocal0
+                                                   getlocal0
+                                                   jump ofs0043
+                                                   multiply_i
+                                                   add_i
+                                                   setlocal3
+                                                   pushnan
+                                                   negate_i
+                                                   lessequals
+                                          ofs0043:
+                                                   getproperty QName(PrivateNamespace(null,"48"),"_syncID")
+                                                   initproperty QName(PrivateNamespace(null,"48"),"_outstandingID")
+                                                   newobject 0
+                                                   coerce QName(PackageNamespace(""),"Object")
+                                                   setlocal2
+                                                   pushbyte 0
+                                                   setlocal 4
+                                                   getlocal0
+                                                   jump ofs005d
+                                                   add_i
+                                                   multiply
+                                                   bitnot
+                                                   hasnext
+                                                   add_i
+                                                   decrement_i
+                                          ofs005d:
+                                                   getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                   coerce_a
+                                                   setlocal 5
+                                                   nop
+                                          ofs0064:
+                                                   label
+                                                   hasnext2 5, 4
+                                                   iftrue ofs0070
+                                                   jump ofs0074
+                                          ofs0070:
+                                                   jump ofs0078
+                                          ofs0074:
+                                                   jump ofs00cd
+                                          ofs0078:
+                                                   getlocal 5
+                                                   getlocal 4
+                                                   jump ofs0086
+                                                   typeof
+                                                   pushfalse
+                                                   strictequals
+                                                   greaterequals
+                                                   greaterthan
+                                                   dxnslate
+                                          ofs0086:
+                                                   nextname
+                                                   coerce_s
+                                                   jump ofs0093
+                                                   pushnan
+                                                   not
+                                                   divide
+                                                   urshift
+                                                   add
+                                                   increment_i
+                                                   pushtrue
+                                          ofs0093:
+                                                   setlocal3
+                                                   getlocal2
+                                                   jump ofs00a0
+                                                   bitnot
+                                                   dup
+                                                   modulo
+                                                   decrement_i
+                                                   increment_i
+                                                   bitor
+                                                   getlocal3
+                                          ofs00a0:
+                                                   getlocal3
+                                                   findpropstrict QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                   getlocal3
+                                                   getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                   callproperty QName(PackageNamespace("mochi.as3"),"MochiDigits"), 1
+                                                   getproperty QName(PackageNamespace(""),"value")
+                                                   pushfalse
+                                                   iffalse ofs00c2
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs00c5
+                                          ofs00c2:
+                                                   setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                          ofs00c5:
+                                                   pushbyte 2
+                                                   pushbyte 3
+                                                   ifne ofs0064
+                                          ofs00cd:
+                                                   kill 5
+                                                   kill 4
+                                                   getlex QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                                                   getlex QName(PrivateNamespace(null,"48"),"CONSUMER_KEY")
+                                                   jump ofs00e1
+                                                   getlocal3
+                                                   modulo
+                                                   bitor
+                                                   greaterthan
+                                                   bitxor
+                                                   increment
+                                                   astypelate
+                                          ofs00e1:
+                                                   getlocal2
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"48"),"putConsumableBag")
+                                                   pushfalse
+                                                   iffalse ofs00f6
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs00fa
+                                          ofs00f6:
+                                                   callpropvoid QName(PackageNamespace(""),"put"), 3
+                                          ofs00fa:
+                                                   getlocal0
+                                                   pushtrue
+                                                   jump ofs0107
+                                                   getlocal3
+                                                   modulo
+                                                   bitor
+                                                   greaterthan
+                                                   bitxor
+                                                   increment
+                                                   astypelate
+                                          ofs0107:
+                                                   initproperty QName(PrivateNamespace(null,"48"),"_syncPending")
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       override flash_proxy function getProperty(param1:*) : *
+                                       {
+                                          trait method QName(Namespace("http://www.adobe.com/2006/actionscript/flash/proxy"),"getProperty")
+                                             flag OVERRIDE
+                                             dispid 0
+                                             method
+                                                name null
+                                                param null
+                                                returns null
+                                                
+                                                body
+                                                   maxstack 54
+                                                   localcount 2
+                                                   initscopedepth 5
+                                                   maxscopedepth 6
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      pushscope
+                                                      getlocal0
+                                                      getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                      pushnull
+                                                      ifne ofs0050
+                                                      findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                                      getlex QName(PackageNamespace(""),"ERROR")
+                                                      pushstring "type"
+                                                      jump ofs002c
+                                                      dup
+                                                      checkfilter
+                                                      newactivation
+                                                      setlocal2
+                                                      instanceof
+                                             ofs002c:
+                                                      getlex QName(PackageNamespace(""),"NOT_READY")
+                                                      jump ofs0038
+                                                      subtract_i
+                                                      coerce_a
+                                                      setlocal0
+                                                      pushnan
+                                                      strictequals
+                                             ofs0038:
+                                                      newobject 1
+                                                      pushfalse
+                                                      iffalse ofs0049
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs004d
+                                             ofs0049:
+                                                      callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                             ofs004d:
+                                                      pushbyte -1
+                                                      returnvalue
+                                             ofs0050:
+                                                      getlocal0
+                                                      getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                      getlocal1
+                                                      getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                      iffalse ofs0078
+                                                      findpropstrict QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                                      getlocal0
+                                                      getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                      getlocal1
+                                                      getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                      callproperty QName(PackageNamespace("mochi.as3"),"MochiDigits"), 1
+                                                      jump ofs0074
+                                                      not
+                                                      strictequals
+                                                      dup
+                                                      hasnext
+                                                      coerce_a
+                                             ofs0074:
+                                                      getproperty QName(PackageNamespace(""),"value")
+                                                      returnvalue
+                                             ofs0078:
+                                                      getlex QName(PackageNamespace(""),"undefined")
+                                                      returnvalue
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          override flash_proxy function deleteProperty(param1:*) : Boolean
+                                          {
+                                             trait method QName(Namespace("http://www.adobe.com/2006/actionscript/flash/proxy"),"deleteProperty")
+                                                flag OVERRIDE
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   param null
+                                                   returns QName(PackageNamespace(""),"Boolean")
+                                                   
+                                                   body
+                                                      maxstack 53
+                                                      localcount 2
+                                                      initscopedepth 5
+                                                      maxscopedepth 6
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushbyte 37
+                                                         pushbyte 34
+                                                         ifne ofs0010
+                                                         returnvoid
+                                                         newobject 536870911
+                                                ofs0010:
+                                                         pushscope
+                                                         getlocal0
+                                                         jump ofs001a
+                                                         bitor
+                                                         decrement
+                                                         getlocal3
+                                                         pushtrue
+                                                ofs001a:
+                                                         getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                         getlocal1
+                                                         getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                         iftrue ofs0027
+                                                         pushfalse
+                                                         returnvalue
+                                                ofs0027:
+                                                         getlocal0
+                                                         getproperty QName(PrivateNamespace(null,"48"),"_names")
+                                                         getlocal0
+                                                         getproperty QName(PrivateNamespace(null,"48"),"_names")
+                                                         getlocal1
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                                         pushbyte 1
+                                                         pushfalse
+                                                         iffalse ofs0045
+                                                         pushbyte 5
+                                                         pop
+                                                         pop
+                                                         pop
+                                                         pop
+                                                         jump ofs0049
+                                                ofs0045:
+                                                         callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"splice"), 2
+                                                ofs0049:
+                                                         getlocal0
+                                                         jump ofs0052
+                                                         lshift
+                                                         bitnot
+                                                         pushscope
+                                                         popscope
+                                                ofs0052:
+                                                         getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                         getlocal1
+                                                         deleteproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                         pop
+                                                         pushtrue
+                                                         returnvalue
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             override flash_proxy function hasProperty(param1:*) : Boolean
+                                             {
+                                                trait method QName(Namespace("http://www.adobe.com/2006/actionscript/flash/proxy"),"hasProperty")
+                                                   flag OVERRIDE
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      param null
+                                                      returns QName(PackageNamespace(""),"Boolean")
+                                                      
+                                                      body
+                                                         maxstack 54
+                                                         localcount 2
+                                                         initscopedepth 5
+                                                         maxscopedepth 6
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushbyte 37
+                                                            pushbyte 34
+                                                            ifne ofs0010
+                                                            returnvoid
+                                                            newobject 536870911
+                                                   ofs0010:
+                                                            jump ofs001a
+                                                            popscope
+                                                            convert_d
+                                                            subtract
+                                                            multiply_i
+                                                            greaterequals
+                                                            add_i
+                                                   ofs001a:
+                                                            pushscope
+                                                            getlocal0
+                                                            getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                            pushnull
+                                                            ifne ofs0047
+                                                            findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                                            getlex QName(PackageNamespace(""),"ERROR")
+                                                            pushstring "type"
+                                                            getlex QName(PackageNamespace(""),"NOT_READY")
+                                                            newobject 1
+                                                            pushfalse
+                                                            iffalse ofs0041
+                                                            pushbyte 5
+                                                            pop
+                                                            pop
+                                                            pop
+                                                            pop
+                                                            jump ofs0045
+                                                   ofs0041:
+                                                            callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                                   ofs0045:
+                                                            pushfalse
+                                                            returnvalue
+                                                   ofs0047:
+                                                            getlocal0
+                                                            jump ofs0052
+                                                            multiply
+                                                            dxnslate
+                                                            negate_i
+                                                            strictequals
+                                                            dxnslate
+                                                            typeof
+                                                   ofs0052:
+                                                            getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                            getlocal1
+                                                            getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                            jump ofs0063
+                                                            getlocal0
+                                                            setlocal3
+                                                            pushnull
+                                                            lessthan
+                                                            nextvalue
+                                                            pushwith
+                                                   ofs0063:
+                                                            getlex QName(PackageNamespace(""),"undefined")
+                                                            ifne ofs006c
+                                                            pushfalse
+                                                            returnvalue
+                                                   ofs006c:
+                                                            pushtrue
+                                                            returnvalue
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                override flash_proxy function setProperty(param1:*, param2:*) : void
+                                                {
+                                                   trait method QName(Namespace("http://www.adobe.com/2006/actionscript/flash/proxy"),"setProperty")
+                                                      flag OVERRIDE
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         param null
+                                                         param null
+                                                         returns QName(PackageNamespace(""),"void")
+                                                         
+                                                         body
+                                                            maxstack 58
+                                                            localcount 6
+                                                            initscopedepth 5
+                                                            maxscopedepth 6
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushbyte 37
+                                                               pushbyte 34
+                                                               ifne ofs0010
+                                                               returnvoid
+                                                               newobject 536870911
+                                                      ofs0010:
+                                                               pushscope
+                                                               pushnull
+                                                               coerce QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                                               setlocal3
+                                                               getlocal0
+                                                               getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                               jump ofs0022
+                                                               multiply_i
+                                                               bitxor
+                                                               getlocal3
+                                                               subtract_i
+                                                      ofs0022:
+                                                               pushnull
+                                                               ifne ofs0059
+                                                               findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                                               getlex QName(PackageNamespace(""),"ERROR")
+                                                               jump ofs0035
+                                                               multiply_i
+                                                               bitxor
+                                                               getlocal3
+                                                               subtract_i
+                                                      ofs0035:
+                                                               pushstring "type"
+                                                               getlex QName(PackageNamespace(""),"NOT_READY")
+                                                               newobject 1
+                                                               jump ofs0045
+                                                               add_i
+                                                               instanceof
+                                                               lessequals
+                                                               bitxor
+                                                      ofs0045:
+                                                               pushfalse
+                                                               iffalse ofs0054
+                                                               pushbyte 5
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               jump ofs0058
+                                                      ofs0054:
+                                                               callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                                      ofs0058:
+                                                               returnvoid
+                                                      ofs0059:
+                                                               getlocal2
+                                                               getlex QName(PackageNamespace(""),"Number")
+                                                               istypelate
+                                                               iftrue ofs008d
+                                                               findpropstrict QName(PackageNamespace(""),"triggerEvent")
+                                                               getlex QName(PackageNamespace(""),"ERROR")
+                                                               pushstring "type"
+                                                               getlex QName(PackageNamespace(""),"VALUE_ERROR")
+                                                               pushstring "error"
+                                                               pushstring "Invalid type"
+                                                               pushstring "arg"
+                                                               getlocal2
+                                                               newobject 3
+                                                               pushfalse
+                                                               iffalse ofs0088
+                                                               pushbyte 5
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               jump ofs008c
+                                                      ofs0088:
+                                                               callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                                      ofs008c:
+                                                               returnvoid
+                                                      ofs008d:
+                                                               getlocal0
+                                                               getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                               getlocal1
+                                                               getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                               iffalse ofs00dd
+                                                               findpropstrict QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                                               getlocal0
+                                                               getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                               jump ofs00a8
+                                                               typeof
+                                                               subtract
+                                                               pushundefined
+                                                               convert_u
+                                                      ofs00a8:
+                                                               getlocal1
+                                                               getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                               callproperty QName(PackageNamespace("mochi.as3"),"MochiDigits"), 1
+                                                               coerce QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                                               setlocal3
+                                                               getlocal3
+                                                               getproperty QName(PackageNamespace(""),"value")
+                                                               getlocal2
+                                                               ifne ofs00be
+                                                               returnvoid
+                                                      ofs00be:
+                                                               getlocal3
+                                                               getlocal2
+                                                               jump ofs00c8
+                                                               pushnan
+                                                               increment
+                                                               astypelate
+                                                               pushscope
+                                                      ofs00c8:
+                                                               pushfalse
+                                                               iffalse ofs00d6
+                                                               pushbyte 5
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               jump ofs00d9
+                                                      ofs00d6:
+                                                               setproperty QName(PackageNamespace(""),"value")
+                                                      ofs00d9:
+                                                               jump ofs011b
+                                                      ofs00dd:
+                                                               getlocal0
+                                                               getproperty QName(PrivateNamespace(null,"48"),"_names")
+                                                               getlocal1
+                                                               pushfalse
+                                                               iffalse ofs00f0
+                                                               pushbyte 5
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               jump ofs00f4
+                                                      ofs00f0:
+                                                               callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                                                      ofs00f4:
+                                                               getlocal0
+                                                               getproperty QName(PrivateNamespace(null,"48"),"_consumableProperties")
+                                                               getlocal1
+                                                               findpropstrict QName(PackageNamespace("mochi.as3"),"MochiDigits")
+                                                               getlocal2
+                                                               jump ofs0105
+                                                               bitnot
+                                                               negate
+                                                               increment
+                                                               bitor
+                                                      ofs0105:
+                                                               constructprop QName(PackageNamespace("mochi.as3"),"MochiDigits"), 1
+                                                               pushfalse
+                                                               iffalse ofs0118
+                                                               pushbyte 5
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               jump ofs011b
+                                                      ofs0118:
+                                                               setproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                      ofs011b:
+                                                               getlocal0
+                                                               dup
+                                                               setlocal 4
+                                                               getproperty QName(PrivateNamespace(null,"48"),"_syncID")
+                                                               increment
+                                                               setlocal 5
+                                                               getlocal 4
+                                                               jump ofs012f
+                                                               getlocal3
+                                                               add
+                                                               pushwith
+                                                               getlocal0
+                                                      ofs012f:
+                                                               getlocal 5
+                                                               pushfalse
+                                                               iffalse ofs013f
+                                                               pushbyte 5
+                                                               pop
+                                                               pop
+                                                               pop
+                                                               jump ofs0142
+                                                      ofs013f:
+                                                               setproperty QName(PrivateNamespace(null,"48"),"_syncID")
+                                                      ofs0142:
+                                                               kill 5
+                                                               kill 4
+                                                               returnvoid
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                   
+                                                   override flash_proxy function nextNameIndex(param1:int) : int
+                                                   {
+                                                      trait method QName(Namespace("http://www.adobe.com/2006/actionscript/flash/proxy"),"nextNameIndex")
+                                                         flag OVERRIDE
+                                                         dispid 0
+                                                         method
+                                                            name null
+                                                            param QName(PackageNamespace(""),"int")
+                                                            returns QName(PackageNamespace(""),"int")
+                                                            
+                                                            body
+                                                               maxstack 52
+                                                               localcount 2
+                                                               initscopedepth 5
+                                                               maxscopedepth 6
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushbyte 37
+                                                                  pushbyte 34
+                                                                  ifne ofs0010
+                                                                  returnvoid
+                                                                  newobject 536870911
+                                                         ofs0010:
+                                                                  pushscope
+                                                                  getlocal1
+                                                                  getlocal0
+                                                                  getproperty QName(PrivateNamespace(null,"48"),"_names")
+                                                                  getproperty QName(PackageNamespace(""),"length")
+                                                                  ifnge ofs0023
+                                                                  pushbyte 0
+                                                                  jump ofs0031
+                                                         ofs0023:
+                                                                  getlocal1
+                                                                  pushbyte 1
+                                                                  add
+                                                                  convert_i
+                                                                  jump ofs0031
+                                                                  decrement
+                                                                  nextvalue
+                                                                  decrement_i
+                                                                  pushnull
+                                                                  coerce_a
+                                                         ofs0031:
+                                                                  returnvalue
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                      }
+                                                      
+                                                      override flash_proxy function nextName(param1:int) : String
+                                                      {
+                                                         trait method QName(Namespace("http://www.adobe.com/2006/actionscript/flash/proxy"),"nextName")
+                                                            flag OVERRIDE
+                                                            dispid 0
+                                                            method
+                                                               name null
+                                                               param QName(PackageNamespace(""),"int")
+                                                               returns QName(PackageNamespace(""),"String")
+                                                               
+                                                               body
+                                                                  maxstack 53
+                                                                  localcount 2
+                                                                  initscopedepth 5
+                                                                  maxscopedepth 6
+                                                                  
+                                                                  code
+                                                                     getlocal0
+                                                                     pushbyte 37
+                                                                     pushbyte 34
+                                                                     ifne ofs0010
+                                                                     returnvoid
+                                                                     newobject 536870911
+                                                            ofs0010:
+                                                                     pushscope
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"48"),"_names")
+                                                                     getlocal1
+                                                                     decrement
+                                                                     getproperty MultinameL([PrivateNamespace(null,"48"),PackageNamespace(""),PackageNamespace("mochi.as3"),PrivateNamespace(null,"196"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiInventory"),StaticProtectedNs("mochi.as3:MochiInventory"),StaticProtectedNs("flash.utils:Proxy"),StaticProtectedNs("Object")])
+                                                                     returnvalue
+                                                                  end ; code
+                                                               end ; body
+                                                            end ; method
+                                                         }
+                                                      }
+                                                   }
+                                                   
+                                                   method
+                                                      name null
+                                                      returns null
+                                                      
+                                                      body
+                                                         maxstack 52
+                                                         localcount 1
+                                                         initscopedepth 1
+                                                         maxscopedepth 4
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushbyte 37
+                                                            pushbyte 34
+                                                            ifne ofs0010
+                                                            returnvoid
+                                                            newobject 536870911
+                                                   ofs0010:
+                                                            pushscope
+                                                            findpropstrict Multiname("MochiInventory",[PackageNamespace("mochi.as3")])
+                                                            getlex QName(PackageNamespace(""),"Object")
+                                                            pushscope
+                                                            jump ofs0021
+                                                            subtract
+                                                            pushnan
+                                                            setlocal1
+                                                            dup
+                                                            dxnslate
+                                                            decrement
+                                                   ofs0021:
+                                                            getlex QName(PackageNamespace("flash.utils"),"Proxy")
+                                                            pushscope
+                                                            getlex QName(PackageNamespace("flash.utils"),"Proxy")
+                                                            newclass 157
+                                                            popscope
+                                                            popscope
+                                                            jump ofs0037
+                                                            equals
+                                                            add_i
+                                                            getlocal2
+                                                            convert_b
+                                                            nextvalue
+                                                            add_i
+                                                   ofs0037:
+                                                            initproperty QName(PackageNamespace("mochi.as3"),"MochiInventory")
+                                                            returnvoid
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                   

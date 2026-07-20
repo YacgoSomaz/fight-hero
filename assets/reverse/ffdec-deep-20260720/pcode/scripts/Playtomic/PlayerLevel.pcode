@@ -1,0 +1,282 @@
+package Playtomic
+{
+   import flash.display.Loader;
+   
+   public final class PlayerLevel
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var LevelId:String;
+      
+      public var PlayerSource:String = "";
+      
+      public var PlayerId:String = "";
+      
+      public var PlayerName:String = "";
+      
+      public var Permalink:String;
+      
+      public var Name:String;
+      
+      public var Data:String;
+      
+      public var Thumb:Loader;
+      
+      public var Votes:int;
+      
+      public var Starts:int;
+      
+      public var Quits:int;
+      
+      public var Retries:int;
+      
+      public var Flags:int;
+      
+      public var Wins:int;
+      
+      public var Rating:Number;
+      
+      public var Score:int;
+      
+      public var SDate:Date;
+      
+      public var RDate:String;
+      
+      public var CustomData:Object;
+      
+      public function PlayerLevel()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  newobject 0
+                  initproperty QName(PackageNamespace(""),"CustomData")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Date")
+                  constructprop QName(PackageNamespace(""),"Date"), 0
+                  initproperty QName(PackageNamespace(""),"SDate")
+                  getlocal0
+                  pushstring "Just now"
+                  initproperty QName(PackageNamespace(""),"RDate")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      internal function SetThumb(param1:String) : void
+      {
+         trait method QName(PackageInternalNs("Playtomic"),"SetThumb")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 53
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal1
+                     pushnull
+                     equals
+                     dup
+                     iftrue ofs0027
+                     pop
+                     getlocal1
+                     pushstring ""
+                     equals
+                     jump ofs0027
+                     multiply
+                     urshift
+                     decrement_i
+                     istypelate
+                     equals
+            ofs0027:
+                     iffalse ofs002c
+                     returnvoid
+            ofs002c:
+                     getlocal0
+                     findpropstrict QName(PackageNamespace("flash.display"),"Loader")
+                     constructprop QName(PackageNamespace("flash.display"),"Loader"), 0
+                     jump ofs003d
+                     multiply
+                     urshift
+                     decrement_i
+                     istypelate
+                     equals
+            ofs003d:
+                     initproperty QName(PackageNamespace(""),"Thumb")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Thumb")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     jump ofs0050
+                     getlocal0
+                     getlocal0
+                     getlocal3
+                     astypelate
+                     convert_d
+            ofs0050:
+                     getlocal1
+                     callproperty QName(PackageInternalNs("Playtomic"),"Base64Decode"), 1
+                     pushfalse
+                     iffalse ofs0063
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0067
+            ofs0063:
+                     callpropvoid QName(PackageNamespace(""),"loadBytes"), 1
+            ofs0067:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function Thumbnail() : String
+         {
+            trait method QName(PackageNamespace(""),"Thumbnail")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"String")
+                  
+                  body
+                     maxstack 52
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushstring "http://g"
+                        getlex QName(PackageNamespace("Playtomic"),"Log")
+                        getproperty QName(PackageInternalNs("Playtomic"),"GUID")
+                        add
+                        pushstring ".api.playtomic.com/playerlevels/thumb.aspx?swfid="
+                        add
+                        getlex QName(PackageNamespace("Playtomic"),"Log")
+                        getproperty QName(PackageInternalNs("Playtomic"),"SWFID")
+                        add
+                        pushstring "&levelid="
+                        jump ofs0033
+                        istypelate
+                        negate_i
+                        multiply
+                        pushnull
+                        pushundefined
+                        divide
+               ofs0033:
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"LevelId")
+                        add
+                        jump ofs0043
+                        lessthan
+                        pushwith
+                        setlocal3
+                        setlocal1
+                        equals
+                        convert_o
+               ofs0043:
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 3
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("PlayerLevel",[PackageNamespace("Playtomic")])
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               getlex QName(PackageNamespace(""),"Object")
+               newclass 62
+               popscope
+               initproperty QName(PackageNamespace("Playtomic"),"PlayerLevel")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

@@ -1,0 +1,32 @@
+package
+{
+   import flash.media.Sound;
+   
+   [Embed(source="/_assets/98_V_Soldier2.mp3")]
+   public dynamic class V_Soldier2 extends Sound
+   {
+      
+      §§push(V_Soldier2);
+      if(37 == 34)
+      {
+         return;
+      }
+      
+      public function V_Soldier2()
+      {
+         §§push(this);
+         if(37 == 34)
+         {
+            return;
+         }
+         super();
+      }
+   }
+}
+
+§§push(this);
+if(37 == 34)
+{
+   return;
+}
+

@@ -1,0 +1,329 @@
+package Box2D.Dynamics.Contacts
+{
+   import Box2D.Collision.Shapes.b2CircleShape;
+   import Box2D.Collision.Shapes.b2PolygonShape;
+   import Box2D.Collision.Shapes.b2Shape;
+   import Box2D.Collision.b2Collision;
+   import Box2D.Common.b2Settings;
+   import Box2D.Common.b2internal;
+   import Box2D.Dynamics.b2Body;
+   import Box2D.Dynamics.b2Fixture;
+   
+   use namespace b2internal;
+   
+   public class b2PolyAndCircleContact extends b2Contact
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               divide
+               decrement_i
+               hasnext
+               pop
+               negate
+               nextname
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function b2PolyAndCircleContact()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function Create(param1:*) : b2Contact
+      {
+         trait method QName(PackageNamespace(""),"Create")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param null
+               returns QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+               
+               body
+                  maxstack 1
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlocal0
+                     construct 0
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function Destroy(param1:b2Contact, param2:*) : void
+         {
+            trait method QName(PackageNamespace(""),"Destroy")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                  param null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 1
+                     localcount 3
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function Reset(param1:b2Fixture, param2:b2Fixture) : void
+            {
+               trait method QName(PackageNamespace(""),"Reset")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                     param QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 53
+                        localcount 3
+                        initscopedepth 5
+                        maxscopedepth 6
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getlocal1
+                           getlocal2
+                           callsupervoid QName(Namespace("http://www.box2d.org/ns/b2internal"),"Reset"), 2
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getlocal1
+                           jump ofs0025
+                           istypelate
+                           negate_i
+                           pushundefined
+                           getlocal3
+                           typeof
+                  ofs0025:
+                           callproperty QName(PackageNamespace(""),"GetType"), 0
+                           getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2Shape")
+                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_polygonShape")
+                           equals
+                           pushfalse
+                           iffalse ofs003d
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0041
+                  ofs003d:
+                           callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+                  ofs0041:
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getlocal2
+                           callproperty QName(PackageNamespace(""),"GetType"), 0
+                           getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2Shape")
+                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_circleShape")
+                           equals
+                           pushfalse
+                           iffalse ofs005d
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0061
+                  ofs005d:
+                           callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+                  ofs0061:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               override b2internal function Evaluate() : void
+               {
+                  trait method QName(Namespace("http://www.box2d.org/ns/b2internal"),"Evaluate")
+                     flag OVERRIDE
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 56
+                           localcount 3
+                           initscopedepth 5
+                           maxscopedepth 6
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlex QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_fixtureA")
+                              jump ofs001e
+                              bitxor
+                              convert_s
+                              modulo
+                              lessequals
+                              convert_o
+                              pushtrue
+                     ofs001e:
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                              coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+                              setlocal1
+                              getlex QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_fixtureB")
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_body")
+                              coerce QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+                              setlocal2
+                              getlex QName(PackageNamespace("Box2D.Collision"),"b2Collision")
+                              getlex QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_manifold")
+                              getlex QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_fixtureA")
+                              callproperty QName(PackageNamespace(""),"GetShape"), 0
+                              getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2PolygonShape")
+                              astypelate
+                              getlocal1
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_xf")
+                              getlex QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_fixtureB")
+                              callproperty QName(PackageNamespace(""),"GetShape"), 0
+                              getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2CircleShape")
+                              astypelate
+                              getlocal2
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_xf")
+                              jump ofs0059
+                              pushnull
+                              urshift
+                              bitor
+                              getlocal1
+                              pushtrue
+                              lessthan
+                     ofs0059:
+                              pushfalse
+                              iffalse ofs006b
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              pop
+                              pop
+                              pop
+                              pop
+                              jump ofs006f
+                     ofs006b:
+                              callpropvoid QName(PackageNamespace(""),"CollidePolygonAndCircle"), 5
+                     ofs006f:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("b2PolyAndCircleContact",[PackageNamespace("Box2D.Dynamics.Contacts")])
+                     getlex QName(PackageNamespace(""),"Object")
+                     pushscope
+                     getlex QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                     pushscope
+                     getlex QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                     newclass 143
+                     popscope
+                     popscope
+                     jump ofs002a
+                     pushnull
+                     bitand
+                     bitxor
+                     dup
+                     getlocal2
+            ofs002a:
+                     initproperty QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2PolyAndCircleContact")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

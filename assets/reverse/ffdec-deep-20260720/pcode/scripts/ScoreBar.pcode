@@ -1,0 +1,641 @@
+package
+{
+   import flash.display.MovieClip;
+   import flash.text.TextField;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1555")]
+   public class ScoreBar extends MovieClip
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 9
+            maxscopedepth 10
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var txt_deaths:TextField;
+      
+      public var icon_status:MovieClip;
+      
+      public var txt_score:TextField;
+      
+      public var txt_kills:TextField;
+      
+      public var icon_class:MovieClip;
+      
+      public var txt_name:TextField;
+      
+      private var unit:*;
+      
+      public function ScoreBar(param1:Number, param2:* = null, param3:String = "", param4:String = "", param5:int = 0)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"Number")
+            param null
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"int")
+            optional Null()
+            optional Utf8("")
+            optional Utf8("")
+            optional Integer(0)
+            returns null
+            
+            body
+               maxstack 53
+               localcount 6
+               initscopedepth 10
+               maxscopedepth 11
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  findproperty QName(PackageNamespace(""),"y")
+                  getlocal1
+                  initproperty QName(PackageNamespace(""),"y")
+                  getlocal0
+                  jump ofs0025
+                  convert_s
+                  add
+                  decrement_i
+                  getlocal1
+                  setlocal3
+         ofs0025:
+                  getlocal2
+                  initproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getlocal3
+                  jump ofs0033
+                  negate_i
+                  divide
+                  setlocal0
+                  getlocal0
+                  swap
+         ofs0033:
+                  convert_b
+                  dup
+                  iffalse ofs0046
+                  pop
+                  getlocal 4
+                  not
+                  jump ofs0046
+                  negate_i
+                  divide
+                  setlocal0
+                  getlocal0
+                  swap
+         ofs0046:
+                  iffalse ofs00a4
+                  findpropstrict QName(PackageNamespace(""),"gotoAndStop")
+                  getlocal3
+                  pushfalse
+                  iffalse ofs005c
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0060
+         ofs005c:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs0060:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"icon_status")
+                  jump ofs006e
+                  multiply_i
+                  lessthan
+                  pushscope
+                  bitxor
+                  getglobalscope
+                  bitor
+         ofs006e:
+                  pushfalse
+                  pushfalse
+                  iffalse ofs007d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0080
+         ofs007d:
+                  setproperty QName(PackageNamespace(""),"visible")
+         ofs0080:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"icon_class")
+                  pushfalse
+                  jump ofs008f
+                  add_i
+                  setlocal0
+                  pushundefined
+                  convert_u
+                  dup
+                  divide
+         ofs008f:
+                  pushfalse
+                  iffalse ofs009d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00a0
+         ofs009d:
+                  setproperty QName(PackageNamespace(""),"visible")
+         ofs00a0:
+                  jump ofs0343
+         ofs00a4:
+                  getlocal3
+                  convert_b
+                  dup
+                  iffalse ofs00b9
+                  pop
+                  getlocal 4
+                  convert_b
+                  jump ofs00b9
+                  typeof
+                  pushnan
+                  popscope
+                  pushscope
+                  bitand
+                  convert_o
+         ofs00b9:
+                  iffalse ofs0176
+                  findpropstrict QName(PackageNamespace(""),"gotoAndStop")
+                  getlocal3
+                  pushfalse
+                  iffalse ofs00cf
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00d3
+         ofs00cf:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs00d3:
+                  getlocal0
+                  jump ofs00de
+                  pushnan
+                  add_i
+                  lshift
+                  bitor
+                  pushnan
+                  setlocal0
+         ofs00de:
+                  getproperty QName(PackageNamespace(""),"icon_status")
+                  pushfalse
+                  pushfalse
+                  iffalse ofs00f0
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00f3
+         ofs00f0:
+                  setproperty QName(PackageNamespace(""),"visible")
+         ofs00f3:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"icon_class")
+                  pushfalse
+                  pushfalse
+                  iffalse ofs0106
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0109
+         ofs0106:
+                  setproperty QName(PackageNamespace(""),"visible")
+         ofs0109:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_name")
+                  getlocal 4
+                  pushfalse
+                  iffalse ofs011d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0120
+         ofs011d:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs0120:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_score")
+                  pushstring ""
+                  getlocal 5
+                  add
+                  pushfalse
+                  iffalse ofs0137
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs013a
+         ofs0137:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs013a:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_kills")
+                  jump ofs0148
+                  bitnot
+                  negate_i
+                  pushnan
+                  getlocal0
+                  setlocal0
+                  decrement
+         ofs0148:
+                  pushstring ""
+                  pushfalse
+                  iffalse ofs0158
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs015b
+         ofs0158:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs015b:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_deaths")
+                  pushstring ""
+                  pushfalse
+                  iffalse ofs016f
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0172
+         ofs016f:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs0172:
+                  jump ofs0343
+         ofs0176:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("team",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  iftrue ofs01c9
+                  findpropstrict QName(PackageNamespace(""),"gotoAndStop")
+                  pushstring "ffa_"
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("human",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  iffalse ofs01a4
+                  pushstring "player"
+                  coerce_a
+                  jump ofs01a0
+                  getlocal3
+                  pushwith
+                  nextvalue
+                  bitxor
+                  negate
+                  add_i
+         ofs01a0:
+                  jump ofs01a8
+         ofs01a4:
+                  pushstring "ai"
+                  coerce_a
+         ofs01a8:
+                  add
+                  jump ofs01b3
+                  istypelate
+                  bitand
+                  getlocal1
+                  convert_u
+                  lshift
+                  urshift
+         ofs01b3:
+                  pushfalse
+                  iffalse ofs01c1
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs01c5
+         ofs01c1:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs01c5:
+                  jump ofs0224
+         ofs01c9:
+                  findpropstrict QName(PackageNamespace(""),"gotoAndStop")
+                  pushstring "team"
+                  jump ofs01d9
+                  lessthan
+                  dup
+                  checkfilter
+                  pushscope
+                  decrement_i
+                  pushfalse
+         ofs01d9:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  jump ofs01e7
+                  lessthan
+                  dup
+                  checkfilter
+                  pushscope
+                  decrement_i
+                  pushfalse
+         ofs01e7:
+                  getproperty Multiname("team",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  add
+                  jump ofs01f6
+                  getlocal1
+                  modulo
+                  negate
+                  bitor
+                  getlocal2
+                  popscope
+                  increment_i
+         ofs01f6:
+                  pushstring "_"
+                  add
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("human",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  iffalse ofs020d
+                  pushstring "player"
+                  coerce_a
+                  jump ofs0211
+         ofs020d:
+                  pushstring "ai"
+                  coerce_a
+         ofs0211:
+                  add
+                  pushfalse
+                  iffalse ofs0220
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0224
+         ofs0220:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs0224:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"icon_class")
+                  jump ofs0233
+                  divide
+                  pop
+                  bitand
+                  getlocal0
+                  astypelate
+                  dup
+                  istypelate
+         ofs0233:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("unitInfo",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  getproperty Multiname("icon",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  pushfalse
+                  iffalse ofs024b
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs024f
+         ofs024b:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs024f:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_name")
+                  getlocal0
+                  jump ofs025f
+                  pushundefined
+                  pushscope
+                  dxnslate
+                  bitxor
+                  getlocal0
+                  coerce_a
+                  multiply
+         ofs025f:
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("name",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  pushfalse
+                  iffalse ofs0273
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0276
+         ofs0273:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs0276:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_score")
+                  pushstring ""
+                  getlocal0
+                  jump ofs0288
+                  add
+                  getglobalscope
+                  decrement
+                  lessthan
+                  typeof
+                  hasnext
+                  strictequals
+         ofs0288:
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("pscore",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  add
+                  pushfalse
+                  iffalse ofs029d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs02a0
+         ofs029d:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs02a0:
+                  getlocal0
+                  jump ofs02ac
+                  add
+                  getglobalscope
+                  decrement
+                  lessthan
+                  typeof
+                  hasnext
+                  strictequals
+         ofs02ac:
+                  getproperty QName(PackageNamespace(""),"txt_kills")
+                  pushstring ""
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  jump ofs02c0
+                  pushtrue
+                  swap
+                  newactivation
+                  dup
+                  convert_o
+                  convert_i
+                  convert_b
+         ofs02c0:
+                  getproperty Multiname("score",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  getproperty Multiname("kills",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  add
+                  pushfalse
+                  iffalse ofs02d5
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs02d8
+         ofs02d5:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs02d8:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"txt_deaths")
+                  pushstring ""
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("score",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  getproperty Multiname("deaths",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  add
+                  pushfalse
+                  iffalse ofs02f7
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs02fa
+         ofs02f7:
+                  setproperty QName(PackageNamespace(""),"text")
+         ofs02fa:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"71"),"unit")
+                  getproperty Multiname("dead",[PrivateNamespace(null,"71"),PackageNamespace(""),PrivateNamespace(null,"224"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("ScoreBar"),StaticProtectedNs("ScoreBar"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                  iffalse ofs0322
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"icon_status")
+                  pushstring "dm"
+                  pushfalse
+                  iffalse ofs031a
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs031e
+         ofs031a:
+                  callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+         ofs031e:
+                  jump ofs0343
+         ofs0322:
+                  getlocal0
+                  jump ofs032e
+                  bitor
+                  convert_d
+                  dup
+                  multiply_i
+                  bitor
+                  bitxor
+                  subtract_i
+         ofs032e:
+                  getproperty QName(PackageNamespace(""),"icon_status")
+                  pushfalse
+                  pushfalse
+                  iffalse ofs0340
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0343
+         ofs0340:
+                  setproperty QName(PackageNamespace(""),"visible")
+         ofs0343:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 9
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         jump ofs001a
+         negate
+         strictequals
+         dxnslate
+         negate_i
+         getlocal2
+         getlocal0
+ofs001a:
+         pushscope
+         findpropstrict Multiname("ScoreBar",[PackageNamespace("")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+         pushscope
+         getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+         pushscope
+         getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+         pushscope
+         getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+         pushscope
+         getlex QName(PackageNamespace("flash.display"),"Sprite")
+         pushscope
+         getlex QName(PackageNamespace("flash.display"),"MovieClip")
+         jump ofs003d
+         bitor
+         convert_i
+         multiply_i
+         nextvalue
+         astypelate
+         not
+ofs003d:
+         pushscope
+         getlex QName(PackageNamespace("flash.display"),"MovieClip")
+         newclass 373
+         popscope
+         popscope
+         popscope
+         popscope
+         popscope
+         popscope
+         popscope
+         initproperty QName(PackageNamespace(""),"ScoreBar")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

@@ -1,0 +1,1619 @@
+package
+{
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
+   import flash.display.MovieClip;
+   import flash.display.Sprite;
+   import flash.geom.Matrix;
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1422")]
+   public class Radar extends Sprite
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 8
+            maxscopedepth 9
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var radarcont:MovieClip;
+      
+      private var game:Game;
+      
+      private var bmp:Bitmap;
+      
+      private var dotbmp:Bitmap;
+      
+      private var data:BitmapData;
+      
+      private var dotdata:BitmapData;
+      
+      private var dotRect:Rectangle;
+      
+      private var scale:Number;
+      
+      public function Radar(param1:Game, param2:MovieClip)
+      {
+         method
+            name null
+            param QName(PackageNamespace(""),"Game")
+            param QName(PackageNamespace("flash.display"),"MovieClip")
+            returns null
+            
+            body
+               maxstack 56
+               localcount 4
+               initscopedepth 9
+               maxscopedepth 10
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  jump ofs0020
+                  strictequals
+                  istypelate
+                  convert_b
+                  pushtrue
+                  urshift
+                  bitxor
+         ofs0020:
+                  initproperty QName(PrivateNamespace(null,"53"),"game")
+                  findproperty QName(PackageNamespace(""),"x")
+                  getlex QName(PackageNamespace(""),"Main")
+                  getproperty QName(PackageNamespace(""),"WIDTH")
+                  pushshort 160
+                  subtract
+                  initproperty QName(PackageNamespace(""),"x")
+                  findproperty QName(PackageNamespace(""),"y")
+                  pushbyte 0
+                  initproperty QName(PackageNamespace(""),"y")
+                  getlocal0
+                  pushdouble 0.1
+                  initproperty QName(PrivateNamespace(null,"53"),"scale")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.display"),"BitmapData")
+                  jump ofs004e
+                  newactivation
+                  setlocal1
+                  instanceof
+                  instanceof
+                  istypelate
+                  setlocal2
+                  pushundefined
+         ofs004e:
+                  pushshort 2880
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"scale")
+                  multiply
+                  pushshort 2880
+                  getlocal0
+                  jump ofs0065
+                  hasnext
+                  decrement
+                  convert_u
+                  setlocal0
+                  bitor
+                  equals
+                  pushnan
+         ofs0065:
+                  getproperty QName(PrivateNamespace(null,"53"),"scale")
+                  multiply
+                  pushtrue
+                  pushbyte 0
+                  constructprop QName(PackageNamespace("flash.display"),"BitmapData"), 4
+                  jump ofs007a
+                  hasnext
+                  decrement
+                  convert_u
+                  setlocal0
+                  bitor
+                  equals
+                  pushnan
+         ofs007a:
+                  initproperty QName(PrivateNamespace(null,"53"),"data")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.display"),"Bitmap")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"data")
+                  constructprop QName(PackageNamespace("flash.display"),"Bitmap"), 1
+                  jump ofs0094
+                  getlocal2
+                  bitnot
+                  hasnext
+                  modulo
+                  setlocal3
+                  negate
+                  checkfilter
+         ofs0094:
+                  initproperty QName(PrivateNamespace(null,"53"),"bmp")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"radarcont")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                  pushfalse
+                  iffalse ofs00ad
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00b1
+         ofs00ad:
+                  callpropvoid QName(PackageNamespace(""),"addChild"), 1
+         ofs00b1:
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.display"),"BitmapData")
+                  pushshort 160
+                  pushbyte 120
+                  pushtrue
+                  pushbyte 0
+                  constructprop QName(PackageNamespace("flash.display"),"BitmapData"), 4
+                  initproperty QName(PrivateNamespace(null,"53"),"dotdata")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.display"),"Bitmap")
+                  jump ofs00d1
+                  getglobalscope
+                  urshift
+                  pushtrue
+                  equals
+                  swap
+                  getlocal1
+                  dxnslate
+         ofs00d1:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"dotdata")
+                  constructprop QName(PackageNamespace("flash.display"),"Bitmap"), 1
+                  initproperty QName(PrivateNamespace(null,"53"),"dotbmp")
+                  findpropstrict QName(PackageNamespace(""),"addChild")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"dotbmp")
+                  pushfalse
+                  iffalse ofs00f1
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00f5
+         ofs00f1:
+                  callpropvoid QName(PackageNamespace(""),"addChild"), 1
+         ofs00f5:
+                  getlocal0
+                  jump ofs0101
+                  nextname
+                  getlocal0
+                  subtract_i
+                  convert_s
+                  getglobalscope
+                  greaterthan
+                  add
+         ofs0101:
+                  findpropstrict QName(PackageNamespace("flash.geom"),"Rectangle")
+                  pushbyte 0
+                  dup
+                  pushshort 160
+                  pushbyte 120
+                  constructprop QName(PackageNamespace("flash.geom"),"Rectangle"), 4
+                  initproperty QName(PrivateNamespace(null,"53"),"dotRect")
+                  findpropstrict QName(PackageNamespace("flash.geom"),"Matrix")
+                  constructprop QName(PackageNamespace("flash.geom"),"Matrix"), 0
+                  coerce QName(PackageNamespace("flash.geom"),"Matrix")
+                  setlocal3
+                  getlocal3
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"scale")
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"scale")
+                  pushfalse
+                  iffalse ofs0136
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs013a
+         ofs0136:
+                  callpropvoid QName(PackageNamespace(""),"scale"), 2
+         ofs013a:
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"53"),"data")
+                  getlocal2
+                  getlocal3
+                  pushfalse
+                  iffalse ofs014f
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0153
+         ofs014f:
+                  callpropvoid QName(PackageNamespace(""),"draw"), 2
+         ofs0153:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame() : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 58
+                  localcount 4
+                  initscopedepth 9
+                  maxscopedepth 10
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     jump ofs001a
+                     urshift
+                     instanceof
+                     convert_s
+                     divide
+                     getglobalscope
+                     lessthan
+            ofs001a:
+                     pushscope
+                     pushbyte 0
+                     convert_u
+                     setlocal2
+                     pushbyte 0
+                     jump ofs002b
+                     pushwith
+                     setlocal2
+                     strictequals
+                     not
+                     dup
+                     getlocal1
+            ofs002b:
+                     convert_u
+                     setlocal3
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"dotdata")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"dotRect")
+                     pushbyte 0
+                     pushfalse
+                     iffalse ofs0046
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs004a
+            ofs0046:
+                     callpropvoid QName(PackageNamespace(""),"fillRect"), 2
+            ofs004a:
+                     getlocal0
+                     jump ofs0055
+                     convert_s
+                     lshift
+                     greaterthan
+                     setlocal3
+                     bitand
+                     greaterthan
+            ofs0055:
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"player")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal0
+                     jump ofs006d
+                     convert_s
+                     lshift
+                     greaterthan
+                     setlocal3
+                     bitand
+                     greaterthan
+            ofs006d:
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     negate
+                     multiply
+                     pushbyte 80
+                     add
+                     pushfalse
+                     iffalse ofs0083
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0086
+            ofs0083:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs0086:
+                     getlocal0
+                     jump ofs0091
+                     negate_i
+                     increment_i
+                     getglobalscope
+                     typeof
+                     pushnan
+                     bitnot
+            ofs0091:
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"player")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     negate
+                     multiply
+                     pushbyte 60
+                     add
+                     pushfalse
+                     iffalse ofs00b5
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00b8
+            ofs00b5:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs00b8:
+                     pushfalse
+                     setlocal1
+                     pushbyte 0
+                     convert_u
+                     setlocal2
+                     nop
+            ofs00bf:
+                     label
+                     getlocal2
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getproperty QName(PackageNamespace(""),"length")
+                     iflt ofs00d3
+                     jump ofs00d7
+            ofs00d3:
+                     jump ofs00db
+            ofs00d7:
+                     jump ofs0236
+            ofs00db:
+                     getlocal0
+                     jump ofs00e7
+                     multiply_i
+                     subtract
+                     bitor
+                     newactivation
+                     setlocal0
+                     negate_i
+                     urshift
+            ofs00e7:
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlex QName(PackageNamespace(""),"Killstreak_Radar")
+                     istypelate
+                     dup
+                     iffalse ofs0161
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs0111
+                     convert_u
+                     divide
+                     coerce_s
+                     divide
+                     negate
+                     getlocal0
+                     hasnext
+            ofs0111:
+                     getproperty Multiname("unit",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs011f
+                     setlocal1
+                     lessthan
+                     instanceof
+                     not
+                     lshift
+                     bitand
+                     setlocal2
+            ofs011f:
+                     getproperty Multiname("human",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs012d
+                     greaterthan
+                     setlocal0
+                     add_i
+                     setlocal3
+                     decrement_i
+                     coerce_s
+                     convert_o
+            ofs012d:
+                     coerce_a
+                     jump ofs0139
+                     greaterthan
+                     setlocal0
+                     add_i
+                     setlocal3
+                     decrement_i
+                     coerce_s
+                     convert_o
+            ofs0139:
+                     convert_b
+                     jump ofs0145
+                     convert_o
+                     greaterthan
+                     hasnext
+                     typeof
+                     getlocal2
+                     modulo
+                     pushfalse
+            ofs0145:
+                     dup
+                     iftrue ofs0161
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("unit",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("team",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     pushbyte 1
+                     equals
+                     coerce_a
+                     convert_b
+            ofs0161:
+                     iffalse ofs0167
+                     pushtrue
+                     setlocal1
+            ofs0167:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     jump ofs017a
+                     setlocal0
+                     convert_u
+                     istypelate
+                     newactivation
+                     astypelate
+                     nextname
+                     getlocal2
+            ofs017a:
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlex QName(PackageNamespace(""),"Killstreak_Helicopter")
+                     istypelate
+                     iffalse ofs0222
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"x")
+                     add
+                     pushbyte 2
+                     add
+                     jump ofs01af
+                     lessthan
+                     pushwith
+                     subtract
+                     not
+                     urshift
+                     newactivation
+                     getlocal3
+            ofs01af:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     jump ofs01cd
+                     lessthan
+                     pushwith
+                     subtract
+                     not
+                     urshift
+                     newactivation
+                     getlocal3
+            ofs01cd:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     add
+                     pushbyte 3
+                     subtract
+                     pushtrue
+                     pushstring "radar0"
+                     pushstring "heli"
+                     jump ofs01e7
+                     getlocal1
+                     bitand
+                     multiply
+                     pushnull
+            ofs01e7:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"killstreaks")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("unit",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("team",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     pushbyte 2
+                     equals
+                     iffalse ofs0207
+                     pushstring "enemy"
+                     coerce_a
+                     jump ofs020b
+            ofs0207:
+                     pushstring "ally"
+                     coerce_a
+            ofs020b:
+                     add
+                     pushfalse
+                     iffalse ofs021e
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs0222
+            ofs021e:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs0222:
+                     getlocal2
+                     jump ofs022b
+                     divide
+                     multiply
+                     pushnull
+                     setlocal1
+            ofs022b:
+                     increment
+                     convert_u
+                     setlocal2
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs00bf
+            ofs0236:
+                     pushbyte 0
+                     convert_u
+                     setlocal2
+                     nop
+            ofs023b:
+                     label
+                     getlocal2
+                     jump ofs0247
+                     lessequals
+                     urshift
+                     convert_d
+                     lessequals
+                     setlocal3
+                     increment_i
+            ofs0247:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     jump ofs0258
+                     coerce_a
+                     getlocal0
+                     typeof
+                     getlocal1
+                     swap
+                     bitor
+            ofs0258:
+                     getproperty QName(PackageNamespace(""),"length")
+                     iflt ofs0263
+                     jump ofs0267
+            ofs0263:
+                     jump ofs026b
+            ofs0267:
+                     jump ofs0544
+            ofs026b:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("human",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     convert_b
+                     jump ofs0282
+                     pushundefined
+                     pushfalse
+                     bitnot
+                     coerce_a
+            ofs0282:
+                     dup
+                     jump ofs028b
+                     add
+                     not
+                     nextname
+                     increment
+            ofs028b:
+                     iffalse ofs029f
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("dead",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     not
+            ofs029f:
+                     iffalse ofs0321
+                     getlocal0
+                     jump ofs02ac
+                     add
+                     not
+                     nextname
+                     increment
+            ofs02ac:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     jump ofs02c6
+                     pushtrue
+                     pushscope
+                     divide
+                     bitand
+            ofs02c6:
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"x")
+                     add
+                     pushbyte 2
+                     jump ofs02d9
+                     pushtrue
+                     pushscope
+                     divide
+                     bitand
+            ofs02d9:
+                     add
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs02ed
+                     negate
+                     getglobalscope
+                     modulo
+                     pushnull
+            ofs02ed:
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     add
+                     pushbyte 4
+                     subtract
+                     pushtrue
+                     pushstring "radar0"
+                     pushstring "player"
+                     pushfalse
+                     iffalse ofs0319
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs031d
+            ofs0319:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs031d:
+                     jump ofs0538
+            ofs0321:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs0334
+                     bitor
+                     hasnext
+                     convert_b
+                     setlocal1
+            ofs0334:
+                     getproperty Multiname("team",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     pushbyte 1
+                     ifne ofs0487
+                     getlocal0
+                     jump ofs0346
+                     lshift
+                     lessequals
+                     urshift
+                     coerce_a
+            ofs0346:
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("dead",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     iffalse ofs03ea
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     jump ofs0368
+                     lshift
+                     lessequals
+                     urshift
+                     coerce_a
+            ofs0368:
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"x")
+                     add
+                     pushbyte 2
+                     jump ofs0386
+                     setlocal3
+                     nextvalue
+                     convert_i
+                     increment
+                     pushnan
+            ofs0386:
+                     add
+                     jump ofs0390
+                     setlocal3
+                     nextvalue
+                     convert_i
+                     increment
+                     pushnan
+            ofs0390:
+                     getlocal0
+                     jump ofs039a
+                     setlocal2
+                     dxnslate
+                     convert_u
+                     bitand
+                     setlocal0
+            ofs039a:
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs03b0
+                     dxnslate
+                     setlocal3
+                     pop
+                     pushnull
+                     negate
+            ofs03b0:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     add
+                     pushbyte 4
+                     subtract
+                     pushtrue
+                     jump ofs03ca
+                     dxnslate
+                     setlocal3
+                     pop
+                     pushnull
+                     negate
+            ofs03ca:
+                     pushstring "radar0"
+                     pushstring "allyskull"
+                     pushfalse
+                     iffalse ofs03e2
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs03e6
+            ofs03e2:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs03e6:
+                     jump ofs0483
+            ofs03ea:
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     jump ofs0403
+                     instanceof
+                     convert_b
+                     pushtrue
+                     setlocal1
+                     lshift
+            ofs0403:
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     jump ofs0410
+                     convert_d
+                     equals
+                     subtract_i
+                     subtract_i
+                     decrement_i
+            ofs0410:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs0420
+                     convert_d
+                     equals
+                     subtract_i
+                     subtract_i
+                     decrement_i
+            ofs0420:
+                     add
+                     pushbyte 2
+                     add
+                     jump ofs042d
+                     bitxor
+                     greaterequals
+                     setlocal2
+                     lshift
+                     getlocal2
+            ofs042d:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     jump ofs043d
+                     bitxor
+                     greaterequals
+                     setlocal2
+                     lshift
+                     getlocal2
+            ofs043d:
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     jump ofs044d
+                     pushnull
+                     getlocal1
+                     negate_i
+                     add_i
+                     astypelate
+            ofs044d:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     jump ofs045c
+                     decrement_i
+                     istypelate
+                     lessequals
+                     lessequals
+                     getlocal0
+            ofs045c:
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     add
+                     pushbyte 4
+                     subtract
+                     pushtrue
+                     pushstring "radar0"
+                     pushstring "ally"
+                     pushfalse
+                     iffalse ofs047f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs0483
+            ofs047f:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs0483:
+                     jump ofs0538
+            ofs0487:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("dead",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     not
+                     dup
+                     jump ofs04a1
+                     swap
+                     convert_o
+                     convert_o
+                     getlocal1
+                     urshift
+                     strictequals
+            ofs04a1:
+                     iffalse ofs04a8
+                     pop
+                     getlocal1
+                     convert_b
+            ofs04a8:
+                     iffalse ofs0538
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"units")
+                     jump ofs04be
+                     swap
+                     convert_o
+                     convert_o
+                     getlocal1
+                     urshift
+                     strictequals
+            ofs04be:
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     jump ofs04d4
+                     convert_i
+                     setlocal1
+                     astypelate
+                     subtract_i
+                     bitnot
+                     pushnull
+            ofs04d4:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs04e5
+                     nextvalue
+                     decrement
+                     increment
+                     lshift
+                     istypelate
+                     setlocal2
+            ofs04e5:
+                     add
+                     pushbyte 2
+                     add
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     jump ofs04f7
+                     strictequals
+                     convert_s
+                     pushfalse
+                     add_i
+                     bitor
+                     dxnslate
+            ofs04f7:
+                     getproperty QName(PackageNamespace(""),"units")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs0517
+                     strictequals
+                     convert_s
+                     pushfalse
+                     add_i
+                     bitor
+                     dxnslate
+            ofs0517:
+                     add
+                     pushbyte 3
+                     subtract
+                     pushtrue
+                     pushstring "radar0"
+                     pushstring "enemy"
+                     pushfalse
+                     iffalse ofs0534
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs0538
+            ofs0534:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs0538:
+                     getlocal2
+                     increment
+                     convert_u
+                     setlocal2
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs023b
+            ofs0544:
+                     getlex QName(PackageNamespace(""),"MatchSettings")
+                     getproperty QName(PackageNamespace(""),"useMode")
+                     pushstring "dom"
+                     ifne ofs062c
+                     pushbyte 0
+                     convert_u
+                     setlocal2
+                     nop
+            ofs0556:
+                     label
+                     getlocal2
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"holdpoints")
+                     getproperty QName(PackageNamespace(""),"length")
+                     iflt ofs056d
+                     jump ofs0571
+            ofs056d:
+                     jump ofs0575
+            ofs0571:
+                     jump ofs0628
+            ofs0575:
+                     getlocal0
+                     jump ofs0580
+                     pop
+                     popscope
+                     getlocal2
+                     subtract_i
+                     getglobalscope
+                     divide
+            ofs0580:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"holdpoints")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     jump ofs05a4
+                     checkfilter
+                     coerce_s
+                     lessthan
+                     lshift
+                     dup
+                     convert_o
+            ofs05a4:
+                     getproperty QName(PackageNamespace(""),"x")
+                     add
+                     pushbyte 2
+                     add
+                     getlocal0
+                     jump ofs05b7
+                     modulo
+                     coerce_a
+                     not
+                     convert_u
+                     bitand
+                     setlocal0
+                     bitxor
+            ofs05b7:
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"holdpoints")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     jump ofs05d3
+                     modulo
+                     coerce_a
+                     not
+                     convert_u
+                     bitand
+                     setlocal0
+                     bitxor
+            ofs05d3:
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     add
+                     pushbyte 3
+                     jump ofs05ec
+                     astypelate
+                     nextname
+                     equals
+                     pushscope
+                     pushnan
+                     decrement
+                     bitor
+            ofs05ec:
+                     subtract
+                     pushtrue
+                     pushstring "radar0"
+                     pushstring "flag"
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"holdpoints")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("curTeam",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     add
+                     pushfalse
+                     iffalse ofs0618
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs061c
+            ofs0618:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs061c:
+                     getlocal2
+                     increment
+                     convert_u
+                     setlocal2
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs0556
+            ofs0628:
+                     jump ofs0727
+            ofs062c:
+                     getlex QName(PackageNamespace(""),"MatchSettings")
+                     getproperty QName(PackageNamespace(""),"useMode")
+                     pushstring "ctf"
+                     ifne ofs0727
+                     pushbyte 0
+                     convert_u
+                     setlocal2
+                     nop
+            ofs063e:
+                     label
+                     getlocal2
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"ctfflags")
+                     getproperty QName(PackageNamespace(""),"length")
+                     iflt ofs0655
+                     jump ofs0659
+            ofs0655:
+                     jump ofs065d
+            ofs0659:
+                     jump ofs0727
+            ofs065d:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"ctfflags")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("unitCaptured",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     iftrue ofs071b
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"ctfflags")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("x",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs069b
+                     subtract_i
+                     newactivation
+                     decrement_i
+                     getlocal0
+                     negate
+                     urshift
+                     coerce_a
+            ofs069b:
+                     add
+                     pushbyte 2
+                     add
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     getproperty QName(PackageNamespace(""),"ctfflags")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("y",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"scale")
+                     jump ofs06bf
+                     not
+                     strictequals
+                     getlocal3
+                     bitxor
+                     lshift
+                     pushfalse
+                     pushnull
+            ofs06bf:
+                     multiply
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"bmp")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs06d2
+                     not
+                     strictequals
+                     getlocal3
+                     bitxor
+                     lshift
+                     pushfalse
+                     pushnull
+            ofs06d2:
+                     add
+                     pushbyte 3
+                     subtract
+                     pushtrue
+                     jump ofs06e2
+                     coerce_s
+                     instanceof
+                     pushscope
+                     convert_u
+                     decrement_i
+                     popscope
+                     divide
+            ofs06e2:
+                     pushstring "radar0"
+                     pushstring "flag"
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"53"),"game")
+                     getproperty QName(PackageNamespace(""),"arena")
+                     jump ofs06fa
+                     pushfalse
+                     setlocal2
+                     pushundefined
+                     pushscope
+                     getlocal2
+                     dup
+                     urshift
+            ofs06fa:
+                     getproperty QName(PackageNamespace(""),"ctfflags")
+                     getlocal2
+                     getproperty MultinameL([PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     getproperty Multiname("team",[PrivateNamespace(null,"53"),PackageNamespace(""),PrivateNamespace(null,"209"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Radar"),StaticProtectedNs("Radar"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     add
+                     pushfalse
+                     iffalse ofs0717
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs071b
+            ofs0717:
+                     callpropvoid QName(PackageNamespace(""),"paint"), 5
+            ofs071b:
+                     getlocal2
+                     increment
+                     convert_u
+                     setlocal2
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs063e
+            ofs0727:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function paint(param1:Number, param2:Number, param3:Boolean, param4:String, param5:String = "", param6:uint = 1) : void
+         {
+            trait method QName(PackageNamespace(""),"paint")
+               dispid 0
+               method
+                  name null
+                  flag HAS_OPTIONAL
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"Boolean")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"uint")
+                  optional Utf8("")
+                  optional Integer(1)
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 57
+                     localcount 9
+                     initscopedepth 9
+                     maxscopedepth 10
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlex QName(PackageNamespace(""),"BH")
+                        getlocal 4
+                        getlocal 5
+                        getlocal 6
+                        callproperty QName(PackageNamespace(""),"getBit"), 3
+                        coerce QName(PackageNamespace("flash.display"),"BitmapData")
+                        setlocal 7
+                        getlocal3
+                        iffalse ofs005b
+                        findpropstrict QName(PackageNamespace("flash.geom"),"Point")
+                        getlocal1
+                        jump ofs0034
+                        strictequals
+                        convert_u
+                        dxnslate
+                        modulo
+                        hasnext
+                        setlocal3
+               ofs0034:
+                        getlocal 7
+                        getproperty QName(PackageNamespace(""),"width")
+                        pushbyte 2
+                        divide
+                        subtract
+                        getlocal2
+                        getlocal 7
+                        jump ofs004b
+                        pushscope
+                        getlocal3
+                        decrement
+                        equals
+                        modulo
+                        subtract
+                        greaterthan
+               ofs004b:
+                        getproperty QName(PackageNamespace(""),"height")
+                        pushbyte 2
+                        divide
+                        subtract
+                        constructprop QName(PackageNamespace("flash.geom"),"Point"), 2
+                        coerce QName(PackageNamespace("flash.geom"),"Point")
+                        jump ofs006f
+               ofs005b:
+                        findpropstrict QName(PackageNamespace("flash.geom"),"Point")
+                        getlocal1
+                        getlocal2
+                        constructprop QName(PackageNamespace("flash.geom"),"Point"), 2
+                        coerce QName(PackageNamespace("flash.geom"),"Point")
+                        jump ofs006f
+                        coerce_a
+                        pushnan
+                        newactivation
+                        convert_s
+                        multiply
+                        pushtrue
+                        urshift
+               ofs006f:
+                        coerce QName(PackageNamespace("flash.geom"),"Point")
+                        setlocal 8
+                        getlocal0
+                        jump ofs007f
+                        coerce_a
+                        pushnan
+                        newactivation
+                        convert_s
+                        multiply
+                        pushtrue
+                        urshift
+               ofs007f:
+                        getproperty QName(PrivateNamespace(null,"53"),"dotdata")
+                        getlocal 7
+                        jump ofs008f
+                        pop
+                        add_i
+                        setlocal0
+                        convert_i
+                        add_i
+                        lessthan
+                        hasnext
+               ofs008f:
+                        findpropstrict QName(PackageNamespace("flash.geom"),"Rectangle")
+                        pushbyte 0
+                        dup
+                        getlocal 7
+                        getproperty QName(PackageNamespace(""),"width")
+                        getlocal 7
+                        getproperty QName(PackageNamespace(""),"height")
+                        jump ofs00aa
+                        checkfilter
+                        negate_i
+                        dup
+                        setlocal0
+                        greaterthan
+                        getlocal1
+                        subtract
+               ofs00aa:
+                        constructprop QName(PackageNamespace("flash.geom"),"Rectangle"), 4
+                        getlocal 8
+                        pushnull
+                        jump ofs00bc
+                        modulo
+                        pushfalse
+                        greaterequals
+                        pushfalse
+                        add
+                        greaterthan
+                        convert_o
+               ofs00bc:
+                        pushnull
+                        pushtrue
+                        pushfalse
+                        iffalse ofs00d1
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs00d5
+               ofs00d1:
+                        callpropvoid QName(PackageNamespace(""),"copyPixels"), 6
+               ofs00d5:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 8
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("Radar",[PackageNamespace("")])
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+               pushscope
+               getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+               pushscope
+               getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+               pushscope
+               getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+               pushscope
+               getlex QName(PackageNamespace("flash.display"),"Sprite")
+               pushscope
+               getlex QName(PackageNamespace("flash.display"),"Sprite")
+               newclass 341
+               popscope
+               popscope
+               jump ofs0038
+               negate
+               setlocal0
+               lshift
+               negate
+               multiply
+               greaterequals
+      ofs0038:
+               popscope
+               popscope
+               jump ofs0044
+               bitor
+               greaterthan
+               pushwith
+               multiply
+               add_i
+               add
+      ofs0044:
+               popscope
+               popscope
+               jump ofs0050
+               bitor
+               greaterthan
+               pushwith
+               multiply
+               add_i
+               add
+      ofs0050:
+               initproperty QName(PackageNamespace(""),"Radar")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

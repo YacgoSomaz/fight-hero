@@ -1,0 +1,221 @@
+package
+{
+   public class NodeWaypointPath
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var dist:Number;
+      
+      public var nodes:uint;
+      
+      public var path:String;
+      
+      public function NodeWaypointPath(param1:*, param2:Object)
+      {
+         method
+            name null
+            param null
+            param QName(PackageNamespace(""),"Object")
+            returns null
+            
+            body
+               maxstack 60
+               localcount 4
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PackageNamespace(""),"path")
+                  getlocal0
+                  jump ofs0023
+                  istypelate
+                  greaterequals
+                  setlocal3
+                  coerce_s
+                  setlocal2
+         ofs0023:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"path")
+                  getproperty QName(PackageNamespace(""),"length")
+                  initproperty QName(PackageNamespace(""),"nodes")
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PackageNamespace(""),"dist")
+                  pushbyte 0
+                  convert_u
+                  setlocal3
+                  nop
+         ofs0038:
+                  label
+                  getlocal3
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"nodes")
+                  decrement
+                  iflt ofs0047
+                  jump ofs004b
+         ofs0047:
+                  jump ofs004f
+         ofs004b:
+                  jump ofs00d5
+         ofs004f:
+                  getlocal0
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"dist")
+                  getlex QName(PackageNamespace(""),"UT")
+                  getlocal2
+                  jump ofs0061
+                  negate
+                  bitor
+                  bitnot
+                  decrement_i
+                  convert_i
+         ofs0061:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"path")
+                  getlocal3
+                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                  getproperty MultinameL([PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getproperty Multiname("x",[PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getlocal2
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"path")
+                  getlocal3
+                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                  getproperty MultinameL([PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getproperty Multiname("y",[PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getlocal2
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"path")
+                  getlocal3
+                  pushbyte 1
+                  jump ofs0091
+                  bitor
+                  pushtrue
+                  strictequals
+                  greaterthan
+                  nextname
+         ofs0091:
+                  add
+                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                  jump ofs009f
+                  increment
+                  pushundefined
+                  divide
+                  pop
+                  subtract_i
+         ofs009f:
+                  getproperty MultinameL([PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getproperty Multiname("x",[PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getlocal2
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"path")
+                  getlocal3
+                  pushbyte 1
+                  add
+                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                  getproperty MultinameL([PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  getproperty Multiname("y",[PrivateNamespace(null,"165"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"166"),PackageInternalNs(""),ProtectedNamespace("NodeWaypointPath"),StaticProtectedNs("NodeWaypointPath"),StaticProtectedNs("Object")])
+                  callproperty QName(PackageNamespace(""),"getDist"), 4
+                  add
+                  initproperty QName(PackageNamespace(""),"dist")
+                  getlocal3
+                  increment
+                  jump ofs00cb
+                  increment
+                  pushundefined
+                  divide
+                  pop
+                  subtract_i
+         ofs00cb:
+                  convert_u
+                  setlocal3
+                  pushbyte 2
+                  pushbyte 3
+                  ifne ofs0038
+         ofs00d5:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("NodeWaypointPath",[PackageNamespace("")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 84
+         jump ofs0023
+         increment
+         getglobalscope
+         pop
+         equals
+ofs0023:
+         popscope
+         jump ofs002c
+         setlocal3
+         hasnext
+         pushtrue
+         bitnot
+ofs002c:
+         initproperty QName(PackageNamespace(""),"NodeWaypointPath")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

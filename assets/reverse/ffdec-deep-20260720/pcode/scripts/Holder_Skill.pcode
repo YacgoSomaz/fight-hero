@@ -1,0 +1,1355 @@
+package
+{
+   import flash.display.MovieClip;
+   import flash.text.TextField;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol763")]
+   public class Holder_Skill extends MovieClip
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 9
+            maxscopedepth 10
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var txt_kills:TextField;
+      
+      public var txt_name:TextField;
+      
+      public var mc_skill:MovieClip;
+      
+      public var txt_status:TextField;
+      
+      public var skill:Stats_Skills;
+      
+      public var streak:Stats_Streaks;
+      
+      private var _parent:MovieClip;
+      
+      public function Holder_Skill(param1:* = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param null
+            optional Null()
+            returns null
+            
+            body
+               maxstack 53
+               localcount 2
+               initscopedepth 10
+               maxscopedepth 11
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  findpropstrict QName(PackageNamespace(""),"addFrameScript")
+                  pushbyte 0
+                  getlocal0
+                  getproperty QName(PackageInternalNs(""),"frame1")
+                  pushfalse
+                  iffalse ofs002c
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0030
+         ofs002c:
+                  callpropvoid QName(PackageNamespace(""),"addFrameScript"), 2
+         ofs0030:
+                  getlocal1
+                  convert_b
+                  dup
+                  iffalse ofs003c
+                  pop
+                  getlocal1
+                  getlex QName(PackageNamespace(""),"Stats_Skills")
+                  istypelate
+         ofs003c:
+                  iffalse ofs0056
+                  getlocal0
+                  getlocal1
+                  pushtrue
+                  pushfalse
+                  iffalse ofs0052
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0056
+         ofs0052:
+                  callpropvoid QName(PackageNamespace(""),"setSkill"), 2
+         ofs0056:
+                  getlocal1
+                  convert_b
+                  dup
+                  iffalse ofs0062
+                  pop
+                  getlocal1
+                  getlex QName(PackageNamespace(""),"Stats_Streaks")
+                  istypelate
+         ofs0062:
+                  iffalse ofs007c
+                  getlocal0
+                  getlocal1
+                  pushtrue
+                  pushfalse
+                  iffalse ofs0078
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs007c
+         ofs0078:
+                  callpropvoid QName(PackageNamespace(""),"setStreak"), 2
+         ofs007c:
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.display"),"MovieClip")
+                  getlex QName(PackageNamespace(""),"parent")
+                  jump ofs008a
+                  getlocal1
+                  setlocal1
+                  increment_i
+                  getlocal2
+         ofs008a:
+                  callproperty QName(PackageNamespace("flash.display"),"MovieClip"), 1
+                  initproperty QName(PrivateNamespace(null,"61"),"_parent")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function setSkill(param1:Stats_Skills, param2:Boolean = false) : void
+      {
+         trait method QName(PackageNamespace(""),"setSkill")
+            dispid 0
+            method
+               name null
+               flag HAS_OPTIONAL
+               param QName(PackageNamespace(""),"Stats_Skills")
+               param QName(PackageNamespace(""),"Boolean")
+               optional False()
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 3
+                  initscopedepth 10
+                  maxscopedepth 11
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getlocal1
+                     initproperty QName(PackageNamespace(""),"skill")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"txt_name")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"skill")
+                     getproperty QName(PackageNamespace(""),"name")
+                     pushfalse
+                     iffalse ofs002f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0032
+            ofs002f:
+                     setproperty QName(PackageNamespace(""),"text")
+            ofs0032:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"mc_skill")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"skill")
+                     getproperty QName(PackageNamespace(""),"sprite")
+                     pushfalse
+                     iffalse ofs004b
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs004f
+            ofs004b:
+                     callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+            ofs004f:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"txt_kills")
+                     pushstring ""
+                     pushfalse
+                     iffalse ofs0063
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0066
+            ofs0063:
+                     setproperty QName(PackageNamespace(""),"text")
+            ofs0066:
+                     getlocal0
+                     jump ofs0072
+                     popscope
+                     pushundefined
+                     setlocal0
+                     negate_i
+                     nextvalue
+                     pushscope
+                     bitnot
+            ofs0072:
+                     pushnull
+                     initproperty QName(PackageNamespace(""),"streak")
+                     getlocal2
+                     iffalse ofs0091
+                     getlocal0
+                     pushfalse
+                     iffalse ofs0089
+                     pushbyte 5
+                     pop
+                     pop
+                     jump ofs008d
+            ofs0089:
+                     callpropvoid QName(PackageNamespace(""),"setStatus"), 0
+            ofs008d:
+                     jump ofs00b3
+            ofs0091:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"txt_status")
+                     jump ofs00a0
+                     multiply
+                     getlocal1
+                     dup
+                     nextvalue
+                     pushscope
+                     coerce_a
+                     modulo
+            ofs00a0:
+                     pushstring ""
+                     pushfalse
+                     iffalse ofs00b0
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00b3
+            ofs00b0:
+                     setproperty QName(PackageNamespace(""),"text")
+            ofs00b3:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function setStreak(param1:Stats_Streaks, param2:Boolean = false) : void
+         {
+            trait method QName(PackageNamespace(""),"setStreak")
+               dispid 0
+               method
+                  name null
+                  flag HAS_OPTIONAL
+                  param QName(PackageNamespace(""),"Stats_Streaks")
+                  param QName(PackageNamespace(""),"Boolean")
+                  optional False()
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 53
+                     localcount 3
+                     initscopedepth 10
+                     maxscopedepth 11
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getlocal1
+                        initproperty QName(PackageNamespace(""),"streak")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"txt_name")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"streak")
+                        getproperty QName(PackageNamespace(""),"name")
+                        pushfalse
+                        iffalse ofs002f
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0032
+               ofs002f:
+                        setproperty QName(PackageNamespace(""),"text")
+               ofs0032:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"mc_skill")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"streak")
+                        getproperty QName(PackageNamespace(""),"sprite")
+                        pushfalse
+                        iffalse ofs004b
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs004f
+               ofs004b:
+                        callpropvoid QName(PackageNamespace(""),"gotoAndStop"), 1
+               ofs004f:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"streak")
+                        getproperty QName(PackageNamespace(""),"kills")
+                        iffalse ofs0089
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"txt_kills")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"streak")
+                        getproperty QName(PackageNamespace(""),"kills")
+                        pushstring " kills"
+                        add
+                        jump ofs0074
+                        lessequals
+                        setlocal1
+                        not
+                        bitor
+                        lessthan
+                        instanceof
+                        bitxor
+               ofs0074:
+                        pushfalse
+                        iffalse ofs0082
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0085
+               ofs0082:
+                        setproperty QName(PackageNamespace(""),"text")
+               ofs0085:
+                        jump ofs00a0
+               ofs0089:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"txt_kills")
+                        pushstring ""
+                        pushfalse
+                        iffalse ofs009d
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs00a0
+               ofs009d:
+                        setproperty QName(PackageNamespace(""),"text")
+               ofs00a0:
+                        getlocal0
+                        pushnull
+                        initproperty QName(PackageNamespace(""),"skill")
+                        getlocal2
+                        iffalse ofs00c0
+                        getlocal0
+                        pushfalse
+                        iffalse ofs00b8
+                        pushbyte 5
+                        pop
+                        pop
+                        jump ofs00bc
+               ofs00b8:
+                        callpropvoid QName(PackageNamespace(""),"setStatus"), 0
+               ofs00bc:
+                        jump ofs00e2
+               ofs00c0:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"txt_status")
+                        pushstring ""
+                        jump ofs00d1
+                        newactivation
+                        decrement
+                        dxnslate
+                        getlocal0
+                        increment
+                        convert_b
+                        getlocal1
+               ofs00d1:
+                        pushfalse
+                        iffalse ofs00df
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs00e2
+               ofs00df:
+                        setproperty QName(PackageNamespace(""),"text")
+               ofs00e2:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function setStatus() : void
+            {
+               trait method QName(PackageNamespace(""),"setStatus")
+                  dispid 0
+                  method
+                     name null
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 54
+                        localcount 1
+                        initscopedepth 10
+                        maxscopedepth 11
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"skill")
+                           iffalse ofs01a1
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"classSaves")
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"selClass")
+                           getproperty MultinameL([PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getproperty Multiname("skill",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getlocal0
+                           jump ofs0036
+                           getglobalscope
+                           negate_i
+                           equals
+                           negate
+                           getlocal3
+                           nextvalue
+                  ofs0036:
+                           getproperty QName(PackageNamespace(""),"skill")
+                           getproperty QName(PackageNamespace(""),"id")
+                           ifne ofs0093
+                           getlocal0
+                           jump ofs004b
+                           nextname
+                           pushwith
+                           getlocal0
+                           multiply
+                           lessthan
+                           bitxor
+                  ofs004b:
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushint 13421772
+                           pushfalse
+                           iffalse ofs005e
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0061
+                  ofs005e:
+                           setproperty QName(PackageNamespace(""),"textColor")
+                  ofs0061:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           jump ofs0070
+                           pushscope
+                           bitand
+                           decrement_i
+                           convert_d
+                           increment
+                           setlocal3
+                           decrement
+                  ofs0070:
+                           pushstring "Equipped"
+                           jump ofs007e
+                           pushscope
+                           bitand
+                           decrement_i
+                           convert_d
+                           increment
+                           setlocal3
+                           decrement
+                  ofs007e:
+                           pushfalse
+                           iffalse ofs008c
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs008f
+                  ofs008c:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs008f:
+                           jump ofs019d
+                  ofs0093:
+                           getlex QName(PackageNamespace(""),"SD")
+                           jump ofs00a1
+                           coerce_a
+                           multiply
+                           getlocal3
+                           decrement
+                           setlocal2
+                           subtract
+                           dup
+                  ofs00a1:
+                           getproperty QName(PackageNamespace(""),"classSaves")
+                           jump ofs00af
+                           pop
+                           modulo
+                           pushscope
+                           astypelate
+                           convert_i
+                           equals
+                           strictequals
+                  ofs00af:
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"selClass")
+                           getproperty MultinameL([PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getproperty Multiname("level",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"skill")
+                           getproperty QName(PackageNamespace(""),"lvlReq")
+                           ifnlt ofs0122
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           jump ofs00d5
+                           checkfilter
+                           pop
+                           pushundefined
+                           increment_i
+                           nextname
+                           negate
+                           bitor
+                  ofs00d5:
+                           pushint 16750899
+                           pushfalse
+                           iffalse ofs00e5
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs00e8
+                  ofs00e5:
+                           setproperty QName(PackageNamespace(""),"textColor")
+                  ofs00e8:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring "Req lvl "
+                           jump ofs00fa
+                           modulo
+                           pushscope
+                           astypelate
+                           negate_i
+                           subtract_i
+                           getlocal1
+                           add_i
+                  ofs00fa:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"skill")
+                           jump ofs0109
+                           popscope
+                           getglobalscope
+                           lshift
+                           nextvalue
+                           urshift
+                           greaterthan
+                           subtract_i
+                  ofs0109:
+                           getproperty QName(PackageNamespace(""),"lvlReq")
+                           add
+                           pushfalse
+                           iffalse ofs011b
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs011e
+                  ofs011b:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs011e:
+                           jump ofs019d
+                  ofs0122:
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"unlocks")
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"skill")
+                           getproperty QName(PackageNamespace(""),"id")
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                           pushbyte -1
+                           ifeq ofs0154
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring ""
+                           pushfalse
+                           iffalse ofs014d
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0150
+                  ofs014d:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs0150:
+                           jump ofs019d
+                  ofs0154:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushint 16764006
+                           pushfalse
+                           iffalse ofs0168
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs016b
+                  ofs0168:
+                           setproperty QName(PackageNamespace(""),"textColor")
+                  ofs016b:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring "$"
+                           getlex QName(PackageNamespace(""),"UT")
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"skill")
+                           getproperty QName(PackageNamespace(""),"cost")
+                           jump ofs0187
+                           multiply
+                           hasnext
+                           pushwith
+                           istypelate
+                           bitnot
+                           bitnot
+                           pushnull
+                  ofs0187:
+                           callproperty QName(PackageNamespace(""),"addNumCommas"), 1
+                           add
+                           pushfalse
+                           iffalse ofs019a
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs019d
+                  ofs019a:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs019d:
+                           jump ofs030f
+                  ofs01a1:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"streak")
+                           iffalse ofs030f
+                           getlex QName(PackageNamespace(""),"SD")
+                           jump ofs01b7
+                           getlocal0
+                           pushnull
+                           nextvalue
+                           astypelate
+                           istypelate
+                           getlocal3
+                           divide
+                  ofs01b7:
+                           getproperty QName(PackageNamespace(""),"classSaves")
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"selClass")
+                           getproperty MultinameL([PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getproperty Multiname("streak",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"streak")
+                           jump ofs01d5
+                           getlocal0
+                           pushnull
+                           nextvalue
+                           astypelate
+                           istypelate
+                           getlocal3
+                           divide
+                  ofs01d5:
+                           getproperty QName(PackageNamespace(""),"id")
+                           ifne ofs0217
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushint 13421772
+                           pushfalse
+                           iffalse ofs01f0
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs01f3
+                  ofs01f0:
+                           setproperty QName(PackageNamespace(""),"textColor")
+                  ofs01f3:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring "Equipped"
+                           jump ofs0202
+                           bitand
+                           convert_d
+                           setlocal1
+                           increment_i
+                  ofs0202:
+                           pushfalse
+                           iffalse ofs0210
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0213
+                  ofs0210:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs0213:
+                           jump ofs030f
+                  ofs0217:
+                           getlex QName(PackageNamespace(""),"SD")
+                           jump ofs0222
+                           urshift
+                           dxnslate
+                           checkfilter
+                           negate_i
+                  ofs0222:
+                           getproperty QName(PackageNamespace(""),"classSaves")
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"selClass")
+                           getproperty MultinameL([PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getproperty Multiname("level",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getlocal0
+                           jump ofs023a
+                           pushwith
+                           setlocal3
+                           negate
+                           nextvalue
+                  ofs023a:
+                           getproperty QName(PackageNamespace(""),"streak")
+                           getproperty QName(PackageNamespace(""),"lvlReq")
+                           jump ofs0248
+                           pushwith
+                           setlocal3
+                           negate
+                           nextvalue
+                  ofs0248:
+                           ifnlt ofs028f
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           jump ofs0258
+                           convert_s
+                           convert_b
+                           not
+                           istypelate
+                  ofs0258:
+                           pushint 16750899
+                           pushfalse
+                           iffalse ofs0268
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs026b
+                  ofs0268:
+                           setproperty QName(PackageNamespace(""),"textColor")
+                  ofs026b:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring "Req lvl "
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"streak")
+                           getproperty QName(PackageNamespace(""),"lvlReq")
+                           add
+                           pushfalse
+                           iffalse ofs0288
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs028b
+                  ofs0288:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs028b:
+                           jump ofs030f
+                  ofs028f:
+                           getlex QName(PackageNamespace(""),"SD")
+                           getproperty QName(PackageNamespace(""),"unlocks")
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"streak")
+                           jump ofs02a1
+                           negate_i
+                           pushtrue
+                           dxnslate
+                           astypelate
+                  ofs02a1:
+                           getproperty QName(PackageNamespace(""),"id")
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                           pushbyte -1
+                           ifeq ofs02c9
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring ""
+                           pushfalse
+                           iffalse ofs02c2
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs02c5
+                  ofs02c2:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs02c5:
+                           jump ofs030f
+                  ofs02c9:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushint 16764006
+                           pushfalse
+                           iffalse ofs02dd
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs02e0
+                  ofs02dd:
+                           setproperty QName(PackageNamespace(""),"textColor")
+                  ofs02e0:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"txt_status")
+                           pushstring "$"
+                           getlex QName(PackageNamespace(""),"UT")
+                           getlocal0
+                           jump ofs02f3
+                           multiply_i
+                           pushundefined
+                           multiply_i
+                           increment_i
+                  ofs02f3:
+                           getproperty QName(PackageNamespace(""),"streak")
+                           getproperty QName(PackageNamespace(""),"cost")
+                           callproperty QName(PackageNamespace(""),"addNumCommas"), 1
+                           add
+                           pushfalse
+                           iffalse ofs030c
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs030f
+                  ofs030c:
+                           setproperty QName(PackageNamespace(""),"text")
+                  ofs030f:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function setText(param1:MovieClip) : void
+               {
+                  trait method QName(PackageNamespace(""),"setText")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace("flash.display"),"MovieClip")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 53
+                           localcount 2
+                           initscopedepth 10
+                           maxscopedepth 11
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"skill")
+                              iffalse ofs00e6
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_special",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"skill")
+                              getproperty QName(PackageNamespace(""),"special")
+                              pushfalse
+                              iffalse ofs0035
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0038
+                     ofs0035:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs0038:
+                              getlocal1
+                              getproperty Multiname("txt_desc",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              jump ofs0047
+                              lessequals
+                              getlocal0
+                              increment_i
+                              pushnan
+                              convert_i
+                              greaterequals
+                              swap
+                     ofs0047:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"skill")
+                              getproperty QName(PackageNamespace(""),"desc")
+                              jump ofs0059
+                              newactivation
+                              popscope
+                              add_i
+                              hasnext
+                              nextname
+                              subtract
+                              add
+                     ofs0059:
+                              pushfalse
+                              iffalse ofs0067
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs006a
+                     ofs0067:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs006a:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"txt_name")
+                              pushstring ""
+                              pushfalse
+                              iffalse ofs007e
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0081
+                     ofs007e:
+                              setproperty QName(PackageNamespace(""),"text")
+                     ofs0081:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_name",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"skill")
+                              jump ofs0097
+                              hasnext
+                              coerce_s
+                              swap
+                              pushundefined
+                              subtract_i
+                              pushtrue
+                              convert_s
+                     ofs0097:
+                              getproperty QName(PackageNamespace(""),"name")
+                              jump ofs00a5
+                              getlocal2
+                              subtract_i
+                              decrement
+                              coerce_s
+                              urshift
+                              lessthan
+                              modulo
+                     ofs00a5:
+                              pushfalse
+                              iffalse ofs00b3
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00b6
+                     ofs00b3:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs00b6:
+                              getlocal0
+                              jump ofs00c2
+                              getlocal2
+                              subtract_i
+                              decrement
+                              coerce_s
+                              urshift
+                              lessthan
+                              modulo
+                     ofs00c2:
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              jump ofs00d0
+                              getglobalscope
+                              nextname
+                              coerce_a
+                              setlocal2
+                              bitnot
+                              setlocal1
+                              instanceof
+                     ofs00d0:
+                              getproperty Multiname("txt_type",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              pushstring ""
+                              pushfalse
+                              iffalse ofs00e3
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00e6
+                     ofs00e3:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs00e6:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"streak")
+                              iffalse ofs0233
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"streak")
+                              getproperty QName(PackageNamespace(""),"id")
+                              pushstring "none"
+                              ifne ofs0125
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_special",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              jump ofs010e
+                              nextname
+                              getlocal2
+                              add
+                              pushnan
+                              istypelate
+                              pushnan
+                              istypelate
+                     ofs010e:
+                              pushstring ""
+                              pushfalse
+                              iffalse ofs011e
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0121
+                     ofs011e:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs0121:
+                              jump ofs0190
+                     ofs0125:
+                              getlocal0
+                              jump ofs0131
+                              dup
+                              newactivation
+                              multiply
+                              hasnext
+                              bitor
+                              bitnot
+                              negate_i
+                     ofs0131:
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_special",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"streak")
+                              getproperty QName(PackageNamespace(""),"kills")
+                              pushstring " kills\nPress E or Ctrl to activate\n"
+                              add
+                              pushfalse
+                              iffalse ofs0150
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0153
+                     ofs0150:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs0153:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_special",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getlocal0
+                              jump ofs0166
+                              subtract_i
+                              strictequals
+                              setlocal3
+                              pushundefined
+                              setlocal3
+                              negate_i
+                              nextname
+                     ofs0166:
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_special",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"streak")
+                              getproperty QName(PackageNamespace(""),"special")
+                              add
+                              jump ofs017f
+                              not
+                              convert_i
+                              bitnot
+                              coerce_s
+                     ofs017f:
+                              pushfalse
+                              iffalse ofs018d
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0190
+                     ofs018d:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs0190:
+                              getlocal1
+                              getproperty Multiname("txt_desc",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getlocal0
+                              jump ofs019d
+                              not
+                              convert_i
+                              bitnot
+                              coerce_s
+                     ofs019d:
+                              getproperty QName(PackageNamespace(""),"streak")
+                              getproperty QName(PackageNamespace(""),"desc")
+                              pushfalse
+                              iffalse ofs01b1
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs01b4
+                     ofs01b1:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs01b4:
+                              getlocal0
+                              jump ofs01bd
+                              coerce_s
+                              setlocal2
+                              strictequals
+                              setlocal2
+                     ofs01bd:
+                              getproperty QName(PackageNamespace(""),"txt_name")
+                              pushstring ""
+                              pushfalse
+                              iffalse ofs01d0
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs01d3
+                     ofs01d0:
+                              setproperty QName(PackageNamespace(""),"text")
+                     ofs01d3:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"txt_kills")
+                              pushstring ""
+                              pushfalse
+                              iffalse ofs01e7
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs01ea
+                     ofs01e7:
+                              setproperty QName(PackageNamespace(""),"text")
+                     ofs01ea:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_name",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              jump ofs01f9
+                              pushfalse
+                              lshift
+                              greaterthan
+                              greaterthan
+                     ofs01f9:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"streak")
+                              getproperty QName(PackageNamespace(""),"name")
+                              pushfalse
+                              iffalse ofs020e
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0211
+                     ofs020e:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs0211:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"61"),"_parent")
+                              getproperty Multiname("txt_type",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              jump ofs0220
+                              pushfalse
+                              lshift
+                              greaterthan
+                              greaterthan
+                     ofs0220:
+                              pushstring ""
+                              pushfalse
+                              iffalse ofs0230
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0233
+                     ofs0230:
+                              setproperty Multiname("text",[PrivateNamespace(null,"61"),PackageNamespace(""),PackageInternalNs(""),PrivateNamespace(null,"217"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Holder_Skill"),StaticProtectedNs("Holder_Skill"),StaticProtectedNs("flash.display:MovieClip"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                     ofs0233:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  internal function frame1() : *
+                  {
+                     trait method QName(PackageInternalNs(""),"frame1")
+                        dispid 0
+                        method
+                           name null
+                           returns null
+                           
+                           body
+                              maxstack 51
+                              localcount 1
+                              initscopedepth 10
+                              maxscopedepth 11
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 findpropstrict QName(PackageNamespace(""),"stop")
+                                 pushfalse
+                                 iffalse ofs0021
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 jump ofs0025
+                        ofs0021:
+                                 callpropvoid QName(PackageNamespace(""),"stop"), 0
+                        ofs0025:
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                  }
+               }
+               
+               method
+                  name null
+                  returns null
+                  
+                  body
+                     maxstack 52
+                     localcount 1
+                     initscopedepth 1
+                     maxscopedepth 9
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        findpropstrict Multiname("Holder_Skill",[PackageNamespace("")])
+                        getlex QName(PackageNamespace(""),"Object")
+                        jump ofs001f
+                        pushfalse
+                        getlocal1
+                        convert_d
+                        lessthan
+                        nextname
+               ofs001f:
+                        pushscope
+                        getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                        pushscope
+                        getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                        pushscope
+                        getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                        pushscope
+                        getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                        pushscope
+                        getlex QName(PackageNamespace("flash.display"),"Sprite")
+                        pushscope
+                        getlex QName(PackageNamespace("flash.display"),"MovieClip")
+                        pushscope
+                        jump ofs003c
+                        popscope
+                        decrement
+                        setlocal1
+                        dup
+                        subtract_i
+               ofs003c:
+                        getlex QName(PackageNamespace("flash.display"),"MovieClip")
+                        jump ofs0047
+                        multiply
+                        bitnot
+                        getlocal2
+                        convert_d
+                        urshift
+               ofs0047:
+                        newclass 354
+                        popscope
+                        jump ofs0054
+                        getlocal0
+                        typeof
+                        negate
+                        decrement
+                        bitnot
+               ofs0054:
+                        popscope
+                        popscope
+                        popscope
+                        popscope
+                        popscope
+                        popscope
+                        initproperty QName(PackageNamespace(""),"Holder_Skill")
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+               

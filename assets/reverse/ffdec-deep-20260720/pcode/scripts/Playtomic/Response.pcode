@@ -1,0 +1,875 @@
+package Playtomic
+{
+   public class Response
+   {
+      
+      private static const ERRORS:Object;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 53
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PrivateNamespace(null,"82"),"ERRORS")
+               findpropstrict QName(PackageNamespace(""),"Object")
+               constructprop QName(PackageNamespace(""),"Object"), 0
+               initproperty QName(PrivateNamespace(null,"82"),"ERRORS")
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushbyte 0
+               pushstring "Nothing went wrong!"
+               pushfalse
+               iffalse ofs0033
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0036
+      ofs0033:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0036:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushbyte 1
+               pushstring "General error, this typically means the player is unable to connect to the Playtomic servers"
+               pushfalse
+               iffalse ofs004d
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0050
+      ofs004d:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0050:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushbyte 2
+               pushstring "Invalid game credentials. Make sure you use your SWFID and GUID from the `API` section in the dashboard."
+               pushfalse
+               iffalse ofs0067
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs006a
+      ofs0067:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs006a:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushbyte 3
+               pushstring "Request timed out."
+               jump ofs007d
+               setlocal3
+               increment
+               bitxor
+               modulo
+               pushnan
+               multiply_i
+               add
+      ofs007d:
+               pushfalse
+               iffalse ofs008c
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs008f
+      ofs008c:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs008f:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushbyte 4
+               pushstring "Invalid request."
+               jump ofs00a2
+               setlocal2
+               negate
+               greaterthan
+               equals
+               getlocal3
+               bitand
+               bitnot
+      ofs00a2:
+               pushfalse
+               iffalse ofs00b1
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs00b4
+      ofs00b1:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs00b4:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushbyte 100
+               pushstring "GeoIP API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers."
+               pushfalse
+               iffalse ofs00cb
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs00ce
+      ofs00cb:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs00ce:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 200
+               pushstring "Leaderboard API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers."
+               pushfalse
+               iffalse ofs00e6
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs00e9
+      ofs00e6:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs00e9:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 201
+               pushstring "The source URL or name weren\'t provided when saving a score. Make sure the player specifies a name and the game is initialized before anything else using the code in the `Set your game up` section."
+               pushfalse
+               iffalse ofs0101
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0104
+      ofs0101:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0104:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 202
+               pushstring "Invalid auth key. You should not see this normally, players might if they tamper with your game."
+               pushfalse
+               iffalse ofs011c
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs011f
+      ofs011c:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs011f:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 203
+               pushstring "No Facebook user id on a score specified as a Facebook submission."
+               jump ofs0133
+               dxnslate
+               add
+               getglobalscope
+               convert_s
+               lessthan
+               coerce_s
+               modulo
+      ofs0133:
+               pushfalse
+               iffalse ofs0142
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0145
+      ofs0142:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0145:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 204
+               pushstring "Table name wasn\'t specified for creating a private leaderboard."
+               pushfalse
+               iffalse ofs015d
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0160
+      ofs015d:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0160:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 205
+               jump ofs0171
+               convert_i
+               divide
+               bitor
+               convert_i
+               increment
+               pushfalse
+               instanceof
+      ofs0171:
+               pushstring "Permalink structure wasn\'t specified: http://website.com/game/whatever?leaderboard="
+               pushfalse
+               iffalse ofs0183
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0186
+      ofs0183:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0186:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 206
+               pushstring "Leaderboard id wasn\'t provided loading a private leaderboard."
+               jump ofs019a
+               nextvalue
+               lessthan
+               coerce_s
+               setlocal0
+               setlocal2
+               astypelate
+               pushtrue
+      ofs019a:
+               pushfalse
+               iffalse ofs01a9
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs01ac
+      ofs01a9:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs01ac:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 207
+               pushstring "Invalid leaderboard id was provided for a private leaderboard."
+               pushfalse
+               iffalse ofs01c4
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs01c7
+      ofs01c4:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs01c7:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 208
+               pushstring "Player is banned from submitting scores in your game."
+               pushfalse
+               iffalse ofs01df
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs01e2
+      ofs01df:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs01e2:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 209
+               pushstring "Score was not the player\'s best score.  You can notify the player, or circumvent this by pecifying \'allowduplicates\' to be true in your save options."
+               pushfalse
+               iffalse ofs01fa
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs01fd
+      ofs01fa:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs01fd:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 300
+               pushstring "GameVars API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers."
+               pushfalse
+               iffalse ofs0215
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0218
+      ofs0215:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0218:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 400
+               pushstring "Level sharing API has been disabled. This may occur if your game is faulty or overwhelming the Playtomic servers."
+               pushfalse
+               iffalse ofs0230
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0233
+      ofs0230:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0233:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs0241
+               strictequals
+               getlocal3
+               increment_i
+               modulo
+               convert_i
+               pushscope
+               negate_i
+      ofs0241:
+               pushshort 401
+               jump ofs024c
+               lessequals
+               pushnan
+               add_i
+               equals
+      ofs024c:
+               pushstring "Invalid rating value (must be 1 - 10)."
+               pushfalse
+               iffalse ofs025e
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0261
+      ofs025e:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0261:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 402
+               pushstring "Player has already rated that level."
+               jump ofs0272
+               lessequals
+               pushnan
+               add_i
+               equals
+      ofs0272:
+               pushfalse
+               iffalse ofs0281
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0284
+      ofs0281:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0284:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 403
+               pushstring "The level name wasn\'t provided when saving a level."
+               pushfalse
+               iffalse ofs029c
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs029f
+      ofs029c:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs029f:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs02aa
+               newactivation
+               add_i
+               swap
+               convert_s
+      ofs02aa:
+               pushshort 404
+               pushstring "Invalid image auth. You should not see this normally, players might if they tamper with your game."
+               pushfalse
+               iffalse ofs02bf
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs02c2
+      ofs02bf:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs02c2:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs02cd
+               hasnext
+               negate_i
+               istypelate
+               convert_i
+      ofs02cd:
+               pushshort 405
+               jump ofs02d8
+               hasnext
+               negate_i
+               istypelate
+               convert_i
+      ofs02d8:
+               pushstring "Invalid image auth (again). You should not see this normally, players might if they tamper with your game."
+               jump ofs02e3
+               getlocal2
+               pushwith
+               coerce_a
+               add
+      ofs02e3:
+               pushfalse
+               iffalse ofs02f2
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs02f5
+      ofs02f2:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs02f5:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 406
+               jump ofs0303
+               getlocal2
+               pushwith
+               coerce_a
+               add
+      ofs0303:
+               pushstring "The level already exists. This is determined via a hash of the game id, level name, player ip address and name, and source url."
+               pushfalse
+               iffalse ofs0315
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0318
+      ofs0315:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0318:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs0323
+               getglobalscope
+               not
+               subtract
+               pushfalse
+      ofs0323:
+               pushshort 500
+               pushstring "Data API has been disabled. This may occur if the Data API is not enabled for your game, or your game is faulty or overwhelming the Playtomic servers."
+               pushfalse
+               iffalse ofs0338
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs033b
+      ofs0338:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs033b:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 600
+               pushstring "You have not configured your Parse.com database.  Sign up at Parse and then enter your API credentials in your Playtomic dashboard."
+               pushfalse
+               iffalse ofs0353
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0356
+      ofs0353:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0356:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 601
+               pushstring "No response was returned from Parse.  If you experience this a lot let us know exactly what you\'re doing so we can sort out a fix for it."
+               pushfalse
+               iffalse ofs036e
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0371
+      ofs036e:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0371:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushshort 6021
+               jump ofs037f
+               nextname
+               dup
+               multiply
+               dxnslate
+      ofs037f:
+               pushstring "Parse\'s servers had an error."
+               jump ofs038a
+               nextname
+               dup
+               multiply
+               dxnslate
+      ofs038a:
+               pushfalse
+               iffalse ofs0399
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs039c
+      ofs0399:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs039c:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs03a7
+               pushscope
+               modulo
+               setlocal3
+               bitnot
+      ofs03a7:
+               pushint 602101
+               pushstring "Object not found.  Make sure you include the classname and objectid and that they are correct."
+               pushfalse
+               iffalse ofs03bb
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs03be
+      ofs03bb:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs03be:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs03c9
+               pushscope
+               modulo
+               setlocal3
+               bitnot
+      ofs03c9:
+               pushint 602102
+               pushstring "Invalid query.  If you think you\'re doing it right let us know what you\'re doing and we\'ll look into it."
+               pushfalse
+               iffalse ofs03dd
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs03e0
+      ofs03dd:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs03e0:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               jump ofs03eb
+               coerce_a
+               pop
+               bitnot
+               getlocal2
+      ofs03eb:
+               pushint 602103
+               pushstring "Invalid classname."
+               pushfalse
+               iffalse ofs03ff
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0402
+      ofs03ff:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0402:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushint 602104
+               pushstring "Missing objectid."
+               pushfalse
+               iffalse ofs0419
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs041c
+      ofs0419:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs041c:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushint 602105
+               jump ofs042a
+               pop
+               pushscope
+               strictequals
+               add
+               getglobalscope
+      ofs042a:
+               pushstring "Invalid key name."
+               pushfalse
+               iffalse ofs043c
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs043f
+      ofs043c:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs043f:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushint 602106
+               pushstring "Invalid pointer."
+               pushfalse
+               iffalse ofs0456
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0459
+      ofs0456:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0459:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushint 602107
+               pushstring "Invalid JSON."
+               pushfalse
+               iffalse ofs0470
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs0473
+      ofs0470:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs0473:
+               getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+               pushint 602108
+               pushstring "Command unavailable."
+               pushfalse
+               iffalse ofs048a
+               pushbyte 5
+               pop
+               pop
+               pop
+               pop
+               jump ofs048d
+      ofs048a:
+               setproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+      ofs048d:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var Success:Boolean = false;
+      
+      public var ErrorCode:int = 0;
+      
+      public function Response(param1:int, param2:int)
+      {
+         method
+            name null
+            param QName(PackageNamespace(""),"int")
+            param QName(PackageNamespace(""),"int")
+            returns null
+            
+            body
+               maxstack 53
+               localcount 3
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  pushbyte 1
+                  equals
+                  initproperty QName(PackageNamespace(""),"Success")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PackageNamespace(""),"ErrorCode")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function get ErrorMessage() : String
+      {
+         trait getter QName(PackageNamespace(""),"ErrorMessage")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"String")
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlex QName(PrivateNamespace(null,"82"),"ERRORS")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"ErrorCode")
+                     getproperty MultinameL([PrivateNamespace(null,"82"),PackageNamespace(""),PrivateNamespace(null,"138"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Response"),StaticProtectedNs("Playtomic:Response"),StaticProtectedNs("Object")])
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function toString() : String
+         {
+            trait method QName(PackageNamespace(""),"toString")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"String")
+                  
+                  body
+                     maxstack 52
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushstring "Playtomic.Response:"
+                        jump ofs001d
+                        getlocal1
+                        subtract_i
+                        convert_s
+                        bitand
+                        astypelate
+               ofs001d:
+                        pushstring "\nSuccess: "
+                        add
+                        jump ofs002a
+                        divide
+                        astypelate
+                        strictequals
+                        lessequals
+                        getlocal0
+               ofs002a:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"Success")
+                        add
+                        jump ofs0038
+                        pushundefined
+                        checkfilter
+                        greaterthan
+                        getlocal1
+                        typeof
+               ofs0038:
+                        pushstring "\nErrorCode: "
+                        add
+                        getlocal0
+                        jump ofs0046
+                        pushundefined
+                        checkfilter
+                        greaterthan
+                        getlocal1
+                        typeof
+               ofs0046:
+                        getproperty QName(PackageNamespace(""),"ErrorCode")
+                        add
+                        pushstring "\nErrorMessage: "
+                        jump ofs0056
+                        add
+                        coerce_a
+                        getglobalscope
+                        subtract_i
+                        convert_o
+               ofs0056:
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"ErrorMessage")
+                        add
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 3
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("Response",[PackageNamespace("Playtomic")])
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               jump ofs0021
+               dxnslate
+               getglobalscope
+               setlocal1
+               convert_o
+               typeof
+               strictequals
+      ofs0021:
+               getlex QName(PackageNamespace(""),"Object")
+               newclass 33
+               popscope
+               initproperty QName(PackageNamespace("Playtomic"),"Response")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

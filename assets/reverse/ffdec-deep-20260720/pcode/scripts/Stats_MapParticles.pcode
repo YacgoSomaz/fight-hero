@@ -1,0 +1,2176 @@
+package
+{
+   public class Stats_MapParticles
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var game:Game;
+      
+      private var map:String;
+      
+      private var fc:uint;
+      
+      private var graphPart1:uint;
+      
+      private var graphPart2:uint;
+      
+      public function Stats_MapParticles(param1:Game, param2:String)
+      {
+         method
+            name null
+            param QName(PackageNamespace(""),"Game")
+            param QName(PackageNamespace(""),"String")
+            returns null
+            
+            body
+               maxstack 52
+               localcount 3
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PrivateNamespace(null,"12"),"game")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PrivateNamespace(null,"12"),"map")
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PrivateNamespace(null,"12"),"fc")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function mapInit() : void
+      {
+         trait method QName(PackageNamespace(""),"mapInit")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     jump ofs001f
+            ofs0015:
+                     label
+                     jump ofs0058
+            ofs001a:
+                     label
+                     jump ofs0058
+            ofs001f:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"12"),"map")
+                     setlocal1
+                     pushstring "foundry"
+                     getlocal1
+                     ifstrictne ofs0032
+                     pushbyte 0
+                     jump ofs003e
+            ofs0032:
+                     jump ofs003c
+                     pushbyte 1
+                     jump ofs003c
+            ofs003c:
+                     pushbyte 1
+            ofs003e:
+                     kill 1
+                     jump ofs004a
+                     multiply
+                     greaterequals
+                     multiply
+                     convert_i
+                     convert_b
+                     convert_d
+            ofs004a:
+                     pushbyte 2
+                     pop
+                     lookupswitch ofs001a, [ofs0015, ofs001a]
+            ofs0058:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function EnterFrame() : void
+         {
+            trait method QName(PackageNamespace(""),"EnterFrame")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 61
+                     localcount 4
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        getlocal0
+                        dup
+                        setlocal2
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        increment
+                        jump ofs0027
+                        negate_i
+                        not
+                        pushscope
+                        dxnslate
+                        checkfilter
+                        negate_i
+                        urshift
+               ofs0027:
+                        setlocal3
+                        getlocal2
+                        getlocal3
+                        pushfalse
+                        iffalse ofs0038
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs003b
+               ofs0038:
+                        setproperty QName(PrivateNamespace(null,"12"),"fc")
+               ofs003b:
+                        kill 3
+                        kill 2
+                        jump ofs0d34
+               ofs0043:
+                        label
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        jump ofs0056
+                        add_i
+                        modulo
+                        popscope
+                        getlocal2
+                        multiply_i
+                        not
+                        subtract
+               ofs0056:
+                        pushdouble 0.1
+                        ifnlt ofs00b4
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs0061:
+                        label
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 5
+                        pushbyte 15
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs0076
+                        jump ofs007a
+               ofs0076:
+                        jump ofs007e
+               ofs007a:
+                        jump ofs00b4
+               ofs007e:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 274
+                        pushshort 501
+                        pushstring "spark"
+                        pushbyte 0
+                        pushnull
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs00a4
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs00a8
+               ofs00a4:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs00a8:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0061
+               ofs00b4:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        jump ofs00c8
+                        typeof
+                        pop
+                        bitxor
+                        add
+                        setlocal1
+                        coerce_s
+                        bitnot
+               ofs00c8:
+                        ifnlt ofs0139
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs00d1:
+                        label
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 5
+                        pushbyte 15
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs00e6
+                        jump ofs00ea
+               ofs00e6:
+                        jump ofs00ee
+               ofs00ea:
+                        jump ofs0139
+               ofs00ee:
+                        getlocal0
+                        jump ofs00fa
+                        pushnan
+                        pushscope
+                        pushnan
+                        pushfalse
+                        pushundefined
+                        modulo
+                        pushfalse
+               ofs00fa:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1140
+                        pushbyte 16
+                        pushstring "spark"
+                        pushbyte 30
+                        pushnull
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs011e
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0122
+               ofs011e:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0122:
+                        getlocal1
+                        increment
+                        convert_u
+                        jump ofs0130
+                        bitnot
+                        nextvalue
+                        getglobalscope
+                        dxnslate
+                        equals
+                        nextname
+                        convert_i
+               ofs0130:
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs00d1
+               ofs0139:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        jump ofs014d
+                        getlocal3
+                        swap
+                        getlocal1
+                        bitnot
+                        convert_d
+                        lessequals
+                        pushtrue
+               ofs014d:
+                        ifnlt ofs01b0
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs0156:
+                        label
+                        getlocal1
+                        jump ofs0160
+                        decrement
+                        pushnull
+                        checkfilter
+                        getlocal2
+               ofs0160:
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 5
+                        pushbyte 15
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs0173
+                        jump ofs0177
+               ofs0173:
+                        jump ofs017b
+               ofs0177:
+                        jump ofs01b0
+               ofs017b:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 2352
+                        pushbyte 6
+                        pushstring "spark"
+                        pushbyte 30
+                        pushnull
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs01a0
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs01a4
+               ofs01a0:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs01a4:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0156
+               ofs01b0:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 15
+                        modulo
+                        pushbyte 0
+                        ifne ofs01f7
+                        getlocal0
+                        jump ofs01c6
+                        convert_u
+                        convert_d
+                        increment_i
+                        add
+               ofs01c6:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 987
+                        pushshort 444
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        jump ofs01dc
+                        setlocal1
+                        dxnslate
+                        bitand
+                        pushwith
+               ofs01dc:
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs01f3
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs01f7
+               ofs01f3:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs01f7:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 12
+                        modulo
+                        pushbyte 0
+                        ifne ofs022e
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 923
+                        pushshort 459
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs022a
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs022e
+               ofs022a:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs022e:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 18
+                        modulo
+                        pushbyte 0
+                        ifne ofs0275
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        jump ofs0247
+                        divide
+                        greaterequals
+                        swap
+                        swap
+               ofs0247:
+                        pushshort 805
+                        pushshort 454
+                        jump ofs0255
+                        pushundefined
+                        bitor
+                        decrement
+                        convert_o
+               ofs0255:
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs0271
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0275
+               ofs0271:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0275:
+                        getlocal0
+                        jump ofs027e
+                        pushundefined
+                        bitor
+                        decrement
+                        convert_o
+               ofs027e:
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 13
+                        modulo
+                        pushbyte 0
+                        ifne ofs02bc
+                        getlocal0
+                        jump ofs0293
+                        add
+                        pushtrue
+                        coerce_a
+                        checkfilter
+               ofs0293:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 815
+                        pushshort 454
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs02b8
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs02bc
+               ofs02b8:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs02bc:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 16
+                        modulo
+                        pushbyte 0
+                        ifne ofs0303
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 830
+                        jump ofs02d8
+                        pushtrue
+                        pushundefined
+                        add
+                        subtract
+               ofs02d8:
+                        pushshort 454
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        jump ofs02e9
+                        negate
+                        getlocal1
+                        dup
+                        pushwith
+               ofs02e9:
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs02ff
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0303
+               ofs02ff:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0303:
+                        jump ofs0dea
+               ofs0307:
+                        label
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        jump ofs0314
+                        negate
+                        getlocal1
+                        dup
+                        pushwith
+               ofs0314:
+                        pushshort 250
+                        pushshort 1760
+                        pushstring "move"
+                        jump ofs0326
+                        bitor
+                        decrement
+                        setlocal3
+                        swap
+                        bitxor
+               ofs0326:
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte -8
+                        pushstring "yspd"
+                        pushbyte -1
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs034a
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs034e
+               ofs034a:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs034e:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        ifnlt ofs03ce
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs0360:
+                        label
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 3
+                        pushbyte 10
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs0375
+                        jump ofs0379
+               ofs0375:
+                        jump ofs037d
+               ofs0379:
+                        jump ofs03ce
+               ofs037d:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1111
+                        pushshort 1686
+                        pushstring "spark"
+                        pushbyte 0
+                        jump ofs0395
+                        increment
+                        bitnot
+                        convert_s
+                        convert_o
+                        newactivation
+               ofs0395:
+                        pushnull
+                        jump ofs039f
+                        greaterequals
+                        typeof
+                        strictequals
+                        checkfilter
+                        checkfilter
+               ofs039f:
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs03b5
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs03b9
+               ofs03b5:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs03b9:
+                        getlocal1
+                        increment
+                        convert_u
+                        jump ofs03c5
+                        subtract
+                        multiply_i
+                        greaterthan
+                        subtract
+                        popscope
+               ofs03c5:
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0360
+               ofs03ce:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.5
+                        ifnlt ofs0448
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        jump ofs03eb
+                        equals
+                        convert_s
+                        modulo
+                        pushwith
+                        multiply_i
+               ofs03eb:
+                        pushshort 350
+                        pushshort 2800
+                        jump ofs03fa
+                        equals
+                        convert_s
+                        modulo
+                        pushwith
+                        multiply_i
+               ofs03fa:
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        getlex QName(PackageNamespace(""),"UT")
+                        jump ofs040a
+                        increment_i
+                        coerce_s
+                        bitor
+                        swap
+                        setlocal1
+               ofs040a:
+                        pushshort 1100
+                        pushshort 1900
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte -50
+                        pushstring "yspd"
+                        pushdouble 0
+                        jump ofs042c
+                        convert_b
+                        subtract_i
+                        coerce_s
+                        pushundefined
+                        pushundefined
+               ofs042c:
+                        newobject 2
+                        pushstring "wind"
+                        pushfalse
+                        iffalse ofs0444
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0448
+               ofs0444:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0448:
+                        jump ofs0dea
+               ofs044c:
+                        label
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1385
+                        pushshort 816
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte -8
+                        pushstring "yspd"
+                        pushbyte -1
+                        jump ofs046f
+                        convert_b
+                        subtract_i
+                        coerce_s
+                        pushundefined
+                        pushundefined
+               ofs046f:
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs0487
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs048b
+               ofs0487:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs048b:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1714
+                        pushshort 520
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte -8
+                        pushstring "yspd"
+                        pushbyte -1
+                        jump ofs04ad
+                        lshift
+                        astypelate
+                        instanceof
+                        coerce_s
+                        equals
+               ofs04ad:
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs04c5
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs04c9
+               ofs04c5:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs04c9:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 2482
+                        pushshort 774
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte -8
+                        pushstring "yspd"
+                        pushbyte -1
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs04fa
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs04fe
+               ofs04fa:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs04fe:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        jump ofs050f
+                        setlocal3
+                        checkfilter
+                        add_i
+                        setlocal2
+                        convert_d
+                        getglobalscope
+               ofs050f:
+                        pushdouble 0.3
+                        ifnlt ofs0577
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs051a:
+                        label
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 3
+                        pushbyte 5
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs052f
+                        jump ofs0533
+               ofs052f:
+                        jump ofs0537
+               ofs0533:
+                        jump ofs0577
+               ofs0537:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 2403
+                        jump ofs0548
+                        decrement_i
+                        coerce_a
+                        hasnext
+                        pushnan
+                        lessequals
+                        strictequals
+               ofs0548:
+                        pushshort 614
+                        pushstring "spark"
+                        pushbyte 0
+                        pushnull
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs0567
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs056b
+               ofs0567:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs056b:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs051a
+               ofs0577:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.3
+                        ifnlt ofs05fa
+                        pushbyte 0
+                        convert_u
+                        jump ofs0591
+                        convert_i
+                        convert_i
+                        subtract_i
+                        pushundefined
+                        pushfalse
+                        setlocal2
+               ofs0591:
+                        setlocal1
+                        nop
+               ofs0593:
+                        label
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 3
+                        jump ofs05a4
+                        nextvalue
+                        decrement_i
+                        subtract
+                        coerce_s
+                        negate_i
+                        equals
+               ofs05a4:
+                        pushbyte 5
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs05b2
+                        jump ofs05b6
+               ofs05b2:
+                        jump ofs05ba
+               ofs05b6:
+                        jump ofs05fa
+               ofs05ba:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1769
+                        pushshort 812
+                        pushstring "spark"
+                        pushbyte 0
+                        pushnull
+                        jump ofs05d4
+                        convert_i
+                        convert_i
+                        subtract_i
+                        pushundefined
+                        pushfalse
+                        setlocal2
+               ofs05d4:
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs05ea
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs05ee
+               ofs05ea:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs05ee:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0593
+               ofs05fa:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.7
+                        jump ofs060d
+                        strictequals
+                        bitxor
+                        multiply
+                        setlocal2
+                        convert_u
+                        increment_i
+               ofs060d:
+                        ifnlt ofs0663
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushshort 128
+                        pushshort 2800
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 114
+                        pushshort 1282
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushstring "move"
+                        pushbyte 0
+                        jump ofs063d
+                        lessequals
+                        instanceof
+                        pushnull
+                        pushnan
+                        divide
+                        bitor
+               ofs063d:
+                        pushstring "xspd"
+                        pushbyte -50
+                        pushstring "yspd"
+                        pushdouble 0
+                        newobject 2
+                        pushstring "wind"
+                        pushfalse
+                        iffalse ofs065f
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0663
+               ofs065f:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0663:
+                        jump ofs0dea
+               ofs0667:
+                        label
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 15
+                        modulo
+                        jump ofs0679
+                        newactivation
+                        subtract
+                        bitnot
+                        hasnext
+                        subtract
+                        divide
+               ofs0679:
+                        pushbyte 0
+                        ifne ofs06a9
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1045
+                        pushshort 946
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs06a5
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs06a9
+               ofs06a5:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs06a9:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 15
+                        modulo
+                        pushbyte 0
+                        ifne ofs0701
+                        getlocal0
+                        jump ofs06c2
+                        hasnext
+                        increment
+                        nextname
+                        pushundefined
+                        increment_i
+                        convert_o
+                        pushscope
+               ofs06c2:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        jump ofs06d0
+                        getlocal2
+                        negate
+                        divide
+                        coerce_s
+                        bitxor
+                        getlocal3
+                        bitxor
+               ofs06d0:
+                        pushshort 1844
+                        jump ofs06de
+                        getglobalscope
+                        add
+                        pushfalse
+                        decrement_i
+                        newactivation
+                        decrement
+                        getlocal1
+               ofs06de:
+                        pushshort 951
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs06fd
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0701
+               ofs06fd:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0701:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        jump ofs0713
+                        getglobalscope
+                        add
+                        pushfalse
+                        decrement_i
+                        newactivation
+                        decrement
+                        getlocal1
+               ofs0713:
+                        pushdouble 0.1
+                        ifnlt ofs0772
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushshort 144
+                        pushshort 277
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        jump ofs0735
+                        nextname
+                        divide
+                        convert_b
+                        greaterthan
+                        checkfilter
+                        add_i
+                        bitand
+               ofs0735:
+                        pushshort 236
+                        pushstring "leaf"
+                        pushbyte 0
+                        pushnull
+                        pushstring "leaf"
+                        pushstring "idle"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 1
+                        jump ofs0753
+                        pushscope
+                        convert_u
+                        urshift
+                        pop
+                        popscope
+                        urshift
+                        coerce_a
+               ofs0753:
+                        pushbyte 3
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushfalse
+                        iffalse ofs076e
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0772
+               ofs076e:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 8
+               ofs0772:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        ifnlt ofs07e3
+                        getlocal0
+                        jump ofs078b
+                        coerce_a
+                        getlocal3
+                        convert_i
+                        greaterequals
+                        multiply_i
+                        pushfalse
+                        setlocal3
+               ofs078b:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushshort 2341
+                        jump ofs079f
+                        pop
+                        pushnan
+                        convert_u
+                        urshift
+                        setlocal1
+                        astypelate
+                        greaterthan
+               ofs079f:
+                        pushshort 2429
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushshort 238
+                        pushstring "leaf"
+                        jump ofs07b7
+                        coerce_s
+                        add_i
+                        pop
+                        decrement_i
+                        pushundefined
+                        dup
+                        urshift
+               ofs07b7:
+                        pushbyte 0
+                        pushnull
+                        pushstring "leaf"
+                        pushstring "idle"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 1
+                        pushbyte 3
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushfalse
+                        iffalse ofs07df
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs07e3
+               ofs07df:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 8
+               ofs07e3:
+                        jump ofs0dea
+               ofs07e7:
+                        label
+                        getlex QName(PackageNamespace(""),"Math")
+                        jump ofs07f3
+                        pushfalse
+                        negate_i
+                        pushtrue
+                        greaterthan
+               ofs07f3:
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.7
+                        ifnlt ofs085d
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushshort 128
+                        pushshort 2800
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 114
+                        pushshort 1282
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        jump ofs082a
+                        popscope
+                        pushfalse
+                        getlocal0
+                        pop
+               ofs082a:
+                        pushbyte -50
+                        jump ofs0834
+                        popscope
+                        pushfalse
+                        getlocal0
+                        pop
+               ofs0834:
+                        pushstring "yspd"
+                        jump ofs083f
+                        multiply
+                        not
+                        setlocal2
+                        greaterequals
+               ofs083f:
+                        pushdouble 0
+                        newobject 2
+                        pushstring "wind"
+                        pushfalse
+                        iffalse ofs0859
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs085d
+               ofs0859:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs085d:
+                        jump ofs0dea
+               ofs0861:
+                        label
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 15
+                        jump ofs0870
+                        multiply
+                        not
+                        setlocal2
+                        greaterequals
+               ofs0870:
+                        modulo
+                        pushbyte 0
+                        ifne ofs08b1
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 652
+                        pushshort 1071
+                        jump ofs0889
+                        getlocal0
+                        dup
+                        negate_i
+                        urshift
+               ofs0889:
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        jump ofs0896
+                        bitand
+                        modulo
+                        lessequals
+                        decrement_i
+               ofs0896:
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs08ad
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs08b1
+               ofs08ad:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs08b1:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 15
+                        jump ofs08bf
+                        urshift
+                        pop
+                        convert_o
+                        greaterthan
+               ofs08bf:
+                        modulo
+                        pushbyte 0
+                        ifne ofs08f0
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 2150
+                        pushshort 1073
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs08ec
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs08f0
+               ofs08ec:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs08f0:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        ifnlt ofs0948
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushshort 144
+                        pushshort 277
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushshort 236
+                        pushstring "leaf"
+                        pushbyte 0
+                        pushnull
+                        pushstring "leaf"
+                        pushstring "idle"
+                        getlex QName(PackageNamespace(""),"UT")
+                        jump ofs0927
+                        pushwith
+                        lessequals
+                        astypelate
+                        not
+               ofs0927:
+                        pushbyte 1
+                        pushbyte 3
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushfalse
+                        iffalse ofs0944
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0948
+               ofs0944:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 8
+               ofs0948:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        ifnlt ofs0998
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushshort 2341
+                        pushshort 2429
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushshort 238
+                        pushstring "leaf"
+                        pushbyte 0
+                        pushnull
+                        pushstring "leaf"
+                        pushstring "idle"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 1
+                        pushbyte 3
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushfalse
+                        iffalse ofs0994
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0998
+               ofs0994:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 8
+               ofs0998:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1380
+                        pushshort 1100
+                        pushstring "geiser"
+                        pushbyte 0
+                        pushstring "xSpd"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte -1
+                        pushbyte 1
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushstring "ySpd"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte -15
+                        pushbyte -10
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        newobject 2
+                        pushstring "geiser"
+                        pushfalse
+                        iffalse ofs09db
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs09df
+               ofs09db:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs09df:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1380
+                        pushshort 1100
+                        jump ofs09f1
+                        convert_s
+                        nextvalue
+                        increment
+                        setlocal3
+               ofs09f1:
+                        pushstring "geiser"
+                        pushbyte 0
+                        pushstring "xSpd"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte -1
+                        jump ofs0a07
+                        negate_i
+                        swap
+                        pushwith
+                        typeof
+                        subtract
+               ofs0a07:
+                        pushbyte 1
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        pushstring "ySpd"
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte -15
+                        pushbyte -10
+                        jump ofs0a20
+                        multiply_i
+                        pushnull
+                        convert_d
+                        newactivation
+                        instanceof
+               ofs0a20:
+                        callproperty QName(PackageNamespace(""),"rand"), 2
+                        jump ofs0a2d
+                        multiply_i
+                        pushnull
+                        convert_d
+                        newactivation
+                        instanceof
+               ofs0a2d:
+                        newobject 2
+                        jump ofs0a38
+                        add_i
+                        convert_d
+                        typeof
+                        divide
+                        bitxor
+               ofs0a38:
+                        pushstring "geiser"
+                        pushfalse
+                        iffalse ofs0a4e
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0a52
+               ofs0a4e:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0a52:
+                        jump ofs0dea
+               ofs0a56:
+                        label
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1020
+                        jump ofs0a67
+                        typeof
+                        equals
+                        getlocal2
+                        not
+                        newactivation
+               ofs0a67:
+                        pushshort 520
+                        pushstring "move"
+                        pushbyte 0
+                        jump ofs0a78
+                        typeof
+                        equals
+                        getlocal2
+                        not
+                        newactivation
+               ofs0a78:
+                        pushstring "xspd"
+                        pushbyte 0
+                        pushstring "yspd"
+                        jump ofs0a89
+                        pushnan
+                        greaterequals
+                        lessthan
+                        setlocal3
+                        checkfilter
+               ofs0a89:
+                        pushbyte -2
+                        newobject 2
+                        pushstring "fire"
+                        jump ofs0a99
+                        convert_o
+                        bitor
+                        not
+                        typeof
+                        popscope
+               ofs0a99:
+                        pushfalse
+                        iffalse ofs0aac
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0ab0
+               ofs0aac:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0ab0:
+                        getlex QName(PackageNamespace(""),"Stats_Campaign")
+                        getproperty QName(PackageNamespace(""),"sn")
+                        jump ofs0abf
+                        convert_o
+                        bitor
+                        not
+                        typeof
+                        popscope
+               ofs0abf:
+                        pushbyte 3
+                        ifnle ofs0b03
+                        getlocal0
+                        jump ofs0acf
+                        setlocal0
+                        pushtrue
+                        equals
+                        newactivation
+                        multiply_i
+               ofs0acf:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1035
+                        pushshort 700
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte 0
+                        pushstring "yspd"
+                        pushbyte -2
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs0aff
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0b03
+               ofs0aff:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0b03:
+                        getlocal0
+                        jump ofs0b0d
+                        istypelate
+                        pushundefined
+                        multiply_i
+                        divide
+                        setlocal1
+               ofs0b0d:
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 2
+                        modulo
+                        pushbyte 0
+                        ifne ofs0b4d
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 405
+                        pushshort 805
+                        pushstring "waterdrop"
+                        jump ofs0b30
+                        lessthan
+                        setlocal1
+                        decrement_i
+                        not
+                        pushundefined
+                        modulo
+               ofs0b30:
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs0b49
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0b4d
+               ofs0b49:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0b4d:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 3
+                        modulo
+                        pushbyte 0
+                        ifne ofs0b84
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 815
+                        pushshort 805
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs0b80
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0b84
+               ofs0b80:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0b84:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"fc")
+                        pushbyte 4
+                        modulo
+                        pushbyte 0
+                        ifne ofs0bbb
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 686
+                        pushshort 1170
+                        pushstring "waterdrop"
+                        pushbyte 10
+                        pushnull
+                        pushstring "waterdrop"
+                        pushfalse
+                        iffalse ofs0bb7
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0bbb
+               ofs0bb7:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0bbb:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        ifnlt ofs0c2a
+                        pushbyte 0
+                        jump ofs0bd4
+                        getlocal1
+                        decrement
+                        getlocal3
+                        setlocal3
+                        equals
+                        nextname
+               ofs0bd4:
+                        convert_u
+                        setlocal1
+                        nop
+               ofs0bd7:
+                        label
+                        getlocal1
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 2
+                        pushbyte 10
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        iflt ofs0bec
+                        jump ofs0bf0
+               ofs0bec:
+                        jump ofs0bf4
+               ofs0bf0:
+                        jump ofs0c2a
+               ofs0bf4:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1050
+                        pushshort 535
+                        pushstring "spark"
+                        pushbyte 0
+                        pushnull
+                        pushstring "ember"
+                        pushfalse
+                        iffalse ofs0c1a
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0c1e
+               ofs0c1a:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0c1e:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0bd7
+               ofs0c2a:
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        pushdouble 0.1
+                        ifnlt ofs0cb7
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs0c3c:
+                        label
+                        getlocal1
+                        jump ofs0c48
+                        add
+                        multiply_i
+                        popscope
+                        increment
+                        pop
+                        swap
+               ofs0c48:
+                        getlex QName(PackageNamespace(""),"UT")
+                        pushbyte 3
+                        pushbyte 8
+                        callproperty QName(PackageNamespace(""),"irand"), 2
+                        jump ofs0c5d
+                        pushtrue
+                        popscope
+                        lshift
+                        bitand
+                        pushfalse
+                        instanceof
+               ofs0c5d:
+                        iflt ofs0c65
+                        jump ofs0c69
+               ofs0c65:
+                        jump ofs0c6d
+               ofs0c69:
+                        jump ofs0cb7
+               ofs0c6d:
+                        getlocal0
+                        jump ofs0c78
+                        pushundefined
+                        typeof
+                        pushundefined
+                        coerce_a
+                        lessequals
+                        decrement_i
+               ofs0c78:
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 2540
+                        pushshort 575
+                        pushstring "spark"
+                        pushbyte 0
+                        pushnull
+                        pushstring "ember"
+                        jump ofs0c94
+                        add
+                        multiply_i
+                        popscope
+                        increment
+                        pop
+                        swap
+               ofs0c94:
+                        pushfalse
+                        iffalse ofs0ca7
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0cab
+               ofs0ca7:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0cab:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0c3c
+               ofs0cb7:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1370
+                        pushshort 1230
+                        pushstring "move"
+                        pushbyte 0
+                        pushstring "xspd"
+                        pushbyte -1
+                        pushstring "yspd"
+                        pushbyte -3
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs0ce8
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0cec
+               ofs0ce8:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0cec:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"game")
+                        pushshort 1070
+                        pushshort 1160
+                        pushstring "move"
+                        pushbyte 0
+                        jump ofs0d05
+                        negate
+                        coerce_s
+                        pushnan
+                        pushnull
+                        negate_i
+                        convert_b
+               ofs0d05:
+                        pushstring "xspd"
+                        pushbyte -1
+                        pushstring "yspd"
+                        pushbyte -3
+                        newobject 2
+                        pushstring "fire"
+                        pushfalse
+                        iffalse ofs0d27
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0d2b
+               ofs0d27:
+                        callpropvoid QName(PackageNamespace(""),"createParticle"), 6
+               ofs0d2b:
+                        jump ofs0dea
+               ofs0d2f:
+                        label
+                        jump ofs0dea
+               ofs0d34:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"12"),"map")
+                        setlocal2
+                        pushstring "foundry"
+                        getlocal2
+                        ifstrictne ofs0d47
+                        pushbyte 0
+                        jump ofs0dc8
+               ofs0d47:
+                        pushstring "train"
+                        getlocal2
+                        ifstrictne ofs0d55
+                        pushbyte 1
+                        jump ofs0dc8
+               ofs0d55:
+                        pushstring "plane"
+                        getlocal2
+                        ifstrictne ofs0d63
+                        pushbyte 2
+                        jump ofs0dc8
+               ofs0d63:
+                        pushstring "swamp"
+                        getlocal2
+                        ifstrictne ofs0d71
+                        pushbyte 3
+                        jump ofs0dc8
+               ofs0d71:
+                        pushstring "dropship"
+                        jump ofs0d7f
+                        increment
+                        astypelate
+                        setlocal1
+                        coerce_a
+                        divide
+                        pushundefined
+                        equals
+               ofs0d7f:
+                        getlocal2
+                        ifstrictne ofs0d8a
+                        pushbyte 4
+                        jump ofs0dc8
+               ofs0d8a:
+                        pushstring "cave"
+                        getlocal2
+                        ifstrictne ofs0d98
+                        pushbyte 5
+                        jump ofs0dc8
+               ofs0d98:
+                        pushstring "tut"
+                        getlocal2
+                        jump ofs0da7
+                        greaterequals
+                        checkfilter
+                        checkfilter
+                        increment
+                        subtract
+                        add
+                        getlocal3
+               ofs0da7:
+                        ifstrictne ofs0db1
+                        pushbyte 6
+                        jump ofs0dc8
+               ofs0db1:
+                        jump ofs0dbb
+                        pushbyte 7
+                        jump ofs0dbb
+               ofs0dbb:
+                        pushbyte 7
+                        jump ofs0dc8
+                        subtract
+                        newactivation
+                        negate
+                        bitand
+                        instanceof
+                        istypelate
+                        astypelate
+               ofs0dc8:
+                        kill 2
+                        pushbyte 2
+                        pop
+                        lookupswitch ofs0d2f, [ofs0043, ofs0307, ofs044c, ofs0667, ofs07e7, ofs0861, ofs0a56, ofs0d2f]
+               ofs0dea:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 3
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("Stats_MapParticles",[PackageNamespace("")])
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               getlex QName(PackageNamespace(""),"Object")
+               newclass 34
+               popscope
+               initproperty QName(PackageNamespace(""),"Stats_MapParticles")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

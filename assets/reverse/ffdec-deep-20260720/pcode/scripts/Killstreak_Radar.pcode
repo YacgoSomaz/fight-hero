@@ -1,0 +1,579 @@
+package
+{
+   public class Killstreak_Radar
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               checkfilter
+               pushnull
+               add
+               not
+               convert_i
+               getlocal2
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var game:Game;
+      
+      public var unit:*;
+      
+      private var fc:uint = 0;
+      
+      public function Killstreak_Radar(param1:Game, param2:*)
+      {
+         method
+            name null
+            param QName(PackageNamespace(""),"Game")
+            param null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 3
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PrivateNamespace(null,"6"),"game")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PackageNamespace(""),"unit")
+                  getlocal0
+                  pushfalse
+                  iffalse ofs002c
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs0030
+         ofs002c:
+                  callpropvoid QName(PackageNamespace(""),"setDifficulties"), 0
+         ofs0030:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame() : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 53
+                  localcount 3
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     dup
+                     setlocal1
+                     getproperty QName(PrivateNamespace(null,"6"),"fc")
+                     jump ofs001f
+                     equals
+                     istypelate
+                     hasnext
+                     convert_b
+            ofs001f:
+                     increment
+                     jump ofs0029
+                     increment_i
+                     convert_o
+                     istypelate
+                     multiply_i
+                     setlocal3
+            ofs0029:
+                     setlocal2
+                     getlocal1
+                     jump ofs0034
+                     convert_b
+                     setlocal1
+                     subtract_i
+                     nextname
+                     swap
+            ofs0034:
+                     getlocal2
+                     pushfalse
+                     iffalse ofs0043
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0046
+            ofs0043:
+                     setproperty QName(PrivateNamespace(null,"6"),"fc")
+            ofs0046:
+                     kill 2
+                     kill 1
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"6"),"fc")
+                     pushbyte 20
+                     modulo
+                     pushbyte 0
+                     ifne ofs0069
+                     getlocal0
+                     pushfalse
+                     iffalse ofs0065
+                     pushbyte 5
+                     pop
+                     pop
+                     jump ofs0069
+            ofs0065:
+                     callpropvoid QName(PackageNamespace(""),"setDifficulties"), 0
+            ofs0069:
+                     getlocal0
+                     jump ofs0073
+                     lshift
+                     multiply_i
+                     subtract
+                     negate
+                     getglobalscope
+            ofs0073:
+                     getproperty QName(PrivateNamespace(null,"6"),"fc")
+                     pushbyte 30
+                     pushbyte 10
+                     multiply
+                     ifnge ofs0091
+                     getlocal0
+                     pushfalse
+                     iffalse ofs008d
+                     pushbyte 5
+                     pop
+                     pop
+                     jump ofs0091
+            ofs008d:
+                     callpropvoid QName(PackageNamespace(""),"end"), 0
+            ofs0091:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function setDifficulties() : void
+         {
+            trait method QName(PackageNamespace(""),"setDifficulties")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 53
+                     localcount 2
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"unit")
+                        getproperty Multiname("team",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        pushbyte 0
+                        jump ofs0026
+                        checkfilter
+                        nextvalue
+                        getlocal2
+                        multiply_i
+               ofs0026:
+                        ifne ofs00c8
+                        pushbyte 0
+                        convert_u
+                        jump ofs0035
+                        modulo
+                        swap
+                        lessthan
+                        strictequals
+               ofs0035:
+                        setlocal1
+                        nop
+               ofs0037:
+                        label
+                        getlocal1
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        jump ofs0045
+                        subtract_i
+                        equals
+                        multiply_i
+                        convert_b
+               ofs0045:
+                        getproperty QName(PackageNamespace(""),"units")
+                        getproperty QName(PackageNamespace(""),"length")
+                        iflt ofs0053
+                        jump ofs0057
+               ofs0053:
+                        jump ofs005b
+               ofs0057:
+                        jump ofs00c4
+               ofs005b:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        jump ofs006e
+                        astypelate
+                        pushnull
+                        not
+                        lessthan
+               ofs006e:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"unit")
+                        ifeq ofs007a
+                        jump ofs00b0
+               ofs007a:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        jump ofs008d
+                        dup
+                        convert_d
+                        equals
+                        dup
+               ofs008d:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        getproperty Multiname("odiff",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        pushbyte 5
+                        add
+                        pushfalse
+                        iffalse ofs00ac
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs00b0
+               ofs00ac:
+                        callpropvoid Multiname("setDiffStats",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")]), 1
+               ofs00b0:
+                        getlocal1
+                        jump ofs00b9
+                        subtract_i
+                        equals
+                        multiply_i
+                        convert_b
+               ofs00b9:
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs0037
+               ofs00c4:
+                        jump ofs0151
+               ofs00c8:
+                        pushbyte 0
+                        convert_u
+                        setlocal1
+                        nop
+               ofs00cd:
+                        label
+                        getlocal1
+                        getlocal0
+                        jump ofs00d9
+                        pushfalse
+                        pushtrue
+                        pushscope
+                        negate
+                        negate
+               ofs00d9:
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getproperty QName(PackageNamespace(""),"length")
+                        iflt ofs00ea
+                        jump ofs00ee
+               ofs00ea:
+                        jump ofs00f2
+               ofs00ee:
+                        jump ofs0151
+               ofs00f2:
+                        getlocal0
+                        jump ofs00fb
+                        not
+                        greaterequals
+                        decrement_i
+                        multiply_i
+               ofs00fb:
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        getproperty Multiname("team",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"unit")
+                        getproperty Multiname("team",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        ifeq ofs0117
+                        jump ofs0145
+               ofs0117:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"6"),"game")
+                        getproperty QName(PackageNamespace(""),"units")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        getproperty Multiname("odiff",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                        pushbyte 5
+                        add
+                        pushfalse
+                        iffalse ofs0141
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0145
+               ofs0141:
+                        callpropvoid Multiname("setDiffStats",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")]), 1
+               ofs0145:
+                        getlocal1
+                        increment
+                        convert_u
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs00cd
+               ofs0151:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function end() : void
+            {
+               trait method QName(PackageNamespace(""),"end")
+                  dispid 0
+                  method
+                     name null
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 53
+                        localcount 2
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           jump ofs001a
+                           setlocal0
+                           multiply_i
+                           pushnan
+                           increment_i
+                           pushtrue
+                           convert_d
+                  ofs001a:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"unit")
+                           pushfalse
+                           iffalse ofs002c
+                           pushbyte 5
+                           pop
+                           pop
+                           jump ofs0030
+                  ofs002c:
+                           callpropvoid Multiname("endKillstreak",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")]), 0
+                  ofs0030:
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"6"),"game")
+                           getproperty QName(PackageNamespace(""),"killstreaks")
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"6"),"game")
+                           getproperty QName(PackageNamespace(""),"killstreaks")
+                           getlocal0
+                           jump ofs0049
+                           istypelate
+                           convert_s
+                           nextvalue
+                           negate_i
+                           convert_b
+                           lshift
+                  ofs0049:
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                           jump ofs0057
+                           istypelate
+                           convert_s
+                           nextvalue
+                           negate_i
+                           convert_b
+                           lshift
+                  ofs0057:
+                           pushbyte 1
+                           jump ofs0063
+                           lessthan
+                           coerce_s
+                           setlocal1
+                           nextvalue
+                           pushnull
+                           greaterequals
+                  ofs0063:
+                           pushfalse
+                           iffalse ofs0072
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           pop
+                           jump ofs0076
+                  ofs0072:
+                           callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"splice"), 2
+                  ofs0076:
+                           pushbyte 0
+                           convert_u
+                           setlocal1
+                           nop
+                  ofs007b:
+                           label
+                           getlocal1
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"6"),"game")
+                           getproperty QName(PackageNamespace(""),"units")
+                           getproperty QName(PackageNamespace(""),"length")
+                           iflt ofs008f
+                           jump ofs0093
+                  ofs008f:
+                           jump ofs0097
+                  ofs0093:
+                           jump ofs00bf
+                  ofs0097:
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"6"),"game")
+                           getproperty QName(PackageNamespace(""),"units")
+                           getlocal1
+                           getproperty MultinameL([PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")])
+                           pushfalse
+                           iffalse ofs00af
+                           pushbyte 5
+                           pop
+                           pop
+                           jump ofs00b3
+                  ofs00af:
+                           callpropvoid Multiname("setDiffStats",[PrivateNamespace(null,"6"),PackageNamespace(""),PrivateNamespace(null,"129"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Radar"),StaticProtectedNs("Killstreak_Radar"),StaticProtectedNs("Object")]), 0
+                  ofs00b3:
+                           getlocal1
+                           increment
+                           convert_u
+                           setlocal1
+                           pushbyte 2
+                           pushbyte 3
+                           ifne ofs007b
+                  ofs00bf:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  jump ofs001a
+                  increment_i
+                  multiply_i
+                  greaterthan
+                  getlocal0
+                  checkfilter
+                  subtract_i
+         ofs001a:
+                  pushscope
+                  findpropstrict Multiname("Killstreak_Radar",[PackageNamespace("")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 20
+                  popscope
+                  initproperty QName(PackageNamespace(""),"Killstreak_Radar")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

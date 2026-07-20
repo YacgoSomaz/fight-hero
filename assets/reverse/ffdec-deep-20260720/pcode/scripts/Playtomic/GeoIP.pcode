@@ -1,0 +1,245 @@
+package Playtomic
+{
+   public final class GeoIP
+   {
+      
+      private static var SECTION:String;
+      
+      private static var LOAD:String;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function GeoIP()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      internal static function Initialise(param1:String) : void
+      {
+         trait method QName(PackageInternalNs("Playtomic"),"Initialise")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 4
+                  localcount 2
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PrivateNamespace(null,"89"),"SECTION")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "geoip-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"89"),"SECTION")
+                     findproperty QName(PrivateNamespace(null,"89"),"LOAD")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "geoip-lookup-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"89"),"LOAD")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function Lookup(param1:Function) : void
+         {
+            trait method QName(PackageNamespace(""),"Lookup")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"Function")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 5
+                     localcount 2
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                        getlex QName(PrivateNamespace(null,"89"),"SECTION")
+                        getlex QName(PrivateNamespace(null,"89"),"LOAD")
+                        getlex QName(PrivateNamespace(null,"89"),"LookupComplete")
+                        getlocal1
+                        callpropvoid QName(PackageNamespace(""),"Load"), 4
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            private static function LookupComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+            {
+               trait method QName(PrivateNamespace(null,"89"),"LookupComplete")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     flag HAS_OPTIONAL
+                     param QName(PackageNamespace(""),"Function")
+                     param QName(PackageNamespace(""),"Object")
+                     param QName(PackageNamespace(""),"XML")
+                     param QName(PackageNamespace("Playtomic"),"Response")
+                     optional Null()
+                     optional Null()
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 4
+                        localcount 6
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlocal1
+                           pushnull
+                           ifne ofs0009
+                           returnvoid
+                  ofs0009:
+                           pushstring "Code"
+                           pushstring "N/A"
+                           pushstring "Name"
+                           pushstring "UNKNOWN"
+                           newobject 2
+                           coerce QName(PackageNamespace(""),"Object")
+                           setlocal 5
+                           getlocal 4
+                           getproperty QName(PackageNamespace(""),"Success")
+                           iffalse ofs004e
+                           getlocal 5
+                           pushstring "Code"
+                           getlocal3
+                           pushstring "location"
+                           getproperty MultinameL([PrivateNamespace(null,"89"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"145"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GeoIP"),StaticProtectedNs("Playtomic:GeoIP"),StaticProtectedNs("Object")])
+                           pushstring "code"
+                           getproperty MultinameL([PrivateNamespace(null,"89"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"145"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GeoIP"),StaticProtectedNs("Playtomic:GeoIP"),StaticProtectedNs("Object")])
+                           setproperty MultinameL([PrivateNamespace(null,"89"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"145"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GeoIP"),StaticProtectedNs("Playtomic:GeoIP"),StaticProtectedNs("Object")])
+                           getlocal 5
+                           pushstring "Name"
+                           getlocal3
+                           pushstring "location"
+                           getproperty MultinameL([PrivateNamespace(null,"89"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"145"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GeoIP"),StaticProtectedNs("Playtomic:GeoIP"),StaticProtectedNs("Object")])
+                           pushstring "name"
+                           getproperty MultinameL([PrivateNamespace(null,"89"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"145"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GeoIP"),StaticProtectedNs("Playtomic:GeoIP"),StaticProtectedNs("Object")])
+                           setproperty MultinameL([PrivateNamespace(null,"89"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"145"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GeoIP"),StaticProtectedNs("Playtomic:GeoIP"),StaticProtectedNs("Object")])
+                  ofs004e:
+                           getlocal1
+                           getglobalscope
+                           getlocal 5
+                           getlocal 4
+                           call 2
+                           pop
+                           getlocal2
+                           coerce QName(PackageNamespace(""),"Object")
+                           setlocal2
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("GeoIP",[PackageNamespace("Playtomic")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  jump ofs0021
+                  getlocal2
+                  nextname
+                  convert_b
+                  coerce_a
+                  pushnan
+                  instanceof
+         ofs0021:
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 42
+                  popscope
+                  initproperty QName(PackageNamespace("Playtomic"),"GeoIP")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

@@ -1,0 +1,136 @@
+package Box2D.Dynamics.Joints
+{
+   import Box2D.Common.b2internal;
+   import Box2D.Dynamics.b2Body;
+   
+   use namespace b2internal;
+   
+   public class b2JointDef
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var type:int;
+      
+      public var userData:*;
+      
+      public var bodyA:b2Body;
+      
+      public var bodyB:b2Body;
+      
+      public var collideConnected:Boolean;
+      
+      public function b2JointDef()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2Joint")
+                  getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_unknownJoint")
+                  initproperty QName(PackageNamespace(""),"type")
+                  getlocal0
+                  pushnull
+                  initproperty QName(PackageNamespace(""),"userData")
+                  getlocal0
+                  pushnull
+                  jump ofs002d
+                  increment_i
+                  pushnan
+                  swap
+                  convert_u
+                  dxnslate
+         ofs002d:
+                  initproperty QName(PackageNamespace(""),"bodyA")
+                  getlocal0
+                  pushnull
+                  initproperty QName(PackageNamespace(""),"bodyB")
+                  getlocal0
+                  jump ofs003f
+                  convert_b
+                  add_i
+                  decrement
+                  pushscope
+                  nextvalue
+         ofs003f:
+                  pushfalse
+                  initproperty QName(PackageNamespace(""),"collideConnected")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2JointDef",[PackageNamespace("Box2D.Dynamics.Joints")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 49
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

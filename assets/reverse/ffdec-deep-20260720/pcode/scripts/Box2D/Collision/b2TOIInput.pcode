@@ -1,0 +1,133 @@
+package Box2D.Collision
+{
+   import Box2D.Common.Math.b2Sweep;
+   
+   public class b2TOIInput
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var proxyA:b2DistanceProxy;
+      
+      public var proxyB:b2DistanceProxy;
+      
+      public var sweepA:b2Sweep;
+      
+      public var sweepB:b2Sweep;
+      
+      public var tolerance:Number;
+      
+      public function b2TOIInput()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy")
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy"), 0
+                  jump ofs0020
+                  pushfalse
+                  nextname
+                  getlocal2
+                  pushnull
+                  getlocal0
+         ofs0020:
+                  initproperty QName(PackageNamespace(""),"proxyA")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy")
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy"), 0
+                  initproperty QName(PackageNamespace(""),"proxyB")
+                  getlocal0
+                  jump ofs0036
+                  popscope
+                  convert_i
+                  negate
+                  setlocal1
+                  typeof
+         ofs0036:
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Sweep")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Sweep"), 0
+                  initproperty QName(PackageNamespace(""),"sweepA")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Sweep")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Sweep"), 0
+                  initproperty QName(PackageNamespace(""),"sweepB")
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2TOIInput",[PackageNamespace("Box2D.Collision")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 94
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Collision"),"b2TOIInput")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

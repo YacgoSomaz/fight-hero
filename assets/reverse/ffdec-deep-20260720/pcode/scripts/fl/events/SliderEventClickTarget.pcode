@@ -1,0 +1,120 @@
+package fl.events
+{
+   public class SliderEventClickTarget
+   {
+      
+      public static const THUMB:String = "thumb";
+      
+      public static const TRACK:String = "track";
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PackageNamespace(""),"THUMB")
+               pushstring "thumb"
+               initproperty QName(PackageNamespace(""),"THUMB")
+               findproperty QName(PackageNamespace(""),"TRACK")
+               jump ofs0028
+               getglobalscope
+               pushnull
+               urshift
+               bitand
+               pushtrue
+               multiply_i
+               negate_i
+      ofs0028:
+               pushstring "track"
+               initproperty QName(PackageNamespace(""),"TRACK")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function SliderEventClickTarget()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 1
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         jump ofs001a
+         nextname
+         setlocal1
+         equals
+         bitnot
+         modulo
+         subtract_i
+ofs001a:
+         pushscope
+         findpropstrict Multiname("SliderEventClickTarget",[PackageNamespace("fl.events")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 2
+         jump ofs002f
+         pushscope
+         decrement
+         getlocal0
+         getlocal2
+         multiply
+         pop
+ofs002f:
+         popscope
+         initproperty QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

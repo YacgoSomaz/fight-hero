@@ -1,0 +1,139 @@
+package Box2D.Dynamics.Joints
+{
+   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2internal;
+   
+   use namespace b2internal;
+   
+   public class b2MouseJointDef extends b2JointDef
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var target:b2Vec2;
+      
+      public var maxForce:Number;
+      
+      public var frequencyHz:Number;
+      
+      public var dampingRatio:Number;
+      
+      public function b2MouseJointDef()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"target")
+                  getlocal0
+                  constructsuper 0
+                  findproperty QName(PackageNamespace(""),"type")
+                  getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2Joint")
+                  getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_mouseJoint")
+                  initproperty QName(PackageNamespace(""),"type")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"maxForce")
+                  getlocal0
+                  jump ofs003a
+                  bitxor
+                  newactivation
+                  add
+                  negate_i
+                  getlocal2
+                  pushfalse
+                  pushnan
+         ofs003a:
+                  pushbyte 5
+                  initproperty QName(PackageNamespace(""),"frequencyHz")
+                  getlocal0
+                  pushdouble 0.7
+                  jump ofs004a
+                  pushnull
+                  strictequals
+                  dup
+                  nextvalue
+         ofs004a:
+                  initproperty QName(PackageNamespace(""),"dampingRatio")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 4
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2MouseJointDef",[PackageNamespace("Box2D.Dynamics.Joints")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+         pushscope
+         getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+         newclass 141
+         popscope
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2MouseJointDef")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

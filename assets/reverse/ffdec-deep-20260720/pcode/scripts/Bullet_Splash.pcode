@@ -1,0 +1,261 @@
+package
+{
+   public class Bullet_Splash extends Bullet
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               equals
+               convert_d
+               negate_i
+               istypelate
+               multiply_i
+               lessequals
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      internal var countDistX:Number;
+      
+      internal var countDistY:Number;
+      
+      public function Bullet_Splash(param1:Game, param2:Unit, param3:Number, param4:Number, param5:Number, param6:Number, param7:String, param8:Object = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"Game")
+            param QName(PackageNamespace(""),"Unit")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"Object")
+            optional Null()
+            returns null
+            
+            body
+               maxstack 60
+               localcount 9
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  jump ofs001a
+                  pushwith
+                  pushwith
+                  dup
+                  bitxor
+         ofs001a:
+                  getlocal1
+                  getlocal2
+                  getlocal3
+                  getlocal 4
+                  getlocal 5
+                  jump ofs0029
+                  pushwith
+                  pushwith
+                  dup
+                  bitxor
+         ofs0029:
+                  getlocal 6
+                  getlocal 7
+                  pushtrue
+                  getlocal 8
+                  constructsuper 9
+                  getlex QName(ProtectedNamespace("Bullet"),"stats")
+                  jump ofs003e
+                  convert_s
+                  bitand
+                  setlocal3
+                  convert_u
+                  bitxor
+         ofs003e:
+                  getproperty QName(PackageNamespace(""),"params")
+                  pushbyte 0
+                  getproperty MultinameL([PrivateNamespace(null,"190"),PackageNamespace(""),PrivateNamespace(null,"191"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Bullet_Splash"),StaticProtectedNs("Bullet_Splash"),StaticProtectedNs("Bullet"),StaticProtectedNs("Object")])
+                  jump ofs004f
+                  negate_i
+                  dup
+                  convert_s
+                  pushscope
+                  newactivation
+         ofs004f:
+                  iftrue ofs006e
+                  findproperty QName(ProtectedNamespace("Bullet"),"hitType")
+                  pushstring "unit"
+                  initproperty QName(ProtectedNamespace("Bullet"),"hitType")
+                  findproperty QName(ProtectedNamespace("Bullet"),"hitObject")
+                  jump ofs0068
+                  negate_i
+                  dup
+                  convert_s
+                  pushscope
+                  newactivation
+         ofs0068:
+                  getlex QName(ProtectedNamespace("Bullet"),"unit")
+                  initproperty QName(ProtectedNamespace("Bullet"),"hitObject")
+         ofs006e:
+                  getlex QName(ProtectedNamespace("Bullet"),"stats")
+                  getproperty QName(PackageNamespace(""),"effHit")
+                  jump ofs007d
+                  multiply_i
+                  modulo
+                  strictequals
+                  bitor
+                  checkfilter
+         ofs007d:
+                  iffalse ofs00ad
+                  getlex QName(ProtectedNamespace("Bullet"),"game")
+                  getlex QName(ProtectedNamespace("Bullet"),"x")
+                  getlex QName(ProtectedNamespace("Bullet"),"y")
+                  getlex QName(ProtectedNamespace("Bullet"),"stats")
+                  jump ofs0096
+                  add_i
+                  pop
+                  greaterthan
+                  getlocal0
+                  popscope
+         ofs0096:
+                  getproperty QName(PackageNamespace(""),"effHit")
+                  pushfalse
+                  iffalse ofs00a9
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs00ad
+         ofs00a9:
+                  callpropvoid QName(PackageNamespace(""),"createEffect"), 3
+         ofs00ad:
+                  findpropstrict QName(ProtectedNamespace("Bullet"),"checkSplash")
+                  pushfalse
+                  iffalse ofs00bd
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs00c1
+         ofs00bd:
+                  callpropvoid QName(ProtectedNamespace("Bullet"),"checkSplash"), 0
+         ofs00c1:
+                  findpropstrict QName(ProtectedNamespace("Bullet"),"removeMe")
+                  pushfalse
+                  iffalse ofs00d1
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs00d5
+         ofs00d1:
+                  callpropvoid QName(ProtectedNamespace("Bullet"),"removeMe"), 0
+         ofs00d5:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame() : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 51
+                  localcount 1
+                  initscopedepth 5
+                  maxscopedepth 6
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 4
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            jump ofs001a
+            increment_i
+            multiply
+            modulo
+            instanceof
+            increment_i
+            convert_s
+   ofs001a:
+            pushscope
+            findpropstrict Multiname("Bullet_Splash",[PackageNamespace("")])
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            getlex QName(PackageNamespace(""),"Bullet")
+            pushscope
+            getlex QName(PackageNamespace(""),"Bullet")
+            newclass 128
+            popscope
+            popscope
+            initproperty QName(PackageNamespace(""),"Bullet_Splash")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

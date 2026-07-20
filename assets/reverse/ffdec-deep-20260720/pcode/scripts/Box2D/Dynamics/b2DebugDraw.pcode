@@ -1,0 +1,2077 @@
+package Box2D.Dynamics
+{
+   import Box2D.Collision.*;
+   import Box2D.Collision.Shapes.*;
+   import Box2D.Common.*;
+   import Box2D.Common.Math.*;
+   import Box2D.Dynamics.Contacts.*;
+   import flash.display.Sprite;
+   
+   use namespace b2internal;
+   
+   public class b2DebugDraw
+   {
+      
+      public static var e_shapeBit:uint = 1;
+      
+      public static var e_jointBit:uint = 2;
+      
+      public static var e_aabbBit:uint = 4;
+      
+      public static var e_pairBit:uint = 8;
+      
+      public static var e_centerOfMassBit:uint = 16;
+      
+      public static var e_controllerBit:uint = 32;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               modulo
+               dup
+               decrement
+               decrement_i
+               astypelate
+               subtract
+      ofs001a:
+               pushscope
+               findproperty QName(PackageNamespace(""),"e_shapeBit")
+               pushbyte 1
+               pushfalse
+               iffalse ofs002e
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0031
+      ofs002e:
+               setproperty QName(PackageNamespace(""),"e_shapeBit")
+      ofs0031:
+               findproperty QName(PackageNamespace(""),"e_jointBit")
+               jump ofs003e
+               modulo
+               dup
+               decrement
+               decrement_i
+               astypelate
+               subtract
+      ofs003e:
+               pushbyte 2
+               pushfalse
+               iffalse ofs004e
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0051
+      ofs004e:
+               setproperty QName(PackageNamespace(""),"e_jointBit")
+      ofs0051:
+               findproperty QName(PackageNamespace(""),"e_aabbBit")
+               pushbyte 4
+               jump ofs0060
+               astypelate
+               modulo
+               newactivation
+               greaterthan
+               getlocal0
+               pushtrue
+      ofs0060:
+               pushfalse
+               iffalse ofs006e
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0071
+      ofs006e:
+               setproperty QName(PackageNamespace(""),"e_aabbBit")
+      ofs0071:
+               findproperty QName(PackageNamespace(""),"e_pairBit")
+               pushbyte 8
+               pushfalse
+               iffalse ofs0084
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0087
+      ofs0084:
+               setproperty QName(PackageNamespace(""),"e_pairBit")
+      ofs0087:
+               findproperty QName(PackageNamespace(""),"e_centerOfMassBit")
+               pushbyte 16
+               pushfalse
+               iffalse ofs009a
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs009d
+      ofs009a:
+               setproperty QName(PackageNamespace(""),"e_centerOfMassBit")
+      ofs009d:
+               findproperty QName(PackageNamespace(""),"e_controllerBit")
+               pushbyte 32
+               jump ofs00ac
+               dup
+               pop
+               add
+               pop
+               typeof
+               lessthan
+      ofs00ac:
+               pushfalse
+               iffalse ofs00ba
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs00bd
+      ofs00ba:
+               setproperty QName(PackageNamespace(""),"e_controllerBit")
+      ofs00bd:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var m_drawFlags:uint;
+      
+      b2internal var m_sprite:Sprite;
+      
+      private var m_drawScale:Number = 1;
+      
+      private var m_lineThickness:Number = 1;
+      
+      private var m_alpha:Number = 1;
+      
+      private var m_fillAlpha:Number = 1;
+      
+      private var m_xformScale:Number = 1;
+      
+      public function b2DebugDraw()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function SetFlags(param1:uint) : void
+      {
+         trait method QName(PackageNamespace(""),"SetFlags")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace(""),"uint")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getlocal1
+                     initproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function GetFlags() : uint
+         {
+            trait method QName(PackageNamespace(""),"GetFlags")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"uint")
+                  
+                  body
+                     maxstack 51
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function AppendFlags(param1:uint) : void
+            {
+               trait method QName(PackageNamespace(""),"AppendFlags")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"uint")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 53
+                        localcount 2
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                           getlocal1
+                           jump ofs0021
+                           convert_u
+                           decrement
+                           getlocal2
+                           convert_b
+                           pushnull
+                           pushnan
+                  ofs0021:
+                           bitor
+                           initproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function ClearFlags(param1:uint) : void
+               {
+                  trait method QName(PackageNamespace(""),"ClearFlags")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"uint")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 53
+                           localcount 2
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              jump ofs001c
+                              getlocal1
+                              lshift
+                              strictequals
+                              greaterthan
+                              checkfilter
+                              convert_d
+                     ofs001c:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                              getlocal1
+                              bitnot
+                              bitand
+                              initproperty QName(PrivateNamespace(null,"20"),"m_drawFlags")
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function SetSprite(param1:Sprite) : void
+                  {
+                     trait method QName(PackageNamespace(""),"SetSprite")
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace("flash.display"),"Sprite")
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 52
+                              localcount 2
+                              initscopedepth 4
+                              maxscopedepth 5
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 getlocal0
+                                 getlocal1
+                                 initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function GetSprite() : Sprite
+                     {
+                        trait method QName(PackageNamespace(""),"GetSprite")
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace("flash.display"),"Sprite")
+                              
+                              body
+                                 maxstack 51
+                                 localcount 1
+                                 initscopedepth 4
+                                 maxscopedepth 5
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    pushscope
+                                    getlocal0
+                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function SetDrawScale(param1:Number) : void
+                        {
+                           trait method QName(PackageNamespace(""),"SetDrawScale")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"Number")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 52
+                                    localcount 2
+                                    initscopedepth 4
+                                    maxscopedepth 5
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       getlocal0
+                                       getlocal1
+                                       jump ofs001b
+                                       setlocal0
+                                       typeof
+                                       convert_b
+                                       bitnot
+                              ofs001b:
+                                       initproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function GetDrawScale() : Number
+                           {
+                              trait method QName(PackageNamespace(""),"GetDrawScale")
+                                 dispid 0
+                                 method
+                                    name null
+                                    returns QName(PackageNamespace(""),"Number")
+                                    
+                                    body
+                                       maxstack 51
+                                       localcount 1
+                                       initscopedepth 4
+                                       maxscopedepth 5
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          getlocal0
+                                          jump ofs001d
+                                          getlocal1
+                                          convert_i
+                                          multiply_i
+                                          bitor
+                                          lessequals
+                                          greaterthan
+                                          dxnslate
+                                 ofs001d:
+                                          getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                          returnvalue
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public function SetLineThickness(param1:Number) : void
+                              {
+                                 trait method QName(PackageNamespace(""),"SetLineThickness")
+                                    dispid 0
+                                    method
+                                       name null
+                                       param QName(PackageNamespace(""),"Number")
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 52
+                                          localcount 2
+                                          initscopedepth 4
+                                          maxscopedepth 5
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             getlocal0
+                                             getlocal1
+                                             initproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public function GetLineThickness() : Number
+                                 {
+                                    trait method QName(PackageNamespace(""),"GetLineThickness")
+                                       dispid 0
+                                       method
+                                          name null
+                                          returns QName(PackageNamespace(""),"Number")
+                                          
+                                          body
+                                             maxstack 51
+                                             localcount 1
+                                             initscopedepth 4
+                                             maxscopedepth 5
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                jump ofs001a
+                                                getlocal1
+                                                swap
+                                                lessthan
+                                                multiply
+                                                multiply_i
+                                                dxnslate
+                                       ofs001a:
+                                                pushscope
+                                                getlocal0
+                                                getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                returnvalue
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public function SetAlpha(param1:Number) : void
+                                    {
+                                       trait method QName(PackageNamespace(""),"SetAlpha")
+                                          dispid 0
+                                          method
+                                             name null
+                                             param QName(PackageNamespace(""),"Number")
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 52
+                                                localcount 2
+                                                initscopedepth 4
+                                                maxscopedepth 5
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushbyte 37
+                                                   pushbyte 34
+                                                   ifne ofs0010
+                                                   returnvoid
+                                                   newobject 536870911
+                                          ofs0010:
+                                                   pushscope
+                                                   getlocal0
+                                                   getlocal1
+                                                   jump ofs001c
+                                                   convert_o
+                                                   setlocal1
+                                                   setlocal0
+                                                   newactivation
+                                                   lessequals
+                                          ofs001c:
+                                                   initproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public function GetAlpha() : Number
+                                       {
+                                          trait method QName(PackageNamespace(""),"GetAlpha")
+                                             dispid 0
+                                             method
+                                                name null
+                                                returns QName(PackageNamespace(""),"Number")
+                                                
+                                                body
+                                                   maxstack 51
+                                                   localcount 1
+                                                   initscopedepth 4
+                                                   maxscopedepth 5
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      pushscope
+                                                      getlocal0
+                                                      jump ofs001b
+                                                      getlocal1
+                                                      newactivation
+                                                      convert_b
+                                                      instanceof
+                                                      instanceof
+                                             ofs001b:
+                                                      getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                      returnvalue
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          public function SetFillAlpha(param1:Number) : void
+                                          {
+                                             trait method QName(PackageNamespace(""),"SetFillAlpha")
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   param QName(PackageNamespace(""),"Number")
+                                                   returns QName(PackageNamespace(""),"void")
+                                                   
+                                                   body
+                                                      maxstack 52
+                                                      localcount 2
+                                                      initscopedepth 4
+                                                      maxscopedepth 5
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushbyte 37
+                                                         pushbyte 34
+                                                         ifne ofs0010
+                                                         returnvoid
+                                                         newobject 536870911
+                                                ofs0010:
+                                                         pushscope
+                                                         getlocal0
+                                                         getlocal1
+                                                         initproperty QName(PrivateNamespace(null,"20"),"m_fillAlpha")
+                                                         returnvoid
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             public function GetFillAlpha() : Number
+                                             {
+                                                trait method QName(PackageNamespace(""),"GetFillAlpha")
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      returns QName(PackageNamespace(""),"Number")
+                                                      
+                                                      body
+                                                         maxstack 51
+                                                         localcount 1
+                                                         initscopedepth 4
+                                                         maxscopedepth 5
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushbyte 37
+                                                            pushbyte 34
+                                                            ifne ofs0010
+                                                            returnvoid
+                                                            newobject 536870911
+                                                   ofs0010:
+                                                            pushscope
+                                                            getlocal0
+                                                            getproperty QName(PrivateNamespace(null,"20"),"m_fillAlpha")
+                                                            returnvalue
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                public function SetXFormScale(param1:Number) : void
+                                                {
+                                                   trait method QName(PackageNamespace(""),"SetXFormScale")
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         param QName(PackageNamespace(""),"Number")
+                                                         returns QName(PackageNamespace(""),"void")
+                                                         
+                                                         body
+                                                            maxstack 52
+                                                            localcount 2
+                                                            initscopedepth 4
+                                                            maxscopedepth 5
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushbyte 37
+                                                               pushbyte 34
+                                                               ifne ofs0010
+                                                               returnvoid
+                                                               newobject 536870911
+                                                      ofs0010:
+                                                               pushscope
+                                                               getlocal0
+                                                               jump ofs001d
+                                                               setlocal1
+                                                               greaterequals
+                                                               convert_b
+                                                               bitxor
+                                                               divide
+                                                               multiply_i
+                                                               convert_s
+                                                      ofs001d:
+                                                               getlocal1
+                                                               initproperty QName(PrivateNamespace(null,"20"),"m_xformScale")
+                                                               returnvoid
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                   
+                                                   public function GetXFormScale() : Number
+                                                   {
+                                                      trait method QName(PackageNamespace(""),"GetXFormScale")
+                                                         dispid 0
+                                                         method
+                                                            name null
+                                                            returns QName(PackageNamespace(""),"Number")
+                                                            
+                                                            body
+                                                               maxstack 51
+                                                               localcount 1
+                                                               initscopedepth 4
+                                                               maxscopedepth 5
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushbyte 37
+                                                                  pushbyte 34
+                                                                  ifne ofs0010
+                                                                  returnvoid
+                                                                  newobject 536870911
+                                                         ofs0010:
+                                                                  pushscope
+                                                                  getlocal0
+                                                                  getproperty QName(PrivateNamespace(null,"20"),"m_xformScale")
+                                                                  returnvalue
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                      }
+                                                      
+                                                      public function DrawPolygon(param1:Array, param2:int, param3:b2Color) : void
+                                                      {
+                                                         trait method QName(PackageNamespace(""),"DrawPolygon")
+                                                            dispid 0
+                                                            method
+                                                               name null
+                                                               param QName(PackageNamespace(""),"Array")
+                                                               param QName(PackageNamespace(""),"int")
+                                                               param QName(PackageNamespace("Box2D.Common"),"b2Color")
+                                                               returns QName(PackageNamespace(""),"void")
+                                                               
+                                                               body
+                                                                  maxstack 54
+                                                                  localcount 5
+                                                                  initscopedepth 4
+                                                                  maxscopedepth 5
+                                                                  
+                                                                  code
+                                                                     getlocal0
+                                                                     pushbyte 37
+                                                                     pushbyte 34
+                                                                     ifne ofs0010
+                                                                     returnvoid
+                                                                     newobject 536870911
+                                                            ofs0010:
+                                                                     jump ofs001a
+                                                                     urshift
+                                                                     nextname
+                                                                     not
+                                                                     equals
+                                                                     not
+                                                                     pushtrue
+                                                            ofs001a:
+                                                                     pushscope
+                                                                     getlocal0
+                                                                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                     getproperty QName(PackageNamespace(""),"graphics")
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                     getlocal3
+                                                                     jump ofs0031
+                                                                     pushwith
+                                                                     getlocal2
+                                                                     equals
+                                                                     convert_s
+                                                                     pushwith
+                                                                     lessthan
+                                                            ofs0031:
+                                                                     getproperty QName(PackageNamespace(""),"color")
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                     pushfalse
+                                                                     iffalse ofs0048
+                                                                     pushbyte 5
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     jump ofs004c
+                                                            ofs0048:
+                                                                     callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                            ofs004c:
+                                                                     getlocal0
+                                                                     jump ofs0057
+                                                                     convert_s
+                                                                     decrement_i
+                                                                     multiply_i
+                                                                     convert_i
+                                                                     getlocal3
+                                                                     setlocal1
+                                                            ofs0057:
+                                                                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                     getproperty QName(PackageNamespace(""),"graphics")
+                                                                     jump ofs0068
+                                                                     negate_i
+                                                                     bitxor
+                                                                     decrement_i
+                                                                     setlocal0
+                                                                     lessthan
+                                                                     greaterthan
+                                                                     setlocal1
+                                                            ofs0068:
+                                                                     getlocal1
+                                                                     jump ofs0074
+                                                                     multiply_i
+                                                                     instanceof
+                                                                     setlocal0
+                                                                     pushfalse
+                                                                     increment
+                                                                     bitnot
+                                                                     bitand
+                                                            ofs0074:
+                                                                     pushbyte 0
+                                                                     jump ofs0081
+                                                                     multiply_i
+                                                                     instanceof
+                                                                     setlocal0
+                                                                     pushfalse
+                                                                     increment
+                                                                     bitnot
+                                                                     bitand
+                                                            ofs0081:
+                                                                     getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     jump ofs008f
+                                                                     add_i
+                                                                     setlocal2
+                                                                     pushscope
+                                                                     dxnslate
+                                                                     setlocal2
+                                                                     negate_i
+                                                                     newactivation
+                                                            ofs008f:
+                                                                     getproperty Multiname("x",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                     multiply
+                                                                     getlocal1
+                                                                     pushbyte 0
+                                                                     getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getproperty Multiname("y",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                     multiply
+                                                                     pushfalse
+                                                                     iffalse ofs00b4
+                                                                     pushbyte 5
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     jump ofs00b8
+                                                            ofs00b4:
+                                                                     callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                            ofs00b8:
+                                                                     pushbyte 1
+                                                                     setlocal 4
+                                                                     nop
+                                                            ofs00bd:
+                                                                     label
+                                                                     getlocal 4
+                                                                     getlocal2
+                                                                     iflt ofs00c9
+                                                                     jump ofs00cd
+                                                            ofs00c9:
+                                                                     jump ofs00d1
+                                                            ofs00cd:
+                                                                     jump ofs011c
+                                                            ofs00d1:
+                                                                     getlocal0
+                                                                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                     getproperty QName(PackageNamespace(""),"graphics")
+                                                                     getlocal1
+                                                                     getlocal 4
+                                                                     getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     jump ofs00e9
+                                                                     pushnan
+                                                                     negate
+                                                                     popscope
+                                                                     getlocal2
+                                                                     strictequals
+                                                                     not
+                                                                     greaterthan
+                                                            ofs00e9:
+                                                                     getproperty Multiname("x",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                     multiply
+                                                                     getlocal1
+                                                                     getlocal 4
+                                                                     getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getproperty Multiname("y",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                     multiply
+                                                                     pushfalse
+                                                                     iffalse ofs010e
+                                                                     pushbyte 5
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     jump ofs0112
+                                                            ofs010e:
+                                                                     callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                            ofs0112:
+                                                                     inclocal_i 4
+                                                                     pushbyte 2
+                                                                     pushbyte 3
+                                                                     ifne ofs00bd
+                                                            ofs011c:
+                                                                     getlocal0
+                                                                     jump ofs0128
+                                                                     bitnot
+                                                                     add
+                                                                     lshift
+                                                                     add
+                                                                     coerce_a
+                                                                     checkfilter
+                                                                     coerce_s
+                                                            ofs0128:
+                                                                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                     getproperty QName(PackageNamespace(""),"graphics")
+                                                                     getlocal1
+                                                                     pushbyte 0
+                                                                     getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getproperty Multiname("x",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                     multiply
+                                                                     getlocal1
+                                                                     pushbyte 0
+                                                                     getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getproperty Multiname("y",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                     getlocal0
+                                                                     getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                     multiply
+                                                                     pushfalse
+                                                                     iffalse ofs0159
+                                                                     pushbyte 5
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     pop
+                                                                     jump ofs015d
+                                                            ofs0159:
+                                                                     callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                            ofs015d:
+                                                                     returnvoid
+                                                                  end ; code
+                                                               end ; body
+                                                            end ; method
+                                                         }
+                                                         
+                                                         public function DrawSolidPolygon(param1:Array, param2:int, param3:b2Color) : void
+                                                         {
+                                                            trait method QName(PackageNamespace(""),"DrawSolidPolygon")
+                                                               dispid 0
+                                                               method
+                                                                  name null
+                                                                  param QName(PackageNamespace(""),"Array")
+                                                                  param QName(PackageNamespace(""),"int")
+                                                                  param QName(PackageNamespace("Box2D.Common"),"b2Color")
+                                                                  returns QName(PackageNamespace(""),"void")
+                                                                  
+                                                                  body
+                                                                     maxstack 54
+                                                                     localcount 5
+                                                                     initscopedepth 4
+                                                                     maxscopedepth 5
+                                                                     
+                                                                     code
+                                                                        getlocal0
+                                                                        pushbyte 37
+                                                                        pushbyte 34
+                                                                        ifne ofs0010
+                                                                        returnvoid
+                                                                        newobject 536870911
+                                                               ofs0010:
+                                                                        jump ofs001a
+                                                                        lessequals
+                                                                        convert_d
+                                                                        bitxor
+                                                                        setlocal2
+                                                                        urshift
+                                                                        dup
+                                                               ofs001a:
+                                                                        pushscope
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                        getproperty QName(PackageNamespace(""),"graphics")
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                        getlocal3
+                                                                        getproperty QName(PackageNamespace(""),"color")
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                        pushfalse
+                                                                        iffalse ofs003e
+                                                                        pushbyte 5
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        jump ofs0042
+                                                               ofs003e:
+                                                                        callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                               ofs0042:
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                        getproperty QName(PackageNamespace(""),"graphics")
+                                                                        jump ofs0053
+                                                                        newactivation
+                                                                        dxnslate
+                                                                        greaterthan
+                                                                        pushnan
+                                                                        bitnot
+                                                                        coerce_a
+                                                               ofs0053:
+                                                                        getlocal1
+                                                                        jump ofs005e
+                                                                        hasnext
+                                                                        setlocal3
+                                                                        getglobalscope
+                                                                        hasnext
+                                                                        istypelate
+                                                                        hasnext
+                                                               ofs005e:
+                                                                        pushbyte 0
+                                                                        getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getproperty Multiname("x",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                        multiply
+                                                                        getlocal1
+                                                                        jump ofs0076
+                                                                        getlocal2
+                                                                        convert_b
+                                                                        bitor
+                                                                        pushundefined
+                                                                        bitor
+                                                                        getlocal2
+                                                               ofs0076:
+                                                                        pushbyte 0
+                                                                        getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getproperty Multiname("y",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                        multiply
+                                                                        pushfalse
+                                                                        iffalse ofs0092
+                                                                        pushbyte 5
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        jump ofs0096
+                                                               ofs0092:
+                                                                        callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                               ofs0096:
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                        getproperty QName(PackageNamespace(""),"graphics")
+                                                                        getlocal3
+                                                                        getproperty QName(PackageNamespace(""),"color")
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_fillAlpha")
+                                                                        pushfalse
+                                                                        iffalse ofs00b4
+                                                                        pushbyte 5
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        jump ofs00b8
+                                                               ofs00b4:
+                                                                        callpropvoid QName(PackageNamespace(""),"beginFill"), 2
+                                                               ofs00b8:
+                                                                        pushbyte 1
+                                                                        setlocal 4
+                                                                        nop
+                                                               ofs00bd:
+                                                                        label
+                                                                        getlocal 4
+                                                                        getlocal2
+                                                                        iflt ofs00c9
+                                                                        jump ofs00cd
+                                                               ofs00c9:
+                                                                        jump ofs00d1
+                                                               ofs00cd:
+                                                                        jump ofs0126
+                                                               ofs00d1:
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                        getproperty QName(PackageNamespace(""),"graphics")
+                                                                        getlocal1
+                                                                        getlocal 4
+                                                                        getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getproperty Multiname("x",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                        multiply
+                                                                        jump ofs00f0
+                                                                        getglobalscope
+                                                                        pushtrue
+                                                                        coerce_s
+                                                                        coerce_s
+                                                                        setlocal3
+                                                                        nextvalue
+                                                               ofs00f0:
+                                                                        getlocal1
+                                                                        getlocal 4
+                                                                        getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getproperty Multiname("y",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                        jump ofs0108
+                                                                        nextname
+                                                                        pushundefined
+                                                                        increment_i
+                                                                        setlocal2
+                                                                        swap
+                                                                        bitxor
+                                                                        pushwith
+                                                               ofs0108:
+                                                                        multiply
+                                                                        pushfalse
+                                                                        iffalse ofs0118
+                                                                        pushbyte 5
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        jump ofs011c
+                                                               ofs0118:
+                                                                        callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                               ofs011c:
+                                                                        inclocal_i 4
+                                                                        pushbyte 2
+                                                                        pushbyte 3
+                                                                        ifne ofs00bd
+                                                               ofs0126:
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                        getproperty QName(PackageNamespace(""),"graphics")
+                                                                        getlocal1
+                                                                        pushbyte 0
+                                                                        getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getproperty Multiname("x",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                        multiply
+                                                                        getlocal1
+                                                                        pushbyte 0
+                                                                        getproperty MultinameL([PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getproperty Multiname("y",[PrivateNamespace(null,"20"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"156"),PackageNamespace("Box2D.Dynamics"),PackageInternalNs("Box2D.Dynamics"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace("Box2D.Dynamics.Contacts"),PackageNamespace("Box2D.Common.Math"),PackageNamespace("Box2D.Common"),ProtectedNamespace("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Box2D.Dynamics:b2DebugDraw"),StaticProtectedNs("Object")])
+                                                                        getlocal0
+                                                                        getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                        multiply
+                                                                        pushfalse
+                                                                        iffalse ofs0158
+                                                                        pushbyte 5
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        pop
+                                                                        jump ofs015c
+                                                               ofs0158:
+                                                                        callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                               ofs015c:
+                                                                        getlocal0
+                                                                        getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                        getproperty QName(PackageNamespace(""),"graphics")
+                                                                        pushfalse
+                                                                        iffalse ofs0170
+                                                                        pushbyte 5
+                                                                        pop
+                                                                        pop
+                                                                        jump ofs0174
+                                                               ofs0170:
+                                                                        callpropvoid QName(PackageNamespace(""),"endFill"), 0
+                                                               ofs0174:
+                                                                        returnvoid
+                                                                     end ; code
+                                                                  end ; body
+                                                               end ; method
+                                                            }
+                                                            
+                                                            public function DrawCircle(param1:b2Vec2, param2:Number, param3:b2Color) : void
+                                                            {
+                                                               trait method QName(PackageNamespace(""),"DrawCircle")
+                                                                  dispid 0
+                                                                  method
+                                                                     name null
+                                                                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                                     param QName(PackageNamespace(""),"Number")
+                                                                     param QName(PackageNamespace("Box2D.Common"),"b2Color")
+                                                                     returns QName(PackageNamespace(""),"void")
+                                                                     
+                                                                     body
+                                                                        maxstack 55
+                                                                        localcount 4
+                                                                        initscopedepth 4
+                                                                        maxscopedepth 5
+                                                                        
+                                                                        code
+                                                                           getlocal0
+                                                                           pushbyte 37
+                                                                           pushbyte 34
+                                                                           ifne ofs0010
+                                                                           returnvoid
+                                                                           newobject 536870911
+                                                                  ofs0010:
+                                                                           pushscope
+                                                                           getlocal0
+                                                                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                           getproperty QName(PackageNamespace(""),"graphics")
+                                                                           getlocal0
+                                                                           getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                           getlocal3
+                                                                           jump ofs0027
+                                                                           nextname
+                                                                           getglobalscope
+                                                                           newactivation
+                                                                           pushnan
+                                                                           subtract_i
+                                                                           urshift
+                                                                  ofs0027:
+                                                                           getproperty QName(PackageNamespace(""),"color")
+                                                                           getlocal0
+                                                                           getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                           pushfalse
+                                                                           iffalse ofs003e
+                                                                           pushbyte 5
+                                                                           pop
+                                                                           pop
+                                                                           pop
+                                                                           pop
+                                                                           pop
+                                                                           jump ofs0042
+                                                                  ofs003e:
+                                                                           callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                                  ofs0042:
+                                                                           getlocal0
+                                                                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                           getproperty QName(PackageNamespace(""),"graphics")
+                                                                           getlocal1
+                                                                           jump ofs0054
+                                                                           pushscope
+                                                                           hasnext
+                                                                           add
+                                                                           pop
+                                                                           urshift
+                                                                           pushfalse
+                                                                  ofs0054:
+                                                                           getproperty QName(PackageNamespace(""),"x")
+                                                                           getlocal0
+                                                                           getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                           multiply
+                                                                           getlocal1
+                                                                           getproperty QName(PackageNamespace(""),"y")
+                                                                           getlocal0
+                                                                           getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                           multiply
+                                                                           jump ofs0070
+                                                                           coerce_a
+                                                                           lessequals
+                                                                           dup
+                                                                           greaterequals
+                                                                           bitnot
+                                                                           astypelate
+                                                                           setlocal1
+                                                                  ofs0070:
+                                                                           getlocal2
+                                                                           getlocal0
+                                                                           jump ofs007d
+                                                                           pop
+                                                                           convert_d
+                                                                           greaterequals
+                                                                           urshift
+                                                                           istypelate
+                                                                           dup
+                                                                           bitand
+                                                                  ofs007d:
+                                                                           getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                           multiply
+                                                                           pushfalse
+                                                                           iffalse ofs0091
+                                                                           pushbyte 5
+                                                                           pop
+                                                                           pop
+                                                                           pop
+                                                                           pop
+                                                                           pop
+                                                                           jump ofs0095
+                                                                  ofs0091:
+                                                                           callpropvoid QName(PackageNamespace(""),"drawCircle"), 3
+                                                                  ofs0095:
+                                                                           returnvoid
+                                                                        end ; code
+                                                                     end ; body
+                                                                  end ; method
+                                                               }
+                                                               
+                                                               public function DrawSolidCircle(param1:b2Vec2, param2:Number, param3:b2Vec2, param4:b2Color) : void
+                                                               {
+                                                                  trait method QName(PackageNamespace(""),"DrawSolidCircle")
+                                                                     dispid 0
+                                                                     method
+                                                                        name null
+                                                                        param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                                        param QName(PackageNamespace(""),"Number")
+                                                                        param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                                        param QName(PackageNamespace("Box2D.Common"),"b2Color")
+                                                                        returns QName(PackageNamespace(""),"void")
+                                                                        
+                                                                        body
+                                                                           maxstack 55
+                                                                           localcount 5
+                                                                           initscopedepth 4
+                                                                           maxscopedepth 5
+                                                                           
+                                                                           code
+                                                                              getlocal0
+                                                                              pushbyte 37
+                                                                              pushbyte 34
+                                                                              ifne ofs0010
+                                                                              returnvoid
+                                                                              newobject 536870911
+                                                                     ofs0010:
+                                                                              pushscope
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                              getlocal 4
+                                                                              getproperty QName(PackageNamespace(""),"color")
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                              pushfalse
+                                                                              iffalse ofs0035
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs0039
+                                                                     ofs0035:
+                                                                              callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                                     ofs0039:
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              pushbyte 0
+                                                                              dup
+                                                                              pushfalse
+                                                                              iffalse ofs0052
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs0056
+                                                                     ofs0052:
+                                                                              callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                                     ofs0056:
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              getlocal 4
+                                                                              jump ofs0068
+                                                                              multiply
+                                                                              subtract
+                                                                              greaterthan
+                                                                              pushnan
+                                                                              negate
+                                                                     ofs0068:
+                                                                              getproperty QName(PackageNamespace(""),"color")
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_fillAlpha")
+                                                                              pushfalse
+                                                                              iffalse ofs007e
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs0082
+                                                                     ofs007e:
+                                                                              callpropvoid QName(PackageNamespace(""),"beginFill"), 2
+                                                                     ofs0082:
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              getlocal1
+                                                                              getproperty QName(PackageNamespace(""),"x")
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              getlocal1
+                                                                              getproperty QName(PackageNamespace(""),"y")
+                                                                              jump ofs009f
+                                                                              add_i
+                                                                              negate
+                                                                              bitor
+                                                                              pushundefined
+                                                                              decrement_i
+                                                                     ofs009f:
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              getlocal2
+                                                                              getlocal0
+                                                                              jump ofs00af
+                                                                              add_i
+                                                                              negate
+                                                                              bitor
+                                                                              pushundefined
+                                                                              decrement_i
+                                                                     ofs00af:
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              pushfalse
+                                                                              iffalse ofs00c3
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs00c7
+                                                                     ofs00c3:
+                                                                              callpropvoid QName(PackageNamespace(""),"drawCircle"), 3
+                                                                     ofs00c7:
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              jump ofs00d7
+                                                                              typeof
+                                                                              add
+                                                                              urshift
+                                                                              coerce_s
+                                                                              getlocal2
+                                                                     ofs00d7:
+                                                                              pushfalse
+                                                                              iffalse ofs00e4
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs00e8
+                                                                     ofs00e4:
+                                                                              callpropvoid QName(PackageNamespace(""),"endFill"), 0
+                                                                     ofs00e8:
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              getlocal1
+                                                                              getproperty QName(PackageNamespace(""),"x")
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              jump ofs0101
+                                                                              pushnan
+                                                                              divide
+                                                                              instanceof
+                                                                              setlocal2
+                                                                              astypelate
+                                                                     ofs0101:
+                                                                              getlocal1
+                                                                              getproperty QName(PackageNamespace(""),"y")
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              pushfalse
+                                                                              iffalse ofs0119
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs011d
+                                                                     ofs0119:
+                                                                              callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                                     ofs011d:
+                                                                              getlocal0
+                                                                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                              jump ofs012b
+                                                                              bitnot
+                                                                              convert_u
+                                                                              convert_u
+                                                                              pushnan
+                                                                              getlocal0
+                                                                              urshift
+                                                                     ofs012b:
+                                                                              getproperty QName(PackageNamespace(""),"graphics")
+                                                                              getlocal1
+                                                                              getproperty QName(PackageNamespace(""),"x")
+                                                                              jump ofs013c
+                                                                              bitnot
+                                                                              convert_u
+                                                                              convert_u
+                                                                              pushnan
+                                                                              getlocal0
+                                                                              urshift
+                                                                     ofs013c:
+                                                                              getlocal3
+                                                                              getproperty QName(PackageNamespace(""),"x")
+                                                                              getlocal2
+                                                                              jump ofs014b
+                                                                              getlocal3
+                                                                              getlocal3
+                                                                              hasnext
+                                                                              hasnext
+                                                                              urshift
+                                                                              pushfalse
+                                                                     ofs014b:
+                                                                              multiply
+                                                                              jump ofs0156
+                                                                              decrement
+                                                                              pushnan
+                                                                              istypelate
+                                                                              pushundefined
+                                                                              bitnot
+                                                                              popscope
+                                                                     ofs0156:
+                                                                              add
+                                                                              getlocal0
+                                                                              jump ofs0162
+                                                                              decrement
+                                                                              pushnan
+                                                                              istypelate
+                                                                              pushundefined
+                                                                              bitnot
+                                                                              popscope
+                                                                     ofs0162:
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              jump ofs0170
+                                                                              convert_u
+                                                                              add_i
+                                                                              subtract_i
+                                                                              coerce_s
+                                                                              istypelate
+                                                                              dup
+                                                                     ofs0170:
+                                                                              getlocal1
+                                                                              getproperty QName(PackageNamespace(""),"y")
+                                                                              jump ofs017e
+                                                                              setlocal1
+                                                                              negate_i
+                                                                              subtract
+                                                                              setlocal2
+                                                                              bitor
+                                                                              coerce_a
+                                                                     ofs017e:
+                                                                              getlocal3
+                                                                              getproperty QName(PackageNamespace(""),"y")
+                                                                              getlocal2
+                                                                              multiply
+                                                                              add
+                                                                              getlocal0
+                                                                              getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                              multiply
+                                                                              pushfalse
+                                                                              iffalse ofs0199
+                                                                              pushbyte 5
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              pop
+                                                                              jump ofs019d
+                                                                     ofs0199:
+                                                                              callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                                     ofs019d:
+                                                                              returnvoid
+                                                                           end ; code
+                                                                        end ; body
+                                                                     end ; method
+                                                                  }
+                                                                  
+                                                                  public function DrawSegment(param1:b2Vec2, param2:b2Vec2, param3:b2Color) : void
+                                                                  {
+                                                                     trait method QName(PackageNamespace(""),"DrawSegment")
+                                                                        dispid 0
+                                                                        method
+                                                                           name null
+                                                                           param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                                           param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                                           param QName(PackageNamespace("Box2D.Common"),"b2Color")
+                                                                           returns QName(PackageNamespace(""),"void")
+                                                                           
+                                                                           body
+                                                                              maxstack 54
+                                                                              localcount 4
+                                                                              initscopedepth 4
+                                                                              maxscopedepth 5
+                                                                              
+                                                                              code
+                                                                                 getlocal0
+                                                                                 pushbyte 37
+                                                                                 pushbyte 34
+                                                                                 ifne ofs0010
+                                                                                 returnvoid
+                                                                                 newobject 536870911
+                                                                        ofs0010:
+                                                                                 pushscope
+                                                                                 getlocal0
+                                                                                 getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                 getproperty QName(PackageNamespace(""),"graphics")
+                                                                                 getlocal0
+                                                                                 getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                                 getlocal3
+                                                                                 getproperty QName(PackageNamespace(""),"color")
+                                                                                 getlocal0
+                                                                                 getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                                 pushfalse
+                                                                                 iffalse ofs0034
+                                                                                 pushbyte 5
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 jump ofs0038
+                                                                        ofs0034:
+                                                                                 callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                                        ofs0038:
+                                                                                 getlocal0
+                                                                                 getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                 getproperty QName(PackageNamespace(""),"graphics")
+                                                                                 getlocal1
+                                                                                 getproperty QName(PackageNamespace(""),"x")
+                                                                                 jump ofs004e
+                                                                                 getlocal3
+                                                                                 divide
+                                                                                 pushnan
+                                                                                 subtract_i
+                                                                                 multiply
+                                                                                 strictequals
+                                                                                 lessequals
+                                                                        ofs004e:
+                                                                                 getlocal0
+                                                                                 getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                 multiply
+                                                                                 getlocal1
+                                                                                 getproperty QName(PackageNamespace(""),"y")
+                                                                                 getlocal0
+                                                                                 getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                 jump ofs0063
+                                                                                 convert_u
+                                                                                 getlocal3
+                                                                                 getlocal1
+                                                                                 add_i
+                                                                        ofs0063:
+                                                                                 multiply
+                                                                                 pushfalse
+                                                                                 iffalse ofs0073
+                                                                                 pushbyte 5
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 jump ofs0077
+                                                                        ofs0073:
+                                                                                 callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                                        ofs0077:
+                                                                                 getlocal0
+                                                                                 getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                 jump ofs0083
+                                                                                 setlocal1
+                                                                                 pushnan
+                                                                                 checkfilter
+                                                                                 lessequals
+                                                                        ofs0083:
+                                                                                 getproperty QName(PackageNamespace(""),"graphics")
+                                                                                 getlocal2
+                                                                                 getproperty QName(PackageNamespace(""),"x")
+                                                                                 getlocal0
+                                                                                 getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                 multiply
+                                                                                 getlocal2
+                                                                                 getproperty QName(PackageNamespace(""),"y")
+                                                                                 getlocal0
+                                                                                 jump ofs009c
+                                                                                 setlocal1
+                                                                                 pushnan
+                                                                                 checkfilter
+                                                                                 lessequals
+                                                                        ofs009c:
+                                                                                 getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                 multiply
+                                                                                 pushfalse
+                                                                                 iffalse ofs00af
+                                                                                 pushbyte 5
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 pop
+                                                                                 jump ofs00b3
+                                                                        ofs00af:
+                                                                                 callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                                        ofs00b3:
+                                                                                 returnvoid
+                                                                              end ; code
+                                                                           end ; body
+                                                                        end ; method
+                                                                     }
+                                                                     
+                                                                     public function DrawTransform(param1:b2Transform) : void
+                                                                     {
+                                                                        trait method QName(PackageNamespace(""),"DrawTransform")
+                                                                           dispid 0
+                                                                           method
+                                                                              name null
+                                                                              param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                                                                              returns QName(PackageNamespace(""),"void")
+                                                                              
+                                                                              body
+                                                                                 maxstack 55
+                                                                                 localcount 2
+                                                                                 initscopedepth 4
+                                                                                 maxscopedepth 5
+                                                                                 
+                                                                                 code
+                                                                                    getlocal0
+                                                                                    pushbyte 37
+                                                                                    pushbyte 34
+                                                                                    ifne ofs0010
+                                                                                    returnvoid
+                                                                                    newobject 536870911
+                                                                           ofs0010:
+                                                                                    pushscope
+                                                                                    getlocal0
+                                                                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                    getproperty QName(PackageNamespace(""),"graphics")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                                    jump ofs0026
+                                                                                    instanceof
+                                                                                    nextvalue
+                                                                                    dup
+                                                                                    strictequals
+                                                                                    pushnull
+                                                                                    modulo
+                                                                           ofs0026:
+                                                                                    pushint 16711680
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                                    pushfalse
+                                                                                    iffalse ofs003c
+                                                                                    pushbyte 5
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    jump ofs0040
+                                                                           ofs003c:
+                                                                                    callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                                           ofs0040:
+                                                                                    getlocal0
+                                                                                    jump ofs004b
+                                                                                    convert_d
+                                                                                    swap
+                                                                                    greaterequals
+                                                                                    lessthan
+                                                                                    hasnext
+                                                                                    astypelate
+                                                                           ofs004b:
+                                                                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                    getproperty QName(PackageNamespace(""),"graphics")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"x")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    multiply
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"y")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    multiply
+                                                                                    pushfalse
+                                                                                    iffalse ofs0078
+                                                                                    pushbyte 5
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    jump ofs007c
+                                                                           ofs0078:
+                                                                                    callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                                           ofs007c:
+                                                                                    getlocal0
+                                                                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                    getproperty QName(PackageNamespace(""),"graphics")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"x")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_xformScale")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"R")
+                                                                                    getproperty QName(PackageNamespace(""),"col1")
+                                                                                    getproperty QName(PackageNamespace(""),"x")
+                                                                                    multiply
+                                                                                    add
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    multiply
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"y")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_xformScale")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"R")
+                                                                                    getproperty QName(PackageNamespace(""),"col1")
+                                                                                    getproperty QName(PackageNamespace(""),"y")
+                                                                                    multiply
+                                                                                    add
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    multiply
+                                                                                    pushfalse
+                                                                                    iffalse ofs00ca
+                                                                                    pushbyte 5
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    jump ofs00ce
+                                                                           ofs00ca:
+                                                                                    callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                                           ofs00ce:
+                                                                                    getlocal0
+                                                                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                    getproperty QName(PackageNamespace(""),"graphics")
+                                                                                    jump ofs00df
+                                                                                    pushnull
+                                                                                    convert_d
+                                                                                    bitxor
+                                                                                    convert_b
+                                                                                    multiply
+                                                                                    newactivation
+                                                                           ofs00df:
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_lineThickness")
+                                                                                    pushint 65280
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_alpha")
+                                                                                    pushfalse
+                                                                                    iffalse ofs00f9
+                                                                                    pushbyte 5
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    jump ofs00fd
+                                                                           ofs00f9:
+                                                                                    callpropvoid QName(PackageNamespace(""),"lineStyle"), 3
+                                                                           ofs00fd:
+                                                                                    getlocal0
+                                                                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                    getproperty QName(PackageNamespace(""),"graphics")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"x")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    jump ofs0119
+                                                                                    decrement_i
+                                                                                    equals
+                                                                                    greaterthan
+                                                                                    multiply_i
+                                                                                    add_i
+                                                                                    swap
+                                                                           ofs0119:
+                                                                                    multiply
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"y")
+                                                                                    getlocal0
+                                                                                    jump ofs012c
+                                                                                    swap
+                                                                                    greaterequals
+                                                                                    getglobalscope
+                                                                                    strictequals
+                                                                                    greaterthan
+                                                                                    instanceof
+                                                                           ofs012c:
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    multiply
+                                                                                    pushfalse
+                                                                                    iffalse ofs013f
+                                                                                    pushbyte 5
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    jump ofs0143
+                                                                           ofs013f:
+                                                                                    callpropvoid QName(PackageNamespace(""),"moveTo"), 2
+                                                                           ofs0143:
+                                                                                    getlocal0
+                                                                                    getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_sprite")
+                                                                                    getproperty QName(PackageNamespace(""),"graphics")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"x")
+                                                                                    getlocal0
+                                                                                    jump ofs015c
+                                                                                    swap
+                                                                                    greaterequals
+                                                                                    getglobalscope
+                                                                                    strictequals
+                                                                                    greaterthan
+                                                                                    instanceof
+                                                                           ofs015c:
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_xformScale")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"R")
+                                                                                    getproperty QName(PackageNamespace(""),"col2")
+                                                                                    getproperty QName(PackageNamespace(""),"x")
+                                                                                    multiply
+                                                                                    add
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    jump ofs0179
+                                                                                    convert_i
+                                                                                    bitor
+                                                                                    bitor
+                                                                                    lessthan
+                                                                                    add
+                                                                                    convert_d
+                                                                           ofs0179:
+                                                                                    multiply
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"position")
+                                                                                    getproperty QName(PackageNamespace(""),"y")
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_xformScale")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"R")
+                                                                                    getproperty QName(PackageNamespace(""),"col2")
+                                                                                    getproperty QName(PackageNamespace(""),"y")
+                                                                                    multiply
+                                                                                    add
+                                                                                    getlocal0
+                                                                                    getproperty QName(PrivateNamespace(null,"20"),"m_drawScale")
+                                                                                    multiply
+                                                                                    pushfalse
+                                                                                    iffalse ofs01a5
+                                                                                    pushbyte 5
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    pop
+                                                                                    jump ofs01a9
+                                                                           ofs01a5:
+                                                                                    callpropvoid QName(PackageNamespace(""),"lineTo"), 2
+                                                                           ofs01a9:
+                                                                                    returnvoid
+                                                                                 end ; code
+                                                                              end ; body
+                                                                           end ; method
+                                                                        }
+                                                                     }
+                                                                  }
+                                                                  
+                                                                  method
+                                                                     name null
+                                                                     returns null
+                                                                     
+                                                                     body
+                                                                        maxstack 52
+                                                                        localcount 1
+                                                                        initscopedepth 1
+                                                                        maxscopedepth 3
+                                                                        
+                                                                        code
+                                                                           getlocal0
+                                                                           pushbyte 37
+                                                                           pushbyte 34
+                                                                           ifne ofs0010
+                                                                           returnvoid
+                                                                           newobject 536870911
+                                                                  ofs0010:
+                                                                           pushscope
+                                                                           findpropstrict Multiname("b2DebugDraw",[PackageNamespace("Box2D.Dynamics")])
+                                                                           getlex QName(PackageNamespace(""),"Object")
+                                                                           jump ofs0020
+                                                                           pop
+                                                                           convert_d
+                                                                           nextname
+                                                                           add_i
+                                                                           equals
+                                                                           pushwith
+                                                                  ofs0020:
+                                                                           pushscope
+                                                                           getlex QName(PackageNamespace(""),"Object")
+                                                                           newclass 75
+                                                                           popscope
+                                                                           initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2DebugDraw")
+                                                                           returnvoid
+                                                                        end ; code
+                                                                     end ; body
+                                                                  end ; method
+                                                                  

@@ -1,0 +1,130 @@
+package Box2D.Collision
+{
+   public class b2SimplexCache
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var metric:Number;
+      
+      public var count:uint;
+      
+      public var indexA:Array;
+      
+      public var indexB:Array;
+      
+      public function b2SimplexCache()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  jump ofs001b
+                  typeof
+                  pushfalse
+                  typeof
+                  pushnan
+                  bitor
+         ofs001b:
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  jump ofs0026
+                  pushnan
+                  pop
+                  getlocal2
+                  hasnext
+                  setlocal3
+         ofs0026:
+                  pushbyte 3
+                  constructprop QName(PackageNamespace(""),"Array"), 1
+                  initproperty QName(PackageNamespace(""),"indexA")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  pushbyte 3
+                  constructprop QName(PackageNamespace(""),"Array"), 1
+                  initproperty QName(PackageNamespace(""),"indexB")
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2SimplexCache",[PackageNamespace("Box2D.Collision")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         jump ofs0020
+         getlocal1
+         urshift
+         coerce_s
+         astypelate
+         bitnot
+ofs0020:
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 73
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Collision"),"b2SimplexCache")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

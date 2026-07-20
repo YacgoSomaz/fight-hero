@@ -1,0 +1,1443 @@
+package Playtomic
+{
+   import flash.events.Event;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
+   import flash.net.URLVariables;
+   import flash.utils.ByteArray;
+   import flash.utils.Timer;
+   
+   internal final class PRequest extends URLLoader
+   {
+      
+      private static var Pool:Vector.<PRequest>;
+      
+      private static var Queue:Vector.<PRequest>;
+      
+      private static var URLStub:String;
+      
+      private static var URLTail:String;
+      
+      private static var URL:String;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 5
+            maxscopedepth 6
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var urlRequest:URLRequest;
+      
+      private var complete:Function;
+      
+      private var callback:Function;
+      
+      private var handled:Boolean;
+      
+      private var logging:Boolean;
+      
+      private var postdata:Object;
+      
+      private var time:int;
+      
+      public function PRequest()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 1
+               initscopedepth 6
+               maxscopedepth 7
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.net"),"URLRequest")
+                  constructprop QName(PackageNamespace("flash.net"),"URLRequest"), 0
+                  initproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                  getlocal0
+                  constructsuper 0
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "ioError"
+                  getlex QName(PrivateNamespace(null,"49"),"Fail")
+                  pushfalse
+                  iffalse ofs0037
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs003b
+         ofs0037:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs003b:
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "networkError"
+                  getlex QName(PrivateNamespace(null,"49"),"Fail")
+                  pushfalse
+                  iffalse ofs0053
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0057
+         ofs0053:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs0057:
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "verifyError"
+                  getlex QName(PrivateNamespace(null,"49"),"Fail")
+                  pushfalse
+                  iffalse ofs006f
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0073
+         ofs006f:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs0073:
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "diskError"
+                  getlex QName(PrivateNamespace(null,"49"),"Fail")
+                  pushfalse
+                  iffalse ofs008b
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs008f
+         ofs008b:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs008f:
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "securityError"
+                  getlex QName(PrivateNamespace(null,"49"),"Fail")
+                  pushfalse
+                  iffalse ofs00a7
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs00ab
+         ofs00a7:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs00ab:
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "httpStatus"
+                  getlex QName(PrivateNamespace(null,"49"),"HTTPStatusIgnore")
+                  pushfalse
+                  iffalse ofs00c3
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs00c7
+         ofs00c3:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs00c7:
+                  findpropstrict QName(PackageNamespace(""),"addEventListener")
+                  pushstring "complete"
+                  getlex QName(PrivateNamespace(null,"49"),"Complete")
+                  pushfalse
+                  iffalse ofs00df
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs00e3
+         ofs00df:
+                  callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+         ofs00e3:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function Initialise() : void
+      {
+         trait method QName(PackageNamespace(""),"Initialise")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 3
+                  localcount 3
+                  initscopedepth 5
+                  maxscopedepth 6
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PrivateNamespace(null,"49"),"Pool")
+                     getlex Multiname("Vector",[PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object"),PackageNamespace("__AS3__.vec")])
+                     getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                     applytype 1
+                     construct 0
+                     setproperty QName(PrivateNamespace(null,"49"),"Pool")
+                     findproperty QName(PrivateNamespace(null,"49"),"Queue")
+                     getlex Multiname("Vector",[PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object"),PackageNamespace("__AS3__.vec")])
+                     getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                     applytype 1
+                     construct 0
+                     setproperty QName(PrivateNamespace(null,"49"),"Queue")
+                     findproperty QName(PrivateNamespace(null,"49"),"URLStub")
+                     getlex QName(PackageNamespace("Playtomic"),"Log")
+                     getproperty QName(PackageInternalNs("Playtomic"),"UseSSL")
+                     iffalse ofs0035
+                     pushstring "https://g"
+                     coerce_a
+                     jump ofs0039
+            ofs0035:
+                     pushstring "http://g"
+                     coerce_a
+            ofs0039:
+                     getlex QName(PackageNamespace("Playtomic"),"Log")
+                     getproperty QName(PackageInternalNs("Playtomic"),"GUID")
+                     add
+                     pushstring ".api.playtomic.com"
+                     add
+                     setproperty QName(PrivateNamespace(null,"49"),"URLStub")
+                     findproperty QName(PrivateNamespace(null,"49"),"URLTail")
+                     pushstring "swfid="
+                     getlex QName(PackageNamespace("Playtomic"),"Log")
+                     getproperty QName(PackageInternalNs("Playtomic"),"SWFID")
+                     add
+                     setproperty QName(PrivateNamespace(null,"49"),"URLTail")
+                     findproperty QName(PrivateNamespace(null,"49"),"URL")
+                     getlex QName(PrivateNamespace(null,"49"),"URLStub")
+                     pushstring "/v3/api.aspx?"
+                     add
+                     getlex QName(PrivateNamespace(null,"49"),"URLTail")
+                     add
+                     setproperty QName(PrivateNamespace(null,"49"),"URL")
+                     findpropstrict QName(PackageNamespace("flash.utils"),"Timer")
+                     pushshort 500
+                     constructprop QName(PackageNamespace("flash.utils"),"Timer"), 1
+                     coerce QName(PackageNamespace("flash.utils"),"Timer")
+                     setlocal1
+                     getlocal1
+                     pushstring "timer"
+                     getlex QName(PrivateNamespace(null,"49"),"TimeoutHandler")
+                     callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                     getlocal1
+                     callpropvoid QName(PackageNamespace(""),"start"), 0
+                     pushbyte 0
+                     setlocal2
+                     jump ofs009a
+            ofs008d:
+                     label
+                     getlex QName(PrivateNamespace(null,"49"),"Pool")
+                     getlocal0
+                     construct 0
+                     callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                     inclocal_i 2
+            ofs009a:
+                     getlocal2
+                     pushbyte 20
+                     iflt ofs008d
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function SendStatistics(param1:Function, param2:String) : void
+         {
+            trait method QName(PackageNamespace(""),"SendStatistics")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"Function")
+                  param QName(PackageNamespace(""),"String")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 4
+                     localcount 4
+                     initscopedepth 5
+                     maxscopedepth 6
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(PrivateNamespace(null,"49"),"Pool")
+                        getproperty QName(PackageNamespace(""),"length")
+                        pushbyte 0
+                        greaterthan
+                        iffalse ofs001c
+                        getlex QName(PrivateNamespace(null,"49"),"Pool")
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"pop"), 0
+                        coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                        jump ofs0021
+               ofs001c:
+                        getlocal0
+                        construct 0
+                        coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+               ofs0021:
+                        coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                        setlocal3
+                        getlocal3
+                        pushbyte 0
+                        setproperty QName(PrivateNamespace(null,"49"),"time")
+                        getlocal3
+                        pushfalse
+                        setproperty QName(PrivateNamespace(null,"49"),"handled")
+                        getlocal3
+                        getlocal1
+                        setproperty QName(PrivateNamespace(null,"49"),"complete")
+                        getlocal3
+                        pushnull
+                        setproperty QName(PrivateNamespace(null,"49"),"callback")
+                        getlocal3
+                        pushtrue
+                        setproperty QName(PrivateNamespace(null,"49"),"logging")
+                        getlocal3
+                        getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                        getlex QName(PrivateNamespace(null,"49"),"URLStub")
+                        getlocal2
+                        add
+                        getlocal2
+                        pushstring "?"
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        pushbyte -1
+                        greaterthan
+                        iffalse ofs005e
+                        pushstring "&"
+                        coerce_a
+                        jump ofs0062
+               ofs005e:
+                        pushstring "?"
+                        coerce_a
+               ofs0062:
+                        add
+                        getlex QName(PrivateNamespace(null,"49"),"URLTail")
+                        add
+                        pushstring "&"
+                        add
+                        getlex QName(PackageNamespace(""),"Math")
+                        callproperty QName(PackageNamespace(""),"random"), 0
+                        add
+                        pushstring "Z"
+                        add
+                        setproperty QName(PackageNamespace(""),"url")
+                        getlocal3
+                        getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                        pushstring "GET"
+                        setproperty QName(PackageNamespace(""),"method")
+                        getlocal3
+                        getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                        pushnull
+                        setproperty QName(PackageNamespace(""),"data")
+                        getlocal3
+                        pushnull
+                        setproperty QName(PrivateNamespace(null,"49"),"postdata")
+                        getlocal3
+                        getlocal3
+                        getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                        callpropvoid QName(PackageNamespace(""),"load"), 1
+                        getlex QName(PrivateNamespace(null,"49"),"Queue")
+                        getlocal3
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function SendPEvent(param1:Object) : void
+            {
+               trait method QName(PackageNamespace(""),"SendPEvent")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Object")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 5
+                        localcount 5
+                        initscopedepth 5
+                        maxscopedepth 6
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlex QName(PrivateNamespace(null,"49"),"Pool")
+                           getproperty QName(PackageNamespace(""),"length")
+                           pushbyte 0
+                           greaterthan
+                           iffalse ofs001c
+                           getlex QName(PrivateNamespace(null,"49"),"Pool")
+                           callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"pop"), 0
+                           coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                           jump ofs0021
+                  ofs001c:
+                           getlocal0
+                           construct 0
+                           coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                  ofs0021:
+                           coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                           setlocal2
+                           getlocal2
+                           pushbyte 0
+                           setproperty QName(PrivateNamespace(null,"49"),"time")
+                           getlocal2
+                           pushfalse
+                           setproperty QName(PrivateNamespace(null,"49"),"handled")
+                           getlocal2
+                           pushnull
+                           setproperty QName(PrivateNamespace(null,"49"),"complete")
+                           getlocal2
+                           pushnull
+                           setproperty QName(PrivateNamespace(null,"49"),"callback")
+                           getlocal2
+                           pushtrue
+                           setproperty QName(PrivateNamespace(null,"49"),"logging")
+                           getlocal2
+                           getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                           getlex QName(PrivateNamespace(null,"49"),"URLStub")
+                           pushstring "/tracker/p.aspx?"
+                           add
+                           getlex QName(PrivateNamespace(null,"49"),"URLTail")
+                           add
+                           pushstring "&"
+                           add
+                           getlex QName(PackageNamespace(""),"Math")
+                           callproperty QName(PackageNamespace(""),"random"), 0
+                           add
+                           pushstring "Z"
+                           add
+                           setproperty QName(PackageNamespace(""),"url")
+                           getlocal2
+                           getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                           pushstring "POST"
+                           setproperty QName(PackageNamespace(""),"method")
+                           findpropstrict QName(PackageNamespace("flash.utils"),"ByteArray")
+                           constructprop QName(PackageNamespace("flash.utils"),"ByteArray"), 0
+                           coerce QName(PackageNamespace("flash.utils"),"ByteArray")
+                           setlocal3
+                           getlocal3
+                           findpropstrict QName(PackageNamespace("Playtomic"),"JSONEncoder")
+                           getlocal1
+                           constructprop QName(PackageNamespace("Playtomic"),"JSONEncoder"), 1
+                           callproperty QName(PackageNamespace(""),"getString"), 0
+                           callpropvoid QName(PackageNamespace(""),"writeUTFBytes"), 1
+                           getlocal3
+                           pushbyte 0
+                           setproperty QName(PackageNamespace(""),"position")
+                           findpropstrict QName(PackageNamespace("flash.net"),"URLVariables")
+                           constructprop QName(PackageNamespace("flash.net"),"URLVariables"), 0
+                           coerce QName(PackageNamespace("flash.net"),"URLVariables")
+                           dup
+                           setlocal 4
+                           pushstring "data"
+                           findpropstrict QName(PackageNamespace(""),"Escape")
+                           getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                           getlocal3
+                           callproperty QName(PackageInternalNs("Playtomic"),"Base64"), 1
+                           callproperty QName(PackageNamespace(""),"Escape"), 1
+                           setproperty MultinameL([PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                           getlocal2
+                           getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                           getlocal 4
+                           setproperty QName(PackageNamespace(""),"data")
+                           getlocal2
+                           getlocal2
+                           getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                           callpropvoid QName(PackageNamespace(""),"load"), 1
+                           getlex QName(PrivateNamespace(null,"49"),"Queue")
+                           getlocal2
+                           callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public static function Load(param1:String, param2:String, param3:Function, param4:Function, param5:Object = null) : void
+               {
+                  trait method QName(PackageNamespace(""),"Load")
+                     flag FINAL
+                     dispid 6
+                     method
+                        name null
+                        flag HAS_OPTIONAL
+                        flag NEED_ACTIVATION
+                        param QName(PackageNamespace(""),"String")
+                        param QName(PackageNamespace(""),"String")
+                        param QName(PackageNamespace(""),"Function")
+                        param QName(PackageNamespace(""),"Function")
+                        param QName(PackageNamespace(""),"Object")
+                        optional Null()
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 7
+                           localcount 9
+                           initscopedepth 6
+                           maxscopedepth 11
+                           trait slot QName(PackageInternalNs("Playtomic"),"section")
+                              slotid 1
+                              type QName(PackageNamespace(""),"String")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"action")
+                              slotid 2
+                              type QName(PackageNamespace(""),"String")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"complete")
+                              slotid 3
+                              type QName(PackageNamespace(""),"Function")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"callback")
+                              slotid 4
+                              type QName(PackageNamespace(""),"Function")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"postdata")
+                              slotid 5
+                              type QName(PackageNamespace(""),"Object")
+                              value Null()
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"request")
+                              slotid 6
+                              type QName(PackageInternalNs("Playtomic"),"PRequest")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"url")
+                              slotid 7
+                              type QName(PackageNamespace(""),"String")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"timestamp")
+                              slotid 8
+                              type QName(PackageNamespace(""),"String")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"nonce")
+                              slotid 9
+                              type QName(PackageNamespace(""),"String")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"pd")
+                              slotid 10
+                              type QName(PackageNamespace(""),"Array")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"key")
+                              slotid 11
+                              type QName(PackageNamespace(""),"String")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"pda")
+                              slotid 12
+                              type QName(PackageNamespace("flash.utils"),"ByteArray")
+                           end ; trait
+                           trait slot QName(PackageInternalNs("Playtomic"),"postvars")
+                              slotid 13
+                              type QName(PackageNamespace("flash.net"),"URLVariables")
+                           end ; trait
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              newactivation
+                              dup
+                              setlocal 6
+                              pushscope
+                              getscopeobject 1
+                              pushnull
+                              coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                              setslot 6
+                              getscopeobject 1
+                              pushnull
+                              coerce_s
+                              setslot 11
+                              getscopeobject 1
+                              pushnull
+                              coerce QName(PackageNamespace("flash.utils"),"ByteArray")
+                              setslot 12
+                              getscopeobject 1
+                              pushnull
+                              coerce QName(PackageNamespace("flash.net"),"URLVariables")
+                              setslot 13
+                              getscopeobject 1
+                              getlocal1
+                              setslot 1
+                              getscopeobject 1
+                              getlocal2
+                              setslot 2
+                              getscopeobject 1
+                              getlocal3
+                              setslot 3
+                              getscopeobject 1
+                              getlocal 4
+                              setslot 4
+                              getscopeobject 1
+                              getlocal 5
+                              setslot 5
+                              getscopeobject 1
+                              getlex QName(PrivateNamespace(null,"49"),"Pool")
+                              getproperty QName(PackageNamespace(""),"length")
+                              pushbyte 0
+                              greaterthan
+                              iffalse ofs005a
+                              getlex QName(PrivateNamespace(null,"49"),"Pool")
+                              callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"pop"), 0
+                              coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                              jump ofs005f
+                     ofs005a:
+                              getlocal0
+                              construct 0
+                              coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                     ofs005f:
+                              coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                              setslot 6
+                              getscopeobject 1
+                              getslot 6
+                              pushbyte 0
+                              setproperty QName(PrivateNamespace(null,"49"),"time")
+                              getscopeobject 1
+                              getslot 6
+                              pushfalse
+                              setproperty QName(PrivateNamespace(null,"49"),"handled")
+                              getscopeobject 1
+                              getslot 6
+                              getscopeobject 1
+                              getslot 3
+                              setproperty QName(PrivateNamespace(null,"49"),"complete")
+                              getscopeobject 1
+                              getslot 6
+                              getscopeobject 1
+                              getslot 4
+                              setproperty QName(PrivateNamespace(null,"49"),"callback")
+                              getscopeobject 1
+                              getslot 6
+                              pushfalse
+                              setproperty QName(PrivateNamespace(null,"49"),"logging")
+                              getscopeobject 1
+                              getlex QName(PrivateNamespace(null,"49"),"URL")
+                              pushstring "&r="
+                              add
+                              getlex QName(PackageNamespace(""),"Math")
+                              callproperty QName(PackageNamespace(""),"random"), 0
+                              add
+                              pushstring "Z"
+                              add
+                              setslot 7
+                              getscopeobject 1
+                              findpropstrict QName(PackageNamespace(""),"String")
+                              findpropstrict QName(PackageNamespace(""),"Date")
+                              constructprop QName(PackageNamespace(""),"Date"), 0
+                              getproperty QName(PackageNamespace(""),"time")
+                              callproperty QName(PackageNamespace(""),"String"), 1
+                              pushbyte 0
+                              pushbyte 10
+                              callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 2
+                              coerce_s
+                              setslot 8
+                              getscopeobject 1
+                              getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                              findpropstrict QName(PackageNamespace(""),"Date")
+                              constructprop QName(PackageNamespace(""),"Date"), 0
+                              getproperty QName(PackageNamespace(""),"time")
+                              getlex QName(PackageNamespace(""),"Math")
+                              callproperty QName(PackageNamespace(""),"random"), 0
+                              multiply
+                              getlex QName(PackageNamespace("Playtomic"),"Log")
+                              getproperty QName(PackageInternalNs("Playtomic"),"GUID")
+                              add
+                              callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                              coerce_s
+                              setslot 9
+                              getscopeobject 1
+                              findpropstrict QName(PackageNamespace(""),"Array")
+                              constructprop QName(PackageNamespace(""),"Array"), 0
+                              coerce QName(PackageNamespace(""),"Array")
+                              setslot 10
+                              getscopeobject 1
+                              getslot 10
+                              pushstring "nonce="
+                              getscopeobject 1
+                              getslot 9
+                              add
+                              callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                              getscopeobject 1
+                              getslot 10
+                              pushstring "timestamp="
+                              getscopeobject 1
+                              getslot 8
+                              add
+                              callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                              pushbyte 0
+                              setlocal 7
+                              getscopeobject 1
+                              getslot 5
+                              coerce_a
+                              setlocal 8
+                              jump ofs014e
+                     ofs0120:
+                              label
+                              getscopeobject 1
+                              getlocal 8
+                              getlocal 7
+                              nextname
+                              coerce_s
+                              setslot 11
+                              getscopeobject 1
+                              getslot 10
+                              getscopeobject 1
+                              getslot 11
+                              pushstring "="
+                              add
+                              findpropstrict QName(PackageNamespace(""),"Escape")
+                              getscopeobject 1
+                              getslot 5
+                              getscopeobject 1
+                              getslot 11
+                              getproperty MultinameL([PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              callproperty QName(PackageNamespace(""),"Escape"), 1
+                              add
+                              callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                     ofs014e:
+                              hasnext2 8, 7
+                              iftrue ofs0120
+                              kill 8
+                              kill 7
+                              findpropstrict QName(PrivateNamespace(null,"49"),"GenerateKey")
+                              pushstring "section"
+                              getscopeobject 1
+                              getslot 1
+                              getscopeobject 1
+                              getslot 10
+                              callpropvoid QName(PrivateNamespace(null,"49"),"GenerateKey"), 3
+                              findpropstrict QName(PrivateNamespace(null,"49"),"GenerateKey")
+                              pushstring "action"
+                              getscopeobject 1
+                              getslot 2
+                              getscopeobject 1
+                              getslot 10
+                              callpropvoid QName(PrivateNamespace(null,"49"),"GenerateKey"), 3
+                              findpropstrict QName(PrivateNamespace(null,"49"),"GenerateKey")
+                              pushstring "signature"
+                              getscopeobject 1
+                              getslot 9
+                              getscopeobject 1
+                              getslot 8
+                              add
+                              getscopeobject 1
+                              getslot 1
+                              add
+                              getscopeobject 1
+                              getslot 2
+                              add
+                              getscopeobject 1
+                              getslot 7
+                              add
+                              getlex QName(PackageNamespace("Playtomic"),"Log")
+                              getproperty QName(PackageInternalNs("Playtomic"),"GUID")
+                              add
+                              getscopeobject 1
+                              getslot 10
+                              callpropvoid QName(PrivateNamespace(null,"49"),"GenerateKey"), 3
+                              getscopeobject 1
+                              findpropstrict QName(PackageNamespace("flash.utils"),"ByteArray")
+                              constructprop QName(PackageNamespace("flash.utils"),"ByteArray"), 0
+                              coerce QName(PackageNamespace("flash.utils"),"ByteArray")
+                              setslot 12
+                              getscopeobject 1
+                              getslot 12
+                              getscopeobject 1
+                              getslot 10
+                              pushstring "&"
+                              callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                              callpropvoid QName(PackageNamespace(""),"writeUTFBytes"), 1
+                              getscopeobject 1
+                              getslot 12
+                              pushbyte 0
+                              setproperty QName(PackageNamespace(""),"position")
+                              getscopeobject 1
+                              findpropstrict QName(PackageNamespace("flash.net"),"URLVariables")
+                              constructprop QName(PackageNamespace("flash.net"),"URLVariables"), 0
+                              coerce QName(PackageNamespace("flash.net"),"URLVariables")
+                              setslot 13
+                              getscopeobject 1
+                              getslot 13
+                              pushstring "data"
+                              findpropstrict QName(PackageNamespace(""),"Escape")
+                              getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                              getscopeobject 1
+                              getslot 12
+                              callproperty QName(PackageInternalNs("Playtomic"),"Base64"), 1
+                              callproperty QName(PackageNamespace(""),"Escape"), 1
+                              setproperty MultinameL([PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                              getscopeobject 1
+                              getslot 6
+                              getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                              getscopeobject 1
+                              getslot 7
+                              setproperty QName(PackageNamespace(""),"url")
+                              getscopeobject 1
+                              getslot 6
+                              getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                              pushstring "POST"
+                              setproperty QName(PackageNamespace(""),"method")
+                              getscopeobject 1
+                              getslot 6
+                              getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                              getscopeobject 1
+                              getslot 13
+                              setproperty QName(PackageNamespace(""),"data")
+                              getscopeobject 1
+                              getslot 6
+                              getscopeobject 1
+                              getslot 5
+                              setproperty QName(PrivateNamespace(null,"49"),"postdata")
+                     ofs022f:
+                              getscopeobject 1
+                              getslot 6
+                              getscopeobject 1
+                              getslot 6
+                              getproperty QName(PrivateNamespace(null,"49"),"urlRequest")
+                              callpropvoid QName(PackageNamespace(""),"load"), 1
+                     ofs023e:
+                              jump ofs0274
+                     ofs0242:
+                              getlocal0
+                              pushscope
+                              getlocal 6
+                              pushscope
+                              newcatch 0
+                              dup
+                              setlocal 7
+                              dup
+                              pushscope
+                              swap
+                              setslot 1
+                              getscopeobject 1
+                              getslot 6
+                              getscopeobject 1
+                              getslot 6
+                              getproperty QName(PrivateNamespace(null,"49"),"callback")
+                              getscopeobject 1
+                              getslot 6
+                              getproperty QName(PrivateNamespace(null,"49"),"postdata")
+                              pushnull
+                              findpropstrict QName(PackageNamespace("Playtomic"),"Response")
+                              pushbyte 0
+                              pushbyte 1
+                              constructprop QName(PackageNamespace("Playtomic"),"Response"), 2
+                              callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 4
+                              popscope
+                              kill 7
+                     ofs0274:
+                              getlex QName(PrivateNamespace(null,"49"),"Queue")
+                              getscopeobject 1
+                              getslot 6
+                              callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                              returnvoid
+                           end ; code
+                           try from ofs022f to ofs023e target ofs0242 type QName(PackageNamespace(""),"Error") name QName(PackageNamespace(""),"s") end
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public static function Escape(param1:String) : String
+                  {
+                     trait method QName(PackageNamespace(""),"Escape")
+                        flag FINAL
+                        dispid 7
+                        method
+                           name null
+                           param QName(PackageNamespace(""),"String")
+                           returns QName(PackageNamespace(""),"String")
+                           
+                           body
+                              maxstack 2
+                              localcount 2
+                              initscopedepth 5
+                              maxscopedepth 6
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 getlocal1
+                                 pushnull
+                                 ifne ofs000b
+                                 pushstring ""
+                                 returnvalue
+                        ofs000b:
+                                 getlocal1
+                                 pushstring "%"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%25"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring ";"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%3B"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "?"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%3F"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "/"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%2F"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring ":"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%3A"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "#"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%23"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "&"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%26"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "="
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%3D"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "+"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%2B"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "$"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%24"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring ","
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%2C"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring " "
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%20"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "<"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%3C"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring ">"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%3E"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 pushstring "~"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                 pushstring "%7E"
+                                 callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                 coerce_s
+                                 setlocal1
+                                 getlocal1
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     private static function GenerateKey(param1:String, param2:String, param3:Array) : void
+                     {
+                        trait method QName(PrivateNamespace(null,"49"),"GenerateKey")
+                           flag FINAL
+                           dispid 8
+                           method
+                              name null
+                              param QName(PackageNamespace(""),"String")
+                              param QName(PackageNamespace(""),"String")
+                              param QName(PackageNamespace(""),"Array")
+                              returns QName(PackageNamespace(""),"void")
+                              
+                              body
+                                 maxstack 5
+                                 localcount 4
+                                 initscopedepth 5
+                                 maxscopedepth 6
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    getlocal3
+                                    callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"sort"), 0
+                                    getlocal3
+                                    getlocal1
+                                    pushstring "="
+                                    add
+                                    getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                                    getlocal3
+                                    pushstring "&"
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                    getlocal2
+                                    add
+                                    callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                                    add
+                                    callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                                    returnvoid
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        private static function TimeoutHandler(param1:Event) : void
+                        {
+                           trait method QName(PrivateNamespace(null,"49"),"TimeoutHandler")
+                              flag FINAL
+                              dispid 9
+                              method
+                                 name null
+                                 param QName(PackageNamespace("flash.events"),"Event")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 7
+                                    localcount 6
+                                    initscopedepth 5
+                                    maxscopedepth 6
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       pushnull
+                                       coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                                       setlocal2
+                                       getlex QName(PrivateNamespace(null,"49"),"Queue")
+                                       getproperty QName(PackageNamespace(""),"length")
+                                       decrement
+                                       convert_i
+                                       setlocal3
+                                       jump ofs0087
+                              ofs0013:
+                                       label
+                                       getlex QName(PrivateNamespace(null,"49"),"Queue")
+                                       getlocal3
+                                       getproperty MultinameL([PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                       coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                                       setlocal2
+                                       getlocal2
+                                       getproperty QName(PrivateNamespace(null,"49"),"handled")
+                                       iftrue ofs0072
+                                       getlocal2
+                                       dup
+                                       setlocal 4
+                                       getproperty QName(PrivateNamespace(null,"49"),"time")
+                                       increment_i
+                                       setlocal 5
+                                       getlocal 4
+                                       getlocal 5
+                                       setproperty QName(PrivateNamespace(null,"49"),"time")
+                                       kill 5
+                                       kill 4
+                                       getlocal2
+                                       getproperty QName(PrivateNamespace(null,"49"),"time")
+                                       pushbyte 40
+                                       ifnlt ofs0049
+                                       jump ofs0084
+                              ofs0049:
+                                       getlocal2
+                                       getproperty QName(PrivateNamespace(null,"49"),"logging")
+                                       iffalse ofs005b
+                                       getlocal2
+                                       pushfalse
+                                       callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 1
+                                       jump ofs0072
+                              ofs005b:
+                                       getlocal2
+                                       getlocal2
+                                       getproperty QName(PrivateNamespace(null,"49"),"callback")
+                                       getlocal2
+                                       getproperty QName(PrivateNamespace(null,"49"),"postdata")
+                                       pushnull
+                                       findpropstrict QName(PackageNamespace("Playtomic"),"Response")
+                                       pushbyte 0
+                                       pushbyte 3
+                                       constructprop QName(PackageNamespace("Playtomic"),"Response"), 2
+                                       callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 4
+                              ofs0072:
+                                       getlex QName(PrivateNamespace(null,"49"),"Queue")
+                                       getlocal3
+                                       pushbyte 1
+                                       callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"splice"), 2
+                                       findpropstrict QName(PrivateNamespace(null,"49"),"Dispose")
+                                       getlocal2
+                                       callpropvoid QName(PrivateNamespace(null,"49"),"Dispose"), 1
+                              ofs0084:
+                                       getlocal3
+                                       decrement_i
+                                       setlocal3
+                              ofs0087:
+                                       getlocal3
+                                       pushbyte -1
+                                       ifgt ofs0013
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           private static function Complete(param1:Event) : void
+                           {
+                              trait method QName(PrivateNamespace(null,"49"),"Complete")
+                                 flag FINAL
+                                 dispid 10
+                                 method
+                                    name null
+                                    param QName(PackageNamespace("flash.events"),"Event")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 7
+                                       localcount 6
+                                       initscopedepth 5
+                                       maxscopedepth 6
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          getlocal1
+                                          getproperty QName(PackageNamespace(""),"target")
+                                          getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                                          astypelate
+                                          coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                                          setlocal2
+                                          getlocal2
+                                          getproperty QName(PrivateNamespace(null,"49"),"handled")
+                                          iffalse ofs0015
+                                          returnvoid
+                                 ofs0015:
+                                          getlocal2
+                                          pushtrue
+                                          setproperty QName(PrivateNamespace(null,"49"),"handled")
+                                          getlocal2
+                                          getproperty QName(PrivateNamespace(null,"49"),"complete")
+                                          pushnull
+                                          ifne ofs0024
+                                          returnvoid
+                                 ofs0024:
+                                          getlocal2
+                                          getproperty QName(PrivateNamespace(null,"49"),"logging")
+                                          iffalse ofs0033
+                                          getlocal2
+                                          pushtrue
+                                          callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 1
+                                          returnvoid
+                                 ofs0033:
+                                          findpropstrict QName(PackageNamespace(""),"XML")
+                                          getlocal2
+                                          getproperty QName(PackageNamespace(""),"data")
+                                          callproperty QName(PackageNamespace(""),"XML"), 1
+                                          coerce QName(PackageNamespace(""),"XML")
+                                          setlocal3
+                                          findpropstrict QName(PackageNamespace(""),"parseInt")
+                                          getlocal3
+                                          pushstring "status"
+                                          getproperty MultinameL([PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                          callproperty QName(PackageNamespace(""),"parseInt"), 1
+                                          convert_i
+                                          setlocal 4
+                                          findpropstrict QName(PackageNamespace(""),"parseInt")
+                                          getlocal3
+                                          pushstring "errorcode"
+                                          getproperty MultinameL([PrivateNamespace(null,"49"),PrivateNamespace(null,"200"),PackageNamespace(""),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PRequest"),StaticProtectedNs("Playtomic:PRequest"),StaticProtectedNs("flash.net:URLLoader"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                          callproperty QName(PackageNamespace(""),"parseInt"), 1
+                                          convert_i
+                                          setlocal 5
+                                          getlocal2
+                                          getlocal2
+                                          getproperty QName(PrivateNamespace(null,"49"),"callback")
+                                          getlocal2
+                                          getproperty QName(PrivateNamespace(null,"49"),"postdata")
+                                          getlocal3
+                                          findpropstrict QName(PackageNamespace("Playtomic"),"Response")
+                                          getlocal 4
+                                          getlocal 5
+                                          constructprop QName(PackageNamespace("Playtomic"),"Response"), 2
+                                          callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 4
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              private static function Fail(param1:Event) : void
+                              {
+                                 trait method QName(PrivateNamespace(null,"49"),"Fail")
+                                    flag FINAL
+                                    dispid 11
+                                    method
+                                       name null
+                                       param QName(PackageNamespace("flash.events"),"Event")
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 7
+                                          localcount 3
+                                          initscopedepth 5
+                                          maxscopedepth 6
+                                          
+                                          code
+                                             getlocal0
+                                             pushscope
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"target")
+                                             getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                                             astypelate
+                                             coerce QName(PackageInternalNs("Playtomic"),"PRequest")
+                                             setlocal2
+                                             getlocal2
+                                             getproperty QName(PrivateNamespace(null,"49"),"handled")
+                                             iffalse ofs0015
+                                             returnvoid
+                                    ofs0015:
+                                             getlocal2
+                                             pushtrue
+                                             setproperty QName(PrivateNamespace(null,"49"),"handled")
+                                             getlocal2
+                                             getproperty QName(PrivateNamespace(null,"49"),"complete")
+                                             pushnull
+                                             ifne ofs0024
+                                             returnvoid
+                                    ofs0024:
+                                             getlocal2
+                                             getproperty QName(PrivateNamespace(null,"49"),"logging")
+                                             iffalse ofs0036
+                                             getlocal2
+                                             pushfalse
+                                             callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 1
+                                             jump ofs004d
+                                    ofs0036:
+                                             getlocal2
+                                             getlocal2
+                                             getproperty QName(PrivateNamespace(null,"49"),"callback")
+                                             getlocal2
+                                             getproperty QName(PrivateNamespace(null,"49"),"postdata")
+                                             pushnull
+                                             findpropstrict QName(PackageNamespace("Playtomic"),"Response")
+                                             pushbyte 0
+                                             pushbyte 1
+                                             constructprop QName(PackageNamespace("Playtomic"),"Response"), 2
+                                             callpropvoid QName(PrivateNamespace(null,"49"),"complete"), 4
+                                    ofs004d:
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 private static function HTTPStatusIgnore(param1:Event) : void
+                                 {
+                                    trait method QName(PrivateNamespace(null,"49"),"HTTPStatusIgnore")
+                                       flag FINAL
+                                       dispid 12
+                                       method
+                                          name null
+                                          param QName(PackageNamespace("flash.events"),"Event")
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 1
+                                             localcount 2
+                                             initscopedepth 5
+                                             maxscopedepth 6
+                                             
+                                             code
+                                                getlocal0
+                                                pushscope
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    private static function Dispose(param1:PRequest) : void
+                                    {
+                                       trait method QName(PrivateNamespace(null,"49"),"Dispose")
+                                          flag FINAL
+                                          dispid 13
+                                          method
+                                             name null
+                                             param QName(PackageInternalNs("Playtomic"),"PRequest")
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 2
+                                                localcount 2
+                                                initscopedepth 5
+                                                maxscopedepth 6
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushscope
+                                                   getlocal1
+                                                   getproperty QName(PrivateNamespace(null,"49"),"handled")
+                                                   iftrue ofs0014
+                                                   getlocal1
+                                                   pushtrue
+                                                   setproperty QName(PrivateNamespace(null,"49"),"handled")
+                                                   getlocal1
+                                                   callpropvoid QName(PackageNamespace(""),"close"), 0
+                                          ofs0014:
+                                                   getlex QName(PrivateNamespace(null,"49"),"Pool")
+                                                   getlocal1
+                                                   callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                    }
+                                 }
+                                 
+                                 method
+                                    name null
+                                    returns null
+                                    
+                                    body
+                                       maxstack 52
+                                       localcount 1
+                                       initscopedepth 1
+                                       maxscopedepth 5
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          jump ofs001a
+                                          astypelate
+                                          setlocal2
+                                          add_i
+                                          nextname
+                                          greaterthan
+                                          pushfalse
+                                 ofs001a:
+                                          pushscope
+                                          findpropstrict Multiname("PRequest",[PackageInternalNs("Playtomic")])
+                                          getlex QName(PackageNamespace(""),"Object")
+                                          jump ofs002a
+                                          astypelate
+                                          setlocal2
+                                          add_i
+                                          nextname
+                                          greaterthan
+                                          pushfalse
+                                 ofs002a:
+                                          pushscope
+                                          getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                                          jump ofs0038
+                                          dup
+                                          lshift
+                                          hasnext
+                                          increment_i
+                                          add
+                                          astypelate
+                                 ofs0038:
+                                          pushscope
+                                          getlex QName(PackageNamespace("flash.net"),"URLLoader")
+                                          jump ofs0046
+                                          subtract_i
+                                          increment_i
+                                          istypelate
+                                          negate_i
+                                          increment_i
+                                          pushscope
+                                 ofs0046:
+                                          pushscope
+                                          getlex QName(PackageNamespace("flash.net"),"URLLoader")
+                                          newclass 333
+                                          popscope
+                                          popscope
+                                          popscope
+                                          jump ofs005b
+                                          not
+                                          subtract
+                                          coerce_a
+                                          nextvalue
+                                          bitxor
+                                          coerce_a
+                                          bitxor
+                                 ofs005b:
+                                          initproperty QName(PackageInternalNs("Playtomic"),"PRequest")
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                                 

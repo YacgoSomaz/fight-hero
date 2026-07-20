@@ -1,0 +1,644 @@
+package
+{
+   public class Stats_Misc
+   {
+      
+      public static var gameModes:Array;
+      
+      public static var mods:Array;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function Stats_Misc()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function Init() : void
+      {
+         trait method QName(PackageNamespace(""),"Init")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 6
+                  localcount 1
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PackageNamespace(""),"gameModes")
+                     pushstring "dm"
+                     pushstring "jug"
+                     pushstring "tdm"
+                     pushstring "ctf"
+                     pushstring "dom"
+                     newarray 5
+                     setproperty QName(PackageNamespace(""),"gameModes")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function buildModList() : void
+         {
+            trait method QName(PackageNamespace(""),"buildModList")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 3
+                     localcount 1
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        findproperty QName(PackageNamespace(""),"mods")
+                        pushstring "none"
+                        pushstring "clips"
+                        newarray 2
+                        setproperty QName(PackageNamespace(""),"mods")
+                        getlex QName(PackageNamespace(""),"SD")
+                        getproperty QName(PackageNamespace(""),"achievements")
+                        getlex QName(PackageNamespace(""),"Stats_Achievements")
+                        getproperty QName(PackageNamespace(""),"achOrder")
+                        pushstring "drown"
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        pushbyte -1
+                        ifeq ofs0037
+                        getlex QName(PackageNamespace(""),"mods")
+                        pushstring "ammo"
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+               ofs0037:
+                        getlex QName(PackageNamespace(""),"SD")
+                        getproperty QName(PackageNamespace(""),"achievements")
+                        getlex QName(PackageNamespace(""),"Stats_Achievements")
+                        getproperty QName(PackageNamespace(""),"achOrder")
+                        pushstring "lava"
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        pushbyte -1
+                        ifeq ofs005e
+                        getlex QName(PackageNamespace(""),"mods")
+                        pushstring "party"
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+               ofs005e:
+                        getlex QName(PackageNamespace(""),"SD")
+                        getproperty QName(PackageNamespace(""),"achievements")
+                        getlex QName(PackageNamespace(""),"Stats_Achievements")
+                        getproperty QName(PackageNamespace(""),"achOrder")
+                        pushstring "plug"
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        pushbyte -1
+                        ifeq ofs0085
+                        getlex QName(PackageNamespace(""),"mods")
+                        pushstring "sky9"
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+               ofs0085:
+                        getlex QName(PackageNamespace(""),"SD")
+                        getproperty QName(PackageNamespace(""),"achievements")
+                        getlex QName(PackageNamespace(""),"Stats_Achievements")
+                        getproperty QName(PackageNamespace(""),"achOrder")
+                        pushstring "tutbody"
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        pushbyte -1
+                        ifeq ofs00ac
+                        getlex QName(PackageNamespace(""),"mods")
+                        pushstring "bodypop"
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+               ofs00ac:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function getMod(param1:String) : Object
+            {
+               trait method QName(PackageNamespace(""),"getMod")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     returns QName(PackageNamespace(""),"Object")
+                     
+                     body
+                        maxstack 5
+                        localcount 4
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           pushstring "id"
+                           getlocal1
+                           newobject 1
+                           coerce QName(PackageNamespace(""),"Object")
+                           setlocal2
+                           jump ofs00aa
+                  ofs000f:
+                           label
+                           getlocal2
+                           pushstring "None"
+                           setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushstring "No mod selected."
+                           setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushbyte 1
+                           setproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0128
+                  ofs0028:
+                           label
+                           getlocal2
+                           pushstring "Sky9"
+                           setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushstring "Physics are exaggerated."
+                           setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushbyte 1
+                           setproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0128
+                  ofs0041:
+                           label
+                           getlocal2
+                           pushstring "Pack Mule"
+                           setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushstring "Infinite spare ammo."
+                           setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushdouble 0.3
+                           setproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0128
+                  ofs005a:
+                           label
+                           getlocal2
+                           pushstring "Bottomless Clip"
+                           setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushstring "Infinite ammo, no reloads."
+                           setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushdouble 0.1
+                           setproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0128
+                  ofs0073:
+                           label
+                           getlocal2
+                           pushstring "Party Time"
+                           setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushstring "Random weapons, every spawn."
+                           setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushdouble 0.4
+                           setproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0128
+                  ofs008c:
+                           label
+                           getlocal2
+                           pushstring "Tin Man"
+                           setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushstring "Joints are held on with glue."
+                           setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           getlocal2
+                           pushbyte 1
+                           setproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0128
+                  ofs00a5:
+                           label
+                           jump ofs0128
+                  ofs00aa:
+                           getlocal1
+                           setlocal3
+                           pushstring "none"
+                           getlocal3
+                           ifstrictne ofs00ba
+                           pushbyte 0
+                           jump ofs010c
+                  ofs00ba:
+                           pushstring "sky9"
+                           getlocal3
+                           ifstrictne ofs00c8
+                           pushbyte 1
+                           jump ofs010c
+                  ofs00c8:
+                           pushstring "clips"
+                           getlocal3
+                           ifstrictne ofs00d6
+                           pushbyte 2
+                           jump ofs010c
+                  ofs00d6:
+                           pushstring "ammo"
+                           getlocal3
+                           ifstrictne ofs00e4
+                           pushbyte 3
+                           jump ofs010c
+                  ofs00e4:
+                           pushstring "party"
+                           getlocal3
+                           ifstrictne ofs00f2
+                           pushbyte 4
+                           jump ofs010c
+                  ofs00f2:
+                           pushstring "bodypop"
+                           getlocal3
+                           ifstrictne ofs0100
+                           pushbyte 5
+                           jump ofs010c
+                  ofs0100:
+                           jump ofs010a
+                           pushbyte 6
+                           jump ofs010a
+                  ofs010a:
+                           pushbyte 6
+                  ofs010c:
+                           kill 3
+                           lookupswitch ofs00a5, [ofs000f, ofs0028, ofs0041, ofs005a, ofs0073, ofs008c, ofs00a5]
+                  ofs0128:
+                           getlocal2
+                           getproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           pushbyte 1
+                           ifne ofs013c
+                           getlocal2
+                           pushstring ""
+                           setproperty Multiname("exp",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           jump ofs0152
+                  ofs013c:
+                           getlocal2
+                           pushstring "This modifier gives -"
+                           pushbyte 100
+                           getlocal2
+                           getproperty Multiname("expmod",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                           pushbyte 100
+                           multiply
+                           subtract
+                           add
+                           pushstring "% Exp"
+                           add
+                           setproperty Multiname("exp",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                  ofs0152:
+                           getlocal2
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public static function getGameMode(param1:String) : Object
+               {
+                  trait method QName(PackageNamespace(""),"getGameMode")
+                     flag FINAL
+                     dispid 6
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"String")
+                        returns QName(PackageNamespace(""),"Object")
+                        
+                        body
+                           maxstack 6
+                           localcount 4
+                           initscopedepth 3
+                           maxscopedepth 4
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              pushstring "id"
+                              getlocal1
+                              newobject 1
+                              coerce QName(PackageNamespace(""),"Object")
+                              setlocal2
+                              getlocal2
+                              getlocal1
+                              setproperty Multiname("sprite",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs015d
+                     ofs0014:
+                              label
+                              getlocal2
+                              pushstring "Deathmatch"
+                              setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Kill enough enemies to reach the score limit."
+                              setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Kills to win"
+                              setproperty Multiname("scoretype",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 10
+                              setproperty Multiname("startscore",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 5
+                              pushbyte 10
+                              pushbyte 15
+                              pushbyte 25
+                              pushbyte 50
+                              newarray 5
+                              setproperty Multiname("scorelist",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 1
+                              setproperty Multiname("teams",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs01db
+                     ofs004a:
+                              label
+                              getlocal2
+                              pushstring "Team Deathmatch"
+                              setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Kill enough enemies with your team to reach the score limit."
+                              setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Kills to win"
+                              setproperty Multiname("scoretype",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 25
+                              setproperty Multiname("startscore",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 10
+                              pushbyte 15
+                              pushbyte 25
+                              pushbyte 50
+                              pushbyte 100
+                              newarray 5
+                              setproperty Multiname("scorelist",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 2
+                              setproperty Multiname("teams",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs01db
+                     ofs0080:
+                              label
+                              getlocal2
+                              pushstring "Capture the Flag"
+                              setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Capture the enemy\'s flag and bring it to your base."
+                              setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Flags to win"
+                              setproperty Multiname("scoretype",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 3
+                              setproperty Multiname("startscore",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 3
+                              pushbyte 5
+                              pushbyte 7
+                              pushbyte 15
+                              newarray 4
+                              setproperty Multiname("scorelist",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 2
+                              setproperty Multiname("teams",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs01db
+                     ofs00b4:
+                              label
+                              getlocal2
+                              pushstring "Domination"
+                              setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Capture enemy zones and hold them to gain points."
+                              setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Points to win"
+                              setproperty Multiname("scoretype",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 50
+                              setproperty Multiname("startscore",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 50
+                              pushbyte 75
+                              pushbyte 100
+                              pushshort 150
+                              pushshort 200
+                              newarray 5
+                              setproperty Multiname("scorelist",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 2
+                              setproperty Multiname("teams",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs01db
+                     ofs00ec:
+                              label
+                              getlocal2
+                              pushstring "Juggernaut"
+                              setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Work as a team to kill the Juggernaut. Kill him: become him."
+                              setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Kills to win"
+                              setproperty Multiname("scoretype",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 10
+                              setproperty Multiname("startscore",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 5
+                              pushbyte 10
+                              pushbyte 25
+                              pushbyte 50
+                              pushbyte 100
+                              newarray 5
+                              setproperty Multiname("scorelist",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 1
+                              setproperty Multiname("teams",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs01db
+                     ofs0122:
+                              label
+                              getlocal2
+                              pushstring "Outbreak"
+                              setproperty Multiname("name",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Survive the zombies. Get killed by one, and become one."
+                              setproperty Multiname("desc",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushstring "Survivals"
+                              setproperty Multiname("scoretype",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 10
+                              setproperty Multiname("startscore",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 5
+                              pushbyte 10
+                              pushbyte 25
+                              pushbyte 50
+                              pushbyte 100
+                              newarray 5
+                              setproperty Multiname("scorelist",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              getlocal2
+                              pushbyte 1
+                              setproperty Multiname("teams",[PrivateNamespace(null,"124"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"125"),PackageInternalNs(""),ProtectedNamespace("Stats_Misc"),StaticProtectedNs("Stats_Misc"),StaticProtectedNs("Object")])
+                              jump ofs01db
+                     ofs0158:
+                              label
+                              jump ofs01db
+                     ofs015d:
+                              getlocal1
+                              setlocal3
+                              pushstring "dm"
+                              getlocal3
+                              ifstrictne ofs016d
+                              pushbyte 0
+                              jump ofs01bf
+                     ofs016d:
+                              pushstring "tdm"
+                              getlocal3
+                              ifstrictne ofs017b
+                              pushbyte 1
+                              jump ofs01bf
+                     ofs017b:
+                              pushstring "ctf"
+                              getlocal3
+                              ifstrictne ofs0189
+                              pushbyte 2
+                              jump ofs01bf
+                     ofs0189:
+                              pushstring "dom"
+                              getlocal3
+                              ifstrictne ofs0197
+                              pushbyte 3
+                              jump ofs01bf
+                     ofs0197:
+                              pushstring "jug"
+                              getlocal3
+                              ifstrictne ofs01a5
+                              pushbyte 4
+                              jump ofs01bf
+                     ofs01a5:
+                              pushstring "zom"
+                              getlocal3
+                              ifstrictne ofs01b3
+                              pushbyte 5
+                              jump ofs01bf
+                     ofs01b3:
+                              jump ofs01bd
+                              pushbyte 6
+                              jump ofs01bd
+                     ofs01bd:
+                              pushbyte 6
+                     ofs01bf:
+                              kill 3
+                              lookupswitch ofs0158, [ofs0014, ofs004a, ofs0080, ofs00b4, ofs00ec, ofs0122, ofs0158]
+                     ofs01db:
+                              getlocal2
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 3
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("Stats_Misc",[PackageNamespace("")])
+                     jump ofs001c
+                     bitor
+                     not
+                     swap
+                     hasnext
+            ofs001c:
+                     getlex QName(PackageNamespace(""),"Object")
+                     jump ofs0026
+                     increment
+                     dup
+                     decrement
+                     pushundefined
+            ofs0026:
+                     pushscope
+                     getlex QName(PackageNamespace(""),"Object")
+                     jump ofs0031
+                     greaterequals
+                     modulo
+                     coerce_a
+                     coerce_s
+            ofs0031:
+                     newclass 17
+                     popscope
+                     initproperty QName(PackageNamespace(""),"Stats_Misc")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

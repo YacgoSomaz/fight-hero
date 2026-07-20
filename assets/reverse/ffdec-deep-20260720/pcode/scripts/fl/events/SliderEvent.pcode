@@ -1,0 +1,315 @@
+package fl.events
+{
+   import flash.events.Event;
+   
+   public class SliderEvent extends Event
+   {
+      
+      public static const CHANGE:String = "change";
+      
+      public static const THUMB_DRAG:String = "thumbDrag";
+      
+      public static const THUMB_PRESS:String = "thumbPress";
+      
+      public static const THUMB_RELEASE:String = "thumbRelease";
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               astypelate
+               instanceof
+               getglobalscope
+               lessthan
+               popscope
+               greaterequals
+      ofs001a:
+               pushscope
+               findproperty QName(PackageNamespace(""),"CHANGE")
+               jump ofs0028
+               dup
+               setlocal2
+               getlocal1
+               dup
+               multiply_i
+               add
+      ofs0028:
+               pushstring "change"
+               initproperty QName(PackageNamespace(""),"CHANGE")
+               findproperty QName(PackageNamespace(""),"THUMB_DRAG")
+               pushstring "thumbDrag"
+               initproperty QName(PackageNamespace(""),"THUMB_DRAG")
+               findproperty QName(PackageNamespace(""),"THUMB_PRESS")
+               pushstring "thumbPress"
+               initproperty QName(PackageNamespace(""),"THUMB_PRESS")
+               findproperty QName(PackageNamespace(""),"THUMB_RELEASE")
+               pushstring "thumbRelease"
+               initproperty QName(PackageNamespace(""),"THUMB_RELEASE")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      protected var _triggerEvent:String;
+      
+      protected var _value:Number;
+      
+      protected var _keyCode:Number;
+      
+      protected var _clickTarget:String;
+      
+      public function SliderEvent(param1:String, param2:Number, param3:String, param4:String, param5:int = 0)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"int")
+            optional Integer(0)
+            returns null
+            
+            body
+               maxstack 2
+               localcount 6
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushscope
+                  findproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_value")
+                  getlocal2
+                  initproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_value")
+                  findproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_keyCode")
+                  getlocal 5
+                  initproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_keyCode")
+                  findproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_triggerEvent")
+                  getlocal 4
+                  initproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_triggerEvent")
+                  findproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_clickTarget")
+                  getlocal3
+                  initproperty QName(ProtectedNamespace("fl.events:SliderEvent"),"_clickTarget")
+                  getlocal0
+                  getlocal1
+                  constructsuper 1
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function get value() : Number
+      {
+         trait getter QName(PackageNamespace(""),"value")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"Number")
+               
+               body
+                  maxstack 1
+                  localcount 1
+                  initscopedepth 5
+                  maxscopedepth 6
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_value")
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function get keyCode() : Number
+         {
+            trait getter QName(PackageNamespace(""),"keyCode")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"Number")
+                  
+                  body
+                     maxstack 1
+                     localcount 1
+                     initscopedepth 5
+                     maxscopedepth 6
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_keyCode")
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function get triggerEvent() : String
+            {
+               trait getter QName(PackageNamespace(""),"triggerEvent")
+                  dispid 0
+                  method
+                     name null
+                     returns QName(PackageNamespace(""),"String")
+                     
+                     body
+                        maxstack 1
+                        localcount 1
+                        initscopedepth 5
+                        maxscopedepth 6
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_triggerEvent")
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function get clickTarget() : String
+               {
+                  trait getter QName(PackageNamespace(""),"clickTarget")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"String")
+                        
+                        body
+                           maxstack 1
+                           localcount 1
+                           initscopedepth 5
+                           maxscopedepth 6
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_clickTarget")
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  override public function toString() : String
+                  {
+                     trait method QName(PackageNamespace(""),"toString")
+                        flag OVERRIDE
+                        dispid 0
+                        method
+                           name null
+                           returns QName(PackageNamespace(""),"String")
+                           
+                           body
+                              maxstack 9
+                              localcount 1
+                              initscopedepth 5
+                              maxscopedepth 6
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 findpropstrict QName(PackageNamespace(""),"formatToString")
+                                 pushstring "SliderEvent"
+                                 pushstring "type"
+                                 pushstring "value"
+                                 pushstring "bubbles"
+                                 pushstring "cancelable"
+                                 pushstring "keyCode"
+                                 pushstring "triggerEvent"
+                                 pushstring "clickTarget"
+                                 callproperty QName(PackageNamespace(""),"formatToString"), 8
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     override public function clone() : Event
+                     {
+                        trait method QName(PackageNamespace(""),"clone")
+                           flag OVERRIDE
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace("flash.events"),"Event")
+                              
+                              body
+                                 maxstack 6
+                                 localcount 1
+                                 initscopedepth 5
+                                 maxscopedepth 6
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                    getlex QName(PackageNamespace(""),"type")
+                                    getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_value")
+                                    getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_clickTarget")
+                                    getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_triggerEvent")
+                                    getlex QName(ProtectedNamespace("fl.events:SliderEvent"),"_keyCode")
+                                    constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 5
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                     }
+                  }
+                  
+                  method
+                     name null
+                     returns null
+                     
+                     body
+                        maxstack 52
+                        localcount 1
+                        initscopedepth 1
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           findpropstrict Multiname("SliderEvent",[PackageNamespace("fl.events")])
+                           getlex QName(PackageNamespace(""),"Object")
+                           pushscope
+                           getlex QName(PackageNamespace("flash.events"),"Event")
+                           pushscope
+                           getlex QName(PackageNamespace("flash.events"),"Event")
+                           newclass 3
+                           popscope
+                           popscope
+                           initproperty QName(PackageNamespace("fl.events"),"SliderEvent")
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+                  

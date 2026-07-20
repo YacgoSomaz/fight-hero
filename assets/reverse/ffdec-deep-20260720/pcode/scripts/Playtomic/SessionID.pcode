@@ -1,0 +1,812 @@
+package Playtomic
+{
+   import flash.system.Capabilities;
+   
+   internal final class SessionID
+   {
+      
+      private static var counter:Number = 0;
+      
+      private static const Characters:String = "0123456789abcdef";
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PrivateNamespace(null,"86"),"counter")
+               pushbyte 0
+               pushfalse
+               iffalse ofs0024
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0027
+      ofs0024:
+               setproperty QName(PrivateNamespace(null,"86"),"counter")
+      ofs0027:
+               findproperty QName(PrivateNamespace(null,"86"),"Characters")
+               pushstring "0123456789abcdef"
+               initproperty QName(PrivateNamespace(null,"86"),"Characters")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function SessionID()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function Create() : String
+      {
+         trait method QName(PackageNamespace(""),"Create")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"String")
+               
+               body
+                  maxstack 5
+                  localcount 8
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findpropstrict QName(PackageNamespace(""),"Date")
+                     constructprop QName(PackageNamespace(""),"Date"), 0
+                     coerce QName(PackageNamespace(""),"Date")
+                     setlocal1
+                     getlocal1
+                     callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"getTime"), 0
+                     convert_d
+                     setlocal2
+                     getlex QName(PackageNamespace(""),"Math")
+                     callproperty QName(PackageNamespace(""),"random"), 0
+                     getlex QName(PackageNamespace(""),"Number")
+                     getproperty QName(PackageNamespace(""),"MAX_VALUE")
+                     multiply
+                     convert_d
+                     setlocal3
+                     getlex QName(PackageNamespace("flash.system"),"Capabilities")
+                     getproperty QName(PackageNamespace(""),"serverString")
+                     coerce_s
+                     setlocal 4
+                     getlocal2
+                     getlocal 4
+                     add
+                     getlocal3
+                     add
+                     findpropstrict QName(PrivateNamespace(null,"86"),"counter")
+                     dup
+                     setlocal 6
+                     getproperty QName(PrivateNamespace(null,"86"),"counter")
+                     convert_d
+                     dup
+                     increment
+                     setlocal 7
+                     getlocal 6
+                     getlocal 7
+                     setproperty QName(PrivateNamespace(null,"86"),"counter")
+                     kill 7
+                     kill 6
+                     add
+                     coerce_s
+                     setlocal 5
+                     findpropstrict QName(PrivateNamespace(null,"86"),"binb2hex")
+                     findpropstrict QName(PrivateNamespace(null,"86"),"core_sha1")
+                     findpropstrict QName(PrivateNamespace(null,"86"),"str2binb")
+                     getlocal 5
+                     callproperty QName(PrivateNamespace(null,"86"),"str2binb"), 1
+                     getlocal 5
+                     getproperty QName(PackageNamespace(""),"length")
+                     pushbyte 8
+                     multiply
+                     callproperty QName(PrivateNamespace(null,"86"),"core_sha1"), 2
+                     callproperty QName(PrivateNamespace(null,"86"),"binb2hex"), 1
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         private static function core_sha1(param1:Array, param2:Number) : Array
+         {
+            trait method QName(PrivateNamespace(null,"86"),"core_sha1")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"Array")
+                  param QName(PackageNamespace(""),"Number")
+                  returns QName(PackageNamespace(""),"Array")
+                  
+                  body
+                     maxstack 8
+                     localcount 17
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        pushnan
+                        setlocal 10
+                        pushnan
+                        setlocal 11
+                        pushnan
+                        setlocal 12
+                        pushnan
+                        setlocal 13
+                        pushnan
+                        setlocal 14
+                        pushbyte 0
+                        setlocal 15
+                        pushnan
+                        setlocal 16
+                        getlocal1
+                        getlocal2
+                        pushbyte 5
+                        rshift
+                        getlocal1
+                        getlocal2
+                        pushbyte 5
+                        rshift
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        pushshort 128
+                        pushbyte 24
+                        getlocal2
+                        pushbyte 32
+                        modulo
+                        subtract
+                        lshift
+                        bitor
+                        setproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        getlocal1
+                        getlocal2
+                        pushbyte 64
+                        add
+                        pushbyte 9
+                        rshift
+                        pushbyte 4
+                        lshift
+                        pushbyte 15
+                        add
+                        getlocal2
+                        setproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        findpropstrict QName(PackageNamespace(""),"Array")
+                        pushbyte 80
+                        constructprop QName(PackageNamespace(""),"Array"), 1
+                        coerce QName(PackageNamespace(""),"Array")
+                        setlocal3
+                        pushint 1732584193
+                        convert_d
+                        setlocal 4
+                        pushint -271733879
+                        convert_d
+                        setlocal 5
+                        pushint -1732584194
+                        convert_d
+                        setlocal 6
+                        pushint 271733878
+                        convert_d
+                        setlocal 7
+                        pushint -1009589776
+                        convert_d
+                        setlocal 8
+                        pushbyte 0
+                        setlocal 9
+                        jump ofs01a9
+               ofs0071:
+                        label
+                        getlocal 4
+                        convert_d
+                        setlocal 10
+                        getlocal 5
+                        convert_d
+                        setlocal 11
+                        getlocal 6
+                        convert_d
+                        setlocal 12
+                        getlocal 7
+                        convert_d
+                        setlocal 13
+                        getlocal 8
+                        convert_d
+                        setlocal 14
+                        pushbyte 0
+                        setlocal 15
+                        jump ofs0153
+               ofs0093:
+                        label
+                        getlocal 15
+                        pushbyte 16
+                        ifnlt ofs00af
+                        getlocal3
+                        getlocal 15
+                        getlocal1
+                        getlocal 9
+                        getlocal 15
+                        add
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        setproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        jump ofs00e5
+               ofs00af:
+                        getlocal3
+                        getlocal 15
+                        findpropstrict QName(PrivateNamespace(null,"86"),"rol")
+                        getlocal3
+                        getlocal 15
+                        pushbyte 3
+                        subtract
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        getlocal3
+                        getlocal 15
+                        pushbyte 8
+                        subtract
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        bitxor
+                        getlocal3
+                        getlocal 15
+                        pushbyte 14
+                        subtract
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        bitxor
+                        getlocal3
+                        getlocal 15
+                        pushbyte 16
+                        subtract
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        bitxor
+                        pushbyte 1
+                        callproperty QName(PrivateNamespace(null,"86"),"rol"), 2
+                        setproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+               ofs00e5:
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        findpropstrict QName(PrivateNamespace(null,"86"),"rol")
+                        getlocal 4
+                        pushbyte 5
+                        callproperty QName(PrivateNamespace(null,"86"),"rol"), 2
+                        findpropstrict QName(PrivateNamespace(null,"86"),"sha1_ft")
+                        getlocal 15
+                        getlocal 5
+                        getlocal 6
+                        getlocal 7
+                        callproperty QName(PrivateNamespace(null,"86"),"sha1_ft"), 4
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        getlocal 8
+                        getlocal3
+                        getlocal 15
+                        getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        findpropstrict QName(PrivateNamespace(null,"86"),"sha1_kt")
+                        getlocal 15
+                        callproperty QName(PrivateNamespace(null,"86"),"sha1_kt"), 1
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        convert_d
+                        setlocal 16
+                        getlocal 7
+                        convert_d
+                        setlocal 8
+                        getlocal 6
+                        convert_d
+                        setlocal 7
+                        findpropstrict QName(PrivateNamespace(null,"86"),"rol")
+                        getlocal 5
+                        pushbyte 30
+                        callproperty QName(PrivateNamespace(null,"86"),"rol"), 2
+                        convert_d
+                        setlocal 6
+                        getlocal 4
+                        convert_d
+                        setlocal 5
+                        getlocal 16
+                        convert_d
+                        setlocal 4
+                        inclocal_i 15
+               ofs0153:
+                        getlocal 15
+                        pushbyte 80
+                        iflt ofs0093
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        getlocal 4
+                        getlocal 10
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        convert_d
+                        setlocal 4
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        getlocal 5
+                        getlocal 11
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        convert_d
+                        setlocal 5
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        getlocal 6
+                        getlocal 12
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        convert_d
+                        setlocal 6
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        getlocal 7
+                        getlocal 13
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        convert_d
+                        setlocal 7
+                        findpropstrict QName(PrivateNamespace(null,"86"),"safe_add")
+                        getlocal 8
+                        getlocal 14
+                        callproperty QName(PrivateNamespace(null,"86"),"safe_add"), 2
+                        convert_d
+                        setlocal 8
+                        getlocal 9
+                        pushbyte 16
+                        add
+                        convert_i
+                        setlocal 9
+               ofs01a9:
+                        getlocal 9
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"length")
+                        iflt ofs0071
+                        findpropstrict QName(PackageNamespace(""),"Array")
+                        getlocal 4
+                        getlocal 5
+                        getlocal 6
+                        getlocal 7
+                        getlocal 8
+                        constructprop QName(PackageNamespace(""),"Array"), 5
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            private static function sha1_ft(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+            {
+               trait method QName(PrivateNamespace(null,"86"),"sha1_ft")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Number")
+                     param QName(PackageNamespace(""),"Number")
+                     param QName(PackageNamespace(""),"Number")
+                     param QName(PackageNamespace(""),"Number")
+                     returns QName(PackageNamespace(""),"Number")
+                     
+                     body
+                        maxstack 3
+                        localcount 5
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlocal1
+                           pushbyte 20
+                           ifnlt ofs0013
+                           getlocal2
+                           getlocal3
+                           bitand
+                           getlocal2
+                           bitnot
+                           getlocal 4
+                           bitand
+                           bitor
+                           returnvalue
+                  ofs0013:
+                           getlocal1
+                           pushbyte 40
+                           ifnlt ofs0021
+                           getlocal2
+                           getlocal3
+                           bitxor
+                           getlocal 4
+                           bitxor
+                           returnvalue
+                  ofs0021:
+                           getlocal1
+                           pushbyte 60
+                           ifnlt ofs0036
+                           getlocal2
+                           getlocal3
+                           bitand
+                           getlocal2
+                           getlocal 4
+                           bitand
+                           bitor
+                           getlocal3
+                           getlocal 4
+                           bitand
+                           bitor
+                           returnvalue
+                  ofs0036:
+                           getlocal2
+                           getlocal3
+                           bitxor
+                           getlocal 4
+                           bitxor
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               private static function sha1_kt(param1:Number) : Number
+               {
+                  trait method QName(PrivateNamespace(null,"86"),"sha1_kt")
+                     flag FINAL
+                     dispid 6
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"Number")
+                        returns QName(PackageNamespace(""),"Number")
+                        
+                        body
+                           maxstack 2
+                           localcount 2
+                           initscopedepth 3
+                           maxscopedepth 4
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              getlocal1
+                              pushbyte 20
+                              ifnlt ofs0011
+                              pushint 1518500249
+                              convert_d
+                              jump ofs0033
+                     ofs0011:
+                              getlocal1
+                              pushbyte 40
+                              ifnlt ofs0020
+                              pushint 1859775393
+                              convert_d
+                              jump ofs0033
+                     ofs0020:
+                              getlocal1
+                              pushbyte 60
+                              ifnlt ofs002f
+                              pushint -1894007588
+                              convert_d
+                              jump ofs0033
+                     ofs002f:
+                              pushint -899497514
+                              convert_d
+                     ofs0033:
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  private static function safe_add(param1:Number, param2:Number) : Number
+                  {
+                     trait method QName(PrivateNamespace(null,"86"),"safe_add")
+                        flag FINAL
+                        dispid 7
+                        method
+                           name null
+                           param QName(PackageNamespace(""),"Number")
+                           param QName(PackageNamespace(""),"Number")
+                           returns QName(PackageNamespace(""),"Number")
+                           
+                           body
+                              maxstack 3
+                              localcount 5
+                              initscopedepth 3
+                              maxscopedepth 4
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 getlocal1
+                                 pushint 65535
+                                 bitand
+                                 getlocal2
+                                 pushint 65535
+                                 bitand
+                                 add
+                                 convert_d
+                                 setlocal3
+                                 getlocal1
+                                 pushbyte 16
+                                 rshift
+                                 getlocal2
+                                 pushbyte 16
+                                 rshift
+                                 add
+                                 getlocal3
+                                 pushbyte 16
+                                 rshift
+                                 add
+                                 convert_d
+                                 dup
+                                 setlocal 4
+                                 pushbyte 16
+                                 lshift
+                                 getlocal3
+                                 pushint 65535
+                                 bitand
+                                 bitor
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     private static function rol(param1:Number, param2:Number) : Number
+                     {
+                        trait method QName(PrivateNamespace(null,"86"),"rol")
+                           flag FINAL
+                           dispid 8
+                           method
+                              name null
+                              param QName(PackageNamespace(""),"Number")
+                              param QName(PackageNamespace(""),"Number")
+                              returns QName(PackageNamespace(""),"Number")
+                              
+                              body
+                                 maxstack 4
+                                 localcount 3
+                                 initscopedepth 3
+                                 maxscopedepth 4
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    getlocal1
+                                    getlocal2
+                                    lshift
+                                    getlocal1
+                                    pushbyte 32
+                                    getlocal2
+                                    subtract
+                                    urshift
+                                    bitor
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        private static function str2binb(param1:String) : Array
+                        {
+                           trait method QName(PrivateNamespace(null,"86"),"str2binb")
+                              flag FINAL
+                              dispid 9
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"String")
+                                 returns QName(PackageNamespace(""),"Array")
+                                 
+                                 body
+                                    maxstack 7
+                                    localcount 5
+                                    initscopedepth 3
+                                    maxscopedepth 4
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       findpropstrict QName(PackageNamespace(""),"Array")
+                                       constructprop QName(PackageNamespace(""),"Array"), 0
+                                       coerce QName(PackageNamespace(""),"Array")
+                                       setlocal2
+                                       pushbyte 1
+                                       pushbyte 8
+                                       lshift
+                                       decrement
+                                       convert_d
+                                       setlocal3
+                                       pushbyte 0
+                                       setlocal 4
+                                       jump ofs004b
+                              ofs001a:
+                                       label
+                                       getlocal2
+                                       getlocal 4
+                                       pushbyte 5
+                                       rshift
+                                       getlocal2
+                                       getlocal 4
+                                       pushbyte 5
+                                       rshift
+                                       getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                                       getlocal1
+                                       getlocal 4
+                                       pushbyte 8
+                                       divide
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charCodeAt"), 1
+                                       getlocal3
+                                       bitand
+                                       pushbyte 24
+                                       getlocal 4
+                                       pushbyte 32
+                                       modulo
+                                       subtract
+                                       lshift
+                                       bitor
+                                       setproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                                       getlocal 4
+                                       pushbyte 8
+                                       add
+                                       convert_i
+                                       setlocal 4
+                              ofs004b:
+                                       getlocal 4
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"length")
+                                       pushbyte 8
+                                       multiply
+                                       iflt ofs001a
+                                       getlocal2
+                                       returnvalue
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           private static function binb2hex(param1:Array) : String
+                           {
+                              trait method QName(PrivateNamespace(null,"86"),"binb2hex")
+                                 flag FINAL
+                                 dispid 10
+                                 method
+                                    name null
+                                    param QName(PackageNamespace(""),"Array")
+                                    returns QName(PackageNamespace(""),"String")
+                                    
+                                    body
+                                       maxstack 7
+                                       localcount 4
+                                       initscopedepth 3
+                                       maxscopedepth 4
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          pushstring ""
+                                          setlocal2
+                                          pushbyte 0
+                                          setlocal3
+                                          jump ofs0051
+                                 ofs000c:
+                                          label
+                                          getlocal2
+                                          getlex QName(PrivateNamespace(null,"86"),"Characters")
+                                          getlocal1
+                                          getlocal3
+                                          pushbyte 2
+                                          rshift
+                                          getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                                          pushbyte 3
+                                          getlocal3
+                                          pushbyte 4
+                                          modulo
+                                          subtract
+                                          pushbyte 8
+                                          multiply
+                                          pushbyte 4
+                                          add
+                                          rshift
+                                          pushbyte 15
+                                          bitand
+                                          callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                                          getlex QName(PrivateNamespace(null,"86"),"Characters")
+                                          getlocal1
+                                          getlocal3
+                                          pushbyte 2
+                                          rshift
+                                          getproperty MultinameL([PrivateNamespace(null,"86"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"142"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),ProtectedNamespace("Playtomic:SessionID"),StaticProtectedNs("Playtomic:SessionID"),StaticProtectedNs("Object")])
+                                          pushbyte 3
+                                          getlocal3
+                                          pushbyte 4
+                                          modulo
+                                          subtract
+                                          pushbyte 8
+                                          multiply
+                                          rshift
+                                          pushbyte 15
+                                          bitand
+                                          callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"charAt"), 1
+                                          add
+                                          add
+                                          coerce_s
+                                          setlocal2
+                                          inclocal_i 3
+                                 ofs0051:
+                                          getlocal3
+                                          getlocal1
+                                          getproperty QName(PackageNamespace(""),"length")
+                                          pushbyte 4
+                                          multiply
+                                          iflt ofs000c
+                                          getlocal2
+                                          returnvalue
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                           }
+                        }
+                        
+                        method
+                           name null
+                           returns null
+                           
+                           body
+                              maxstack 52
+                              localcount 1
+                              initscopedepth 1
+                              maxscopedepth 3
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 findpropstrict Multiname("SessionID",[PackageInternalNs("Playtomic")])
+                                 getlex QName(PackageNamespace(""),"Object")
+                                 pushscope
+                                 getlex QName(PackageNamespace(""),"Object")
+                                 newclass 39
+                                 popscope
+                                 initproperty QName(PackageInternalNs("Playtomic"),"SessionID")
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                        

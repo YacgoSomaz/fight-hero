@@ -1,0 +1,304 @@
+package Box2D.Dynamics.Joints
+{
+   import Box2D.Common.Math.b2Vec2;
+   import Box2D.Common.b2internal;
+   import Box2D.Dynamics.b2Body;
+   
+   use namespace b2internal;
+   
+   public class b2PrismaticJointDef extends b2JointDef
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               bitnot
+               increment_i
+               bitxor
+               pushfalse
+               divide
+               nextvalue
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var localAnchorA:b2Vec2;
+      
+      public var localAnchorB:b2Vec2;
+      
+      public var localAxisA:b2Vec2;
+      
+      public var referenceAngle:Number;
+      
+      public var enableLimit:Boolean;
+      
+      public var lowerTranslation:Number;
+      
+      public var upperTranslation:Number;
+      
+      public var enableMotor:Boolean;
+      
+      public var maxMotorForce:Number;
+      
+      public var motorSpeed:Number;
+      
+      public function b2PrismaticJointDef()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 1
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"localAnchorA")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"localAnchorB")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"localAxisA")
+                  getlocal0
+                  constructsuper 0
+                  findproperty QName(PackageNamespace(""),"type")
+                  getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2Joint")
+                  getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_prismaticJoint")
+                  initproperty QName(PackageNamespace(""),"type")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"localAxisA")
+                  pushbyte 1
+                  pushdouble 0
+                  pushfalse
+                  iffalse ofs0051
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0055
+         ofs0051:
+                  callpropvoid QName(PackageNamespace(""),"Set"), 2
+         ofs0055:
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"referenceAngle")
+                  getlocal0
+                  pushfalse
+                  initproperty QName(PackageNamespace(""),"enableLimit")
+                  getlocal0
+                  jump ofs0069
+                  convert_d
+                  convert_s
+                  setlocal0
+                  nextname
+         ofs0069:
+                  pushdouble 0
+                  jump ofs0073
+                  convert_d
+                  convert_s
+                  setlocal0
+                  nextname
+         ofs0073:
+                  initproperty QName(PackageNamespace(""),"lowerTranslation")
+                  getlocal0
+                  jump ofs007f
+                  bitxor
+                  urshift
+                  pushscope
+                  negate
+         ofs007f:
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"upperTranslation")
+                  getlocal0
+                  pushfalse
+                  jump ofs008e
+                  bitxor
+                  urshift
+                  pushscope
+                  negate
+         ofs008e:
+                  initproperty QName(PackageNamespace(""),"enableMotor")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"maxMotorForce")
+                  getlocal0
+                  jump ofs00a0
+                  pushnull
+                  subtract_i
+                  pushundefined
+                  multiply
+         ofs00a0:
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"motorSpeed")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function Initialize(param1:b2Body, param2:b2Body, param3:b2Vec2, param4:b2Vec2) : void
+      {
+         trait method QName(PackageNamespace(""),"Initialize")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+               param QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 53
+                  localcount 5
+                  initscopedepth 5
+                  maxscopedepth 6
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findproperty QName(PackageNamespace(""),"bodyA")
+                     getlocal1
+                     initproperty QName(PackageNamespace(""),"bodyA")
+                     findproperty QName(PackageNamespace(""),"bodyB")
+                     getlocal2
+                     initproperty QName(PackageNamespace(""),"bodyB")
+                     getlocal0
+                     jump ofs002b
+                     convert_o
+                     decrement
+                     pushfalse
+                     add_i
+                     getlocal1
+                     getlocal1
+                     pushwith
+            ofs002b:
+                     getlex QName(PackageNamespace(""),"bodyA")
+                     getlocal3
+                     jump ofs003a
+                     setlocal0
+                     bitnot
+                     convert_d
+                     lessequals
+                     pushundefined
+                     greaterthan
+                     getlocal2
+            ofs003a:
+                     callproperty QName(PackageNamespace(""),"GetLocalPoint"), 1
+                     initproperty QName(PackageNamespace(""),"localAnchorA")
+                     getlocal0
+                     getlex QName(PackageNamespace(""),"bodyB")
+                     getlocal3
+                     callproperty QName(PackageNamespace(""),"GetLocalPoint"), 1
+                     initproperty QName(PackageNamespace(""),"localAnchorB")
+                     getlocal0
+                     getlex QName(PackageNamespace(""),"bodyA")
+                     getlocal 4
+                     callproperty QName(PackageNamespace(""),"GetLocalVector"), 1
+                     initproperty QName(PackageNamespace(""),"localAxisA")
+                     getlocal0
+                     getlex QName(PackageNamespace(""),"bodyB")
+                     callproperty QName(PackageNamespace(""),"GetAngle"), 0
+                     getlex QName(PackageNamespace(""),"bodyA")
+                     callproperty QName(PackageNamespace(""),"GetAngle"), 0
+                     subtract
+                     initproperty QName(PackageNamespace(""),"referenceAngle")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 4
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("b2PrismaticJointDef",[PackageNamespace("Box2D.Dynamics.Joints")])
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+            pushscope
+            jump ofs0025
+            equals
+            convert_u
+            coerce_s
+            pushwith
+            getlocal1
+            getlocal1
+            decrement
+   ofs0025:
+            getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+            jump ofs002f
+            increment_i
+            getlocal3
+            instanceof
+            swap
+   ofs002f:
+            newclass 137
+            popscope
+            popscope
+            initproperty QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2PrismaticJointDef")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

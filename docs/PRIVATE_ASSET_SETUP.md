@@ -1,6 +1,18 @@
 # 授权素材准备
 
-当前 `main.mjs` 会从本地服务的 `/source-assets/` 路径读取两张已分离的手臂资源；`server.mjs` 将此路径映射到 `public/assets/unit-parts/`。原始 SWF 和参考导出存放在 `assets/reverse/`。
+当前 `main.mjs` 直接从 `public/assets/` 读取浏览器运行时的地图、角色部件、时间轴和音频资源。原始 SWF、逐帧参考图和深度解包证据在私有仓库的 `assets/reverse/` 中；运行时不读取它们。
+
+## 私有仓库资源清单（2026-07-21）
+
+| 路径 | 内容 | 用途 |
+| --- | --- | --- |
+| `assets/reverse/4399-90433-25.swf` | 原始 SWF（15.92 MiB） | 唯一原始样本，可重新解包全部嵌入资源 |
+| `assets/reverse/ffdec-deep-20260720/` | FFDec 深度导出的 AS3、AVM2 P-code、SymbolClass、标签清单、174 段音频及文本 | 代码/符号/音频的可复现证据包 |
+| `assets/reverse/unitmc-frames/` | `UnitMC` 669 的 449 帧参考导出 | 动画逐帧对照，非运行时播放素材 |
+| `assets/reverse/foundry-wall/` | Foundry 墙体参考导出 | 墙体与碰撞对照 |
+| `public/assets/` | 642 个浏览器就绪的地图、角色部件、时间轴和音频资源 | 网页运行时唯一读取的资源根 |
+
+`private-assets/` 不入库：其约 3.2 GiB 内容混有重复导出、截图、预览和提取实验，既不能作为稳定输入，也不应让下一位接手者误把它当作权威资产包。需要新增原始资源时，应从上表的 SWF 重导出，并把经过核验的结果放入 `assets/reverse/`（参考）或 `public/assets/`（运行时）。
 
 ## 已确认的 SWF 符号
 

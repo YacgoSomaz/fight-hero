@@ -1,0 +1,1864 @@
+package Playtomic
+{
+   import flash.external.ExternalInterface;
+   
+   public final class Leaderboards
+   {
+      
+      public static const TODAY:String = "today";
+      
+      public static const LAST7DAYS:String = "last7days";
+      
+      public static const LAST30DAYS:String = "last30days";
+      
+      public static const ALLTIME:String = "alltime";
+      
+      public static const NEWEST:String = "newest";
+      
+      private static var SECTION:String;
+      
+      private static var CREATEPRIVATELEADERBOARD:String;
+      
+      private static var LOADPRIVATELEADERBOARD:String;
+      
+      private static var SAVEANDLIST:String;
+      
+      private static var SAVE:String;
+      
+      private static var LIST:String;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PackageNamespace(""),"TODAY")
+               pushstring "today"
+               initproperty QName(PackageNamespace(""),"TODAY")
+               findproperty QName(PackageNamespace(""),"LAST7DAYS")
+               pushstring "last7days"
+               initproperty QName(PackageNamespace(""),"LAST7DAYS")
+               findproperty QName(PackageNamespace(""),"LAST30DAYS")
+               jump ofs0031
+               greaterthan
+               greaterequals
+               subtract_i
+               nextvalue
+               setlocal1
+               instanceof
+               lessthan
+      ofs0031:
+               pushstring "last30days"
+               initproperty QName(PackageNamespace(""),"LAST30DAYS")
+               findproperty QName(PackageNamespace(""),"ALLTIME")
+               pushstring "alltime"
+               initproperty QName(PackageNamespace(""),"ALLTIME")
+               findproperty QName(PackageNamespace(""),"NEWEST")
+               pushstring "newest"
+               initproperty QName(PackageNamespace(""),"NEWEST")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function Leaderboards()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      internal static function Initialise(param1:String) : void
+      {
+         trait method QName(PackageInternalNs("Playtomic"),"Initialise")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 4
+                  localcount 2
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PrivateNamespace(null,"84"),"SECTION")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "leaderboards-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"84"),"SECTION")
+                     findproperty QName(PrivateNamespace(null,"84"),"CREATEPRIVATELEADERBOARD")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "leaderboards-createprivateleaderboard-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"84"),"CREATEPRIVATELEADERBOARD")
+                     findproperty QName(PrivateNamespace(null,"84"),"LOADPRIVATELEADERBOARD")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "leaderboards-loadprivateleaderboard-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"84"),"LOADPRIVATELEADERBOARD")
+                     findproperty QName(PrivateNamespace(null,"84"),"SAVEANDLIST")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "leaderboards-saveandlist-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"84"),"SAVEANDLIST")
+                     findproperty QName(PrivateNamespace(null,"84"),"SAVE")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "leaderboards-save-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"84"),"SAVE")
+                     findproperty QName(PrivateNamespace(null,"84"),"LIST")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "leaderboards-list-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"84"),"LIST")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function CreatePrivateLeaderboard(param1:String, param2:String, param3:Function = null, param4:Boolean = true) : void
+         {
+            trait method QName(PackageNamespace(""),"CreatePrivateLeaderboard")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  flag HAS_OPTIONAL
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"Function")
+                  param QName(PackageNamespace(""),"Boolean")
+                  optional Null()
+                  optional True()
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 6
+                     localcount 6
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        findpropstrict QName(PackageNamespace(""),"Object")
+                        constructprop QName(PackageNamespace(""),"Object"), 0
+                        coerce QName(PackageNamespace(""),"Object")
+                        dup
+                        setlocal 5
+                        pushstring "table"
+                        getlocal1
+                        setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                        getlocal 5
+                        pushstring "highest"
+                        getlocal 4
+                        iffalse ofs0026
+                        pushstring "y"
+                        coerce_a
+                        jump ofs002a
+               ofs0026:
+                        pushstring "n"
+                        coerce_a
+               ofs002a:
+                        setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                        getlocal 5
+                        pushstring "permalink"
+                        getlocal2
+                        setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                        getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                        getlex QName(PrivateNamespace(null,"84"),"SECTION")
+                        getlex QName(PrivateNamespace(null,"84"),"CREATEPRIVATELEADERBOARD")
+                        getlex QName(PrivateNamespace(null,"84"),"CreatePrivateLeaderboardComplete")
+                        getlocal3
+                        getlocal 5
+                        callpropvoid QName(PackageNamespace(""),"Load"), 5
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            private static function CreatePrivateLeaderboardComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+            {
+               trait method QName(PrivateNamespace(null,"84"),"CreatePrivateLeaderboardComplete")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     flag HAS_OPTIONAL
+                     param QName(PackageNamespace(""),"Function")
+                     param QName(PackageNamespace(""),"Object")
+                     param QName(PackageNamespace(""),"XML")
+                     param QName(PackageNamespace("Playtomic"),"Response")
+                     optional Null()
+                     optional Null()
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 8
+                        localcount 6
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlocal1
+                           pushnull
+                           ifne ofs0009
+                           returnvoid
+                  ofs0009:
+                           pushnull
+                           coerce QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+                           setlocal 5
+                           getlocal 4
+                           getproperty QName(PackageNamespace(""),"Success")
+                           iffalse ofs0052
+                           findpropstrict QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+                           getlocal3
+                           pushstring "tableid"
+                           getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                           getlocal3
+                           pushstring "name"
+                           getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                           getlocal3
+                           pushstring "bitly"
+                           getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                           getlocal3
+                           pushstring "permalink"
+                           getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                           getlocal3
+                           pushstring "highest"
+                           getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                           pushstring "true"
+                           equals
+                           getlocal3
+                           pushstring "realname"
+                           getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                           constructprop QName(PackageNamespace("Playtomic"),"PrivateLeaderboard"), 6
+                           coerce QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+                           setlocal 5
+                  ofs0052:
+                           getlocal1
+                           getglobalscope
+                           getlocal 5
+                           getlocal 4
+                           call 2
+                           pop
+                           getlocal2
+                           coerce QName(PackageNamespace(""),"Object")
+                           setlocal2
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public static function LoadPrivateLeaderboard(param1:String, param2:Function = null) : void
+               {
+                  trait method QName(PackageNamespace(""),"LoadPrivateLeaderboard")
+                     flag FINAL
+                     dispid 6
+                     method
+                        name null
+                        flag HAS_OPTIONAL
+                        param QName(PackageNamespace(""),"String")
+                        param QName(PackageNamespace(""),"Function")
+                        optional Null()
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 6
+                           localcount 4
+                           initscopedepth 3
+                           maxscopedepth 4
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              findpropstrict QName(PackageNamespace(""),"Object")
+                              constructprop QName(PackageNamespace(""),"Object"), 0
+                              coerce QName(PackageNamespace(""),"Object")
+                              setlocal3
+                              getlocal3
+                              pushstring "tableid"
+                              getlocal1
+                              setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                              getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                              getlex QName(PrivateNamespace(null,"84"),"SECTION")
+                              getlex QName(PrivateNamespace(null,"84"),"LOADPRIVATELEADERBOARD")
+                              getlex QName(PrivateNamespace(null,"84"),"LoadPrivateLeaderboardComplete")
+                              getlocal2
+                              getlocal3
+                              callpropvoid QName(PackageNamespace(""),"Load"), 5
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  private static function LoadPrivateLeaderboardComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+                  {
+                     trait method QName(PrivateNamespace(null,"84"),"LoadPrivateLeaderboardComplete")
+                        flag FINAL
+                        dispid 7
+                        method
+                           name null
+                           flag HAS_OPTIONAL
+                           param QName(PackageNamespace(""),"Function")
+                           param QName(PackageNamespace(""),"Object")
+                           param QName(PackageNamespace(""),"XML")
+                           param QName(PackageNamespace("Playtomic"),"Response")
+                           optional Null()
+                           optional Null()
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 8
+                              localcount 6
+                              initscopedepth 3
+                              maxscopedepth 4
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 getlocal1
+                                 pushnull
+                                 ifne ofs0009
+                                 returnvoid
+                        ofs0009:
+                                 pushnull
+                                 coerce QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+                                 setlocal 5
+                                 getlocal 4
+                                 getproperty QName(PackageNamespace(""),"Success")
+                                 iffalse ofs0052
+                                 findpropstrict QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+                                 getlocal3
+                                 pushstring "tableid"
+                                 getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                 getlocal3
+                                 pushstring "name"
+                                 getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                 getlocal3
+                                 pushstring "bitly"
+                                 getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                 getlocal3
+                                 pushstring "permalink"
+                                 getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                 getlocal3
+                                 pushstring "highest"
+                                 getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                 pushstring "true"
+                                 equals
+                                 getlocal3
+                                 pushstring "realname"
+                                 getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                 constructprop QName(PackageNamespace("Playtomic"),"PrivateLeaderboard"), 6
+                                 coerce QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+                                 setlocal 5
+                        ofs0052:
+                                 getlocal1
+                                 getglobalscope
+                                 getlocal 5
+                                 getlocal 4
+                                 call 2
+                                 pop
+                                 getlocal2
+                                 coerce QName(PackageNamespace(""),"Object")
+                                 setlocal2
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public static function GetLeaderboardFromUrl() : String
+                     {
+                        trait method QName(PackageNamespace(""),"GetLeaderboardFromUrl")
+                           flag FINAL
+                           dispid 8
+                           method
+                              name null
+                              flag NEED_ACTIVATION
+                              returns QName(PackageNamespace(""),"String")
+                              
+                              body
+                                 maxstack 5
+                                 localcount 3
+                                 initscopedepth 4
+                                 maxscopedepth 9
+                                 trait slot QName(PackageInternalNs("Playtomic"),"url")
+                                    slotid 1
+                                    type QName(PackageNamespace(""),"String")
+                                 end ; trait
+                                 trait slot QName(PackageInternalNs("Playtomic"),"leaderboardid")
+                                    slotid 2
+                                    type QName(PackageNamespace(""),"String")
+                                 end ; trait
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    newactivation
+                                    dup
+                                    setlocal1
+                                    pushscope
+                                    getscopeobject 1
+                                    pushnull
+                                    coerce_s
+                                    setslot 1
+                                    getscopeobject 1
+                                    pushnull
+                                    coerce_s
+                                    setslot 2
+                                    getlex QName(PackageNamespace("flash.external"),"ExternalInterface")
+                                    getproperty QName(PackageNamespace(""),"available")
+                                    iftrue ofs001e
+                                    pushnull
+                                    returnvalue
+                           ofs001e:
+                                    getscopeobject 1
+                                    findpropstrict QName(PackageNamespace(""),"String")
+                                    getlex QName(PackageNamespace("flash.external"),"ExternalInterface")
+                                    pushstring "window.location.href.toString"
+                                    callproperty QName(PackageNamespace(""),"call"), 1
+                                    callproperty QName(PackageNamespace(""),"String"), 1
+                                    coerce_s
+                                    setslot 1
+                                    getscopeobject 1
+                                    getslot 1
+                                    pushstring "?"
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                    pushbyte -1
+                                    ifne ofs0045
+                                    pushnull
+                                    returnvalue
+                           ofs0045:
+                                    getscopeobject 1
+                                    getscopeobject 1
+                                    getslot 1
+                                    getscopeobject 1
+                                    getslot 1
+                                    pushstring "leaderboard="
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                    pushbyte 12
+                                    add
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 1
+                                    coerce_s
+                                    setslot 2
+                                    getscopeobject 1
+                                    getslot 2
+                                    pushstring "&"
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                    pushbyte -1
+                                    ifngt ofs008b
+                                    getscopeobject 1
+                                    getscopeobject 1
+                                    getslot 2
+                                    pushbyte 0
+                                    getscopeobject 1
+                                    getslot 2
+                                    pushstring "&"
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 2
+                                    coerce_s
+                                    setslot 2
+                           ofs008b:
+                                    getscopeobject 1
+                                    getslot 2
+                                    pushstring "#"
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                    pushbyte -1
+                                    ifngt ofs00b6
+                                    getscopeobject 1
+                                    getscopeobject 1
+                                    getslot 2
+                                    pushbyte 0
+                                    getscopeobject 1
+                                    getslot 2
+                                    pushstring "#"
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                    callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 2
+                                    coerce_s
+                                    setslot 2
+                           ofs00b6:
+                                    getscopeobject 1
+                                    getslot 2
+                                    returnvalue
+                           ofs00bb:
+                                    jump ofs00bf
+                           ofs00bf:
+                                    getlocal0
+                                    pushscope
+                                    getlocal1
+                                    pushscope
+                                    newcatch 0
+                                    dup
+                                    setlocal2
+                                    dup
+                                    pushscope
+                                    swap
+                                    setslot 1
+                                    popscope
+                                    kill 2
+                                    pushnull
+                                    returnvalue
+                                 end ; code
+                                 try from ofs001e to ofs00bb target ofs00bf type QName(PackageNamespace(""),"Error") name QName(PackageNamespace(""),"s") end
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public static function SaveAndList(param1:PlayerScore, param2:String, param3:Function = null, param4:Object = null) : void
+                        {
+                           trait method QName(PackageNamespace(""),"SaveAndList")
+                              flag FINAL
+                              dispid 9
+                              method
+                                 name null
+                                 flag HAS_OPTIONAL
+                                 param QName(PackageNamespace("Playtomic"),"PlayerScore")
+                                 param QName(PackageNamespace(""),"String")
+                                 param QName(PackageNamespace(""),"Function")
+                                 param QName(PackageNamespace(""),"Object")
+                                 optional Null()
+                                 optional Null()
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 6
+                                    localcount 20
+                                    initscopedepth 3
+                                    maxscopedepth 4
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       pushnull
+                                       coerce_s
+                                       setlocal 16
+                                       pushnull
+                                       coerce_s
+                                       setlocal 17
+                                       getlocal 4
+                                       pushnull
+                                       ifne ofs001a
+                                       findpropstrict QName(PackageNamespace(""),"Object")
+                                       constructprop QName(PackageNamespace(""),"Object"), 0
+                                       coerce QName(PackageNamespace(""),"Object")
+                                       setlocal 4
+                              ofs001a:
+                                       getlocal 4
+                                       pushstring "allowduplicates"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs0034
+                                       getlocal 4
+                                       pushstring "allowduplicates"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       convert_b
+                                       jump ofs0035
+                              ofs0034:
+                                       pushfalse
+                              ofs0035:
+                                       convert_b
+                                       setlocal 5
+                                       getlocal 4
+                                       pushstring "global"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs0052
+                                       getlocal 4
+                                       pushstring "global"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       convert_b
+                                       jump ofs0053
+                              ofs0052:
+                                       pushtrue
+                              ofs0053:
+                                       convert_b
+                                       setlocal 6
+                                       getlocal 4
+                                       pushstring "highest"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs0070
+                                       getlocal 4
+                                       pushstring "highest"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       convert_b
+                                       jump ofs0071
+                              ofs0070:
+                                       pushtrue
+                              ofs0071:
+                                       convert_b
+                                       setlocal 7
+                                       getlocal 4
+                                       pushstring "mode"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs008e
+                                       getlocal 4
+                                       pushstring "mode"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       coerce_s
+                                       jump ofs0091
+                              ofs008e:
+                                       pushstring "alltime"
+                              ofs0091:
+                                       coerce_s
+                                       setlocal 8
+                                       getlocal 4
+                                       pushstring "customfilters"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs00af
+                                       getlocal 4
+                                       pushstring "customfilters"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       coerce QName(PackageNamespace(""),"Object")
+                                       jump ofs00b3
+                              ofs00af:
+                                       newobject 0
+                                       coerce QName(PackageNamespace(""),"Object")
+                              ofs00b3:
+                                       coerce QName(PackageNamespace(""),"Object")
+                                       setlocal 9
+                                       getlocal 4
+                                       pushstring "page"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs00d1
+                                       getlocal 4
+                                       pushstring "page"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       convert_i
+                                       jump ofs00d3
+                              ofs00d1:
+                                       pushbyte 1
+                              ofs00d3:
+                                       convert_i
+                                       setlocal 10
+                                       getlocal 4
+                                       pushstring "perpage"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs00f0
+                                       getlocal 4
+                                       pushstring "perpage"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       convert_i
+                                       jump ofs00f2
+                              ofs00f0:
+                                       pushbyte 20
+                              ofs00f2:
+                                       convert_i
+                                       setlocal 11
+                                       getlocal 4
+                                       pushstring "friendslist"
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                       iffalse ofs0110
+                                       getlocal 4
+                                       pushstring "friendslist"
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       coerce QName(PackageNamespace(""),"Array")
+                                       jump ofs0117
+                              ofs0110:
+                                       findpropstrict QName(PackageNamespace(""),"Array")
+                                       constructprop QName(PackageNamespace(""),"Array"), 0
+                                       coerce QName(PackageNamespace(""),"Array")
+                              ofs0117:
+                                       coerce QName(PackageNamespace(""),"Array")
+                                       setlocal 12
+                                       findpropstrict QName(PackageNamespace(""),"Object")
+                                       constructprop QName(PackageNamespace(""),"Object"), 0
+                                       coerce QName(PackageNamespace(""),"Object")
+                                       dup
+                                       setlocal 13
+                                       pushstring "url"
+                                       getlex QName(PackageNamespace("Playtomic"),"Log")
+                                       getproperty QName(PackageInternalNs("Playtomic"),"SourceUrl")
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "table"
+                                       getlocal2
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "highest"
+                                       getlocal 7
+                                       iffalse ofs014d
+                                       pushstring "y"
+                                       coerce_a
+                                       jump ofs0151
+                              ofs014d:
+                                       pushstring "n"
+                                       coerce_a
+                              ofs0151:
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "name"
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"Name")
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "points"
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"Points")
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toString"), 0
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "allowduplicates"
+                                       getlocal 5
+                                       iffalse ofs0183
+                                       pushstring "y"
+                                       coerce_a
+                                       jump ofs0187
+                              ofs0183:
+                                       pushstring "n"
+                                       coerce_a
+                              ofs0187:
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       pushbyte 0
+                                       setlocal 14
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"CustomData")
+                                       pushnull
+                                       ifeq ofs01dd
+                                       pushbyte 0
+                                       setlocal 18
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"CustomData")
+                                       coerce_a
+                                       setlocal 19
+                                       jump ofs01d2
+                              ofs01a6:
+                                       label
+                                       getlocal 19
+                                       getlocal 18
+                                       nextname
+                                       coerce_s
+                                       setlocal 16
+                                       getlocal 13
+                                       pushstring "ckey"
+                                       getlocal 14
+                                       add
+                                       getlocal 16
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "cdata"
+                                       getlocal 14
+                                       add
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"CustomData")
+                                       getlocal 16
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       inclocal_i 14
+                              ofs01d2:
+                                       hasnext2 19, 18
+                                       iftrue ofs01a6
+                                       kill 19
+                                       kill 18
+                              ofs01dd:
+                                       getlocal 13
+                                       pushstring "numfields"
+                                       getlocal 14
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "global"
+                                       getlocal 6
+                                       iffalse ofs01fa
+                                       pushstring "y"
+                                       coerce_a
+                                       jump ofs01fe
+                              ofs01fa:
+                                       pushstring "n"
+                                       coerce_a
+                              ofs01fe:
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "mode"
+                                       getlocal 8
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "page"
+                                       getlocal 10
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "perpage"
+                                       getlocal 11
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       pushbyte 0
+                                       setlocal 15
+                                       getlocal 9
+                                       pushnull
+                                       ifeq ofs026c
+                                       pushbyte 0
+                                       setlocal 18
+                                       getlocal 9
+                                       coerce_a
+                                       setlocal 19
+                                       jump ofs0261
+                              ofs0237:
+                                       label
+                                       getlocal 19
+                                       getlocal 18
+                                       nextname
+                                       coerce_s
+                                       setlocal 17
+                                       getlocal 13
+                                       pushstring "lkey"
+                                       getlocal 15
+                                       add
+                                       getlocal 17
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal 13
+                                       pushstring "ldata"
+                                       getlocal 15
+                                       add
+                                       getlocal 9
+                                       getlocal 17
+                                       getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       inclocal_i 15
+                              ofs0261:
+                                       hasnext2 19, 18
+                                       iftrue ofs0237
+                                       kill 19
+                                       kill 18
+                              ofs026c:
+                                       getlocal 13
+                                       pushstring "numfilters"
+                                       getlocal 15
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"FBUserId")
+                                       pushnull
+                                       equals
+                                       not
+                                       dup
+                                       iffalse ofs028b
+                                       pop
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"FBUserId")
+                                       pushstring ""
+                                       equals
+                                       not
+                              ofs028b:
+                                       iffalse ofs02b7
+                                       getlocal 12
+                                       getproperty QName(PackageNamespace(""),"length")
+                                       pushbyte 0
+                                       ifngt ofs02ab
+                                       getlocal 13
+                                       pushstring "friendslist"
+                                       getlocal 12
+                                       pushstring ","
+                                       callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                              ofs02ab:
+                                       getlocal 13
+                                       pushstring "fbuserid"
+                                       getlocal1
+                                       getproperty QName(PackageNamespace(""),"FBUserId")
+                                       setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                              ofs02b7:
+                                       getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                                       getlex QName(PrivateNamespace(null,"84"),"SECTION")
+                                       getlex QName(PrivateNamespace(null,"84"),"SAVEANDLIST")
+                                       getlex QName(PrivateNamespace(null,"84"),"SaveAndListComplete")
+                                       getlocal3
+                                       getlocal 13
+                                       callpropvoid QName(PackageNamespace(""),"Load"), 5
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           private static function SaveAndListComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+                           {
+                              trait method QName(PrivateNamespace(null,"84"),"SaveAndListComplete")
+                                 flag FINAL
+                                 dispid 10
+                                 method
+                                    name null
+                                    flag HAS_OPTIONAL
+                                    param QName(PackageNamespace(""),"Function")
+                                    param QName(PackageNamespace(""),"Object")
+                                    param QName(PackageNamespace(""),"XML")
+                                    param QName(PackageNamespace("Playtomic"),"Response")
+                                    optional Null()
+                                    optional Null()
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 5
+                                       localcount 5
+                                       initscopedepth 3
+                                       maxscopedepth 4
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          getlocal1
+                                          pushnull
+                                          ifne ofs0009
+                                          returnvoid
+                                 ofs0009:
+                                          getlocal 4
+                                          getproperty QName(PackageNamespace(""),"Success")
+                                          iffalse ofs0021
+                                          findpropstrict QName(PrivateNamespace(null,"84"),"ProcessScores")
+                                          getlocal3
+                                          getlocal 4
+                                          getlocal1
+                                          callpropvoid QName(PrivateNamespace(null,"84"),"ProcessScores"), 3
+                                          jump ofs002c
+                                 ofs0021:
+                                          getlocal1
+                                          getglobalscope
+                                          newarray 0
+                                          pushbyte 0
+                                          getlocal 4
+                                          call 3
+                                          pop
+                                 ofs002c:
+                                          getlocal2
+                                          coerce QName(PackageNamespace(""),"Object")
+                                          setlocal2
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public static function Save(param1:PlayerScore, param2:String, param3:Function = null, param4:Object = null) : void
+                              {
+                                 trait method QName(PackageNamespace(""),"Save")
+                                    flag FINAL
+                                    dispid 11
+                                    method
+                                       name null
+                                       flag HAS_OPTIONAL
+                                       param QName(PackageNamespace("Playtomic"),"PlayerScore")
+                                       param QName(PackageNamespace(""),"String")
+                                       param QName(PackageNamespace(""),"Function")
+                                       param QName(PackageNamespace(""),"Object")
+                                       optional Null()
+                                       optional Null()
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 6
+                                          localcount 13
+                                          initscopedepth 3
+                                          maxscopedepth 4
+                                          
+                                          code
+                                             getlocal0
+                                             pushscope
+                                             pushnull
+                                             coerce_s
+                                             setlocal 10
+                                             getlocal 4
+                                             pushnull
+                                             ifne ofs0016
+                                             findpropstrict QName(PackageNamespace(""),"Object")
+                                             constructprop QName(PackageNamespace(""),"Object"), 0
+                                             coerce QName(PackageNamespace(""),"Object")
+                                             setlocal 4
+                                    ofs0016:
+                                             getlocal 4
+                                             pushstring "allowduplicates"
+                                             callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                             iffalse ofs0030
+                                             getlocal 4
+                                             pushstring "allowduplicates"
+                                             getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             convert_b
+                                             jump ofs0031
+                                    ofs0030:
+                                             pushfalse
+                                    ofs0031:
+                                             convert_b
+                                             setlocal 5
+                                             getlocal 4
+                                             pushstring "highest"
+                                             callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                             iffalse ofs004e
+                                             getlocal 4
+                                             pushstring "highest"
+                                             getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             convert_b
+                                             jump ofs004f
+                                    ofs004e:
+                                             pushtrue
+                                    ofs004f:
+                                             convert_b
+                                             setlocal 6
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"Points")
+                                             callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toString"), 0
+                                             coerce_s
+                                             dup
+                                             setlocal 7
+                                             pushstring "."
+                                             callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                             pushbyte -1
+                                             ifngt ofs007f
+                                             getlocal 7
+                                             pushbyte 0
+                                             getlocal 7
+                                             pushstring "."
+                                             callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                             callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 2
+                                             coerce_s
+                                             setlocal 7
+                                    ofs007f:
+                                             findpropstrict QName(PackageNamespace(""),"Object")
+                                             constructprop QName(PackageNamespace(""),"Object"), 0
+                                             coerce QName(PackageNamespace(""),"Object")
+                                             setlocal 8
+                                             pushbyte 0
+                                             setlocal 9
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"CustomData")
+                                             pushnull
+                                             ifeq ofs00db
+                                             pushbyte 0
+                                             setlocal 11
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"CustomData")
+                                             coerce_a
+                                             setlocal 12
+                                             jump ofs00d0
+                                    ofs00a4:
+                                             label
+                                             getlocal 12
+                                             getlocal 11
+                                             nextname
+                                             coerce_s
+                                             setlocal 10
+                                             getlocal 8
+                                             pushstring "ckey"
+                                             getlocal 9
+                                             add
+                                             getlocal 10
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "cdata"
+                                             getlocal 9
+                                             add
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"CustomData")
+                                             getlocal 10
+                                             getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             inclocal_i 9
+                                    ofs00d0:
+                                             hasnext2 12, 11
+                                             iftrue ofs00a4
+                                             kill 12
+                                             kill 11
+                                    ofs00db:
+                                             getlocal 8
+                                             pushstring "url"
+                                             getlex QName(PackageNamespace("Playtomic"),"Log")
+                                             getproperty QName(PackageInternalNs("Playtomic"),"BaseUrl")
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "table"
+                                             getlocal2
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "highest"
+                                             getlocal 6
+                                             iffalse ofs0105
+                                             pushstring "y"
+                                             coerce_a
+                                             jump ofs0109
+                                    ofs0105:
+                                             pushstring "n"
+                                             coerce_a
+                                    ofs0109:
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "name"
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"Name")
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "points"
+                                             getlocal 7
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "allowduplicates"
+                                             getlocal 5
+                                             iffalse ofs0135
+                                             pushstring "y"
+                                             coerce_a
+                                             jump ofs0139
+                                    ofs0135:
+                                             pushstring "n"
+                                             coerce_a
+                                    ofs0139:
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "auth"
+                                             getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                                             getlex QName(PackageNamespace("Playtomic"),"Log")
+                                             getproperty QName(PackageInternalNs("Playtomic"),"BaseUrl")
+                                             getlocal 7
+                                             add
+                                             callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "fb"
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"FBUserId")
+                                             pushstring ""
+                                             equals
+                                             not
+                                             dup
+                                             iffalse ofs016e
+                                             pop
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"FBUserId")
+                                             pushnull
+                                             equals
+                                             not
+                                    ofs016e:
+                                             iffalse ofs017a
+                                             pushstring "y"
+                                             coerce_a
+                                             jump ofs017e
+                                    ofs017a:
+                                             pushstring "n"
+                                             coerce_a
+                                    ofs017e:
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "fbuserid"
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"FBUserId")
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlocal 8
+                                             pushstring "customfields"
+                                             getlocal 9
+                                             setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                             getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                                             getlex QName(PrivateNamespace(null,"84"),"SECTION")
+                                             getlex QName(PrivateNamespace(null,"84"),"SAVE")
+                                             getlex QName(PrivateNamespace(null,"84"),"SaveComplete")
+                                             getlocal3
+                                             getlocal 8
+                                             callpropvoid QName(PackageNamespace(""),"Load"), 5
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 private static function SaveComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+                                 {
+                                    trait method QName(PrivateNamespace(null,"84"),"SaveComplete")
+                                       flag FINAL
+                                       dispid 12
+                                       method
+                                          name null
+                                          flag HAS_OPTIONAL
+                                          param QName(PackageNamespace(""),"Function")
+                                          param QName(PackageNamespace(""),"Object")
+                                          param QName(PackageNamespace(""),"XML")
+                                          param QName(PackageNamespace("Playtomic"),"Response")
+                                          optional Null()
+                                          optional Null()
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 3
+                                             localcount 5
+                                             initscopedepth 3
+                                             maxscopedepth 4
+                                             
+                                             code
+                                                getlocal0
+                                                pushscope
+                                                getlocal1
+                                                pushnull
+                                                ifne ofs0009
+                                                returnvoid
+                                       ofs0009:
+                                                getlocal3
+                                                coerce QName(PackageNamespace(""),"XML")
+                                                setlocal3
+                                                getlocal2
+                                                coerce QName(PackageNamespace(""),"Object")
+                                                setlocal2
+                                                getlocal1
+                                                getglobalscope
+                                                getlocal 4
+                                                call 1
+                                                pop
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public static function List(param1:String, param2:Function, param3:Object = null) : void
+                                    {
+                                       trait method QName(PackageNamespace(""),"List")
+                                          flag FINAL
+                                          dispid 13
+                                          method
+                                             name null
+                                             flag HAS_OPTIONAL
+                                             param QName(PackageNamespace(""),"String")
+                                             param QName(PackageNamespace(""),"Function")
+                                             param QName(PackageNamespace(""),"Object")
+                                             optional Null()
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 6
+                                                localcount 17
+                                                initscopedepth 3
+                                                maxscopedepth 4
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushscope
+                                                   pushnull
+                                                   coerce_s
+                                                   setlocal 14
+                                                   getlocal3
+                                                   pushnull
+                                                   ifne ofs0014
+                                                   findpropstrict QName(PackageNamespace(""),"Object")
+                                                   constructprop QName(PackageNamespace(""),"Object"), 0
+                                                   coerce QName(PackageNamespace(""),"Object")
+                                                   setlocal3
+                                          ofs0014:
+                                                   getlocal3
+                                                   pushstring "global"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs002c
+                                                   getlocal3
+                                                   pushstring "global"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   convert_b
+                                                   jump ofs002d
+                                          ofs002c:
+                                                   pushtrue
+                                          ofs002d:
+                                                   convert_b
+                                                   setlocal 4
+                                                   getlocal3
+                                                   pushstring "highest"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs0048
+                                                   getlocal3
+                                                   pushstring "highest"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   convert_b
+                                                   jump ofs0049
+                                          ofs0048:
+                                                   pushtrue
+                                          ofs0049:
+                                                   convert_b
+                                                   setlocal 5
+                                                   getlocal3
+                                                   pushstring "mode"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs0064
+                                                   getlocal3
+                                                   pushstring "mode"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   coerce_s
+                                                   jump ofs0067
+                                          ofs0064:
+                                                   pushstring "alltime"
+                                          ofs0067:
+                                                   coerce_s
+                                                   setlocal 6
+                                                   getlocal3
+                                                   pushstring "customfilters"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs0083
+                                                   getlocal3
+                                                   pushstring "customfilters"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   coerce QName(PackageNamespace(""),"Object")
+                                                   jump ofs008a
+                                          ofs0083:
+                                                   findpropstrict QName(PackageNamespace(""),"Object")
+                                                   constructprop QName(PackageNamespace(""),"Object"), 0
+                                                   coerce QName(PackageNamespace(""),"Object")
+                                          ofs008a:
+                                                   coerce QName(PackageNamespace(""),"Object")
+                                                   setlocal 7
+                                                   getlocal3
+                                                   pushstring "page"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs00a6
+                                                   getlocal3
+                                                   pushstring "page"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   convert_i
+                                                   jump ofs00a8
+                                          ofs00a6:
+                                                   pushbyte 1
+                                          ofs00a8:
+                                                   convert_i
+                                                   setlocal 8
+                                                   getlocal3
+                                                   pushstring "perpage"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs00c3
+                                                   getlocal3
+                                                   pushstring "perpage"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   convert_i
+                                                   jump ofs00c5
+                                          ofs00c3:
+                                                   pushbyte 20
+                                          ofs00c5:
+                                                   convert_i
+                                                   setlocal 9
+                                                   getlocal3
+                                                   pushstring "facebook"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs00e0
+                                                   getlocal3
+                                                   pushstring "facebook"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   convert_b
+                                                   jump ofs00e1
+                                          ofs00e0:
+                                                   pushfalse
+                                          ofs00e1:
+                                                   convert_b
+                                                   setlocal 10
+                                                   getlocal3
+                                                   pushstring "friendslist"
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"hasOwnProperty"), 1
+                                                   iffalse ofs00fd
+                                                   getlocal3
+                                                   pushstring "friendslist"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   coerce QName(PackageNamespace(""),"Array")
+                                                   jump ofs0104
+                                          ofs00fd:
+                                                   findpropstrict QName(PackageNamespace(""),"Array")
+                                                   constructprop QName(PackageNamespace(""),"Array"), 0
+                                                   coerce QName(PackageNamespace(""),"Array")
+                                          ofs0104:
+                                                   coerce QName(PackageNamespace(""),"Array")
+                                                   setlocal 11
+                                                   findpropstrict QName(PackageNamespace(""),"Object")
+                                                   constructprop QName(PackageNamespace(""),"Object"), 0
+                                                   coerce QName(PackageNamespace(""),"Object")
+                                                   setlocal 12
+                                                   pushbyte 0
+                                                   setlocal 13
+                                                   pushbyte 0
+                                                   setlocal 15
+                                                   getlocal 7
+                                                   coerce_a
+                                                   setlocal 16
+                                                   jump ofs014c
+                                          ofs0122:
+                                                   label
+                                                   getlocal 16
+                                                   getlocal 15
+                                                   nextname
+                                                   coerce_s
+                                                   setlocal 14
+                                                   getlocal 12
+                                                   pushstring "ckey"
+                                                   getlocal 13
+                                                   add
+                                                   getlocal 14
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "cdata"
+                                                   getlocal 13
+                                                   add
+                                                   getlocal 7
+                                                   getlocal 14
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   inclocal_i 13
+                                          ofs014c:
+                                                   hasnext2 16, 15
+                                                   iftrue ofs0122
+                                                   kill 16
+                                                   kill 15
+                                                   getlocal 12
+                                                   pushstring "url"
+                                                   getlocal 4
+                                                   convert_b
+                                                   dup
+                                                   iftrue ofs016d
+                                                   pop
+                                                   getlex QName(PackageNamespace("Playtomic"),"Log")
+                                                   getproperty QName(PackageInternalNs("Playtomic"),"BaseUrl")
+                                                   pushnull
+                                                   equals
+                                          ofs016d:
+                                                   iffalse ofs0179
+                                                   pushstring "global"
+                                                   coerce_a
+                                                   jump ofs0180
+                                          ofs0179:
+                                                   getlex QName(PackageNamespace("Playtomic"),"Log")
+                                                   getproperty QName(PackageInternalNs("Playtomic"),"BaseUrl")
+                                                   coerce_a
+                                          ofs0180:
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "mode"
+                                                   getlocal 6
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "page"
+                                                   getlocal 8
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "perpage"
+                                                   getlocal 9
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "highest"
+                                                   getlocal 5
+                                                   iffalse ofs01b4
+                                                   pushstring "y"
+                                                   coerce_a
+                                                   jump ofs01b8
+                                          ofs01b4:
+                                                   pushstring "n"
+                                                   coerce_a
+                                          ofs01b8:
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "filters"
+                                                   getlocal 13
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 12
+                                                   pushstring "table"
+                                                   getlocal1
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   getlocal 10
+                                                   convert_b
+                                                   dup
+                                                   iftrue ofs01df
+                                                   pop
+                                                   getlocal 11
+                                                   getproperty QName(PackageNamespace(""),"length")
+                                                   pushbyte 0
+                                                   greaterthan
+                                          ofs01df:
+                                                   iffalse ofs0203
+                                                   getlocal 12
+                                                   pushstring "friendslist"
+                                                   getlocal 11
+                                                   pushstring ","
+                                                   callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"join"), 1
+                                                   setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   findpropstrict QName(PackageNamespace(""),"trace")
+                                                   getlocal 12
+                                                   pushstring "friendslist"
+                                                   getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                   callpropvoid QName(PackageNamespace(""),"trace"), 1
+                                          ofs0203:
+                                                   getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                                                   getlex QName(PrivateNamespace(null,"84"),"SECTION")
+                                                   getlex QName(PrivateNamespace(null,"84"),"LIST")
+                                                   getlex QName(PrivateNamespace(null,"84"),"ListComplete")
+                                                   getlocal2
+                                                   getlocal 12
+                                                   callpropvoid QName(PackageNamespace(""),"Load"), 5
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       private static function ListComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+                                       {
+                                          trait method QName(PrivateNamespace(null,"84"),"ListComplete")
+                                             flag FINAL
+                                             dispid 14
+                                             method
+                                                name null
+                                                flag HAS_OPTIONAL
+                                                param QName(PackageNamespace(""),"Function")
+                                                param QName(PackageNamespace(""),"Object")
+                                                param QName(PackageNamespace(""),"XML")
+                                                param QName(PackageNamespace("Playtomic"),"Response")
+                                                optional Null()
+                                                optional Null()
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 5
+                                                   localcount 5
+                                                   initscopedepth 3
+                                                   maxscopedepth 4
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushscope
+                                                      getlocal1
+                                                      pushnull
+                                                      ifne ofs0009
+                                                      returnvoid
+                                             ofs0009:
+                                                      getlocal 4
+                                                      getproperty QName(PackageNamespace(""),"Success")
+                                                      iffalse ofs0021
+                                                      findpropstrict QName(PrivateNamespace(null,"84"),"ProcessScores")
+                                                      getlocal3
+                                                      getlocal 4
+                                                      getlocal1
+                                                      callpropvoid QName(PrivateNamespace(null,"84"),"ProcessScores"), 3
+                                                      jump ofs002c
+                                             ofs0021:
+                                                      getlocal1
+                                                      getglobalscope
+                                                      newarray 0
+                                                      pushbyte 0
+                                                      getlocal 4
+                                                      call 3
+                                                      pop
+                                             ofs002c:
+                                                      getlocal2
+                                                      coerce QName(PackageNamespace(""),"Object")
+                                                      setlocal2
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          private static function ProcessScores(param1:XML, param2:Response, param3:Function) : void
+                                          {
+                                             trait method QName(PrivateNamespace(null,"84"),"ProcessScores")
+                                                flag FINAL
+                                                dispid 15
+                                                method
+                                                   name null
+                                                   param QName(PackageNamespace(""),"XML")
+                                                   param QName(PackageNamespace("Playtomic"),"Response")
+                                                   param QName(PackageNamespace(""),"Function")
+                                                   returns QName(PackageNamespace(""),"void")
+                                                   
+                                                   body
+                                                      maxstack 5
+                                                      localcount 19
+                                                      initscopedepth 3
+                                                      maxscopedepth 4
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushscope
+                                                         pushnull
+                                                         coerce_s
+                                                         setlocal 7
+                                                         pushbyte 0
+                                                         setlocal 8
+                                                         pushbyte 0
+                                                         setlocal 9
+                                                         pushbyte 0
+                                                         setlocal 10
+                                                         pushnull
+                                                         coerce QName(PackageNamespace(""),"XML")
+                                                         setlocal 11
+                                                         pushnull
+                                                         coerce QName(PackageNamespace("Playtomic"),"PlayerScore")
+                                                         setlocal 12
+                                                         pushnull
+                                                         coerce QName(PackageNamespace(""),"XMLList")
+                                                         setlocal 13
+                                                         pushnull
+                                                         coerce QName(PackageNamespace(""),"XML")
+                                                         setlocal 14
+                                                         findpropstrict QName(PackageNamespace(""),"parseInt")
+                                                         getlocal1
+                                                         pushstring "numscores"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         callproperty QName(PackageNamespace(""),"parseInt"), 1
+                                                         convert_i
+                                                         setlocal 4
+                                                         findpropstrict QName(PackageNamespace(""),"Array")
+                                                         constructprop QName(PackageNamespace(""),"Array"), 0
+                                                         coerce QName(PackageNamespace(""),"Array")
+                                                         setlocal 5
+                                                         getlocal1
+                                                         pushstring "score"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         coerce QName(PackageNamespace(""),"XMLList")
+                                                         setlocal 6
+                                                         pushbyte 0
+                                                         setlocal 15
+                                                         getlocal 6
+                                                         coerce_a
+                                                         setlocal 16
+                                                         jump ofs01af
+                                                ofs005a:
+                                                         label
+                                                         getlocal 16
+                                                         getlocal 15
+                                                         nextvalue
+                                                         coerce QName(PackageNamespace(""),"XML")
+                                                         dup
+                                                         setlocal 11
+                                                         pushstring "sdate"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         coerce_s
+                                                         setlocal 7
+                                                         findpropstrict QName(PackageNamespace(""),"int")
+                                                         getlocal 7
+                                                         getlocal 7
+                                                         pushstring "/"
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"lastIndexOf"), 1
+                                                         pushbyte 1
+                                                         add
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 1
+                                                         callproperty QName(PackageNamespace(""),"int"), 1
+                                                         convert_i
+                                                         setlocal 8
+                                                         findpropstrict QName(PackageNamespace(""),"int")
+                                                         getlocal 7
+                                                         pushbyte 0
+                                                         getlocal 7
+                                                         pushstring "/"
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 2
+                                                         callproperty QName(PackageNamespace(""),"int"), 1
+                                                         convert_i
+                                                         setlocal 9
+                                                         findpropstrict QName(PackageNamespace(""),"int")
+                                                         getlocal 7
+                                                         getlocal 7
+                                                         pushstring "/"
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                                         pushbyte 1
+                                                         add
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 1
+                                                         pushbyte 0
+                                                         pushbyte 2
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substring"), 2
+                                                         callproperty QName(PackageNamespace(""),"int"), 1
+                                                         convert_i
+                                                         setlocal 10
+                                                         findpropstrict QName(PackageNamespace("Playtomic"),"PlayerScore")
+                                                         constructprop QName(PackageNamespace("Playtomic"),"PlayerScore"), 0
+                                                         coerce QName(PackageNamespace("Playtomic"),"PlayerScore")
+                                                         dup
+                                                         setlocal 12
+                                                         findpropstrict QName(PackageNamespace(""),"Date")
+                                                         getlocal 8
+                                                         getlocal 9
+                                                         decrement
+                                                         getlocal 10
+                                                         constructprop QName(PackageNamespace(""),"Date"), 3
+                                                         setproperty QName(PackageNamespace(""),"SDate")
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "rdate"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         setproperty QName(PackageNamespace(""),"RDate")
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "name"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         setproperty QName(PackageNamespace(""),"Name")
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "points"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         setproperty QName(PackageNamespace(""),"Points")
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "website"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         setproperty QName(PackageNamespace(""),"Website")
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "rank"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         setproperty QName(PackageNamespace(""),"Rank")
+                                                         getlocal 11
+                                                         pushstring "submittedorbest"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         pushnull
+                                                         ifeq ofs013b
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "submittedorbest"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         pushstring "true"
+                                                         equals
+                                                         setproperty QName(PackageNamespace(""),"SubmittedOrBest")
+                                                ofs013b:
+                                                         getlocal 11
+                                                         pushstring "fbuserid"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         iffalse ofs0154
+                                                         getlocal 12
+                                                         getlocal 11
+                                                         pushstring "fbuserid"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         setproperty QName(PackageNamespace(""),"FBUserId")
+                                                ofs0154:
+                                                         getlocal 11
+                                                         pushstring "custom"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         iffalse ofs01a7
+                                                         getlocal 11
+                                                         pushstring "custom"
+                                                         getproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                         coerce QName(PackageNamespace(""),"XMLList")
+                                                         setlocal 13
+                                                         pushbyte 0
+                                                         setlocal 17
+                                                         getlocal 13
+                                                         callproperty Multiname("children",[PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")]), 0
+                                                         coerce_a
+                                                         setlocal 18
+                                                         jump ofs019c
+                                                ofs017e:
+                                                         label
+                                                         getlocal 18
+                                                         getlocal 17
+                                                         nextvalue
+                                                         coerce QName(PackageNamespace(""),"XML")
+                                                         setlocal 14
+                                                         getlocal 12
+                                                         getproperty QName(PackageNamespace(""),"CustomData")
+                                                         getlocal 14
+                                                         callproperty Multiname("name",[PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")]), 0
+                                                         getlocal 14
+                                                         callproperty Multiname("text",[PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")]), 0
+                                                         setproperty MultinameL([PrivateNamespace(null,"84"),PackageNamespace(""),PackageInternalNs("Playtomic"),PrivateNamespace(null,"140"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:Leaderboards"),StaticProtectedNs("Playtomic:Leaderboards"),StaticProtectedNs("Object")])
+                                                ofs019c:
+                                                         hasnext2 18, 17
+                                                         iftrue ofs017e
+                                                         kill 18
+                                                         kill 17
+                                                ofs01a7:
+                                                         getlocal 5
+                                                         getlocal 12
+                                                         callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                                                ofs01af:
+                                                         hasnext2 16, 15
+                                                         iftrue ofs005a
+                                                         kill 16
+                                                         kill 15
+                                                         getlocal3
+                                                         getglobalscope
+                                                         getlocal 5
+                                                         getlocal 4
+                                                         getlocal2
+                                                         call 3
+                                                         pop
+                                                         returnvoid
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                          }
+                                       }
+                                       
+                                       method
+                                          name null
+                                          returns null
+                                          
+                                          body
+                                             maxstack 52
+                                             localcount 1
+                                             initscopedepth 1
+                                             maxscopedepth 3
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                findpropstrict Multiname("Leaderboards",[PackageNamespace("Playtomic")])
+                                                getlex QName(PackageNamespace(""),"Object")
+                                                pushscope
+                                                getlex QName(PackageNamespace(""),"Object")
+                                                newclass 37
+                                                jump ofs0026
+                                                subtract
+                                                negate_i
+                                                strictequals
+                                                convert_s
+                                                convert_d
+                                                pushtrue
+                                                negate
+                                       ofs0026:
+                                                popscope
+                                                initproperty QName(PackageNamespace("Playtomic"),"Leaderboards")
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                       

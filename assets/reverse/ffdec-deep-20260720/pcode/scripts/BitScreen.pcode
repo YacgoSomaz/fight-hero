@@ -1,0 +1,398 @@
+package
+{
+   import flash.display.Bitmap;
+   import flash.display.BitmapData;
+   import flash.geom.Point;
+   import flash.geom.Rectangle;
+   
+   public class BitScreen extends Bitmap
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 6
+            maxscopedepth 7
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var data:BitmapData;
+      
+      private var game:Game;
+      
+      public var rect:Rectangle;
+      
+      private var useBit:BitmapData;
+      
+      private var usePoint:Point;
+      
+      public function BitScreen(param1:Game)
+      {
+         method
+            name null
+            param QName(PackageNamespace(""),"Game")
+            returns null
+            
+            body
+               maxstack 56
+               localcount 2
+               initscopedepth 7
+               maxscopedepth 8
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.display"),"BitmapData")
+                  getlex QName(PackageNamespace(""),"Main")
+                  getproperty QName(PackageNamespace(""),"WIDTH")
+                  getlex QName(PackageNamespace(""),"Main")
+                  getproperty QName(PackageNamespace(""),"HEIGHT")
+                  pushtrue
+                  pushbyte 0
+                  constructprop QName(PackageNamespace("flash.display"),"BitmapData"), 4
+                  initproperty QName(PackageNamespace(""),"data")
+                  getlocal0
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"data")
+                  constructsuper 1
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PrivateNamespace(null,"50"),"game")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("flash.geom"),"Rectangle")
+                  pushbyte 0
+                  dup
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"data")
+                  getproperty QName(PackageNamespace(""),"width")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"data")
+                  getproperty QName(PackageNamespace(""),"height")
+                  constructprop QName(PackageNamespace("flash.geom"),"Rectangle"), 4
+                  initproperty QName(PackageNamespace(""),"rect")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame() : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 53
+                  localcount 1
+                  initscopedepth 7
+                  maxscopedepth 8
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"data")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"rect")
+                     pushbyte 0
+                     pushfalse
+                     iffalse ofs002a
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs002e
+            ofs002a:
+                     callpropvoid QName(PackageNamespace(""),"fillRect"), 2
+            ofs002e:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function paint(param1:Number, param2:Number, param3:Boolean, param4:String, param5:String = "idle", param6:uint = 1) : void
+         {
+            trait method QName(PackageNamespace(""),"paint")
+               dispid 0
+               method
+                  name null
+                  flag HAS_OPTIONAL
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"Boolean")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"uint")
+                  optional Utf8("idle")
+                  optional Integer(1)
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 57
+                     localcount 7
+                     initscopedepth 7
+                     maxscopedepth 8
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getlex QName(PackageNamespace(""),"BH")
+                        getlocal 4
+                        getlocal 5
+                        getlocal 6
+                        callproperty QName(PackageNamespace(""),"getBit"), 3
+                        initproperty QName(PrivateNamespace(null,"50"),"useBit")
+                        getlocal0
+                        getlocal3
+                        jump ofs002c
+                        istypelate
+                        pushundefined
+                        setlocal0
+                        lessequals
+               ofs002c:
+                        iffalse ofs0088
+                        findpropstrict QName(PackageNamespace("flash.geom"),"Point")
+                        getlocal1
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"50"),"useBit")
+                        jump ofs003f
+                        negate
+                        getlocal1
+                        pushscope
+                        getlocal1
+               ofs003f:
+                        getproperty QName(PackageNamespace(""),"width")
+                        pushbyte 2
+                        divide
+                        jump ofs004e
+                        bitor
+                        istypelate
+                        pushundefined
+                        subtract_i
+                        setlocal1
+               ofs004e:
+                        subtract
+                        jump ofs0058
+                        bitor
+                        istypelate
+                        pushundefined
+                        subtract_i
+                        setlocal1
+               ofs0058:
+                        getlocal2
+                        jump ofs0062
+                        increment
+                        convert_o
+                        popscope
+                        lshift
+                        pushundefined
+               ofs0062:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"50"),"useBit")
+                        getproperty QName(PackageNamespace(""),"height")
+                        pushbyte 2
+                        jump ofs0074
+                        increment
+                        convert_o
+                        popscope
+                        lshift
+                        pushundefined
+               ofs0074:
+                        divide
+                        subtract
+                        constructprop QName(PackageNamespace("flash.geom"),"Point"), 2
+                        coerce QName(PackageNamespace("flash.geom"),"Point")
+                        jump ofs0084
+                        greaterequals
+                        typeof
+                        lshift
+                        add_i
+                        equals
+               ofs0084:
+                        jump ofs0091
+               ofs0088:
+                        findpropstrict QName(PackageNamespace("flash.geom"),"Point")
+                        getlocal1
+                        getlocal2
+                        constructprop QName(PackageNamespace("flash.geom"),"Point"), 2
+                        coerce QName(PackageNamespace("flash.geom"),"Point")
+               ofs0091:
+                        initproperty QName(PrivateNamespace(null,"50"),"usePoint")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"data")
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"50"),"useBit")
+                        findpropstrict QName(PackageNamespace("flash.geom"),"Rectangle")
+                        pushbyte 0
+                        dup
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"50"),"useBit")
+                        getproperty QName(PackageNamespace(""),"width")
+                        getlocal0
+                        jump ofs00b3
+                        subtract
+                        multiply_i
+                        pushnan
+                        lessequals
+                        convert_d
+               ofs00b3:
+                        getproperty QName(PrivateNamespace(null,"50"),"useBit")
+                        getproperty QName(PackageNamespace(""),"height")
+                        constructprop QName(PackageNamespace("flash.geom"),"Rectangle"), 4
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"50"),"usePoint")
+                        pushnull
+                        pushnull
+                        pushtrue
+                        pushfalse
+                        iffalse ofs00d7
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs00db
+               ofs00d7:
+                        callpropvoid QName(PackageNamespace(""),"copyPixels"), 6
+               ofs00db:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function destroy() : void
+            {
+               trait method QName(PackageNamespace(""),"destroy")
+                  dispid 0
+                  method
+                     name null
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 51
+                        localcount 1
+                        initscopedepth 7
+                        maxscopedepth 8
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"data")
+                           pushfalse
+                           iffalse ofs0022
+                           pushbyte 5
+                           pop
+                           pop
+                           jump ofs0026
+                  ofs0022:
+                           callpropvoid QName(PackageNamespace(""),"dispose"), 0
+                  ofs0026:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("BitScreen",[PackageNamespace("")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"Bitmap")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"Bitmap")
+                  newclass 334
+                  popscope
+                  popscope
+                  popscope
+                  jump ofs0035
+                  modulo
+                  bitnot
+                  increment_i
+                  negate_i
+                  equals
+                  setlocal3
+         ofs0035:
+                  popscope
+                  initproperty QName(PackageNamespace(""),"BitScreen")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

@@ -1,0 +1,71 @@
+package fl.managers
+{
+   public interface IFocusManagerComponent
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 50
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 3
+            
+            code
+               returnvoid
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0009
+      ofs0009:
+               returnvoid
+               newobject 536870911
+            end ; code
+         end ; body
+      end ; method
+      
+      function get focusEnabled() : Boolean;
+      
+      function set focusEnabled(param1:Boolean) : void;
+      
+      function get mouseFocusEnabled() : Boolean;
+      
+      function get tabEnabled() : Boolean;
+      
+      function get tabIndex() : int;
+      
+      function setFocus() : void;
+      
+      function drawFocus(param1:Boolean) : void;
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 2
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("IFocusManagerComponent",[PackageNamespace("fl.managers")])
+         pushnull
+         newclass 1
+         initproperty QName(PackageNamespace("fl.managers"),"IFocusManagerComponent")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

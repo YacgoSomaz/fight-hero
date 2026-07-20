@@ -1,0 +1,99 @@
+package Box2D.Collision
+{
+   import Box2D.Common.Math.b2Vec2;
+   
+   public interface IBroadPhase
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 50
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 3
+            
+            code
+               returnvoid
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0009
+      ofs0009:
+               returnvoid
+               newobject 536870911
+            end ; code
+         end ; body
+      end ; method
+      
+      function CreateProxy(param1:b2AABB, param2:*) : *;
+      
+      function DestroyProxy(param1:*) : void;
+      
+      function MoveProxy(param1:*, param2:b2AABB, param3:b2Vec2) : void;
+      
+      function TestOverlap(param1:*, param2:*) : Boolean;
+      
+      function GetUserData(param1:*) : *;
+      
+      function GetFatAABB(param1:*) : b2AABB;
+      
+      function GetProxyCount() : int;
+      
+      function UpdatePairs(param1:Function) : void;
+      
+      function Query(param1:Function, param2:b2AABB) : void;
+      
+      function RayCast(param1:Function, param2:b2RayCastInput) : void;
+      
+      function Validate() : void;
+      
+      function Rebalance(param1:int) : void;
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 2
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         jump ofs001a
+         decrement_i
+         getlocal2
+         bitnot
+         increment
+         getlocal1
+         decrement
+ofs001a:
+         pushscope
+         findpropstrict Multiname("IBroadPhase",[PackageNamespace("Box2D.Collision")])
+         jump ofs0028
+         hasnext
+         decrement_i
+         strictequals
+         bitand
+         greaterequals
+         add_i
+ofs0028:
+         pushnull
+         newclass 69
+         initproperty QName(PackageNamespace("Box2D.Collision"),"IBroadPhase")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

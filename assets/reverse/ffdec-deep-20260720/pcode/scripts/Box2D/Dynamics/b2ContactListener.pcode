@@ -1,0 +1,234 @@
+package Box2D.Dynamics
+{
+   import Box2D.Collision.b2Manifold;
+   import Box2D.Common.b2internal;
+   import Box2D.Dynamics.Contacts.b2Contact;
+   
+   use namespace b2internal;
+   
+   public class b2ContactListener
+   {
+      
+      b2internal static var b2_defaultListener:b2ContactListener;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"b2_defaultListener")
+               getlocal0
+               construct 0
+               pushfalse
+               iffalse ofs0025
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0028
+      ofs0025:
+               setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"b2_defaultListener")
+      ofs0028:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function b2ContactListener()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function BeginContact(param1:b2Contact) : void
+      {
+         trait method QName(PackageNamespace(""),"BeginContact")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 51
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function EndContact(param1:b2Contact) : void
+         {
+            trait method QName(PackageNamespace(""),"EndContact")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 51
+                     localcount 2
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function PreSolve(param1:b2Contact, param2:b2Manifold) : void
+            {
+               trait method QName(PackageNamespace(""),"PreSolve")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                     param QName(PackageNamespace("Box2D.Collision"),"b2Manifold")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 51
+                        localcount 3
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function PostSolve(param1:b2Contact, param2:b2ContactImpulse) : void
+               {
+                  trait method QName(PackageNamespace(""),"PostSolve")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2Contact")
+                        param QName(PackageNamespace("Box2D.Dynamics"),"b2ContactImpulse")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 51
+                           localcount 3
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 3
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("b2ContactListener",[PackageNamespace("Box2D.Dynamics")])
+                     getlex QName(PackageNamespace(""),"Object")
+                     pushscope
+                     getlex QName(PackageNamespace(""),"Object")
+                     newclass 93
+                     popscope
+                     initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2ContactListener")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

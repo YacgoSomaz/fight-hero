@@ -22,7 +22,7 @@
 | 主时间轴 | 25 帧，30 FPS |
 | 工具 | JPEXS FFDec 26.1.0；Temurin OpenJDK 21.0.11 |
 
-本次重新生成的证据位于 `assets/reverse/ffdec-deep-20260720/`：
+本次重新生成的证据位于 `assets/reverse/ffdec-deep-20260720/`，并已按授权要求提交到私有远端仓库：
 
 - `header.txt`：FFDec 文件头；
 - `tags.txt`：完整标签转储；

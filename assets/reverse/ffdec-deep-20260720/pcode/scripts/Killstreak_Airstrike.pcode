@@ -1,0 +1,477 @@
+package
+{
+   public class Killstreak_Airstrike
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var game:Game;
+      
+      public var unit:*;
+      
+      private var maxWidth:Number;
+      
+      public var x:Number;
+      
+      public var y:Number;
+      
+      private var fc:uint = 0;
+      
+      private var endTimer:uint = 0;
+      
+      public function Killstreak_Airstrike(param1:Game, param2:*)
+      {
+         method
+            name null
+            param QName(PackageNamespace(""),"Game")
+            param null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 3
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  jump ofs001e
+                  hasnext
+                  increment
+                  urshift
+                  bitand
+         ofs001e:
+                  initproperty QName(PrivateNamespace(null,"15"),"game")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PackageNamespace(""),"unit")
+                  getlocal0
+                  getlocal0
+                  getproperty QName(PrivateNamespace(null,"15"),"game")
+                  getproperty QName(PackageNamespace(""),"arena")
+                  getproperty QName(PackageNamespace(""),"wall")
+                  getproperty QName(PackageNamespace(""),"width")
+                  initproperty QName(PrivateNamespace(null,"15"),"maxWidth")
+                  getlocal0
+                  jump ofs0040
+                  getlocal2
+                  negate
+                  instanceof
+                  pushnull
+         ofs0040:
+                  pushbyte 80
+                  initproperty QName(PackageNamespace(""),"x")
+                  getlocal0
+                  jump ofs004e
+                  getlocal2
+                  negate
+                  instanceof
+                  pushnull
+         ofs004e:
+                  pushbyte 80
+                  initproperty QName(PackageNamespace(""),"y")
+                  findpropstrict QName(PackageNamespace(""),"trace")
+                  jump ofs005e
+                  modulo
+                  add
+                  convert_u
+                  setlocal1
+         ofs005e:
+                  pushstring "airstrike created"
+                  pushfalse
+                  iffalse ofs006f
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0073
+         ofs006f:
+                  callpropvoid QName(PackageNamespace(""),"trace"), 1
+         ofs0073:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame() : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 61
+                  localcount 3
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     dup
+                     setlocal1
+                     getproperty QName(PrivateNamespace(null,"15"),"fc")
+                     increment
+                     setlocal2
+                     getlocal1
+                     getlocal2
+                     pushfalse
+                     iffalse ofs0029
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs002c
+            ofs0029:
+                     setproperty QName(PrivateNamespace(null,"15"),"fc")
+            ofs002c:
+                     kill 2
+                     kill 1
+                     getlocal0
+                     jump ofs003c
+                     add_i
+                     coerce_s
+                     increment
+                     bitand
+                     convert_i
+                     convert_i
+                     pushtrue
+            ofs003c:
+                     getproperty QName(PrivateNamespace(null,"15"),"endTimer")
+                     iftrue ofs012a
+                     getlocal0
+                     jump ofs004f
+                     typeof
+                     coerce_a
+                     pushwith
+                     pushnull
+                     nextname
+                     convert_d
+                     negate_i
+            ofs004f:
+                     getproperty QName(PrivateNamespace(null,"15"),"fc")
+                     pushbyte 50
+                     greaterthan
+                     dup
+                     iffalse ofs0070
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"15"),"fc")
+                     pushbyte 3
+                     modulo
+                     pushbyte 0
+                     equals
+                     jump ofs0070
+                     greaterthan
+                     nextname
+                     convert_d
+                     setlocal1
+                     subtract_i
+                     lshift
+                     astypelate
+            ofs0070:
+                     iffalse ofs0126
+                     findpropstrict QName(PackageNamespace(""),"trace")
+                     pushstring "Shoot missile"
+                     pushfalse
+                     iffalse ofs0088
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs008c
+            ofs0088:
+                     callpropvoid QName(PackageNamespace(""),"trace"), 1
+            ofs008c:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"15"),"game")
+                     getproperty QName(PackageNamespace(""),"bullets")
+                     getlex QName(PackageNamespace(""),"Stats_Guns")
+                     jump ofs00a0
+                     convert_o
+                     getlocal2
+                     setlocal1
+                     coerce_a
+                     urshift
+                     greaterequals
+                     convert_d
+            ofs00a0:
+                     getproperty QName(PackageNamespace(""),"gunOb")
+                     pushstring "airs"
+                     jump ofs00ae
+                     setlocal0
+                     newactivation
+                     getlocal2
+                     increment
+            ofs00ae:
+                     getproperty MultinameL([PrivateNamespace(null,"15"),PackageNamespace(""),PrivateNamespace(null,"149"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Airstrike"),StaticProtectedNs("Killstreak_Airstrike"),StaticProtectedNs("Object")])
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"15"),"game")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"unit")
+                     pushshort 180
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"y")
+                     pushbyte 0
+                     pushstring "airs"
+                     pushstring "noUnit"
+                     pushtrue
+                     newobject 1
+                     constructprop Multiname("cls",[PrivateNamespace(null,"15"),PackageNamespace(""),PrivateNamespace(null,"149"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Airstrike"),StaticProtectedNs("Killstreak_Airstrike"),StaticProtectedNs("Object")]), 8
+                     pushfalse
+                     iffalse ofs00e1
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00e5
+            ofs00e1:
+                     callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+            ofs00e5:
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"x")
+                     pushshort 150
+                     add
+                     jump ofs00f6
+                     istypelate
+                     strictequals
+                     negate
+                     bitand
+            ofs00f6:
+                     initproperty QName(PackageNamespace(""),"x")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"15"),"maxWidth")
+                     pushbyte 80
+                     subtract
+                     jump ofs010c
+                     lessthan
+                     instanceof
+                     not
+                     pushnull
+            ofs010c:
+                     ifnge ofs0126
+                     getlocal0
+                     jump ofs0119
+                     lessthan
+                     instanceof
+                     not
+                     pushnull
+            ofs0119:
+                     pushbyte 1
+                     jump ofs0123
+                     getlocal1
+                     setlocal2
+                     equals
+                     setlocal1
+            ofs0123:
+                     initproperty QName(PrivateNamespace(null,"15"),"endTimer")
+            ofs0126:
+                     jump ofs017d
+            ofs012a:
+                     getlocal0
+                     dup
+                     jump ofs0134
+                     getlocal1
+                     setlocal2
+                     equals
+                     setlocal1
+            ofs0134:
+                     setlocal1
+                     getproperty QName(PrivateNamespace(null,"15"),"endTimer")
+                     jump ofs0140
+                     divide
+                     lshift
+                     multiply_i
+                     coerce_a
+            ofs0140:
+                     increment
+                     setlocal2
+                     getlocal1
+                     getlocal2
+                     jump ofs014c
+                     pushundefined
+                     increment_i
+                     decrement_i
+                     increment
+            ofs014c:
+                     pushfalse
+                     iffalse ofs015a
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs015d
+            ofs015a:
+                     setproperty QName(PrivateNamespace(null,"15"),"endTimer")
+            ofs015d:
+                     kill 2
+                     kill 1
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"15"),"endTimer")
+                     pushbyte 60
+                     ifnge ofs017d
+                     getlocal0
+                     pushfalse
+                     iffalse ofs0179
+                     pushbyte 5
+                     pop
+                     pop
+                     jump ofs017d
+            ofs0179:
+                     callpropvoid QName(PackageNamespace(""),"end"), 0
+            ofs017d:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function end() : void
+         {
+            trait method QName(PackageNamespace(""),"end")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 53
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        jump ofs001a
+                        equals
+                        bitor
+                        add
+                        divide
+                        decrement_i
+                        hasnext
+               ofs001a:
+                        pushscope
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"unit")
+                        pushfalse
+                        iffalse ofs002c
+                        pushbyte 5
+                        pop
+                        pop
+                        jump ofs0030
+               ofs002c:
+                        callpropvoid Multiname("endKillstreak",[PrivateNamespace(null,"15"),PackageNamespace(""),PrivateNamespace(null,"149"),PackageInternalNs(""),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Killstreak_Airstrike"),StaticProtectedNs("Killstreak_Airstrike"),StaticProtectedNs("Object")]), 0
+               ofs0030:
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"15"),"game")
+                        getproperty QName(PackageNamespace(""),"killstreaks")
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"15"),"game")
+                        getproperty QName(PackageNamespace(""),"killstreaks")
+                        getlocal0
+                        callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                        pushbyte 1
+                        pushfalse
+                        iffalse ofs0054
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0058
+               ofs0054:
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"splice"), 2
+               ofs0058:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 3
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("Killstreak_Airstrike",[PackageNamespace("")])
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               getlex QName(PackageNamespace(""),"Object")
+               newclass 46
+               popscope
+               initproperty QName(PackageNamespace(""),"Killstreak_Airstrike")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

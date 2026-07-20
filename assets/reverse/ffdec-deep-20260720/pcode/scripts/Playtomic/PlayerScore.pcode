@@ -1,0 +1,414 @@
+package Playtomic
+{
+   public final class PlayerScore
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var Name:String;
+      
+      public var FBUserId:String;
+      
+      public var Points:Number;
+      
+      public var Rank:int;
+      
+      public var Website:String;
+      
+      public var SDate:Date;
+      
+      public var RDate:String;
+      
+      public var CustomData:Object;
+      
+      public var SubmittedOrBest:Boolean = false;
+      
+      public function PlayerScore(param1:String = "", param2:int = 0)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"int")
+            optional Utf8("")
+            optional Integer(0)
+            returns null
+            
+            body
+               maxstack 52
+               localcount 3
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  newobject 0
+                  initproperty QName(PackageNamespace(""),"CustomData")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PackageNamespace(""),"Name")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PackageNamespace(""),"Points")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function toString() : String
+      {
+         trait method QName(PackageNamespace(""),"toString")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"String")
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     pushstring "Playtomic.PlayerScore:"
+                     pushstring "\nRank: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Rank")
+                     add
+                     pushstring "\nName: "
+                     jump ofs002a
+                     checkfilter
+                     getlocal0
+                     getglobalscope
+                     bitand
+                     pushnan
+                     nextvalue
+            ofs002a:
+                     add
+                     jump ofs0036
+                     modulo
+                     popscope
+                     bitor
+                     pushnull
+                     setlocal0
+                     bitxor
+                     convert_u
+            ofs0036:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Name")
+                     add
+                     pushstring "\nPoints: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Points")
+                     jump ofs004e
+                     modulo
+                     popscope
+                     bitor
+                     pushnull
+                     setlocal0
+                     bitxor
+                     convert_u
+            ofs004e:
+                     add
+                     pushstring "\nFBUserId: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"FBUserId")
+                     add
+                     pushstring "\nRDate: "
+                     jump ofs0066
+                     astypelate
+                     checkfilter
+                     coerce_s
+                     setlocal1
+                     negate
+                     pushnull
+                     getlocal0
+            ofs0066:
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"RDate")
+                     add
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function toStringAll() : String
+         {
+            trait method QName(PackageNamespace(""),"toStringAll")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"String")
+                  
+                  body
+                     maxstack 54
+                     localcount 5
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushnull
+                        coerce_s
+                        setlocal2
+                        pushstring "Playtomic.PlayerScore:"
+                        pushstring "\nRank: "
+                        jump ofs0025
+                        nextvalue
+                        bitxor
+                        coerce_s
+                        urshift
+                        convert_b
+                        negate_i
+                        pushtrue
+               ofs0025:
+                        add
+                        jump ofs0031
+                        strictequals
+                        instanceof
+                        increment_i
+                        decrement_i
+                        pushnull
+                        getlocal0
+                        negate_i
+               ofs0031:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"Rank")
+                        add
+                        pushstring "\nName: "
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"Name")
+                        add
+                        pushstring "\nFBUserId: "
+                        add
+                        jump ofs004e
+                        lessequals
+                        subtract
+                        add_i
+                        greaterthan
+                        hasnext
+                        not
+                        astypelate
+               ofs004e:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"FBUserId")
+                        add
+                        pushstring "\nPoints: "
+                        add
+                        getlocal0
+                        jump ofs0063
+                        newactivation
+                        increment
+                        swap
+                        pop
+                        modulo
+                        coerce_s
+                        convert_d
+               ofs0063:
+                        getproperty QName(PackageNamespace(""),"Points")
+                        add
+                        pushstring "\nWebsite: "
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"Website")
+                        add
+                        pushstring "\nSDate: "
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"SDate")
+                        add
+                        pushstring "\nRDate: "
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"RDate")
+                        add
+                        pushstring "\nCustomData: "
+                        add
+                        setlocal1
+                        pushbyte 0
+                        jump ofs0094
+                        pop
+                        negate
+                        istypelate
+                        greaterequals
+                        multiply
+                        modulo
+                        lessthan
+               ofs0094:
+                        setlocal3
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"CustomData")
+                        coerce_a
+                        jump ofs00a5
+                        checkfilter
+                        add
+                        coerce_a
+                        urshift
+                        add_i
+                        nextname
+                        multiply_i
+               ofs00a5:
+                        setlocal 4
+                        nop
+               ofs00a8:
+                        label
+                        hasnext2 4, 3
+                        iftrue ofs00b4
+                        jump ofs00b8
+               ofs00b4:
+                        jump ofs00bc
+               ofs00b8:
+                        jump ofs00fe
+               ofs00bc:
+                        getlocal 4
+                        getlocal3
+                        nextvalue
+                        coerce_s
+                        setlocal2
+                        getlocal1
+                        pushstring "\n  "
+                        getlocal2
+                        add
+                        pushstring ": "
+                        jump ofs00d6
+                        modulo
+                        divide
+                        subtract
+                        decrement_i
+                        greaterthan
+                        lessequals
+                        pushscope
+               ofs00d6:
+                        add
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"CustomData")
+                        getlocal2
+                        jump ofs00e7
+                        modulo
+                        divide
+                        subtract
+                        decrement_i
+                        greaterthan
+                        lessequals
+                        pushscope
+               ofs00e7:
+                        getproperty MultinameL([PrivateNamespace(null,"153"),PackageNamespace(""),PrivateNamespace(null,"154"),PackageNamespace("Playtomic"),PackageInternalNs("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:PlayerScore"),StaticProtectedNs("Playtomic:PlayerScore"),StaticProtectedNs("Object")])
+                        add
+                        add
+                        coerce_s
+                        jump ofs00f5
+                        astypelate
+                        convert_u
+                        multiply
+                        greaterthan
+               ofs00f5:
+                        setlocal1
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs00a8
+               ofs00fe:
+                        kill 4
+                        kill 3
+                        getlocal1
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 3
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("PlayerScore",[PackageNamespace("Playtomic")])
+               jump ofs001f
+               urshift
+               lshift
+               pop
+               subtract
+               convert_o
+               setlocal0
+               popscope
+      ofs001f:
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               getlex QName(PackageNamespace(""),"Object")
+               newclass 61
+               popscope
+               initproperty QName(PackageNamespace("Playtomic"),"PlayerScore")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

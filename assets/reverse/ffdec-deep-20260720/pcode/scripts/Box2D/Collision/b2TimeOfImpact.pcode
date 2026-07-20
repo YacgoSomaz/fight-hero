@@ -1,0 +1,681 @@
+package Box2D.Collision
+{
+   import Box2D.Common.Math.b2Math;
+   import Box2D.Common.Math.b2Sweep;
+   import Box2D.Common.Math.b2Transform;
+   import Box2D.Common.b2Settings;
+   
+   public class b2TimeOfImpact
+   {
+      
+      private static var b2_toiCalls:int = 0;
+      
+      private static var b2_toiIters:int = 0;
+      
+      private static var b2_toiMaxIters:int = 0;
+      
+      private static var b2_toiRootIters:int = 0;
+      
+      private static var b2_toiMaxRootIters:int = 0;
+      
+      private static var s_cache:b2SimplexCache;
+      
+      private static var s_distanceInput:b2DistanceInput;
+      
+      private static var s_xfA:b2Transform;
+      
+      private static var s_xfB:b2Transform;
+      
+      private static var s_fcn:b2SeparationFunction;
+      
+      private static var s_distanceOutput:b2DistanceOutput;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PrivateNamespace(null,"97"),"b2_toiCalls")
+               pushbyte 0
+               pushfalse
+               iffalse ofs0024
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0027
+      ofs0024:
+               setproperty QName(PrivateNamespace(null,"97"),"b2_toiCalls")
+      ofs0027:
+               findproperty QName(PrivateNamespace(null,"97"),"b2_toiIters")
+               pushbyte 0
+               pushfalse
+               iffalse ofs003a
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs003d
+      ofs003a:
+               setproperty QName(PrivateNamespace(null,"97"),"b2_toiIters")
+      ofs003d:
+               findproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxIters")
+               pushbyte 0
+               jump ofs004b
+               add
+               greaterthan
+               convert_d
+               pushfalse
+               getglobalscope
+      ofs004b:
+               pushfalse
+               iffalse ofs0059
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs005c
+      ofs0059:
+               setproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxIters")
+      ofs005c:
+               findproperty QName(PrivateNamespace(null,"97"),"b2_toiRootIters")
+               pushbyte 0
+               pushfalse
+               iffalse ofs006f
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0072
+      ofs006f:
+               setproperty QName(PrivateNamespace(null,"97"),"b2_toiRootIters")
+      ofs0072:
+               findproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxRootIters")
+               pushbyte 0
+               pushfalse
+               iffalse ofs0085
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0088
+      ofs0085:
+               setproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxRootIters")
+      ofs0088:
+               findproperty QName(PrivateNamespace(null,"97"),"s_cache")
+               findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2SimplexCache")
+               constructprop QName(PackageNamespace("Box2D.Collision"),"b2SimplexCache"), 0
+               pushfalse
+               iffalse ofs009e
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs00a1
+      ofs009e:
+               setproperty QName(PrivateNamespace(null,"97"),"s_cache")
+      ofs00a1:
+               findproperty QName(PrivateNamespace(null,"97"),"s_distanceInput")
+               findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2DistanceInput")
+               constructprop QName(PackageNamespace("Box2D.Collision"),"b2DistanceInput"), 0
+               pushfalse
+               iffalse ofs00b7
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs00ba
+      ofs00b7:
+               setproperty QName(PrivateNamespace(null,"97"),"s_distanceInput")
+      ofs00ba:
+               findproperty QName(PrivateNamespace(null,"97"),"s_xfA")
+               findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+               constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Transform"), 0
+               pushfalse
+               iffalse ofs00d0
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs00d3
+      ofs00d0:
+               setproperty QName(PrivateNamespace(null,"97"),"s_xfA")
+      ofs00d3:
+               findproperty QName(PrivateNamespace(null,"97"),"s_xfB")
+               jump ofs00df
+               equals
+               convert_u
+               typeof
+               dxnslate
+               pushscope
+      ofs00df:
+               findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+               constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Transform"), 0
+               pushfalse
+               iffalse ofs00f2
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs00f5
+      ofs00f2:
+               setproperty QName(PrivateNamespace(null,"97"),"s_xfB")
+      ofs00f5:
+               findproperty QName(PrivateNamespace(null,"97"),"s_fcn")
+               jump ofs0101
+               increment_i
+               getlocal3
+               getlocal2
+               bitnot
+               not
+      ofs0101:
+               findpropstrict QName(PackageInternalNs("Box2D.Collision"),"b2SeparationFunction")
+               constructprop QName(PackageInternalNs("Box2D.Collision"),"b2SeparationFunction"), 0
+               pushfalse
+               iffalse ofs0116
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0119
+      ofs0116:
+               setproperty QName(PrivateNamespace(null,"97"),"s_fcn")
+      ofs0119:
+               findproperty QName(PrivateNamespace(null,"97"),"s_distanceOutput")
+               jump ofs0125
+               convert_b
+               pushnan
+               lessthan
+               checkfilter
+               pushwith
+      ofs0125:
+               findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2DistanceOutput")
+               constructprop QName(PackageNamespace("Box2D.Collision"),"b2DistanceOutput"), 0
+               pushfalse
+               iffalse ofs0138
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs013b
+      ofs0138:
+               setproperty QName(PrivateNamespace(null,"97"),"s_distanceOutput")
+      ofs013b:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function b2TimeOfImpact()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function TimeOfImpact(param1:b2TOIInput) : Number
+      {
+         trait method QName(PackageNamespace(""),"TimeOfImpact")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Collision"),"b2TOIInput")
+               returns QName(PackageNamespace(""),"Number")
+               
+               body
+                  maxstack 6
+                  localcount 23
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     pushnan
+                     setlocal 12
+                     pushnan
+                     setlocal 13
+                     pushnan
+                     setlocal 14
+                     pushnan
+                     setlocal 15
+                     pushnan
+                     setlocal 16
+                     pushnan
+                     setlocal 17
+                     pushbyte 0
+                     setlocal 18
+                     pushnan
+                     setlocal 19
+                     pushnan
+                     setlocal 20
+                     findpropstrict QName(PrivateNamespace(null,"97"),"b2_toiCalls")
+                     dup
+                     setlocal 21
+                     getproperty QName(PrivateNamespace(null,"97"),"b2_toiCalls")
+                     increment_i
+                     setlocal 22
+                     getlocal 21
+                     getlocal 22
+                     setproperty QName(PrivateNamespace(null,"97"),"b2_toiCalls")
+                     kill 22
+                     kill 21
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"proxyA")
+                     coerce QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy")
+                     setlocal2
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"proxyB")
+                     coerce QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy")
+                     setlocal3
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"sweepA")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Sweep")
+                     setlocal 4
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"sweepB")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Sweep")
+                     setlocal 5
+                     getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"t0")
+                     getlocal 5
+                     getproperty QName(PackageNamespace(""),"t0")
+                     equals
+                     callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+                     getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                     pushbyte 1
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"t0")
+                     subtract
+                     getlex QName(PackageNamespace(""),"Number")
+                     getproperty QName(PackageNamespace(""),"MIN_VALUE")
+                     greaterthan
+                     callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"m_radius")
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"m_radius")
+                     add
+                     convert_d
+                     setlocal 6
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"tolerance")
+                     convert_d
+                     setlocal 7
+                     pushdouble 0
+                     convert_d
+                     setlocal 8
+                     pushshort 1000
+                     setlocal 9
+                     pushbyte 0
+                     setlocal 10
+                     pushdouble 0
+                     convert_d
+                     setlocal 11
+                     getlex QName(PrivateNamespace(null,"97"),"s_cache")
+                     pushbyte 0
+                     setproperty QName(PackageNamespace(""),"count")
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceInput")
+                     pushfalse
+                     setproperty QName(PackageNamespace(""),"useRadii")
+                     jump ofs0303
+            ofs00b3:
+                     label
+                     getlocal 4
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlocal 8
+                     callpropvoid QName(PackageNamespace(""),"GetTransform"), 2
+                     getlocal 5
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     getlocal 8
+                     callpropvoid QName(PackageNamespace(""),"GetTransform"), 2
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceInput")
+                     getlocal2
+                     setproperty QName(PackageNamespace(""),"proxyA")
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceInput")
+                     getlocal3
+                     setproperty QName(PackageNamespace(""),"proxyB")
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceInput")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     setproperty QName(PackageNamespace(""),"transformA")
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceInput")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     setproperty QName(PackageNamespace(""),"transformB")
+                     getlex QName(PackageNamespace("Box2D.Collision"),"b2Distance")
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceOutput")
+                     getlex QName(PrivateNamespace(null,"97"),"s_cache")
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceInput")
+                     callpropvoid QName(PackageNamespace(""),"Distance"), 3
+                     getlex QName(PrivateNamespace(null,"97"),"s_distanceOutput")
+                     getproperty QName(PackageNamespace(""),"distance")
+                     pushdouble 0
+                     ifnle ofs010f
+                     pushbyte 1
+                     convert_d
+                     setlocal 8
+                     jump ofs0307
+            ofs010f:
+                     getlex QName(PrivateNamespace(null,"97"),"s_fcn")
+                     getlex QName(PrivateNamespace(null,"97"),"s_cache")
+                     getlocal2
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlocal3
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     callpropvoid QName(PackageNamespace(""),"Initialize"), 5
+                     getlex QName(PrivateNamespace(null,"97"),"s_fcn")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     callproperty QName(PackageNamespace(""),"Evaluate"), 2
+                     convert_d
+                     dup
+                     setlocal 12
+                     pushdouble 0
+                     ifnle ofs0141
+                     pushbyte 1
+                     convert_d
+                     setlocal 8
+                     jump ofs0307
+            ofs0141:
+                     getlocal 10
+                     pushbyte 0
+                     ifne ofs017d
+                     getlocal 12
+                     getlocal 6
+                     ifngt ofs0169
+                     getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                     getlocal 6
+                     getlocal 7
+                     subtract
+                     pushdouble 0.75
+                     getlocal 6
+                     multiply
+                     callproperty QName(PackageNamespace(""),"Max"), 2
+                     convert_d
+                     setlocal 11
+                     jump ofs017d
+            ofs0169:
+                     getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                     getlocal 12
+                     getlocal 7
+                     subtract
+                     pushdouble 0.02
+                     getlocal 6
+                     multiply
+                     callproperty QName(PackageNamespace(""),"Max"), 2
+                     convert_d
+                     setlocal 11
+            ofs017d:
+                     getlocal 12
+                     getlocal 11
+                     subtract
+                     pushdouble 0.5
+                     getlocal 7
+                     multiply
+                     ifnlt ofs01a0
+                     getlocal 10
+                     pushbyte 0
+                     ifne ofs019c
+                     pushbyte 1
+                     convert_d
+                     setlocal 8
+                     jump ofs0307
+            ofs019c:
+                     jump ofs0307
+            ofs01a0:
+                     getlocal 8
+                     convert_d
+                     setlocal 13
+                     getlocal 8
+                     convert_d
+                     setlocal 14
+                     pushbyte 1
+                     convert_d
+                     setlocal 15
+                     getlocal 12
+                     convert_d
+                     setlocal 16
+                     getlocal 4
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlocal 15
+                     callpropvoid QName(PackageNamespace(""),"GetTransform"), 2
+                     getlocal 5
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     getlocal 15
+                     callpropvoid QName(PackageNamespace(""),"GetTransform"), 2
+                     getlex QName(PrivateNamespace(null,"97"),"s_fcn")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     callproperty QName(PackageNamespace(""),"Evaluate"), 2
+                     convert_d
+                     dup
+                     setlocal 17
+                     getlocal 11
+                     ifnge ofs01ea
+                     pushbyte 1
+                     convert_d
+                     setlocal 8
+                     jump ofs0307
+            ofs01ea:
+                     pushbyte 0
+                     setlocal 18
+                     jump ofs02ab
+            ofs01f2:
+                     label
+                     getlocal 18
+                     pushbyte 1
+                     bitand
+                     iffalse ofs0217
+                     getlocal 14
+                     getlocal 11
+                     getlocal 16
+                     subtract
+                     getlocal 15
+                     getlocal 14
+                     subtract
+                     multiply
+                     getlocal 17
+                     getlocal 16
+                     subtract
+                     divide
+                     add
+                     convert_d
+                     setlocal 19
+                     jump ofs0222
+            ofs0217:
+                     pushdouble 0.5
+                     getlocal 14
+                     getlocal 15
+                     add
+                     multiply
+                     convert_d
+                     setlocal 19
+            ofs0222:
+                     getlocal 4
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlocal 19
+                     callpropvoid QName(PackageNamespace(""),"GetTransform"), 2
+                     getlocal 5
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     getlocal 19
+                     callpropvoid QName(PackageNamespace(""),"GetTransform"), 2
+                     getlex QName(PrivateNamespace(null,"97"),"s_fcn")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfA")
+                     getlex QName(PrivateNamespace(null,"97"),"s_xfB")
+                     callproperty QName(PackageNamespace(""),"Evaluate"), 2
+                     convert_d
+                     setlocal 20
+                     getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                     getlocal 20
+                     getlocal 11
+                     subtract
+                     callproperty QName(PackageNamespace(""),"Abs"), 1
+                     pushdouble 0.025
+                     getlocal 7
+                     multiply
+                     ifnlt ofs0266
+                     getlocal 19
+                     convert_d
+                     setlocal 13
+                     jump ofs02af
+            ofs0266:
+                     getlocal 20
+                     getlocal 11
+                     ifngt ofs027c
+                     getlocal 19
+                     convert_d
+                     setlocal 14
+                     getlocal 20
+                     convert_d
+                     setlocal 16
+                     jump ofs0286
+            ofs027c:
+                     getlocal 19
+                     convert_d
+                     setlocal 15
+                     getlocal 20
+                     convert_d
+                     setlocal 17
+            ofs0286:
+                     inclocal_i 18
+                     findpropstrict QName(PrivateNamespace(null,"97"),"b2_toiRootIters")
+                     dup
+                     setlocal 21
+                     getproperty QName(PrivateNamespace(null,"97"),"b2_toiRootIters")
+                     increment_i
+                     setlocal 22
+                     getlocal 21
+                     getlocal 22
+                     setproperty QName(PrivateNamespace(null,"97"),"b2_toiRootIters")
+                     kill 22
+                     kill 21
+                     getlocal 18
+                     pushbyte 50
+                     ifne ofs02ab
+                     jump ofs02af
+            ofs02ab:
+                     jump ofs01f2
+            ofs02af:
+                     findproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxRootIters")
+                     getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                     getlex QName(PrivateNamespace(null,"97"),"b2_toiMaxRootIters")
+                     getlocal 18
+                     callproperty QName(PackageNamespace(""),"Max"), 2
+                     setproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxRootIters")
+                     getlocal 13
+                     pushbyte 1
+                     pushbyte 100
+                     getlex QName(PackageNamespace(""),"Number")
+                     getproperty QName(PackageNamespace(""),"MIN_VALUE")
+                     multiply
+                     add
+                     getlocal 8
+                     multiply
+                     ifnlt ofs02d9
+                     jump ofs0307
+            ofs02d9:
+                     getlocal 13
+                     convert_d
+                     setlocal 8
+                     inclocal_i 10
+                     findpropstrict QName(PrivateNamespace(null,"97"),"b2_toiIters")
+                     dup
+                     setlocal 21
+                     getproperty QName(PrivateNamespace(null,"97"),"b2_toiIters")
+                     increment_i
+                     setlocal 22
+                     getlocal 21
+                     getlocal 22
+                     setproperty QName(PrivateNamespace(null,"97"),"b2_toiIters")
+                     kill 22
+                     kill 21
+                     getlocal 10
+                     getlocal 9
+                     ifne ofs0303
+                     jump ofs0307
+            ofs0303:
+                     jump ofs00b3
+            ofs0307:
+                     findproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxIters")
+                     getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                     getlex QName(PrivateNamespace(null,"97"),"b2_toiMaxIters")
+                     getlocal 10
+                     callproperty QName(PackageNamespace(""),"Max"), 2
+                     setproperty QName(PrivateNamespace(null,"97"),"b2_toiMaxIters")
+                     getlocal 8
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 3
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("b2TimeOfImpact",[PackageNamespace("Box2D.Collision")])
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            getlex QName(PackageNamespace(""),"Object")
+            newclass 101
+            popscope
+            initproperty QName(PackageNamespace("Box2D.Collision"),"b2TimeOfImpact")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

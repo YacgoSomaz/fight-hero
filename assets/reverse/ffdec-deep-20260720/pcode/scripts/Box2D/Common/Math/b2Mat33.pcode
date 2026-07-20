@@ -1,0 +1,1640 @@
+package Box2D.Common.Math
+{
+   public class b2Mat33
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var col1:b2Vec3;
+      
+      public var col2:b2Vec3;
+      
+      public var col3:b2Vec3;
+      
+      public function b2Mat33(param1:b2Vec3 = null, param2:b2Vec3 = null, param3:b2Vec3 = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+            optional Null()
+            optional Null()
+            optional Null()
+            returns null
+            
+            body
+               maxstack 52
+               localcount 4
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3"), 0
+                  jump ofs0022
+                  greaterequals
+                  add
+                  coerce_s
+                  getlocal0
+                  bitxor
+                  hasnext
+                  setlocal3
+         ofs0022:
+                  initproperty QName(PackageNamespace(""),"col1")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3"), 0
+                  initproperty QName(PackageNamespace(""),"col2")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3"), 0
+                  initproperty QName(PackageNamespace(""),"col3")
+                  getlocal0
+                  constructsuper 0
+                  getlocal1
+                  not
+                  dup
+                  iffalse ofs0044
+                  pop
+                  getlocal2
+                  not
+         ofs0044:
+                  dup
+                  iffalse ofs004c
+                  pop
+                  getlocal3
+                  not
+         ofs004c:
+                  iffalse ofs009e
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"col1")
+                  pushfalse
+                  iffalse ofs0061
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs0065
+         ofs0061:
+                  callpropvoid QName(PackageNamespace(""),"SetZero"), 0
+         ofs0065:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"col2")
+                  pushfalse
+                  iffalse ofs0076
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs007a
+         ofs0076:
+                  callpropvoid QName(PackageNamespace(""),"SetZero"), 0
+         ofs007a:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"col3")
+                  jump ofs0089
+                  subtract
+                  divide
+                  instanceof
+                  bitxor
+                  newactivation
+                  convert_i
+                  greaterthan
+         ofs0089:
+                  pushfalse
+                  iffalse ofs0096
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs009a
+         ofs0096:
+                  callpropvoid QName(PackageNamespace(""),"SetZero"), 0
+         ofs009a:
+                  jump ofs00f9
+         ofs009e:
+                  getlocal0
+                  jump ofs00aa
+                  equals
+                  lessthan
+                  add_i
+                  convert_u
+                  checkfilter
+                  convert_d
+                  urshift
+         ofs00aa:
+                  getproperty QName(PackageNamespace(""),"col1")
+                  jump ofs00b8
+                  increment_i
+                  setlocal0
+                  hasnext
+                  pushscope
+                  popscope
+                  lshift
+                  hasnext
+         ofs00b8:
+                  getlocal1
+                  pushfalse
+                  iffalse ofs00c7
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00cb
+         ofs00c7:
+                  callpropvoid QName(PackageNamespace(""),"SetV"), 1
+         ofs00cb:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"col2")
+                  getlocal2
+                  pushfalse
+                  iffalse ofs00de
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00e2
+         ofs00de:
+                  callpropvoid QName(PackageNamespace(""),"SetV"), 1
+         ofs00e2:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"col3")
+                  getlocal3
+                  pushfalse
+                  iffalse ofs00f5
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs00f9
+         ofs00f5:
+                  callpropvoid QName(PackageNamespace(""),"SetV"), 1
+         ofs00f9:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function SetVVV(param1:b2Vec3, param2:b2Vec3, param3:b2Vec3) : void
+      {
+         trait method QName(PackageNamespace(""),"SetVVV")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 4
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     jump ofs001d
+                     greaterthan
+                     add_i
+                     coerce_s
+                     newactivation
+                     lessequals
+                     convert_u
+                     dup
+            ofs001d:
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getlocal1
+                     pushfalse
+                     iffalse ofs002f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0033
+            ofs002f:
+                     callpropvoid QName(PackageNamespace(""),"SetV"), 1
+            ofs0033:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"col2")
+                     jump ofs0042
+                     convert_o
+                     negate_i
+                     instanceof
+                     divide
+                     pop
+                     typeof
+                     bitxor
+            ofs0042:
+                     getlocal2
+                     pushfalse
+                     iffalse ofs0051
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0055
+            ofs0051:
+                     callpropvoid QName(PackageNamespace(""),"SetV"), 1
+            ofs0055:
+                     getlocal0
+                     jump ofs0061
+                     convert_o
+                     negate_i
+                     instanceof
+                     divide
+                     pop
+                     typeof
+                     bitxor
+            ofs0061:
+                     getproperty QName(PackageNamespace(""),"col3")
+                     getlocal3
+                     jump ofs0070
+                     setlocal0
+                     pushfalse
+                     add_i
+                     bitand
+                     pushfalse
+                     pushwith
+                     bitor
+            ofs0070:
+                     pushfalse
+                     iffalse ofs007e
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0082
+            ofs007e:
+                     callpropvoid QName(PackageNamespace(""),"SetV"), 1
+            ofs0082:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function Copy() : b2Mat33
+         {
+            trait method QName(PackageNamespace(""),"Copy")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace("Box2D.Common.Math"),"b2Mat33")
+                  
+                  body
+                     maxstack 54
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Mat33")
+                        getlocal0
+                        jump ofs001c
+                        equals
+                        getlocal0
+                        equals
+                        add
+               ofs001c:
+                        getproperty QName(PackageNamespace(""),"col1")
+                        getlocal0
+                        jump ofs0028
+                        equals
+                        getlocal0
+                        equals
+                        add
+               ofs0028:
+                        getproperty QName(PackageNamespace(""),"col2")
+                        getlocal0
+                        jump ofs0034
+                        increment_i
+                        popscope
+                        multiply_i
+                        pushfalse
+               ofs0034:
+                        getproperty QName(PackageNamespace(""),"col3")
+                        constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Mat33"), 3
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function SetM(param1:b2Mat33) : void
+            {
+               trait method QName(PackageNamespace(""),"SetM")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Mat33")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 52
+                        localcount 2
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"col1")
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"col1")
+                           pushfalse
+                           iffalse ofs0027
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs002b
+                  ofs0027:
+                           callpropvoid QName(PackageNamespace(""),"SetV"), 1
+                  ofs002b:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"col2")
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"col2")
+                           pushfalse
+                           iffalse ofs0041
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0045
+                  ofs0041:
+                           callpropvoid QName(PackageNamespace(""),"SetV"), 1
+                  ofs0045:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"col3")
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"col3")
+                           pushfalse
+                           iffalse ofs005b
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs005f
+                  ofs005b:
+                           callpropvoid QName(PackageNamespace(""),"SetV"), 1
+                  ofs005f:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function AddM(param1:b2Mat33) : void
+               {
+                  trait method QName(PackageNamespace(""),"AddM")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace("Box2D.Common.Math"),"b2Mat33")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 53
+                           localcount 2
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"x")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"x")
+                              add
+                              pushfalse
+                              iffalse ofs0032
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0035
+                     ofs0032:
+                              setproperty QName(PackageNamespace(""),"x")
+                     ofs0035:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getlocal0
+                              jump ofs0045
+                              astypelate
+                              convert_s
+                              setlocal2
+                              bitxor
+                              instanceof
+                              astypelate
+                              lessequals
+                     ofs0045:
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"y")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"y")
+                              jump ofs005d
+                              dup
+                              coerce_s
+                              negate_i
+                              convert_u
+                              strictequals
+                              pushscope
+                              lshift
+                     ofs005d:
+                              add
+                              pushfalse
+                              iffalse ofs006c
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs006f
+                     ofs006c:
+                              setproperty QName(PackageNamespace(""),"y")
+                     ofs006f:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"z")
+                              jump ofs0085
+                              subtract_i
+                              subtract_i
+                              pushnull
+                              pushscope
+                              coerce_a
+                              newactivation
+                              setlocal1
+                     ofs0085:
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"z")
+                              add
+                              pushfalse
+                              iffalse ofs009b
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs009e
+                     ofs009b:
+                              setproperty QName(PackageNamespace(""),"z")
+                     ofs009e:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getproperty QName(PackageNamespace(""),"x")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col2")
+                              jump ofs00b8
+                              not
+                              astypelate
+                              convert_o
+                              bitor
+                              coerce_s
+                              swap
+                              not
+                     ofs00b8:
+                              getproperty QName(PackageNamespace(""),"x")
+                              add
+                              jump ofs00c7
+                              coerce_s
+                              checkfilter
+                              nextname
+                              getlocal0
+                              convert_s
+                              convert_i
+                              newactivation
+                     ofs00c7:
+                              pushfalse
+                              iffalse ofs00d5
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00d8
+                     ofs00d5:
+                              setproperty QName(PackageNamespace(""),"x")
+                     ofs00d8:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getproperty QName(PackageNamespace(""),"y")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getproperty QName(PackageNamespace(""),"y")
+                              add
+                              pushfalse
+                              iffalse ofs00f9
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00fc
+                     ofs00f9:
+                              setproperty QName(PackageNamespace(""),"y")
+                     ofs00fc:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getproperty QName(PackageNamespace(""),"z")
+                              jump ofs0112
+                              pushfalse
+                              coerce_a
+                              increment
+                              bitxor
+                              decrement
+                              convert_d
+                              greaterequals
+                     ofs0112:
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col2")
+                              getproperty QName(PackageNamespace(""),"z")
+                              add
+                              pushfalse
+                              iffalse ofs0128
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs012b
+                     ofs0128:
+                              setproperty QName(PackageNamespace(""),"z")
+                     ofs012b:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getproperty QName(PackageNamespace(""),"x")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getproperty QName(PackageNamespace(""),"x")
+                              add
+                              pushfalse
+                              iffalse ofs014c
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs014f
+                     ofs014c:
+                              setproperty QName(PackageNamespace(""),"x")
+                     ofs014f:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col3")
+                              jump ofs015e
+                              popscope
+                              strictequals
+                              pushfalse
+                              convert_u
+                              getlocal1
+                              lshift
+                              pushnan
+                     ofs015e:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col3")
+                              jump ofs016a
+                              multiply
+                              convert_i
+                              convert_d
+                              dup
+                     ofs016a:
+                              getproperty QName(PackageNamespace(""),"y")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getproperty QName(PackageNamespace(""),"y")
+                              add
+                              pushfalse
+                              iffalse ofs0183
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0186
+                     ofs0183:
+                              setproperty QName(PackageNamespace(""),"y")
+                     ofs0186:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getproperty QName(PackageNamespace(""),"z")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"col3")
+                              getproperty QName(PackageNamespace(""),"z")
+                              add
+                              pushfalse
+                              iffalse ofs01a7
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs01aa
+                     ofs01a7:
+                              setproperty QName(PackageNamespace(""),"z")
+                     ofs01aa:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function SetIdentity() : void
+                  {
+                     trait method QName(PackageNamespace(""),"SetIdentity")
+                        dispid 0
+                        method
+                           name null
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 52
+                              localcount 1
+                              initscopedepth 4
+                              maxscopedepth 5
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col1")
+                                 pushbyte 1
+                                 pushfalse
+                                 iffalse ofs0025
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0028
+                        ofs0025:
+                                 setproperty QName(PackageNamespace(""),"x")
+                        ofs0028:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col2")
+                                 pushdouble 0
+                                 pushfalse
+                                 iffalse ofs003c
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs003f
+                        ofs003c:
+                                 setproperty QName(PackageNamespace(""),"x")
+                        ofs003f:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col3")
+                                 pushdouble 0
+                                 pushfalse
+                                 iffalse ofs0053
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0056
+                        ofs0053:
+                                 setproperty QName(PackageNamespace(""),"x")
+                        ofs0056:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col1")
+                                 jump ofs0065
+                                 setlocal3
+                                 coerce_s
+                                 checkfilter
+                                 dup
+                                 pushwith
+                                 pushnan
+                                 pushtrue
+                        ofs0065:
+                                 pushdouble 0
+                                 pushfalse
+                                 iffalse ofs0075
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0078
+                        ofs0075:
+                                 setproperty QName(PackageNamespace(""),"y")
+                        ofs0078:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col2")
+                                 pushbyte 1
+                                 jump ofs0086
+                                 setlocal2
+                                 coerce_a
+                                 increment_i
+                                 convert_b
+                        ofs0086:
+                                 pushfalse
+                                 iffalse ofs0094
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0097
+                        ofs0094:
+                                 setproperty QName(PackageNamespace(""),"y")
+                        ofs0097:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col3")
+                                 pushdouble 0
+                                 pushfalse
+                                 iffalse ofs00ab
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs00ae
+                        ofs00ab:
+                                 setproperty QName(PackageNamespace(""),"y")
+                        ofs00ae:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col1")
+                                 jump ofs00ba
+                                 dxnslate
+                                 nextname
+                                 bitand
+                                 multiply_i
+                        ofs00ba:
+                                 pushdouble 0
+                                 pushfalse
+                                 iffalse ofs00ca
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs00cd
+                        ofs00ca:
+                                 setproperty QName(PackageNamespace(""),"z")
+                        ofs00cd:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col2")
+                                 pushdouble 0
+                                 pushfalse
+                                 iffalse ofs00e1
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs00e4
+                        ofs00e1:
+                                 setproperty QName(PackageNamespace(""),"z")
+                        ofs00e4:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"col3")
+                                 pushbyte 1
+                                 pushfalse
+                                 iffalse ofs00f8
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs00fb
+                        ofs00f8:
+                                 setproperty QName(PackageNamespace(""),"z")
+                        ofs00fb:
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function SetZero() : void
+                     {
+                        trait method QName(PackageNamespace(""),"SetZero")
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace(""),"void")
+                              
+                              body
+                                 maxstack 52
+                                 localcount 1
+                                 initscopedepth 4
+                                 maxscopedepth 5
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    pushscope
+                                    getlocal0
+                                    jump ofs001a
+                                    increment
+                                    divide
+                                    add
+                                    getlocal1
+                           ofs001a:
+                                    getproperty QName(PackageNamespace(""),"col1")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs002d
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs0030
+                           ofs002d:
+                                    setproperty QName(PackageNamespace(""),"x")
+                           ofs0030:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col2")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs0044
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs0047
+                           ofs0044:
+                                    setproperty QName(PackageNamespace(""),"x")
+                           ofs0047:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col3")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs005b
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs005e
+                           ofs005b:
+                                    setproperty QName(PackageNamespace(""),"x")
+                           ofs005e:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col1")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs0072
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs0075
+                           ofs0072:
+                                    setproperty QName(PackageNamespace(""),"y")
+                           ofs0075:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col2")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs0089
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs008c
+                           ofs0089:
+                                    setproperty QName(PackageNamespace(""),"y")
+                           ofs008c:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col3")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs00a0
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs00a3
+                           ofs00a0:
+                                    setproperty QName(PackageNamespace(""),"y")
+                           ofs00a3:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col1")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs00b7
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs00ba
+                           ofs00b7:
+                                    setproperty QName(PackageNamespace(""),"z")
+                           ofs00ba:
+                                    getlocal0
+                                    jump ofs00c3
+                                    greaterequals
+                                    lessthan
+                                    dup
+                                    subtract_i
+                           ofs00c3:
+                                    getproperty QName(PackageNamespace(""),"col2")
+                                    pushdouble 0
+                                    pushfalse
+                                    iffalse ofs00d6
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs00d9
+                           ofs00d6:
+                                    setproperty QName(PackageNamespace(""),"z")
+                           ofs00d9:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"col3")
+                                    pushdouble 0
+                                    jump ofs00e8
+                                    subtract
+                                    getlocal3
+                                    greaterequals
+                                    lshift
+                                    pushwith
+                           ofs00e8:
+                                    pushfalse
+                                    iffalse ofs00f6
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs00f9
+                           ofs00f6:
+                                    setproperty QName(PackageNamespace(""),"z")
+                           ofs00f9:
+                                    returnvoid
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function Solve22(param1:b2Vec2, param2:Number, param3:Number) : b2Vec2
+                        {
+                           trait method QName(PackageNamespace(""),"Solve22")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                 param QName(PackageNamespace(""),"Number")
+                                 param QName(PackageNamespace(""),"Number")
+                                 returns QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                 
+                                 body
+                                    maxstack 55
+                                    localcount 9
+                                    initscopedepth 4
+                                    maxscopedepth 5
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       pushnan
+                                       setlocal 4
+                                       pushnan
+                                       setlocal 6
+                                       getlocal0
+                                       getproperty QName(PackageNamespace(""),"col1")
+                                       getproperty QName(PackageNamespace(""),"x")
+                                       jump ofs0029
+                                       strictequals
+                                       urshift
+                                       greaterthan
+                                       pushnull
+                                       convert_s
+                                       strictequals
+                                       decrement_i
+                              ofs0029:
+                                       convert_d
+                                       setlocal 4
+                                       getlocal0
+                                       getproperty QName(PackageNamespace(""),"col2")
+                                       getproperty QName(PackageNamespace(""),"x")
+                                       convert_d
+                                       setlocal 5
+                                       getlocal0
+                                       getproperty QName(PackageNamespace(""),"col1")
+                                       getproperty QName(PackageNamespace(""),"y")
+                                       convert_d
+                                       setlocal 6
+                                       getlocal0
+                                       getproperty QName(PackageNamespace(""),"col2")
+                                       getproperty QName(PackageNamespace(""),"y")
+                                       jump ofs0052
+                                       lessequals
+                                       getlocal0
+                                       modulo
+                                       setlocal1
+                                       decrement
+                                       pushnull
+                                       pushundefined
+                              ofs0052:
+                                       convert_d
+                                       setlocal 7
+                                       getlocal 4
+                                       getlocal 7
+                                       multiply
+                                       jump ofs0065
+                                       newactivation
+                                       popscope
+                                       bitor
+                                       coerce_a
+                                       getlocal1
+                                       decrement_i
+                                       pushwith
+                              ofs0065:
+                                       getlocal 5
+                                       getlocal 6
+                                       multiply
+                                       subtract
+                                       convert_d
+                                       dup
+                                       setlocal 8
+                                       pushdouble 0
+                                       ifeq ofs007d
+                                       pushbyte 1
+                                       getlocal 8
+                                       divide
+                                       convert_d
+                                       setlocal 8
+                              ofs007d:
+                                       getlocal1
+                                       getlocal 8
+                                       jump ofs008b
+                                       hasnext
+                                       coerce_s
+                                       urshift
+                                       increment
+                                       greaterequals
+                                       dxnslate
+                                       checkfilter
+                              ofs008b:
+                                       getlocal 7
+                                       getlocal2
+                                       multiply
+                                       getlocal 5
+                                       getlocal3
+                                       multiply
+                                       jump ofs009e
+                                       getlocal2
+                                       subtract_i
+                                       instanceof
+                                       bitand
+                                       dxnslate
+                                       increment_i
+                                       dxnslate
+                              ofs009e:
+                                       subtract
+                                       multiply
+                                       pushfalse
+                                       iffalse ofs00ae
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs00b1
+                              ofs00ae:
+                                       setproperty QName(PackageNamespace(""),"x")
+                              ofs00b1:
+                                       getlocal1
+                                       getlocal 8
+                                       getlocal 4
+                                       getlocal3
+                                       multiply
+                                       getlocal 6
+                                       getlocal2
+                                       multiply
+                                       subtract
+                                       multiply
+                                       pushfalse
+                                       iffalse ofs00cc
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs00cf
+                              ofs00cc:
+                                       setproperty QName(PackageNamespace(""),"y")
+                              ofs00cf:
+                                       getlocal1
+                                       returnvalue
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function Solve33(param1:b2Vec3, param2:Number, param3:Number, param4:Number) : b2Vec3
+                           {
+                              trait method QName(PackageNamespace(""),"Solve33")
+                                 dispid 0
+                                 method
+                                    name null
+                                    param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+                                    param QName(PackageNamespace(""),"Number")
+                                    param QName(PackageNamespace(""),"Number")
+                                    param QName(PackageNamespace(""),"Number")
+                                    returns QName(PackageNamespace("Box2D.Common.Math"),"b2Vec3")
+                                    
+                                    body
+                                       maxstack 57
+                                       localcount 15
+                                       initscopedepth 4
+                                       maxscopedepth 5
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col1")
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          convert_d
+                                          setlocal 5
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col1")
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          convert_d
+                                          setlocal 6
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col1")
+                                          getproperty QName(PackageNamespace(""),"z")
+                                          convert_d
+                                          setlocal 7
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col2")
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          convert_d
+                                          setlocal 8
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col2")
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          convert_d
+                                          setlocal 9
+                                          getlocal0
+                                          jump ofs004d
+                                          lessthan
+                                          coerce_a
+                                          negate_i
+                                          convert_d
+                                          nextvalue
+                                 ofs004d:
+                                          getproperty QName(PackageNamespace(""),"col2")
+                                          jump ofs0059
+                                          getlocal1
+                                          nextname
+                                          pushnull
+                                          decrement
+                                          pushscope
+                                 ofs0059:
+                                          getproperty QName(PackageNamespace(""),"z")
+                                          convert_d
+                                          setlocal 10
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col3")
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          convert_d
+                                          setlocal 11
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col3")
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          jump ofs0079
+                                          divide
+                                          convert_i
+                                          convert_o
+                                          nextname
+                                          not
+                                 ofs0079:
+                                          convert_d
+                                          setlocal 12
+                                          getlocal0
+                                          getproperty QName(PackageNamespace(""),"col3")
+                                          getproperty QName(PackageNamespace(""),"z")
+                                          convert_d
+                                          setlocal 13
+                                          getlocal 5
+                                          getlocal 9
+                                          getlocal 13
+                                          multiply
+                                          getlocal 10
+                                          getlocal 12
+                                          multiply
+                                          subtract
+                                          multiply
+                                          jump ofs009d
+                                          pushundefined
+                                          decrement_i
+                                          nextname
+                                          negate
+                                          pushwith
+                                 ofs009d:
+                                          getlocal 6
+                                          getlocal 10
+                                          getlocal 11
+                                          multiply
+                                          jump ofs00ad
+                                          pushundefined
+                                          decrement_i
+                                          nextname
+                                          negate
+                                          pushwith
+                                 ofs00ad:
+                                          getlocal 8
+                                          getlocal 13
+                                          multiply
+                                          subtract
+                                          jump ofs00bc
+                                          add
+                                          bitxor
+                                          increment
+                                          multiply
+                                          getlocal3
+                                 ofs00bc:
+                                          multiply
+                                          add
+                                          getlocal 7
+                                          getlocal 8
+                                          getlocal 12
+                                          multiply
+                                          getlocal 9
+                                          getlocal 11
+                                          jump ofs00d3
+                                          pushtrue
+                                          instanceof
+                                          pushfalse
+                                          convert_d
+                                          lessthan
+                                          convert_u
+                                 ofs00d3:
+                                          multiply
+                                          subtract
+                                          multiply
+                                          add
+                                          convert_d
+                                          dup
+                                          setlocal 14
+                                          pushdouble 0
+                                          ifeq ofs00f3
+                                          pushbyte 1
+                                          getlocal 14
+                                          jump ofs00ef
+                                          negate
+                                          setlocal2
+                                          convert_b
+                                          decrement
+                                          increment
+                                          typeof
+                                 ofs00ef:
+                                          divide
+                                          convert_d
+                                          setlocal 14
+                                 ofs00f3:
+                                          getlocal1
+                                          getlocal 14
+                                          getlocal2
+                                          getlocal 9
+                                          getlocal 13
+                                          multiply
+                                          getlocal 10
+                                          getlocal 12
+                                          multiply
+                                          subtract
+                                          multiply
+                                          getlocal3
+                                          getlocal 10
+                                          getlocal 11
+                                          multiply
+                                          getlocal 8
+                                          getlocal 13
+                                          multiply
+                                          subtract
+                                          multiply
+                                          jump ofs011a
+                                          bitor
+                                          increment
+                                          typeof
+                                          astypelate
+                                          setlocal2
+                                          pushwith
+                                 ofs011a:
+                                          add
+                                          getlocal 4
+                                          getlocal 8
+                                          getlocal 12
+                                          multiply
+                                          getlocal 9
+                                          jump ofs012e
+                                          increment
+                                          negate
+                                          convert_i
+                                          increment_i
+                                          convert_i
+                                          popscope
+                                 ofs012e:
+                                          getlocal 11
+                                          multiply
+                                          subtract
+                                          multiply
+                                          add
+                                          multiply
+                                          pushfalse
+                                          iffalse ofs0143
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0146
+                                 ofs0143:
+                                          setproperty QName(PackageNamespace(""),"x")
+                                 ofs0146:
+                                          getlocal1
+                                          getlocal 14
+                                          getlocal 5
+                                          jump ofs0155
+                                          greaterequals
+                                          add
+                                          lessthan
+                                          negate_i
+                                          nextname
+                                          dup
+                                 ofs0155:
+                                          getlocal3
+                                          getlocal 13
+                                          multiply
+                                          getlocal 4
+                                          getlocal 12
+                                          multiply
+                                          subtract
+                                          multiply
+                                          getlocal 6
+                                          getlocal 4
+                                          getlocal 11
+                                          multiply
+                                          getlocal2
+                                          getlocal 13
+                                          jump ofs0174
+                                          subtract
+                                          divide
+                                          pop
+                                          nextvalue
+                                          subtract_i
+                                          subtract_i
+                                 ofs0174:
+                                          multiply
+                                          subtract
+                                          multiply
+                                          add
+                                          getlocal 7
+                                          getlocal2
+                                          getlocal 12
+                                          multiply
+                                          getlocal3
+                                          getlocal 11
+                                          multiply
+                                          jump ofs018c
+                                          subtract
+                                          divide
+                                          pop
+                                          nextvalue
+                                          subtract_i
+                                          subtract_i
+                                 ofs018c:
+                                          subtract
+                                          multiply
+                                          add
+                                          multiply
+                                          pushfalse
+                                          iffalse ofs019e
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs01a1
+                                 ofs019e:
+                                          setproperty QName(PackageNamespace(""),"y")
+                                 ofs01a1:
+                                          getlocal1
+                                          getlocal 14
+                                          getlocal 5
+                                          getlocal 9
+                                          getlocal 4
+                                          multiply
+                                          getlocal 10
+                                          jump ofs01b7
+                                          equals
+                                          lessthan
+                                          equals
+                                          istypelate
+                                          urshift
+                                          pop
+                                 ofs01b7:
+                                          getlocal3
+                                          multiply
+                                          subtract
+                                          multiply
+                                          getlocal 6
+                                          getlocal 10
+                                          jump ofs01c9
+                                          instanceof
+                                          getlocal3
+                                          getlocal0
+                                          astypelate
+                                          bitnot
+                                          getlocal2
+                                 ofs01c9:
+                                          getlocal2
+                                          jump ofs01d5
+                                          convert_d
+                                          pushnan
+                                          setlocal2
+                                          increment_i
+                                          istypelate
+                                          nextvalue
+                                          lessthan
+                                 ofs01d5:
+                                          multiply
+                                          jump ofs01e1
+                                          bitxor
+                                          add_i
+                                          getlocal3
+                                          negate_i
+                                          bitor
+                                          bitxor
+                                          getlocal0
+                                 ofs01e1:
+                                          getlocal 8
+                                          getlocal 4
+                                          multiply
+                                          subtract
+                                          multiply
+                                          add
+                                          getlocal 7
+                                          jump ofs01f6
+                                          bitxor
+                                          add_i
+                                          getlocal3
+                                          negate_i
+                                          bitor
+                                          bitxor
+                                          getlocal0
+                                 ofs01f6:
+                                          getlocal 8
+                                          getlocal3
+                                          multiply
+                                          getlocal 9
+                                          getlocal2
+                                          multiply
+                                          subtract
+                                          jump ofs020a
+                                          pushnull
+                                          negate_i
+                                          lessequals
+                                          nextvalue
+                                          setlocal3
+                                          pushnull
+                                          pushscope
+                                 ofs020a:
+                                          multiply
+                                          add
+                                          multiply
+                                          pushfalse
+                                          iffalse ofs021b
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs021e
+                                 ofs021b:
+                                          setproperty QName(PackageNamespace(""),"z")
+                                 ofs021e:
+                                          getlocal1
+                                          returnvalue
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                           }
+                        }
+                        
+                        method
+                           name null
+                           returns null
+                           
+                           body
+                              maxstack 52
+                              localcount 1
+                              initscopedepth 1
+                              maxscopedepth 3
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 jump ofs001a
+                                 decrement_i
+                                 urshift
+                                 setlocal2
+                                 modulo
+                                 urshift
+                                 modulo
+                        ofs001a:
+                                 pushscope
+                                 findpropstrict Multiname("b2Mat33",[PackageNamespace("Box2D.Common.Math")])
+                                 getlex QName(PackageNamespace(""),"Object")
+                                 pushscope
+                                 getlex QName(PackageNamespace(""),"Object")
+                                 newclass 108
+                                 popscope
+                                 initproperty QName(PackageNamespace("Box2D.Common.Math"),"b2Mat33")
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                        

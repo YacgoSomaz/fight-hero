@@ -1,0 +1,284 @@
+package
+{
+   public class Bullet_Melee_Basic extends Bullet
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function Bullet_Melee_Basic(param1:Game, param2:Unit, param3:Number, param4:Number, param5:Number, param6:Number, param7:String, param8:Object = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"Game")
+            param QName(PackageNamespace(""),"Unit")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"Number")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"Object")
+            optional Null()
+            returns null
+            
+            body
+               maxstack 60
+               localcount 11
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  getlocal1
+                  getlocal2
+                  getlocal3
+                  getlocal 4
+                  getlocal 5
+                  jump ofs0022
+                  pop
+                  pushnull
+                  dxnslate
+                  negate
+                  hasnext
+         ofs0022:
+                  getlocal 6
+                  jump ofs002d
+                  checkfilter
+                  convert_b
+                  decrement
+                  multiply
+                  modulo
+         ofs002d:
+                  getlocal 7
+                  pushtrue
+                  getlocal 8
+                  constructsuper 9
+                  pushbyte 0
+                  convert_u
+                  jump ofs0040
+                  modulo
+                  equals
+                  newactivation
+                  convert_d
+                  multiply
+         ofs0040:
+                  setlocal 9
+                  nop
+         ofs0043:
+                  label
+                  getlocal 9
+                  findpropstrict QName(PackageNamespace(""),"uint")
+                  getlex QName(ProtectedNamespace("Bullet"),"maxDist")
+                  pushbyte 10
+                  divide
+                  callproperty QName(PackageNamespace(""),"uint"), 1
+                  iflt ofs0059
+                  jump ofs005d
+         ofs0059:
+                  jump ofs0061
+         ofs005d:
+                  jump ofs00ca
+         ofs0061:
+                  findproperty QName(ProtectedNamespace("Bullet"),"x")
+                  getlex QName(ProtectedNamespace("Bullet"),"x")
+                  getlex QName(ProtectedNamespace("Bullet"),"xVel")
+                  add
+                  initproperty QName(ProtectedNamespace("Bullet"),"x")
+                  findproperty QName(ProtectedNamespace("Bullet"),"y")
+                  getlex QName(ProtectedNamespace("Bullet"),"y")
+                  getlex QName(ProtectedNamespace("Bullet"),"yVel")
+                  add
+                  initproperty QName(ProtectedNamespace("Bullet"),"y")
+                  findproperty QName(ProtectedNamespace("Bullet"),"hitObject")
+                  jump ofs0087
+                  astypelate
+                  greaterequals
+                  add
+                  istypelate
+                  add_i
+         ofs0087:
+                  findpropstrict QName(ProtectedNamespace("Bullet"),"hitTestAll")
+                  callproperty QName(ProtectedNamespace("Bullet"),"hitTestAll"), 0
+                  dup
+                  jump ofs0098
+                  dup
+                  bitor
+                  dup
+                  astypelate
+                  pushnan
+         ofs0098:
+                  setlocal 10
+                  initproperty QName(ProtectedNamespace("Bullet"),"hitObject")
+                  getlocal 10
+                  kill 10
+                  jump ofs00aa
+                  dup
+                  bitor
+                  dup
+                  astypelate
+                  pushnan
+         ofs00aa:
+                  iffalse ofs00b2
+                  jump ofs00ca
+         ofs00b2:
+                  getlocal 9
+                  increment
+                  convert_u
+                  jump ofs00c0
+                  subtract_i
+                  pushtrue
+                  greaterequals
+                  increment_i
+                  setlocal0
+                  not
+         ofs00c0:
+                  setlocal 9
+                  pushbyte 2
+                  pushbyte 3
+                  ifne ofs0043
+         ofs00ca:
+                  findpropstrict QName(ProtectedNamespace("Bullet"),"doHitEffect")
+                  jump ofs00d7
+                  not
+                  convert_o
+                  convert_s
+                  negate_i
+                  negate
+                  checkfilter
+         ofs00d7:
+                  pushfalse
+                  iffalse ofs00e4
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs00e8
+         ofs00e4:
+                  callpropvoid QName(ProtectedNamespace("Bullet"),"doHitEffect"), 0
+         ofs00e8:
+                  findpropstrict QName(ProtectedNamespace("Bullet"),"removeMe")
+                  pushfalse
+                  iffalse ofs00f8
+                  pushbyte 5
+                  pop
+                  pop
+                  jump ofs00fc
+         ofs00f8:
+                  callpropvoid QName(ProtectedNamespace("Bullet"),"removeMe"), 0
+         ofs00fc:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame() : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 51
+                  localcount 1
+                  initscopedepth 5
+                  maxscopedepth 6
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     jump ofs001a
+                     lessthan
+                     typeof
+                     convert_b
+                     multiply_i
+                     add
+                     pushfalse
+            ofs001a:
+                     pushscope
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 4
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("Bullet_Melee_Basic",[PackageNamespace("")])
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            jump ofs0021
+            increment_i
+            convert_u
+            getlocal1
+            pop
+            add_i
+            add_i
+   ofs0021:
+            getlex QName(PackageNamespace(""),"Bullet")
+            pushscope
+            getlex QName(PackageNamespace(""),"Bullet")
+            newclass 127
+            popscope
+            popscope
+            initproperty QName(PackageNamespace(""),"Bullet_Melee_Basic")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

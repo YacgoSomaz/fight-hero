@@ -1,0 +1,622 @@
+package mochi.as3
+{
+   public class MochiEvents
+   {
+      
+      public static const ACHIEVEMENTS_OWNED:String = "AchievementOwned";
+      
+      public static const ACHIEVEMENT_NEW:String = "AchievementReceived";
+      
+      public static const GAME_ACHIEVEMENTS:String = "GameAchievements";
+      
+      public static const ERROR:String = "Error";
+      
+      public static const IO_ERROR:String = "IOError";
+      
+      public static const IO_PENDING:String = "IOPending";
+      
+      public static const ALIGN_TOP_LEFT:String = "ALIGN_TL";
+      
+      public static const ALIGN_TOP:String = "ALIGN_T";
+      
+      public static const ALIGN_TOP_RIGHT:String = "ALIGN_TR";
+      
+      public static const ALIGN_LEFT:String = "ALIGN_L";
+      
+      public static const ALIGN_CENTER:String = "ALIGN_C";
+      
+      public static const ALIGN_RIGHT:String = "ALIGN_R";
+      
+      public static const ALIGN_BOTTOM_LEFT:String = "ALIGN_BL";
+      
+      public static const ALIGN_BOTTOM:String = "ALIGN_B";
+      
+      public static const ALIGN_BOTTOM_RIGHT:String = "ALIGN_BR";
+      
+      public static const FORMAT_SHORT:String = "ShortForm";
+      
+      public static const FORMAT_LONG:String = "LongForm";
+      
+      public static const FORMAT_NONE:String = "NoForm";
+      
+      private static var gameStart:Number;
+      
+      private static var levelStart:Number;
+      
+      private static var _dispatcher:MochiEventDispatcher;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PackageNamespace(""),"ACHIEVEMENTS_OWNED")
+               pushstring "AchievementOwned"
+               initproperty QName(PackageNamespace(""),"ACHIEVEMENTS_OWNED")
+               findproperty QName(PackageNamespace(""),"ACHIEVEMENT_NEW")
+               pushstring "AchievementReceived"
+               jump ofs0029
+               instanceof
+               dup
+               bitxor
+               urshift
+               pushundefined
+      ofs0029:
+               initproperty QName(PackageNamespace(""),"ACHIEVEMENT_NEW")
+               findproperty QName(PackageNamespace(""),"GAME_ACHIEVEMENTS")
+               pushstring "GameAchievements"
+               initproperty QName(PackageNamespace(""),"GAME_ACHIEVEMENTS")
+               findproperty QName(PackageNamespace(""),"ERROR")
+               pushstring "Error"
+               initproperty QName(PackageNamespace(""),"ERROR")
+               findproperty QName(PackageNamespace(""),"IO_ERROR")
+               pushstring "IOError"
+               initproperty QName(PackageNamespace(""),"IO_ERROR")
+               findproperty QName(PackageNamespace(""),"IO_PENDING")
+               pushstring "IOPending"
+               initproperty QName(PackageNamespace(""),"IO_PENDING")
+               findproperty QName(PackageNamespace(""),"ALIGN_TOP_LEFT")
+               pushstring "ALIGN_TL"
+               initproperty QName(PackageNamespace(""),"ALIGN_TOP_LEFT")
+               findproperty QName(PackageNamespace(""),"ALIGN_TOP")
+               pushstring "ALIGN_T"
+               initproperty QName(PackageNamespace(""),"ALIGN_TOP")
+               findproperty QName(PackageNamespace(""),"ALIGN_TOP_RIGHT")
+               jump ofs006e
+               convert_d
+               modulo
+               greaterthan
+               decrement_i
+               equals
+      ofs006e:
+               pushstring "ALIGN_TR"
+               initproperty QName(PackageNamespace(""),"ALIGN_TOP_RIGHT")
+               findproperty QName(PackageNamespace(""),"ALIGN_LEFT")
+               pushstring "ALIGN_L"
+               initproperty QName(PackageNamespace(""),"ALIGN_LEFT")
+               findproperty QName(PackageNamespace(""),"ALIGN_CENTER")
+               pushstring "ALIGN_C"
+               initproperty QName(PackageNamespace(""),"ALIGN_CENTER")
+               findproperty QName(PackageNamespace(""),"ALIGN_RIGHT")
+               pushstring "ALIGN_R"
+               jump ofs0095
+               bitxor
+               pop
+               getglobalscope
+               greaterthan
+               convert_d
+      ofs0095:
+               initproperty QName(PackageNamespace(""),"ALIGN_RIGHT")
+               findproperty QName(PackageNamespace(""),"ALIGN_BOTTOM_LEFT")
+               pushstring "ALIGN_BL"
+               initproperty QName(PackageNamespace(""),"ALIGN_BOTTOM_LEFT")
+               findproperty QName(PackageNamespace(""),"ALIGN_BOTTOM")
+               pushstring "ALIGN_B"
+               initproperty QName(PackageNamespace(""),"ALIGN_BOTTOM")
+               findproperty QName(PackageNamespace(""),"ALIGN_BOTTOM_RIGHT")
+               pushstring "ALIGN_BR"
+               initproperty QName(PackageNamespace(""),"ALIGN_BOTTOM_RIGHT")
+               findproperty QName(PackageNamespace(""),"FORMAT_SHORT")
+               pushstring "ShortForm"
+               initproperty QName(PackageNamespace(""),"FORMAT_SHORT")
+               findproperty QName(PackageNamespace(""),"FORMAT_LONG")
+               pushstring "LongForm"
+               initproperty QName(PackageNamespace(""),"FORMAT_LONG")
+               findproperty QName(PackageNamespace(""),"FORMAT_NONE")
+               pushstring "NoForm"
+               initproperty QName(PackageNamespace(""),"FORMAT_NONE")
+               findproperty QName(PrivateNamespace(null,"92"),"_dispatcher")
+               findpropstrict QName(PackageNamespace("mochi.as3"),"MochiEventDispatcher")
+               constructprop QName(PackageNamespace("mochi.as3"),"MochiEventDispatcher"), 0
+               pushfalse
+               iffalse ofs00e6
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs00e9
+      ofs00e6:
+               setproperty QName(PrivateNamespace(null,"92"),"_dispatcher")
+      ofs00e9:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function MochiEvents()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  jump ofs001d
+                  urshift
+                  increment
+                  pushundefined
+                  convert_s
+                  instanceof
+                  convert_i
+                  dxnslate
+         ofs001d:
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function getVersion() : String
+      {
+         trait method QName(PackageNamespace(""),"getVersion")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"String")
+               
+               body
+                  maxstack 1
+                  localcount 1
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                     callproperty QName(PackageNamespace(""),"getVersion"), 0
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function getAchievements(param1:Object = null) : void
+         {
+            trait method QName(PackageNamespace(""),"getAchievements")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  flag HAS_OPTIONAL
+                  param QName(PackageNamespace(""),"Object")
+                  optional Null()
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 3
+                     localcount 2
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                        pushstring "events_getAchievements"
+                        getlocal1
+                        callpropvoid QName(PackageNamespace(""),"send"), 2
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function unlockAchievement(param1:Object) : void
+            {
+               trait method QName(PackageNamespace(""),"unlockAchievement")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Object")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 3
+                        localcount 2
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                           pushstring "events_unlockAchievement"
+                           getlocal1
+                           callpropvoid QName(PackageNamespace(""),"send"), 2
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public static function startSession(param1:String) : void
+               {
+                  trait method QName(PackageNamespace(""),"startSession")
+                     flag FINAL
+                     dispid 6
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"String")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 5
+                           localcount 2
+                           initscopedepth 3
+                           maxscopedepth 4
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                              pushstring "events_beginSession"
+                              pushstring "achievementID"
+                              getlocal1
+                              newobject 1
+                              pushnull
+                              pushnull
+                              callpropvoid QName(PackageNamespace(""),"send"), 4
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public static function showAwards(param1:Object = null) : void
+                  {
+                     trait method QName(PackageNamespace(""),"showAwards")
+                        flag FINAL
+                        dispid 7
+                        method
+                           name null
+                           flag HAS_OPTIONAL
+                           param QName(PackageNamespace(""),"Object")
+                           optional Null()
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 3
+                              localcount 2
+                              initscopedepth 3
+                              maxscopedepth 4
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                 callpropvoid QName(PackageNamespace(""),"setContainer"), 0
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                 callpropvoid QName(PackageNamespace(""),"stayOnTop"), 0
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                 pushstring "events_showAwards"
+                                 getlocal1
+                                 callpropvoid QName(PackageNamespace(""),"send"), 2
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public static function setNotifications(param1:Object) : void
+                     {
+                        trait method QName(PackageNamespace(""),"setNotifications")
+                           flag FINAL
+                           dispid 8
+                           method
+                              name null
+                              param QName(PackageNamespace(""),"Object")
+                              returns QName(PackageNamespace(""),"void")
+                              
+                              body
+                                 maxstack 5
+                                 localcount 2
+                                 initscopedepth 3
+                                 maxscopedepth 4
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                    callpropvoid QName(PackageNamespace(""),"setContainer"), 0
+                                    getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                    callpropvoid QName(PackageNamespace(""),"bringToTop"), 0
+                                    getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                    pushstring "events_setNotifications"
+                                    getlocal1
+                                    pushnull
+                                    pushnull
+                                    callpropvoid QName(PackageNamespace(""),"send"), 4
+                                    returnvoid
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public static function addEventListener(param1:String, param2:Function) : void
+                        {
+                           trait method QName(PackageNamespace(""),"addEventListener")
+                              flag FINAL
+                              dispid 9
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"String")
+                                 param QName(PackageNamespace(""),"Function")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 3
+                                    localcount 3
+                                    initscopedepth 3
+                                    maxscopedepth 4
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       getlex QName(PrivateNamespace(null,"92"),"_dispatcher")
+                                       getlocal1
+                                       getlocal2
+                                       callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public static function triggerEvent(param1:String, param2:Object) : void
+                           {
+                              trait method QName(PackageNamespace(""),"triggerEvent")
+                                 flag FINAL
+                                 dispid 10
+                                 method
+                                    name null
+                                    param QName(PackageNamespace(""),"String")
+                                    param QName(PackageNamespace(""),"Object")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 3
+                                       localcount 3
+                                       initscopedepth 3
+                                       maxscopedepth 4
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          getlex QName(PrivateNamespace(null,"92"),"_dispatcher")
+                                          getlocal1
+                                          getlocal2
+                                          callpropvoid QName(PackageNamespace(""),"triggerEvent"), 2
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public static function removeEventListener(param1:String, param2:Function) : void
+                              {
+                                 trait method QName(PackageNamespace(""),"removeEventListener")
+                                    flag FINAL
+                                    dispid 11
+                                    method
+                                       name null
+                                       param QName(PackageNamespace(""),"String")
+                                       param QName(PackageNamespace(""),"Function")
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 3
+                                          localcount 3
+                                          initscopedepth 3
+                                          maxscopedepth 4
+                                          
+                                          code
+                                             getlocal0
+                                             pushscope
+                                             getlex QName(PrivateNamespace(null,"92"),"_dispatcher")
+                                             getlocal1
+                                             getlocal2
+                                             callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public static function startPlay(param1:String = "gameplay") : void
+                                 {
+                                    trait method QName(PackageNamespace(""),"startPlay")
+                                       flag FINAL
+                                       dispid 12
+                                       method
+                                          name null
+                                          flag HAS_OPTIONAL
+                                          param QName(PackageNamespace(""),"String")
+                                          optional Utf8("gameplay")
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 5
+                                             localcount 2
+                                             initscopedepth 3
+                                             maxscopedepth 4
+                                             
+                                             code
+                                                getlocal0
+                                                pushscope
+                                                getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                                pushstring "events_setRoundID"
+                                                pushstring "tag"
+                                                findpropstrict QName(PackageNamespace(""),"String")
+                                                getlocal1
+                                                callproperty QName(PackageNamespace(""),"String"), 1
+                                                newobject 1
+                                                pushnull
+                                                pushnull
+                                                callpropvoid QName(PackageNamespace(""),"send"), 4
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public static function endPlay() : void
+                                    {
+                                       trait method QName(PackageNamespace(""),"endPlay")
+                                          flag FINAL
+                                          dispid 13
+                                          method
+                                             name null
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 5
+                                                localcount 1
+                                                initscopedepth 3
+                                                maxscopedepth 4
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushscope
+                                                   getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                                   pushstring "events_clearRoundID"
+                                                   pushnull
+                                                   pushnull
+                                                   pushnull
+                                                   callpropvoid QName(PackageNamespace(""),"send"), 4
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public static function trackEvent(param1:String, param2:* = null) : void
+                                       {
+                                          trait method QName(PackageNamespace(""),"trackEvent")
+                                             flag FINAL
+                                             dispid 14
+                                             method
+                                                name null
+                                                flag HAS_OPTIONAL
+                                                param QName(PackageNamespace(""),"String")
+                                                param null
+                                                optional Null()
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 6
+                                                   localcount 3
+                                                   initscopedepth 3
+                                                   maxscopedepth 4
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushscope
+                                                      getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                                      pushstring "events_trackEvent"
+                                                      pushstring "tag"
+                                                      getlocal1
+                                                      pushstring "value"
+                                                      getlocal2
+                                                      newobject 2
+                                                      pushnull
+                                                      pushnull
+                                                      callpropvoid QName(PackageNamespace(""),"send"), 4
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                       }
+                                    }
+                                    
+                                    method
+                                       name null
+                                       returns null
+                                       
+                                       body
+                                          maxstack 52
+                                          localcount 1
+                                          initscopedepth 1
+                                          maxscopedepth 3
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             jump ofs001a
+                                             not
+                                             negate_i
+                                             strictequals
+                                             subtract_i
+                                             coerce_a
+                                             setlocal2
+                                    ofs001a:
+                                             pushscope
+                                             findpropstrict Multiname("MochiEvents",[PackageNamespace("mochi.as3")])
+                                             getlex QName(PackageNamespace(""),"Object")
+                                             pushscope
+                                             getlex QName(PackageNamespace(""),"Object")
+                                             newclass 77
+                                             popscope
+                                             initproperty QName(PackageNamespace("mochi.as3"),"MochiEvents")
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                    

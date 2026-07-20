@@ -1,0 +1,1411 @@
+package fl.controls
+{
+   import fl.core.InvalidationType;
+   import fl.core.UIComponent;
+   import fl.events.ComponentEvent;
+   import fl.managers.IFocusManagerComponent;
+   import flash.display.DisplayObject;
+   import flash.events.Event;
+   import flash.events.KeyboardEvent;
+   import flash.events.MouseEvent;
+   import flash.text.TextField;
+   import flash.text.TextFieldType;
+   import flash.text.TextFormat;
+   import flash.ui.Keyboard;
+   
+   public class LabelButton extends BaseButton implements IFocusManagerComponent
+   {
+      
+      private static var defaultStyles:Object;
+      
+      public static var createAccessibilityImplementation:Function;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 77
+            localcount 1
+            initscopedepth 10
+            maxscopedepth 11
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PrivateNamespace(null,"102"),"defaultStyles")
+               pushstring "icon"
+               pushnull
+               pushstring "upIcon"
+               pushnull
+               pushstring "downIcon"
+               jump ofs002a
+               increment
+               getlocal0
+               greaterequals
+               equals
+               subtract
+               typeof
+               hasnext
+      ofs002a:
+               pushnull
+               pushstring "overIcon"
+               pushnull
+               pushstring "disabledIcon"
+               jump ofs003d
+               greaterequals
+               popscope
+               convert_s
+               convert_s
+               instanceof
+               pushnan
+               setlocal2
+      ofs003d:
+               pushnull
+               jump ofs0049
+               subtract
+               coerce_s
+               bitxor
+               convert_i
+               strictequals
+               convert_s
+               convert_o
+      ofs0049:
+               pushstring "selectedDisabledIcon"
+               jump ofs0054
+               equals
+               subtract_i
+               greaterthan
+               setlocal0
+      ofs0054:
+               pushnull
+               pushstring "selectedUpIcon"
+               pushnull
+               pushstring "selectedDownIcon"
+               pushnull
+               pushstring "selectedOverIcon"
+               pushnull
+               pushstring "textFormat"
+               pushnull
+               jump ofs006d
+               equals
+               subtract_i
+               greaterthan
+               setlocal0
+      ofs006d:
+               pushstring "disabledTextFormat"
+               pushnull
+               pushstring "textPadding"
+               pushbyte 5
+               pushstring "embedFonts"
+               pushfalse
+               newobject 13
+               pushfalse
+               iffalse ofs008a
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs008d
+      ofs008a:
+               setproperty QName(PrivateNamespace(null,"102"),"defaultStyles")
+      ofs008d:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var textField:TextField;
+      
+      protected var _labelPlacement:String = "right";
+      
+      protected var _toggle:Boolean = false;
+      
+      protected var icon:DisplayObject;
+      
+      protected var oldMouseState:String;
+      
+      protected var _label:String = "Label";
+      
+      protected var mode:String = "center";
+      
+      public function LabelButton()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 1
+               localcount 1
+               initscopedepth 11
+               maxscopedepth 12
+               
+               code
+                  getlocal0
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function getStyleDefinition() : Object
+      {
+         trait method QName(PackageNamespace(""),"getStyleDefinition")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"Object")
+               
+               body
+                  maxstack 3
+                  localcount 1
+                  initscopedepth 10
+                  maxscopedepth 11
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findpropstrict QName(PackageNamespace(""),"mergeStyles")
+                     getlex QName(PrivateNamespace(null,"102"),"defaultStyles")
+                     getlex QName(PackageNamespace("fl.controls"),"BaseButton")
+                     callproperty QName(PackageNamespace(""),"getStyleDefinition"), 0
+                     callproperty QName(PackageNamespace(""),"mergeStyles"), 2
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function get label() : String
+         {
+            trait getter QName(PackageNamespace(""),"label")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"String")
+                  
+                  body
+                     maxstack 1
+                     localcount 1
+                     initscopedepth 11
+                     maxscopedepth 12
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function set label(param1:String) : void
+            {
+               trait setter QName(PackageNamespace(""),"label")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 3
+                        localcount 2
+                        initscopedepth 11
+                        maxscopedepth 12
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                           getlocal1
+                           initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                           getlex QName(PackageNamespace(""),"textField")
+                           getproperty QName(PackageNamespace(""),"text")
+                           getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                           ifeq ofs0033
+                           getlex QName(PackageNamespace(""),"textField")
+                           getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                           setproperty QName(PackageNamespace(""),"text")
+                           findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                           findpropstrict QName(PackageNamespace("fl.events"),"ComponentEvent")
+                           getlex QName(PackageNamespace("fl.events"),"ComponentEvent")
+                           getproperty QName(PackageNamespace(""),"LABEL_CHANGE")
+                           constructprop QName(PackageNamespace("fl.events"),"ComponentEvent"), 1
+                           callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                  ofs0033:
+                           findpropstrict QName(PackageNamespace(""),"invalidate")
+                           getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                           getproperty QName(PackageNamespace(""),"SIZE")
+                           callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                           findpropstrict QName(PackageNamespace(""),"invalidate")
+                           getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                           getproperty QName(PackageNamespace(""),"STYLES")
+                           callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function get labelPlacement() : String
+               {
+                  trait getter QName(PackageNamespace(""),"labelPlacement")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"String")
+                        
+                        body
+                           maxstack 1
+                           localcount 1
+                           initscopedepth 11
+                           maxscopedepth 12
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_labelPlacement")
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function set labelPlacement(param1:String) : void
+                  {
+                     trait setter QName(PackageNamespace(""),"labelPlacement")
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace(""),"String")
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 2
+                              localcount 2
+                              initscopedepth 11
+                              maxscopedepth 12
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_labelPlacement")
+                                 getlocal1
+                                 initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_labelPlacement")
+                                 findpropstrict QName(PackageNamespace(""),"invalidate")
+                                 getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                 getproperty QName(PackageNamespace(""),"SIZE")
+                                 callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function get toggle() : Boolean
+                     {
+                        trait getter QName(PackageNamespace(""),"toggle")
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace(""),"Boolean")
+                              
+                              body
+                                 maxstack 1
+                                 localcount 1
+                                 initscopedepth 11
+                                 maxscopedepth 12
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function set toggle(param1:Boolean) : void
+                        {
+                           trait setter QName(PackageNamespace(""),"toggle")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"Boolean")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 6
+                                    localcount 2
+                                    initscopedepth 11
+                                    maxscopedepth 12
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       getlocal1
+                                       not
+                                       dup
+                                       iffalse ofs000f
+                                       pop
+                                       getlocal0
+                                       getsuper QName(PackageNamespace(""),"selected")
+                                       convert_b
+                              ofs000f:
+                                       iffalse ofs001a
+                                       findproperty QName(PackageNamespace(""),"selected")
+                                       pushfalse
+                                       initproperty QName(PackageNamespace(""),"selected")
+                              ofs001a:
+                                       findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                       getlocal1
+                                       initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                       getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                       iffalse ofs003f
+                                       findpropstrict QName(PackageNamespace(""),"addEventListener")
+                                       getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                       getproperty QName(PackageNamespace(""),"CLICK")
+                                       getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"toggleSelected")
+                                       pushfalse
+                                       pushbyte 0
+                                       pushtrue
+                                       callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                       jump ofs004e
+                              ofs003f:
+                                       findpropstrict QName(PackageNamespace(""),"removeEventListener")
+                                       getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                       getproperty QName(PackageNamespace(""),"CLICK")
+                                       getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"toggleSelected")
+                                       callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                              ofs004e:
+                                       findpropstrict QName(PackageNamespace(""),"invalidate")
+                                       getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                       getproperty QName(PackageNamespace(""),"STATE")
+                                       callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           protected function toggleSelected(param1:MouseEvent) : void
+                           {
+                              trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"toggleSelected")
+                                 dispid 0
+                                 method
+                                    name null
+                                    param QName(PackageNamespace("flash.events"),"MouseEvent")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 4
+                                       localcount 2
+                                       initscopedepth 11
+                                       maxscopedepth 12
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          findproperty QName(PackageNamespace(""),"selected")
+                                          getlex QName(PackageNamespace(""),"selected")
+                                          not
+                                          initproperty QName(PackageNamespace(""),"selected")
+                                          findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                          findpropstrict QName(PackageNamespace("flash.events"),"Event")
+                                          getlex QName(PackageNamespace("flash.events"),"Event")
+                                          getproperty QName(PackageNamespace(""),"CHANGE")
+                                          pushtrue
+                                          constructprop QName(PackageNamespace("flash.events"),"Event"), 2
+                                          callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              override public function get selected() : Boolean
+                              {
+                                 trait getter QName(PackageNamespace(""),"selected")
+                                    flag OVERRIDE
+                                    dispid 0
+                                    method
+                                       name null
+                                       returns QName(PackageNamespace(""),"Boolean")
+                                       
+                                       body
+                                          maxstack 1
+                                          localcount 1
+                                          initscopedepth 11
+                                          maxscopedepth 12
+                                          
+                                          code
+                                             getlocal0
+                                             pushscope
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                             iffalse ofs0011
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"_selected")
+                                             convert_b
+                                             jump ofs0012
+                                    ofs0011:
+                                             pushfalse
+                                    ofs0012:
+                                             returnvalue
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 override public function set selected(param1:Boolean) : void
+                                 {
+                                    trait setter QName(PackageNamespace(""),"selected")
+                                       flag OVERRIDE
+                                       dispid 0
+                                       method
+                                          name null
+                                          param QName(PackageNamespace(""),"Boolean")
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 2
+                                             localcount 2
+                                             initscopedepth 11
+                                             maxscopedepth 12
+                                             
+                                             code
+                                                getlocal0
+                                                pushscope
+                                                findproperty QName(ProtectedNamespace("fl.controls:BaseButton"),"_selected")
+                                                getlocal1
+                                                initproperty QName(ProtectedNamespace("fl.controls:BaseButton"),"_selected")
+                                                getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                                iffalse ofs001d
+                                                findpropstrict QName(PackageNamespace(""),"invalidate")
+                                                getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                getproperty QName(PackageNamespace(""),"STATE")
+                                                callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                       ofs001d:
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    override protected function configUI() : void
+                                    {
+                                       trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"configUI")
+                                          flag OVERRIDE
+                                          dispid 0
+                                          method
+                                             name null
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 2
+                                                localcount 1
+                                                initscopedepth 11
+                                                maxscopedepth 12
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushscope
+                                                   getlocal0
+                                                   callsupervoid QName(ProtectedNamespace("fl.core:UIComponent"),"configUI"), 0
+                                                   findproperty QName(PackageNamespace(""),"textField")
+                                                   findpropstrict QName(PackageNamespace("flash.text"),"TextField")
+                                                   constructprop QName(PackageNamespace("flash.text"),"TextField"), 0
+                                                   initproperty QName(PackageNamespace(""),"textField")
+                                                   getlex QName(PackageNamespace(""),"textField")
+                                                   getlex QName(PackageNamespace("flash.text"),"TextFieldType")
+                                                   getproperty QName(PackageNamespace(""),"DYNAMIC")
+                                                   setproperty QName(PackageNamespace(""),"type")
+                                                   getlex QName(PackageNamespace(""),"textField")
+                                                   pushfalse
+                                                   setproperty QName(PackageNamespace(""),"selectable")
+                                                   findpropstrict QName(PackageNamespace(""),"addChild")
+                                                   getlex QName(PackageNamespace(""),"textField")
+                                                   callpropvoid QName(PackageNamespace(""),"addChild"), 1
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       override protected function draw() : void
+                                       {
+                                          trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"draw")
+                                             flag OVERRIDE
+                                             dispid 0
+                                             method
+                                                name null
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 3
+                                                   localcount 1
+                                                   initscopedepth 11
+                                                   maxscopedepth 12
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushscope
+                                                      getlex QName(PackageNamespace(""),"textField")
+                                                      getproperty QName(PackageNamespace(""),"text")
+                                                      getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                                                      ifeq ofs0018
+                                                      findproperty QName(PackageNamespace(""),"label")
+                                                      getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_label")
+                                                      initproperty QName(PackageNamespace(""),"label")
+                                             ofs0018:
+                                                      findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid")
+                                                      getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                      getproperty QName(PackageNamespace(""),"STYLES")
+                                                      getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                      getproperty QName(PackageNamespace(""),"STATE")
+                                                      callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid"), 2
+                                                      iffalse ofs0052
+                                                      findpropstrict QName(ProtectedNamespace("fl.controls:BaseButton"),"drawBackground")
+                                                      callpropvoid QName(ProtectedNamespace("fl.controls:BaseButton"),"drawBackground"), 0
+                                                      findpropstrict QName(ProtectedNamespace("fl.controls:LabelButton"),"drawIcon")
+                                                      callpropvoid QName(ProtectedNamespace("fl.controls:LabelButton"),"drawIcon"), 0
+                                                      findpropstrict QName(ProtectedNamespace("fl.controls:LabelButton"),"drawTextFormat")
+                                                      callpropvoid QName(ProtectedNamespace("fl.controls:LabelButton"),"drawTextFormat"), 0
+                                                      findpropstrict QName(PackageNamespace(""),"invalidate")
+                                                      getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                      getproperty QName(PackageNamespace(""),"SIZE")
+                                                      pushfalse
+                                                      callpropvoid QName(PackageNamespace(""),"invalidate"), 2
+                                             ofs0052:
+                                                      findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid")
+                                                      getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                      getproperty QName(PackageNamespace(""),"SIZE")
+                                                      callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid"), 1
+                                                      iffalse ofs006a
+                                                      findpropstrict QName(ProtectedNamespace("fl.controls:LabelButton"),"drawLayout")
+                                                      callpropvoid QName(ProtectedNamespace("fl.controls:LabelButton"),"drawLayout"), 0
+                                             ofs006a:
+                                                      findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid")
+                                                      getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                      getproperty QName(PackageNamespace(""),"SIZE")
+                                                      getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                      getproperty QName(PackageNamespace(""),"STYLES")
+                                                      callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid"), 2
+                                                      iffalse ofs009e
+                                                      getlex QName(ProtectedNamespace("fl.core:UIComponent"),"isFocused")
+                                                      convert_b
+                                                      dup
+                                                      iffalse ofs0092
+                                                      pop
+                                                      getlex QName(PackageNamespace(""),"focusManager")
+                                                      getproperty QName(Namespace("fl.managers:IFocusManager"),"showFocusIndicator")
+                                                      convert_b
+                                             ofs0092:
+                                                      iffalse ofs009e
+                                                      findpropstrict QName(PackageNamespace(""),"drawFocus")
+                                                      pushtrue
+                                                      callpropvoid QName(PackageNamespace(""),"drawFocus"), 1
+                                             ofs009e:
+                                                      findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"validate")
+                                                      callpropvoid QName(ProtectedNamespace("fl.core:UIComponent"),"validate"), 0
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          protected function drawIcon() : void
+                                          {
+                                             trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"drawIcon")
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   returns QName(PackageNamespace(""),"void")
+                                                   
+                                                   body
+                                                      maxstack 4
+                                                      localcount 4
+                                                      initscopedepth 11
+                                                      maxscopedepth 12
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushscope
+                                                         getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                         coerce QName(PackageNamespace("flash.display"),"DisplayObject")
+                                                         setlocal1
+                                                         getlex QName(PackageNamespace(""),"enabled")
+                                                         iffalse ofs0017
+                                                         getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"mouseState")
+                                                         coerce_s
+                                                         jump ofs001a
+                                                ofs0017:
+                                                         pushstring "disabled"
+                                                ofs001a:
+                                                         coerce_s
+                                                         setlocal2
+                                                         getlex QName(PackageNamespace(""),"selected")
+                                                         iffalse ofs003e
+                                                         pushstring "selected"
+                                                         getlocal2
+                                                         pushbyte 0
+                                                         pushbyte 1
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substr"), 2
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toUpperCase"), 0
+                                                         add
+                                                         getlocal2
+                                                         pushbyte 1
+                                                         callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"substr"), 1
+                                                         add
+                                                         coerce_s
+                                                         setlocal2
+                                                ofs003e:
+                                                         getlocal2
+                                                         pushstring "Icon"
+                                                         add
+                                                         setlocal2
+                                                         findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                         getlocal2
+                                                         callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                         coerce QName(PackageNamespace(""),"Object")
+                                                         setlocal3
+                                                         getlocal3
+                                                         pushnull
+                                                         ifne ofs0062
+                                                         findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                         pushstring "icon"
+                                                         callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                         coerce QName(PackageNamespace(""),"Object")
+                                                         setlocal3
+                                                ofs0062:
+                                                         getlocal3
+                                                         pushnull
+                                                         ifeq ofs0076
+                                                         findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                         findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getDisplayObjectInstance")
+                                                         getlocal3
+                                                         callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getDisplayObjectInstance"), 1
+                                                         initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                ofs0076:
+                                                         getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                         pushnull
+                                                         ifeq ofs008a
+                                                         findpropstrict QName(PackageNamespace(""),"addChildAt")
+                                                         getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                         pushbyte 1
+                                                         callpropvoid QName(PackageNamespace(""),"addChildAt"), 2
+                                                ofs008a:
+                                                         getlocal1
+                                                         pushnull
+                                                         equals
+                                                         not
+                                                         dup
+                                                         iffalse ofs009a
+                                                         pop
+                                                         getlocal1
+                                                         getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                         equals
+                                                         not
+                                                ofs009a:
+                                                         iffalse ofs00a6
+                                                         findpropstrict QName(PackageNamespace(""),"removeChild")
+                                                         getlocal1
+                                                         callpropvoid QName(PackageNamespace(""),"removeChild"), 1
+                                                ofs00a6:
+                                                         returnvoid
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             protected function drawTextFormat() : void
+                                             {
+                                                trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"drawTextFormat")
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      returns QName(PackageNamespace(""),"void")
+                                                      
+                                                      body
+                                                         maxstack 2
+                                                         localcount 4
+                                                         initscopedepth 11
+                                                         maxscopedepth 12
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushscope
+                                                            getlex QName(PackageNamespace("fl.core"),"UIComponent")
+                                                            callproperty QName(PackageNamespace(""),"getStyleDefinition"), 0
+                                                            coerce QName(PackageNamespace(""),"Object")
+                                                            setlocal1
+                                                            getlex QName(PackageNamespace(""),"enabled")
+                                                            iffalse ofs0021
+                                                            getlocal1
+                                                            getproperty Multiname("defaultTextFormat",[PrivateNamespace(null,"102"),PackageNamespace(""),PackageNamespace("fl.controls"),ProtectedNamespace("fl.controls:LabelButton"),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"230"),PackageInternalNs("fl.controls"),StaticProtectedNs("fl.controls:LabelButton"),StaticProtectedNs("fl.controls:BaseButton"),StaticProtectedNs("fl.core:UIComponent"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                                            getlex QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            astypelate
+                                                            coerce QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            jump ofs002c
+                                                   ofs0021:
+                                                            getlocal1
+                                                            getproperty Multiname("defaultDisabledTextFormat",[PrivateNamespace(null,"102"),PackageNamespace(""),PackageNamespace("fl.controls"),ProtectedNamespace("fl.controls:LabelButton"),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"230"),PackageInternalNs("fl.controls"),StaticProtectedNs("fl.controls:LabelButton"),StaticProtectedNs("fl.controls:BaseButton"),StaticProtectedNs("fl.core:UIComponent"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                                            getlex QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            astypelate
+                                                            coerce QName(PackageNamespace("flash.text"),"TextFormat")
+                                                   ofs002c:
+                                                            coerce QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            setlocal2
+                                                            getlex QName(PackageNamespace(""),"textField")
+                                                            getlocal2
+                                                            callpropvoid QName(PackageNamespace(""),"setTextFormat"), 1
+                                                            findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                            getlex QName(PackageNamespace(""),"enabled")
+                                                            iffalse ofs0049
+                                                            pushstring "textFormat"
+                                                            jump ofs004c
+                                                   ofs0049:
+                                                            pushstring "disabledTextFormat"
+                                                   ofs004c:
+                                                            callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                            getlex QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            astypelate
+                                                            coerce QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            setlocal3
+                                                            getlocal3
+                                                            pushnull
+                                                            ifeq ofs006a
+                                                            getlex QName(PackageNamespace(""),"textField")
+                                                            getlocal3
+                                                            callpropvoid QName(PackageNamespace(""),"setTextFormat"), 1
+                                                            jump ofs006f
+                                                   ofs006a:
+                                                            getlocal2
+                                                            coerce QName(PackageNamespace("flash.text"),"TextFormat")
+                                                            setlocal3
+                                                   ofs006f:
+                                                            getlex QName(PackageNamespace(""),"textField")
+                                                            getlocal3
+                                                            setproperty QName(PackageNamespace(""),"defaultTextFormat")
+                                                            findpropstrict QName(ProtectedNamespace("fl.controls:LabelButton"),"setEmbedFont")
+                                                            callpropvoid QName(ProtectedNamespace("fl.controls:LabelButton"),"setEmbedFont"), 0
+                                                            returnvoid
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                protected function setEmbedFont() : *
+                                                {
+                                                   trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"setEmbedFont")
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         returns null
+                                                         
+                                                         body
+                                                            maxstack 2
+                                                            localcount 2
+                                                            initscopedepth 11
+                                                            maxscopedepth 12
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushscope
+                                                               findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                               pushstring "embedFonts"
+                                                               callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                               coerce QName(PackageNamespace(""),"Object")
+                                                               setlocal1
+                                                               getlocal1
+                                                               pushnull
+                                                               ifeq ofs001c
+                                                               getlex QName(PackageNamespace(""),"textField")
+                                                               getlocal1
+                                                               setproperty QName(PackageNamespace(""),"embedFonts")
+                                                      ofs001c:
+                                                               returnvoid
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                   
+                                                   override protected function drawLayout() : void
+                                                   {
+                                                      trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"drawLayout")
+                                                         flag OVERRIDE
+                                                         dispid 0
+                                                         method
+                                                            name null
+                                                            returns QName(PackageNamespace(""),"void")
+                                                            
+                                                            body
+                                                               maxstack 7
+                                                               localcount 10
+                                                               initscopedepth 11
+                                                               maxscopedepth 12
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushscope
+                                                                  pushnan
+                                                                  setlocal 7
+                                                                  pushnan
+                                                                  setlocal 8
+                                                                  findpropstrict QName(PackageNamespace(""),"Number")
+                                                                  findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                                  pushstring "textPadding"
+                                                                  callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                                  callproperty QName(PackageNamespace(""),"Number"), 1
+                                                                  convert_d
+                                                                  setlocal1
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  pushnull
+                                                                  equals
+                                                                  dup
+                                                                  iffalse ofs002b
+                                                                  pop
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"mode")
+                                                                  pushstring "center"
+                                                                  equals
+                                                         ofs002b:
+                                                                  iffalse ofs003a
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"TOP")
+                                                                  coerce_s
+                                                                  jump ofs003e
+                                                         ofs003a:
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_labelPlacement")
+                                                                  coerce_s
+                                                         ofs003e:
+                                                                  coerce_s
+                                                                  setlocal2
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"textHeight")
+                                                                  pushbyte 4
+                                                                  add
+                                                                  setproperty QName(PackageNamespace(""),"height")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"textWidth")
+                                                                  pushbyte 4
+                                                                  add
+                                                                  convert_d
+                                                                  setlocal3
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"textHeight")
+                                                                  pushbyte 4
+                                                                  add
+                                                                  convert_d
+                                                                  setlocal 4
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  pushnull
+                                                                  ifne ofs0075
+                                                                  pushbyte 0
+                                                                  convert_d
+                                                                  jump ofs007e
+                                                         ofs0075:
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getproperty QName(PackageNamespace(""),"width")
+                                                                  getlocal1
+                                                                  add
+                                                                  convert_d
+                                                         ofs007e:
+                                                                  convert_d
+                                                                  setlocal 5
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  pushnull
+                                                                  ifne ofs0090
+                                                                  pushbyte 0
+                                                                  convert_d
+                                                                  jump ofs0099
+                                                         ofs0090:
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getproperty QName(PackageNamespace(""),"height")
+                                                                  getlocal1
+                                                                  add
+                                                                  convert_d
+                                                         ofs0099:
+                                                                  convert_d
+                                                                  setlocal 6
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlex QName(PackageNamespace(""),"label")
+                                                                  getproperty QName(PackageNamespace(""),"length")
+                                                                  pushbyte 0
+                                                                  greaterthan
+                                                                  setproperty QName(PackageNamespace(""),"visible")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  pushnull
+                                                                  ifeq ofs00e7
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlex QName(PackageNamespace(""),"width")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getproperty QName(PackageNamespace(""),"width")
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  divide
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"x")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlex QName(PackageNamespace(""),"height")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getproperty QName(PackageNamespace(""),"height")
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  divide
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"y")
+                                                         ofs00e7:
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"visible")
+                                                                  pushfalse
+                                                                  ifne ofs0106
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  pushbyte 0
+                                                                  setproperty QName(PackageNamespace(""),"width")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  pushbyte 0
+                                                                  setproperty QName(PackageNamespace(""),"height")
+                                                                  jump ofs02b8
+                                                         ofs0106:
+                                                                  getlocal2
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"BOTTOM")
+                                                                  equals
+                                                                  dup
+                                                                  iftrue ofs011c
+                                                                  pop
+                                                                  getlocal2
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"TOP")
+                                                                  equals
+                                                         ofs011c:
+                                                                  iffalse ofs0207
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  pushbyte 0
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlocal3
+                                                                  getlex QName(PackageNamespace(""),"width")
+                                                                  pushbyte 2
+                                                                  getlocal1
+                                                                  multiply
+                                                                  subtract
+                                                                  callproperty QName(PackageNamespace(""),"min"), 2
+                                                                  callproperty QName(PackageNamespace(""),"max"), 2
+                                                                  convert_d
+                                                                  setlocal 7
+                                                                  getlex QName(PackageNamespace(""),"height")
+                                                                  pushbyte 2
+                                                                  subtract
+                                                                  getlocal 4
+                                                                  ifngt ofs0151
+                                                                  getlocal 4
+                                                                  convert_d
+                                                                  setlocal 8
+                                                                  jump ofs015a
+                                                         ofs0151:
+                                                                  getlex QName(PackageNamespace(""),"height")
+                                                                  pushbyte 2
+                                                                  subtract
+                                                                  convert_d
+                                                                  setlocal 8
+                                                         ofs015a:
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlocal 7
+                                                                  dup
+                                                                  setlocal 9
+                                                                  convert_d
+                                                                  setlocal3
+                                                                  getlocal 9
+                                                                  kill 9
+                                                                  setproperty QName(PackageNamespace(""),"width")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlocal 8
+                                                                  dup
+                                                                  setlocal 9
+                                                                  convert_d
+                                                                  setlocal 4
+                                                                  getlocal 9
+                                                                  kill 9
+                                                                  setproperty QName(PackageNamespace(""),"height")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlex QName(PackageNamespace(""),"width")
+                                                                  getlocal3
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  divide
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"x")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlex QName(PackageNamespace(""),"height")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"height")
+                                                                  subtract
+                                                                  getlocal 6
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  divide
+                                                                  getlocal2
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"BOTTOM")
+                                                                  ifne ofs01ba
+                                                                  getlocal 6
+                                                                  coerce_a
+                                                                  jump ofs01bd
+                                                         ofs01ba:
+                                                                  pushbyte 0
+                                                                  coerce_a
+                                                         ofs01bd:
+                                                                  add
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"y")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  pushnull
+                                                                  ifeq ofs0203
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlocal2
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"BOTTOM")
+                                                                  ifne ofs01ec
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"y")
+                                                                  getlocal 6
+                                                                  subtract
+                                                                  convert_d
+                                                                  jump ofs01fc
+                                                         ofs01ec:
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"y")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"height")
+                                                                  add
+                                                                  getlocal1
+                                                                  add
+                                                                  convert_d
+                                                         ofs01fc:
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"y")
+                                                         ofs0203:
+                                                                  jump ofs02b8
+                                                         ofs0207:
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  pushbyte 0
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlocal3
+                                                                  getlex QName(PackageNamespace(""),"width")
+                                                                  getlocal 5
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  getlocal1
+                                                                  multiply
+                                                                  subtract
+                                                                  callproperty QName(PackageNamespace(""),"min"), 2
+                                                                  callproperty QName(PackageNamespace(""),"max"), 2
+                                                                  convert_d
+                                                                  setlocal 7
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlocal 7
+                                                                  dup
+                                                                  setlocal 9
+                                                                  convert_d
+                                                                  setlocal3
+                                                                  getlocal 9
+                                                                  kill 9
+                                                                  setproperty QName(PackageNamespace(""),"width")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlex QName(PackageNamespace(""),"width")
+                                                                  getlocal3
+                                                                  subtract
+                                                                  getlocal 5
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  divide
+                                                                  getlocal2
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"LEFT")
+                                                                  ifeq ofs025a
+                                                                  getlocal 5
+                                                                  coerce_a
+                                                                  jump ofs025d
+                                                         ofs025a:
+                                                                  pushbyte 0
+                                                                  coerce_a
+                                                         ofs025d:
+                                                                  add
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"x")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlex QName(PackageNamespace(""),"height")
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"height")
+                                                                  subtract
+                                                                  pushbyte 2
+                                                                  divide
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"y")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  pushnull
+                                                                  ifeq ofs02b8
+                                                                  getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                                                  getlex QName(PackageNamespace(""),"Math")
+                                                                  getlocal2
+                                                                  getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                                                  getproperty QName(PackageNamespace(""),"LEFT")
+                                                                  ifeq ofs02a6
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"x")
+                                                                  getlocal 5
+                                                                  subtract
+                                                                  convert_d
+                                                                  jump ofs02b1
+                                                         ofs02a6:
+                                                                  getlex QName(PackageNamespace(""),"textField")
+                                                                  getproperty QName(PackageNamespace(""),"x")
+                                                                  getlocal3
+                                                                  add
+                                                                  getlocal1
+                                                                  add
+                                                                  convert_d
+                                                         ofs02b1:
+                                                                  callproperty QName(PackageNamespace(""),"round"), 1
+                                                                  setproperty QName(PackageNamespace(""),"x")
+                                                         ofs02b8:
+                                                                  getlocal0
+                                                                  callsupervoid QName(ProtectedNamespace("fl.controls:BaseButton"),"drawLayout"), 0
+                                                                  returnvoid
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                      }
+                                                      
+                                                      override protected function keyDownHandler(param1:KeyboardEvent) : void
+                                                      {
+                                                         trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"keyDownHandler")
+                                                            flag OVERRIDE
+                                                            dispid 0
+                                                            method
+                                                               name null
+                                                               param QName(PackageNamespace("flash.events"),"KeyboardEvent")
+                                                               returns QName(PackageNamespace(""),"void")
+                                                               
+                                                               body
+                                                                  maxstack 2
+                                                                  localcount 2
+                                                                  initscopedepth 11
+                                                                  maxscopedepth 12
+                                                                  
+                                                                  code
+                                                                     getlocal0
+                                                                     pushscope
+                                                                     getlex QName(PackageNamespace(""),"enabled")
+                                                                     iftrue ofs000a
+                                                                     returnvoid
+                                                            ofs000a:
+                                                                     getlocal1
+                                                                     getproperty QName(PackageNamespace(""),"keyCode")
+                                                                     getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                     getproperty QName(PackageNamespace(""),"SPACE")
+                                                                     ifne ofs003a
+                                                                     getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"oldMouseState")
+                                                                     pushnull
+                                                                     ifne ofs0029
+                                                                     findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"oldMouseState")
+                                                                     getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"mouseState")
+                                                                     initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"oldMouseState")
+                                                            ofs0029:
+                                                                     findpropstrict QName(PackageNamespace(""),"setMouseState")
+                                                                     pushstring "down"
+                                                                     callpropvoid QName(PackageNamespace(""),"setMouseState"), 1
+                                                                     findpropstrict QName(ProtectedNamespace("fl.controls:BaseButton"),"startPress")
+                                                                     callpropvoid QName(ProtectedNamespace("fl.controls:BaseButton"),"startPress"), 0
+                                                            ofs003a:
+                                                                     returnvoid
+                                                                  end ; code
+                                                               end ; body
+                                                            end ; method
+                                                         }
+                                                         
+                                                         override protected function keyUpHandler(param1:KeyboardEvent) : void
+                                                         {
+                                                            trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"keyUpHandler")
+                                                               flag OVERRIDE
+                                                               dispid 0
+                                                               method
+                                                                  name null
+                                                                  param QName(PackageNamespace("flash.events"),"KeyboardEvent")
+                                                                  returns QName(PackageNamespace(""),"void")
+                                                                  
+                                                                  body
+                                                                     maxstack 3
+                                                                     localcount 2
+                                                                     initscopedepth 11
+                                                                     maxscopedepth 12
+                                                                     
+                                                                     code
+                                                                        getlocal0
+                                                                        pushscope
+                                                                        getlex QName(PackageNamespace(""),"enabled")
+                                                                        iftrue ofs000a
+                                                                        returnvoid
+                                                               ofs000a:
+                                                                        getlocal1
+                                                                        getproperty QName(PackageNamespace(""),"keyCode")
+                                                                        getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                        getproperty QName(PackageNamespace(""),"SPACE")
+                                                                        ifne ofs0041
+                                                                        findpropstrict QName(PackageNamespace(""),"setMouseState")
+                                                                        getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"oldMouseState")
+                                                                        callpropvoid QName(PackageNamespace(""),"setMouseState"), 1
+                                                                        findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"oldMouseState")
+                                                                        pushnull
+                                                                        initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"oldMouseState")
+                                                                        findpropstrict QName(ProtectedNamespace("fl.controls:BaseButton"),"endPress")
+                                                                        callpropvoid QName(ProtectedNamespace("fl.controls:BaseButton"),"endPress"), 0
+                                                                        findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                        findpropstrict QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                        getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                        getproperty QName(PackageNamespace(""),"CLICK")
+                                                                        constructprop QName(PackageNamespace("flash.events"),"MouseEvent"), 1
+                                                                        callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                               ofs0041:
+                                                                        returnvoid
+                                                                     end ; code
+                                                                  end ; body
+                                                               end ; method
+                                                            }
+                                                            
+                                                            override protected function initializeAccessibility() : void
+                                                            {
+                                                               trait method QName(ProtectedNamespace("fl.controls:LabelButton"),"initializeAccessibility")
+                                                                  flag OVERRIDE
+                                                                  dispid 0
+                                                                  method
+                                                                     name null
+                                                                     returns QName(PackageNamespace(""),"void")
+                                                                     
+                                                                     body
+                                                                        maxstack 2
+                                                                        localcount 1
+                                                                        initscopedepth 11
+                                                                        maxscopedepth 12
+                                                                        
+                                                                        code
+                                                                           getlocal0
+                                                                           pushscope
+                                                                           getlex QName(PackageNamespace("fl.controls"),"LabelButton")
+                                                                           getproperty QName(PackageNamespace(""),"createAccessibilityImplementation")
+                                                                           pushnull
+                                                                           ifeq ofs0015
+                                                                           getlex QName(PackageNamespace("fl.controls"),"LabelButton")
+                                                                           getlocal0
+                                                                           callpropvoid QName(PackageNamespace(""),"createAccessibilityImplementation"), 1
+                                                                  ofs0015:
+                                                                           returnvoid
+                                                                        end ; code
+                                                                     end ; body
+                                                                  end ; method
+                                                               }
+                                                            }
+                                                         }
+                                                         
+                                                         method
+                                                            name null
+                                                            returns null
+                                                            
+                                                            body
+                                                               maxstack 52
+                                                               localcount 1
+                                                               initscopedepth 1
+                                                               maxscopedepth 10
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushbyte 37
+                                                                  pushbyte 34
+                                                                  ifne ofs0010
+                                                                  returnvoid
+                                                                  newobject 536870911
+                                                         ofs0010:
+                                                                  pushscope
+                                                                  findpropstrict Multiname("LabelButton",[PackageNamespace("fl.controls")])
+                                                                  getlex QName(PackageNamespace(""),"Object")
+                                                                  jump ofs001f
+                                                                  dup
+                                                                  convert_b
+                                                                  pushscope
+                                                                  decrement
+                                                                  pushscope
+                                                         ofs001f:
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                                                                  jump ofs002c
+                                                                  subtract_i
+                                                                  equals
+                                                                  pushundefined
+                                                                  nextname
+                                                                  not
+                                                         ofs002c:
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                                                                  pushscope
+                                                                  jump ofs003a
+                                                                  not
+                                                                  pushundefined
+                                                                  popscope
+                                                                  negate
+                                                                  pushwith
+                                                                  bitor
+                                                         ofs003a:
+                                                                  getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("flash.display"),"Sprite")
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("fl.core"),"UIComponent")
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("fl.controls"),"BaseButton")
+                                                                  pushscope
+                                                                  getlex QName(PackageNamespace("fl.controls"),"BaseButton")
+                                                                  newclass 380
+                                                                  popscope
+                                                                  jump ofs005b
+                                                                  coerce_s
+                                                                  getlocal1
+                                                                  lshift
+                                                                  multiply
+                                                                  getlocal3
+                                                                  divide
+                                                         ofs005b:
+                                                                  popscope
+                                                                  popscope
+                                                                  popscope
+                                                                  popscope
+                                                                  popscope
+                                                                  popscope
+                                                                  popscope
+                                                                  initproperty QName(PackageNamespace("fl.controls"),"LabelButton")
+                                                                  returnvoid
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                         

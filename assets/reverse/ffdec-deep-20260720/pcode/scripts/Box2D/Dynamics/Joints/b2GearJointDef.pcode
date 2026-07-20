@@ -1,0 +1,125 @@
+package Box2D.Dynamics.Joints
+{
+   import Box2D.Common.b2internal;
+   
+   use namespace b2internal;
+   
+   public class b2GearJointDef extends b2JointDef
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var joint1:b2Joint;
+      
+      public var joint2:b2Joint;
+      
+      public var ratio:Number;
+      
+      public function b2GearJointDef()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  findproperty QName(PackageNamespace(""),"type")
+                  getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2Joint")
+                  getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_gearJoint")
+                  initproperty QName(PackageNamespace(""),"type")
+                  getlocal0
+                  pushnull
+                  initproperty QName(PackageNamespace(""),"joint1")
+                  getlocal0
+                  pushnull
+                  initproperty QName(PackageNamespace(""),"joint2")
+                  getlocal0
+                  pushbyte 1
+                  jump ofs0036
+                  negate
+                  greaterequals
+                  setlocal0
+                  decrement_i
+                  getlocal3
+                  not
+         ofs0036:
+                  initproperty QName(PackageNamespace(""),"ratio")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 4
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2GearJointDef",[PackageNamespace("Box2D.Dynamics.Joints")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+         pushscope
+         getlex QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2JointDef")
+         newclass 138
+         popscope
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Dynamics.Joints"),"b2GearJointDef")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

@@ -1,0 +1,278 @@
+package Box2D.Dynamics
+{
+   import Box2D.Common.b2internal;
+   
+   use namespace b2internal;
+   
+   public class b2ContactFilter
+   {
+      
+      b2internal static var b2_defaultFilter:b2ContactFilter;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               add_i
+               coerce_s
+               lessthan
+               pushnull
+               getlocal3
+               astypelate
+      ofs001a:
+               pushscope
+               findproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"b2_defaultFilter")
+               getlocal0
+               construct 0
+               pushfalse
+               iffalse ofs002f
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs0032
+      ofs002f:
+               setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"b2_defaultFilter")
+      ofs0032:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function b2ContactFilter()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function ShouldCollide(param1:b2Fixture, param2:b2Fixture) : Boolean
+      {
+         trait method QName(PackageNamespace(""),"ShouldCollide")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+               param QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+               returns QName(PackageNamespace(""),"Boolean")
+               
+               body
+                  maxstack 52
+                  localcount 6
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal1
+                     callproperty QName(PackageNamespace(""),"GetFilterData"), 0
+                     jump ofs001f
+                     hasnext
+                     setlocal1
+                     subtract_i
+                     swap
+                     not
+            ofs001f:
+                     coerce QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData")
+                     setlocal3
+                     getlocal2
+                     callproperty QName(PackageNamespace(""),"GetFilterData"), 0
+                     coerce QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData")
+                     setlocal 4
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"groupIndex")
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"groupIndex")
+                     equals
+                     dup
+                     iffalse ofs004c
+                     pop
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"groupIndex")
+                     jump ofs0048
+                     getlocal2
+                     multiply_i
+                     subtract
+                     pushundefined
+                     pushwith
+            ofs0048:
+                     pushbyte 0
+                     equals
+                     not
+            ofs004c:
+                     iffalse ofs0061
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"groupIndex")
+                     jump ofs005d
+                     getglobalscope
+                     convert_s
+                     multiply
+                     coerce_s
+                     getlocal3
+            ofs005d:
+                     pushbyte 0
+                     greaterthan
+                     returnvalue
+            ofs0061:
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"maskBits")
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"categoryBits")
+                     bitand
+                     pushbyte 0
+                     equals
+                     jump ofs0077
+                     nextname
+                     urshift
+                     pushnull
+                     setlocal2
+                     lessthan
+            ofs0077:
+                     not
+                     dup
+                     iffalse ofs0095
+                     pop
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"categoryBits")
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"maskBits")
+                     bitand
+                     jump ofs0091
+                     pushscope
+                     getlocal0
+                     bitnot
+                     pushnan
+                     increment
+            ofs0091:
+                     pushbyte 0
+                     equals
+                     not
+            ofs0095:
+                     convert_b
+                     dup
+                     setlocal 5
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function RayCollide(param1:*, param2:b2Fixture) : Boolean
+         {
+            trait method QName(PackageNamespace(""),"RayCollide")
+               dispid 0
+               method
+                  name null
+                  param null
+                  param QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                  returns QName(PackageNamespace(""),"Boolean")
+                  
+                  body
+                     maxstack 53
+                     localcount 3
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal1
+                        iftrue ofs0018
+                        pushtrue
+                        returnvalue
+               ofs0018:
+                        getlocal0
+                        getlocal1
+                        getlex QName(PackageNamespace("Box2D.Dynamics"),"b2Fixture")
+                        astypelate
+                        getlocal2
+                        callproperty QName(PackageNamespace(""),"ShouldCollide"), 2
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+         }
+      }
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 52
+            localcount 1
+            initscopedepth 1
+            maxscopedepth 3
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findpropstrict Multiname("b2ContactFilter",[PackageNamespace("Box2D.Dynamics")])
+               getlex QName(PackageNamespace(""),"Object")
+               pushscope
+               getlex QName(PackageNamespace(""),"Object")
+               newclass 92
+               popscope
+               initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2ContactFilter")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      

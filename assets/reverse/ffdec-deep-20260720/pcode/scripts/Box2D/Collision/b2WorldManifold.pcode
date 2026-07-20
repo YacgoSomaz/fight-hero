@@ -1,0 +1,1589 @@
+package Box2D.Collision
+{
+   import Box2D.Common.*;
+   import Box2D.Common.Math.*;
+   
+   use namespace b2internal;
+   
+   public class b2WorldManifold
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var m_normal:b2Vec2;
+      
+      public var m_points:Array;
+      
+      public function b2WorldManifold()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 2
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  jump ofs001a
+                  convert_o
+                  pushscope
+                  modulo
+                  convert_u
+                  not
+                  nextname
+         ofs001a:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"m_normal")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                  getproperty QName(PackageNamespace(""),"b2_maxManifoldPoints")
+                  constructprop QName(PackageNamespace(""),"Array"), 1
+                  initproperty QName(PackageNamespace(""),"m_points")
+                  pushbyte 0
+                  setlocal1
+                  nop
+         ofs003a:
+                  label
+                  getlocal1
+                  jump ofs0046
+                  istypelate
+                  hasnext
+                  urshift
+                  bitor
+                  getlocal3
+                  decrement_i
+         ofs0046:
+                  getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                  getproperty QName(PackageNamespace(""),"b2_maxManifoldPoints")
+                  iflt ofs0054
+                  jump ofs0058
+         ofs0054:
+                  jump ofs005c
+         ofs0058:
+                  jump ofs008c
+         ofs005c:
+                  getlocal0
+                  jump ofs0067
+                  setlocal0
+                  getglobalscope
+                  bitor
+                  pushscope
+                  pushwith
+                  lessequals
+         ofs0067:
+                  getproperty QName(PackageNamespace(""),"m_points")
+                  getlocal1
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  pushfalse
+                  iffalse ofs007f
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0082
+         ofs007f:
+                  setproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+         ofs0082:
+                  inclocal_i 1
+                  pushbyte 2
+                  pushbyte 3
+                  ifne ofs003a
+         ofs008c:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function Initialize(param1:b2Manifold, param2:b2Transform, param3:Number, param4:b2Transform, param5:Number) : void
+      {
+         trait method QName(PackageNamespace(""),"Initialize")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Collision"),"b2Manifold")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+               param QName(PackageNamespace(""),"Number")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+               param QName(PackageNamespace(""),"Number")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 56
+                  localcount 28
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     pushbyte 0
+                     setlocal 6
+                     pushnull
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     pushnull
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     jump ofs0025
+                     lessequals
+                     equals
+                     add_i
+                     multiply
+            ofs0025:
+                     setlocal 8
+                     pushnan
+                     jump ofs0031
+                     newactivation
+                     greaterequals
+                     hasnext
+                     convert_d
+                     setlocal3
+            ofs0031:
+                     setlocal 9
+                     pushnan
+                     setlocal 10
+                     pushnan
+                     setlocal 11
+                     pushnan
+                     setlocal 12
+                     pushnan
+                     setlocal 13
+                     pushnan
+                     jump ofs0049
+                     hasnext
+                     bitor
+                     istypelate
+                     decrement
+                     swap
+            ofs0049:
+                     setlocal 14
+                     pushnan
+                     setlocal 15
+                     pushnan
+                     setlocal 16
+                     pushnan
+                     setlocal 17
+                     pushnan
+                     jump ofs005e
+                     getlocal2
+                     pushtrue
+                     subtract_i
+                     nextname
+                     getglobalscope
+            ofs005e:
+                     setlocal 18
+                     pushnan
+                     jump ofs006a
+                     getglobalscope
+                     convert_o
+                     subtract
+                     increment_i
+                     dup
+            ofs006a:
+                     setlocal 19
+                     pushnan
+                     setlocal 20
+                     pushnan
+                     setlocal 21
+                     pushnan
+                     jump ofs007c
+                     nextname
+                     setlocal1
+                     multiply
+                     negate_i
+                     bitand
+            ofs007c:
+                     setlocal 22
+                     pushnan
+                     setlocal 23
+                     pushnan
+                     setlocal 24
+                     pushnan
+                     jump ofs008e
+                     nextname
+                     setlocal1
+                     multiply
+                     negate_i
+                     bitand
+            ofs008e:
+                     setlocal 25
+                     pushnan
+                     setlocal 26
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_pointCount")
+                     jump ofs00a0
+                     pushscope
+                     decrement
+                     pushnull
+                     nextvalue
+                     pushnan
+            ofs00a0:
+                     pushbyte 0
+                     ifne ofs00a7
+                     returnvoid
+            ofs00a7:
+                     jump ofs0893
+            ofs00ab:
+                     label
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     jump ofs00be
+                     coerce_a
+                     bitnot
+                     bitnot
+                     istypelate
+                     setlocal0
+            ofs00be:
+                     getproperty QName(PackageNamespace(""),"m_localPoint")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs00dd
+                     pop
+                     typeof
+                     nextname
+                     astypelate
+                     negate
+            ofs00dd:
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 15
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 8
+                     jump ofs0109
+                     checkfilter
+                     getlocal0
+                     divide
+                     increment_i
+                     lshift
+                     convert_i
+            ofs0109:
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs0128
+                     modulo
+                     popscope
+                     pushfalse
+                     negate_i
+                     decrement_i
+                     convert_d
+            ofs0128:
+                     getlocal 7
+                     jump ofs0134
+                     popscope
+                     coerce_s
+                     convert_b
+                     nextvalue
+                     getlocal2
+                     lshift
+            ofs0134:
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 16
+                     getlocal 4
+                     jump ofs0148
+                     multiply
+                     subtract_i
+                     urshift
+                     istypelate
+                     astypelate
+                     setlocal3
+            ofs0148:
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     pushbyte 0
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getproperty Multiname("m_localPoint",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs0188
+                     getlocal0
+                     astypelate
+                     convert_i
+                     astypelate
+                     getlocal0
+                     subtract
+            ofs0188:
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 17
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 18
+                     getlocal 17
+                     getlocal 15
+                     subtract
+                     convert_d
+                     setlocal 19
+                     getlocal 18
+                     getlocal 16
+                     subtract
+                     convert_d
+                     setlocal 20
+                     getlocal 19
+                     jump ofs01d7
+                     bitand
+                     getlocal2
+                     convert_u
+                     increment_i
+                     urshift
+                     pushtrue
+            ofs01d7:
+                     getlocal 19
+                     multiply
+                     getlocal 20
+                     getlocal 20
+                     multiply
+                     add
+                     convert_d
+                     dup
+                     setlocal 21
+                     getlex QName(PackageNamespace(""),"Number")
+                     getproperty QName(PackageNamespace(""),"MIN_VALUE")
+                     getlex QName(PackageNamespace(""),"Number")
+                     getproperty QName(PackageNamespace(""),"MIN_VALUE")
+                     multiply
+                     ifngt ofs024b
+                     getlex QName(PackageNamespace(""),"Math")
+                     getlocal 21
+                     callproperty QName(PackageNamespace(""),"sqrt"), 1
+                     convert_d
+                     setlocal 26
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     jump ofs020d
+                     pushwith
+                     strictequals
+                     pushtrue
+                     getglobalscope
+                     istypelate
+                     setlocal1
+            ofs020d:
+                     getlocal 19
+                     getlocal 26
+                     divide
+                     pushfalse
+                     iffalse ofs0220
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0223
+            ofs0220:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs0223:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getlocal 20
+                     getlocal 26
+                     jump ofs0235
+                     pushwith
+                     strictequals
+                     pushtrue
+                     getglobalscope
+                     istypelate
+                     setlocal1
+            ofs0235:
+                     divide
+                     pushfalse
+                     iffalse ofs0244
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0247
+            ofs0244:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0247:
+                     jump ofs0284
+            ofs024b:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     pushbyte 1
+                     pushfalse
+                     iffalse ofs025f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0262
+            ofs025f:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs0262:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     pushbyte 0
+                     jump ofs0273
+                     convert_s
+                     convert_i
+                     subtract_i
+                     pushtrue
+                     bitor
+                     greaterthan
+                     setlocal2
+            ofs0273:
+                     pushfalse
+                     iffalse ofs0281
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0284
+            ofs0281:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0284:
+                     getlocal 15
+                     getlocal3
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     convert_d
+                     jump ofs029c
+                     negate_i
+                     decrement_i
+                     setlocal2
+                     popscope
+                     setlocal3
+                     bitnot
+                     pushundefined
+            ofs029c:
+                     setlocal 22
+                     getlocal 16
+                     getlocal3
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     jump ofs02b5
+                     multiply_i
+                     lshift
+                     negate_i
+                     instanceof
+                     swap
+                     negate_i
+                     pushwith
+            ofs02b5:
+                     convert_d
+                     setlocal 23
+                     getlocal 17
+                     getlocal 5
+                     jump ofs02c7
+                     add_i
+                     increment_i
+                     lessequals
+                     getlocal3
+                     getglobalscope
+                     getlocal0
+                     getlocal2
+            ofs02c7:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     subtract
+                     jump ofs02db
+                     typeof
+                     subtract
+                     convert_o
+                     getglobalscope
+                     dup
+                     not
+                     equals
+            ofs02db:
+                     convert_d
+                     setlocal 24
+                     getlocal 18
+                     getlocal 5
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     subtract
+                     convert_d
+                     setlocal 25
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     pushbyte 0
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     pushdouble 0.5
+                     getlocal 22
+                     getlocal 24
+                     add
+                     multiply
+                     pushfalse
+                     iffalse ofs030d
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0310
+            ofs030d:
+                     setproperty Multiname("x",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+            ofs0310:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     pushbyte 0
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     pushdouble 0.5
+                     getlocal 23
+                     getlocal 25
+                     jump ofs032a
+                     pushnan
+                     increment
+                     astypelate
+                     pushtrue
+                     bitand
+                     coerce_s
+                     setlocal0
+            ofs032a:
+                     add
+                     multiply
+                     pushfalse
+                     iffalse ofs033a
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs033d
+            ofs033a:
+                     setproperty Multiname("y",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+            ofs033d:
+                     jump ofs0906
+            ofs0341:
+                     label
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_localPlaneNormal")
+                     jump ofs0359
+                     bitnot
+                     negate
+                     increment
+                     popscope
+                     pushnan
+                     modulo
+                     popscope
+            ofs0359:
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     jump ofs0366
+                     getlocal3
+                     setlocal0
+                     pushfalse
+                     instanceof
+                     setlocal0
+                     nextname
+                     nextvalue
+            ofs0366:
+                     setlocal 7
+                     getlocal 8
+                     jump ofs0375
+                     getlocal3
+                     setlocal0
+                     pushfalse
+                     instanceof
+                     setlocal0
+                     nextname
+                     nextvalue
+            ofs0375:
+                     getproperty QName(PackageNamespace(""),"col1")
+                     jump ofs0380
+                     istypelate
+                     greaterthan
+                     convert_d
+                     getlocal3
+            ofs0380:
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs039e
+                     lessthan
+                     convert_u
+                     typeof
+                     getglobalscope
+            ofs039e:
+                     multiply
+                     add
+                     convert_d
+                     setlocal 9
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 10
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_localPoint")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 8
+                     jump ofs03e4
+                     getlocal1
+                     getlocal3
+                     getlocal2
+                     pushtrue
+            ofs03e4:
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     jump ofs0407
+                     divide
+                     pushnan
+                     lessthan
+                     convert_s
+            ofs0407:
+                     add
+                     convert_d
+                     setlocal 11
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs041a
+                     pushundefined
+                     bitand
+                     not
+                     convert_i
+            ofs041a:
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     jump ofs0427
+                     pushundefined
+                     bitand
+                     not
+                     convert_i
+            ofs0427:
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     jump ofs0434
+                     add
+                     multiply
+                     equals
+                     setlocal0
+            ofs0434:
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 12
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getlocal 9
+                     pushfalse
+                     iffalse ofs045f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0462
+            ofs045f:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs0462:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getlocal 10
+                     pushfalse
+                     iffalse ofs0476
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0479
+            ofs0476:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0479:
+                     pushbyte 0
+                     setlocal 6
+                     nop
+            ofs047e:
+                     label
+                     getlocal 6
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_pointCount")
+                     iflt ofs048d
+                     jump ofs0491
+            ofs048d:
+                     jump ofs0495
+            ofs0491:
+                     jump ofs05de
+            ofs0495:
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     getlocal 6
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getproperty Multiname("m_localPoint",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     jump ofs04cc
+                     negate
+                     not
+                     decrement_i
+                     equals
+            ofs04cc:
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 13
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs0507
+                     bitor
+                     dup
+                     getlocal3
+                     convert_s
+                     istypelate
+            ofs0507:
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 14
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     jump ofs051e
+                     bitor
+                     dup
+                     getlocal3
+                     convert_s
+                     istypelate
+            ofs051e:
+                     getlocal 6
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getlocal 13
+                     pushdouble 0.5
+                     getlocal3
+                     getlocal 13
+                     getlocal 11
+                     jump ofs0535
+                     increment
+                     getglobalscope
+                     pushscope
+                     convert_i
+                     bitor
+            ofs0535:
+                     subtract
+                     getlocal 9
+                     jump ofs0541
+                     greaterequals
+                     hasnext
+                     pushundefined
+                     setlocal0
+                     setlocal3
+            ofs0541:
+                     multiply
+                     jump ofs054b
+                     greaterequals
+                     hasnext
+                     pushundefined
+                     setlocal0
+                     setlocal3
+            ofs054b:
+                     subtract
+                     jump ofs0555
+                     subtract
+                     lessequals
+                     popscope
+                     modulo
+                     swap
+            ofs0555:
+                     getlocal 14
+                     getlocal 12
+                     subtract
+                     getlocal 10
+                     multiply
+                     subtract
+                     getlocal 5
+                     subtract
+                     multiply
+                     getlocal 9
+                     multiply
+                     add
+                     pushfalse
+                     iffalse ofs0574
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0577
+            ofs0574:
+                     setproperty Multiname("x",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+            ofs0577:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     getlocal 6
+                     jump ofs0586
+                     equals
+                     nextvalue
+                     lshift
+                     equals
+                     getglobalscope
+            ofs0586:
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getlocal 14
+                     pushdouble 0.5
+                     getlocal3
+                     getlocal 13
+                     getlocal 11
+                     subtract
+                     jump ofs059c
+                     increment_i
+                     swap
+                     pushwith
+                     convert_s
+                     dup
+            ofs059c:
+                     getlocal 9
+                     multiply
+                     subtract
+                     getlocal 14
+                     getlocal 12
+                     subtract
+                     jump ofs05ae
+                     increment_i
+                     swap
+                     pushwith
+                     convert_s
+                     dup
+            ofs05ae:
+                     getlocal 10
+                     multiply
+                     subtract
+                     getlocal 5
+                     subtract
+                     multiply
+                     jump ofs05bf
+                     convert_d
+                     setlocal3
+                     nextvalue
+                     convert_i
+                     bitand
+            ofs05bf:
+                     getlocal 10
+                     multiply
+                     add
+                     pushfalse
+                     iffalse ofs05d1
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs05d4
+            ofs05d1:
+                     setproperty Multiname("y",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+            ofs05d4:
+                     inclocal_i 6
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs047e
+            ofs05de:
+                     jump ofs0906
+            ofs05e2:
+                     label
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"R")
+                     jump ofs05f1
+                     bitxor
+                     convert_b
+                     setlocal1
+                     add
+                     pushnan
+            ofs05f1:
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_localPlaneNormal")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 9
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 10
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     jump ofs064e
+                     decrement_i
+                     greaterequals
+                     negate
+                     dxnslate
+                     negate
+                     nextvalue
+            ofs064e:
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_localPoint")
+                     jump ofs065e
+                     decrement_i
+                     greaterequals
+                     negate
+                     dxnslate
+                     negate
+                     nextvalue
+            ofs065e:
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal 4
+                     jump ofs066e
+                     swap
+                     bitor
+                     bitand
+                     bitnot
+                     lshift
+                     strictequals
+            ofs066e:
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs067e
+                     convert_i
+                     istypelate
+                     dxnslate
+                     getlocal2
+                     decrement_i
+                     pushnull
+            ofs067e:
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 11
+                     getlocal 4
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     jump ofs06c0
+                     nextvalue
+                     convert_o
+                     multiply_i
+                     add
+                     getlocal2
+                     setlocal2
+            ofs06c0:
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 12
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getlocal 9
+                     negate
+                     pushfalse
+                     iffalse ofs06e7
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs06ea
+            ofs06e7:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs06ea:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_normal")
+                     getlocal 10
+                     negate
+                     pushfalse
+                     iffalse ofs06ff
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0702
+            ofs06ff:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0702:
+                     pushbyte 0
+                     jump ofs070e
+                     strictequals
+                     setlocal1
+                     newactivation
+                     pushfalse
+                     astypelate
+                     equals
+            ofs070e:
+                     setlocal 6
+                     nop
+            ofs0711:
+                     label
+                     getlocal 6
+                     jump ofs071c
+                     pushfalse
+                     strictequals
+                     add_i
+                     swap
+            ofs071c:
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_pointCount")
+                     iflt ofs0728
+                     jump ofs072c
+            ofs0728:
+                     jump ofs0730
+            ofs072c:
+                     jump ofs088a
+            ofs0730:
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"R")
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                     setlocal 8
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     getlocal 6
+                     jump ofs0748
+                     lessequals
+                     decrement
+                     setlocal0
+                     dxnslate
+                     getlocal0
+                     negate
+            ofs0748:
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getproperty Multiname("m_localPoint",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     setlocal 7
+                     getlocal2
+                     jump ofs075d
+                     newactivation
+                     bitnot
+                     dup
+                     bitnot
+                     typeof
+                     bitor
+            ofs075d:
+                     getproperty QName(PackageNamespace(""),"position")
+                     jump ofs076a
+                     newactivation
+                     bitnot
+                     dup
+                     bitnot
+                     typeof
+                     bitor
+            ofs076a:
+                     getproperty QName(PackageNamespace(""),"x")
+                     jump ofs0778
+                     hasnext
+                     urshift
+                     greaterequals
+                     getlocal2
+                     bitnot
+                     divide
+                     add_i
+            ofs0778:
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     jump ofs0794
+                     getlocal2
+                     getlocal0
+                     convert_s
+                     add
+                     istypelate
+                     convert_o
+                     subtract_i
+            ofs0794:
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 13
+                     getlocal2
+                     getproperty QName(PackageNamespace(""),"position")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs07b6
+                     getglobalscope
+                     popscope
+                     bitxor
+                     pushfalse
+                     bitor
+                     getlocal3
+                     pushnull
+            ofs07b6:
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col1")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"x")
+                     multiply
+                     add
+                     getlocal 8
+                     getproperty QName(PackageNamespace(""),"col2")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 7
+                     getproperty QName(PackageNamespace(""),"y")
+                     multiply
+                     add
+                     convert_d
+                     setlocal 14
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     getlocal 6
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getlocal 13
+                     pushdouble 0.5
+                     getlocal 5
+                     getlocal 13
+                     getlocal 11
+                     subtract
+                     getlocal 9
+                     jump ofs07f8
+                     nextname
+                     coerce_s
+                     pushnan
+                     dxnslate
+                     setlocal3
+                     multiply_i
+                     divide
+            ofs07f8:
+                     multiply
+                     subtract
+                     getlocal 14
+                     jump ofs0807
+                     dup
+                     subtract_i
+                     getglobalscope
+                     convert_o
+                     swap
+                     add_i
+                     typeof
+            ofs0807:
+                     getlocal 12
+                     subtract
+                     getlocal 10
+                     multiply
+                     jump ofs0818
+                     subtract_i
+                     nextname
+                     getlocal1
+                     checkfilter
+                     getglobalscope
+                     urshift
+                     pop
+            ofs0818:
+                     subtract
+                     getlocal3
+                     subtract
+                     multiply
+                     getlocal 9
+                     multiply
+                     add
+                     pushfalse
+                     iffalse ofs082e
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0831
+            ofs082e:
+                     setproperty Multiname("x",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+            ofs0831:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_points")
+                     getlocal 6
+                     getproperty MultinameL([PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+                     getlocal 14
+                     jump ofs0847
+                     not
+                     getlocal2
+                     coerce_s
+                     subtract
+                     dup
+                     pushfalse
+                     setlocal2
+            ofs0847:
+                     pushdouble 0.5
+                     getlocal 5
+                     getlocal 13
+                     getlocal 11
+                     subtract
+                     getlocal 9
+                     multiply
+                     subtract
+                     getlocal 14
+                     getlocal 12
+                     jump ofs0863
+                     coerce_s
+                     newactivation
+                     increment_i
+                     pushwith
+                     bitand
+                     astypelate
+                     pushundefined
+            ofs0863:
+                     subtract
+                     getlocal 10
+                     multiply
+                     subtract
+                     getlocal3
+                     subtract
+                     multiply
+                     getlocal 10
+                     multiply
+                     add
+                     pushfalse
+                     iffalse ofs087d
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0880
+            ofs087d:
+                     setproperty Multiname("y",[PrivateNamespace(null,"171"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PrivateNamespace(null,"172"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Box2D.Collision:b2WorldManifold"),StaticProtectedNs("Object")])
+            ofs0880:
+                     inclocal_i 6
+                     pushbyte 2
+                     pushbyte 3
+                     ifne ofs0711
+            ofs088a:
+                     jump ofs0906
+            ofs088e:
+                     label
+                     jump ofs0906
+            ofs0893:
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"m_type")
+                     setlocal 27
+                     getlex QName(PackageNamespace("Box2D.Collision"),"b2Manifold")
+                     getproperty QName(PackageNamespace(""),"e_circles")
+                     jump ofs08a6
+                     pushfalse
+                     strictequals
+                     add_i
+                     swap
+            ofs08a6:
+                     getlocal 27
+                     ifstrictne ofs08b2
+                     pushbyte 0
+                     jump ofs08e8
+            ofs08b2:
+                     getlex QName(PackageNamespace("Box2D.Collision"),"b2Manifold")
+                     getproperty QName(PackageNamespace(""),"e_faceA")
+                     getlocal 27
+                     ifstrictne ofs08cb
+                     pushbyte 1
+                     jump ofs08c7
+                     popscope
+                     convert_i
+                     swap
+                     convert_o
+            ofs08c7:
+                     jump ofs08e8
+            ofs08cb:
+                     getlex QName(PackageNamespace("Box2D.Collision"),"b2Manifold")
+                     getproperty QName(PackageNamespace(""),"e_faceB")
+                     getlocal 27
+                     ifstrictne ofs08dc
+                     pushbyte 2
+                     jump ofs08e8
+            ofs08dc:
+                     jump ofs08e6
+                     pushbyte 3
+                     jump ofs08e6
+            ofs08e6:
+                     pushbyte 3
+            ofs08e8:
+                     kill 27
+                     jump ofs08f2
+                     multiply
+                     setlocal2
+                     decrement
+                     checkfilter
+            ofs08f2:
+                     pushbyte 2
+                     pop
+                     lookupswitch ofs088e, [ofs00ab, ofs0341, ofs05e2, ofs088e]
+            ofs0906:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 3
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("b2WorldManifold",[PackageNamespace("Box2D.Collision")])
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            jump ofs0020
+            pop
+            convert_o
+            convert_b
+            setlocal1
+            add_i
+   ofs0020:
+            getlex QName(PackageNamespace(""),"Object")
+            jump ofs002b
+            checkfilter
+            setlocal1
+            typeof
+            coerce_a
+            greaterthan
+   ofs002b:
+            newclass 96
+            popscope
+            jump ofs0037
+            pushfalse
+            decrement
+            convert_i
+            increment
+            add
+   ofs0037:
+            initproperty QName(PackageNamespace("Box2D.Collision"),"b2WorldManifold")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

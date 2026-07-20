@@ -1,0 +1,521 @@
+package
+{
+   import flash.display.MovieClip;
+   import flash.events.Event;
+   import flash.system.System;
+   import flash.text.TextField;
+   import flash.utils.getTimer;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1499")]
+   public dynamic class Debug extends MovieClip
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 9
+            maxscopedepth 10
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               nextvalue
+               bitxor
+               pushnan
+               bitxor
+               checkfilter
+               negate_i
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var debug1:TextField;
+      
+      public var debug2:TextField;
+      
+      public var debug3:TextField;
+      
+      public var debug4:TextField;
+      
+      public var iBar:MovieClip;
+      
+      public var tf:TextField;
+      
+      public var time:Number;
+      
+      public var frameTime:Number;
+      
+      public var prevFrameTime:Number;
+      
+      public var secondTime:Number;
+      
+      public var prevSecondTime:Number;
+      
+      public var frames:Number;
+      
+      public var fps:String;
+      
+      public function Debug()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 55
+               localcount 1
+               initscopedepth 10
+               maxscopedepth 11
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  findpropstrict QName(PackageNamespace(""),"addFrameScript")
+                  pushbyte 0
+                  jump ofs0024
+                  getlocal2
+                  pushwith
+                  getlocal1
+                  setlocal1
+                  bitxor
+                  divide
+                  pushundefined
+         ofs0024:
+                  getlocal0
+                  getproperty QName(PackageInternalNs(""),"frame1")
+                  pushbyte 1
+                  getlocal0
+                  getproperty QName(PackageInternalNs(""),"frame2")
+                  pushfalse
+                  iffalse ofs003d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0041
+         ofs003d:
+                  callpropvoid QName(PackageNamespace(""),"addFrameScript"), 4
+         ofs0041:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function onEnterFrame(param1:Event) : void
+      {
+         trait method QName(PackageNamespace(""),"onEnterFrame")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("flash.events"),"Event")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 55
+                  localcount 4
+                  initscopedepth 10
+                  maxscopedepth 11
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     findpropstrict QName(PackageNamespace("flash.utils"),"getTimer")
+                     callproperty QName(PackageNamespace("flash.utils"),"getTimer"), 0
+                     initproperty QName(PackageNamespace(""),"time")
+                     getlocal0
+                     jump ofs0027
+                     decrement_i
+                     pushwith
+                     increment_i
+                     coerce_a
+                     add
+                     divide
+                     hasnext
+            ofs0027:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"time")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"prevFrameTime")
+                     subtract
+                     initproperty QName(PackageNamespace(""),"frameTime")
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"time")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"prevSecondTime")
+                     subtract
+                     jump ofs0043
+                     swap
+                     bitand
+                     bitand
+                     increment
+                     increment_i
+                     pushundefined
+                     subtract
+            ofs0043:
+                     initproperty QName(PackageNamespace(""),"secondTime")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"secondTime")
+                     pushshort 1000
+                     ifnge ofs0068
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"frames")
+                     callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toString"), 0
+                     initproperty QName(PackageNamespace(""),"fps")
+                     getlocal0
+                     pushbyte 0
+                     initproperty QName(PackageNamespace(""),"frames")
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"time")
+                     initproperty QName(PackageNamespace(""),"prevSecondTime")
+                     jump ofs0085
+            ofs0068:
+                     getlocal0
+                     dup
+                     setlocal2
+                     getproperty QName(PackageNamespace(""),"frames")
+                     increment
+                     setlocal3
+                     getlocal2
+                     getlocal3
+                     pushfalse
+                     iffalse ofs007f
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0081
+            ofs007f:
+                     setproperty QName(PackageNamespace(""),"frames")
+            ofs0081:
+                     kill 3
+                     kill 2
+            ofs0085:
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"time")
+                     initproperty QName(PackageNamespace(""),"prevFrameTime")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"tf")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"fps")
+                     pushstring " FPS / "
+                     add
+                     jump ofs00a0
+                     convert_i
+                     multiply
+                     swap
+                     bitand
+                     bitxor
+                     setlocal0
+                     convert_o
+            ofs00a0:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"frameTime")
+                     add
+                     jump ofs00af
+                     nextvalue
+                     pushfalse
+                     decrement
+                     pushnull
+                     newactivation
+                     decrement
+                     pushfalse
+            ofs00af:
+                     pushstring " MS / "
+                     add
+                     findpropstrict QName(PackageNamespace(""),"Number")
+                     getlex QName(PackageNamespace("flash.system"),"System")
+                     getproperty QName(PackageNamespace(""),"totalMemory")
+                     pushshort 1024
+                     divide
+                     pushshort 1024
+                     divide
+                     callproperty QName(PackageNamespace(""),"Number"), 1
+                     jump ofs00d1
+                     strictequals
+                     pop
+                     newactivation
+                     setlocal1
+                     checkfilter
+                     add_i
+                     convert_i
+            ofs00d1:
+                     pushbyte 2
+                     callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toFixed"), 1
+                     add
+                     pushstring "Mb"
+                     add
+                     pushfalse
+                     iffalse ofs00ea
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00ed
+            ofs00ea:
+                     setproperty QName(PackageNamespace(""),"text")
+            ofs00ed:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"iBar")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"iBar")
+                     getproperty QName(PackageNamespace(""),"scaleX")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"iBar")
+                     getproperty QName(PackageNamespace(""),"scaleX")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"frameTime")
+                     jump ofs010a
+                     lessequals
+                     pushscope
+                     add
+                     coerce_a
+                     popscope
+                     urshift
+                     equals
+            ofs010a:
+                     pushbyte 10
+                     divide
+                     subtract
+                     pushbyte 5
+                     divide
+                     subtract
+                     jump ofs011d
+                     newactivation
+                     getglobalscope
+                     dup
+                     increment
+                     multiply_i
+                     pushwith
+                     getlocal3
+            ofs011d:
+                     pushfalse
+                     iffalse ofs012b
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs012e
+            ofs012b:
+                     setproperty QName(PackageNamespace(""),"scaleX")
+            ofs012e:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         internal function frame1() : *
+         {
+            trait method QName(PackageInternalNs(""),"frame1")
+               dispid 0
+               method
+                  name null
+                  returns null
+                  
+                  body
+                     maxstack 52
+                     localcount 1
+                     initscopedepth 10
+                     maxscopedepth 11
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        findpropstrict QName(PackageNamespace("flash.utils"),"getTimer")
+                        callproperty QName(PackageNamespace("flash.utils"),"getTimer"), 0
+                        jump ofs0021
+                        lessequals
+                        bitnot
+                        bitor
+                        pop
+               ofs0021:
+                        initproperty QName(PackageNamespace(""),"prevFrameTime")
+                        getlocal0
+                        findpropstrict QName(PackageNamespace("flash.utils"),"getTimer")
+                        callproperty QName(PackageNamespace("flash.utils"),"getTimer"), 0
+                        initproperty QName(PackageNamespace(""),"prevSecondTime")
+                        getlocal0
+                        pushbyte 0
+                        initproperty QName(PackageNamespace(""),"frames")
+                        getlocal0
+                        pushstring "..."
+                        initproperty QName(PackageNamespace(""),"fps")
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            internal function frame2() : *
+            {
+               trait method QName(PackageInternalNs(""),"frame2")
+                  dispid 0
+                  method
+                     name null
+                     returns null
+                     
+                     body
+                        maxstack 53
+                        localcount 1
+                        initscopedepth 10
+                        maxscopedepth 11
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           findpropstrict QName(PackageNamespace(""),"stop")
+                           pushfalse
+                           iffalse ofs0021
+                           pushbyte 5
+                           pop
+                           pop
+                           jump ofs0025
+                  ofs0021:
+                           callpropvoid QName(PackageNamespace(""),"stop"), 0
+                  ofs0025:
+                           getlocal0
+                           getlex QName(PackageNamespace("flash.events"),"Event")
+                           getproperty QName(PackageNamespace(""),"ENTER_FRAME")
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"onEnterFrame")
+                           pushfalse
+                           iffalse ofs003d
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           pop
+                           jump ofs0041
+                  ofs003d:
+                           callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                  ofs0041:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 9
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getscopeobject 0
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  jump ofs001e
+                  not
+                  convert_o
+                  convert_b
+                  subtract
+         ofs001e:
+                  getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                  pushscope
+                  jump ofs0036
+                  coerce_s
+                  typeof
+                  typeof
+                  pushwith
+         ofs0036:
+                  getlex QName(PackageNamespace("flash.display"),"Sprite")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"MovieClip")
+                  pushscope
+                  getlex QName(PackageNamespace("flash.display"),"MovieClip")
+                  newclass 12
+                  popscope
+                  popscope
+                  popscope
+                  popscope
+                  popscope
+                  jump ofs004e
+                  pushfalse
+                  multiply_i
+                  convert_i
+                  swap
+         ofs004e:
+                  popscope
+                  popscope
+                  jump ofs0058
+                  pushfalse
+                  multiply_i
+                  convert_i
+                  swap
+         ofs0058:
+                  initproperty QName(PackageNamespace(""),"Debug")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

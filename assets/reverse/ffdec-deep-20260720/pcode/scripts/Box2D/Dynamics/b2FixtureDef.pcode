@@ -1,0 +1,197 @@
+package Box2D.Dynamics
+{
+   import Box2D.Collision.Shapes.b2Shape;
+   
+   public class b2FixtureDef
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var shape:b2Shape;
+      
+      public var userData:*;
+      
+      public var friction:Number;
+      
+      public var restitution:Number;
+      
+      public var density:Number;
+      
+      public var isSensor:Boolean;
+      
+      public var filter:b2FilterData;
+      
+      public function b2FixtureDef()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData")
+                  constructprop QName(PackageNamespace("Box2D.Dynamics"),"b2FilterData"), 0
+                  initproperty QName(PackageNamespace(""),"filter")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  pushnull
+                  initproperty QName(PackageNamespace(""),"shape")
+                  getlocal0
+                  pushnull
+                  initproperty QName(PackageNamespace(""),"userData")
+                  getlocal0
+                  pushdouble 0.2
+                  initproperty QName(PackageNamespace(""),"friction")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"restitution")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"density")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"filter")
+                  pushbyte 1
+                  pushfalse
+                  iffalse ofs004d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0050
+         ofs004d:
+                  setproperty QName(PackageNamespace(""),"categoryBits")
+         ofs0050:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"filter")
+                  jump ofs005d
+                  urshift
+                  pushnan
+                  greaterequals
+                  dxnslate
+                  increment_i
+         ofs005d:
+                  pushint 65535
+                  jump ofs0069
+                  pushwith
+                  bitand
+                  convert_s
+                  bitnot
+                  bitxor
+                  lshift
+         ofs0069:
+                  pushfalse
+                  iffalse ofs0077
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs007a
+         ofs0077:
+                  setproperty QName(PackageNamespace(""),"maskBits")
+         ofs007a:
+                  getlocal0
+                  jump ofs0085
+                  convert_s
+                  multiply
+                  bitxor
+                  getlocal2
+                  newactivation
+                  greaterequals
+         ofs0085:
+                  getproperty QName(PackageNamespace(""),"filter")
+                  pushbyte 0
+                  pushfalse
+                  iffalse ofs0098
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs009b
+         ofs0098:
+                  setproperty QName(PackageNamespace(""),"groupIndex")
+         ofs009b:
+                  getlocal0
+                  pushfalse
+                  initproperty QName(PackageNamespace(""),"isSensor")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2FixtureDef",[PackageNamespace("Box2D.Dynamics")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         jump ofs0021
+         instanceof
+         divide
+         pushwith
+         convert_d
+ofs0021:
+         newclass 31
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2FixtureDef")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

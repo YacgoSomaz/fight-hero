@@ -1,0 +1,232 @@
+package Box2D.Dynamics
+{
+   import Box2D.Common.Math.b2Vec2;
+   
+   public class b2BodyDef
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var type:uint;
+      
+      public var position:b2Vec2;
+      
+      public var angle:Number;
+      
+      public var linearVelocity:b2Vec2;
+      
+      public var angularVelocity:Number;
+      
+      public var linearDamping:Number;
+      
+      public var angularDamping:Number;
+      
+      public var allowSleep:Boolean;
+      
+      public var awake:Boolean;
+      
+      public var fixedRotation:Boolean;
+      
+      public var bullet:Boolean;
+      
+      public var active:Boolean;
+      
+      public var userData:*;
+      
+      public var inertiaScale:Number;
+      
+      public function b2BodyDef()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"position")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"linearVelocity")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  pushnull
+                  jump ofs0033
+                  setlocal0
+                  coerce_a
+                  convert_o
+                  getlocal2
+                  astypelate
+                  setlocal1
+                  swap
+         ofs0033:
+                  initproperty QName(PackageNamespace(""),"userData")
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"position")
+                  pushdouble 0
+                  pushdouble 0
+                  pushfalse
+                  iffalse ofs004d
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs0051
+         ofs004d:
+                  callpropvoid QName(PackageNamespace(""),"Set"), 2
+         ofs0051:
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"angle")
+                  getlocal0
+                  jump ofs0063
+                  istypelate
+                  nextname
+                  nextname
+                  add
+                  getlocal0
+                  pushnan
+                  add
+         ofs0063:
+                  getproperty QName(PackageNamespace(""),"linearVelocity")
+                  pushbyte 0
+                  dup
+                  pushfalse
+                  iffalse ofs0078
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs007c
+         ofs0078:
+                  callpropvoid QName(PackageNamespace(""),"Set"), 2
+         ofs007c:
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"angularVelocity")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"linearDamping")
+                  getlocal0
+                  pushdouble 0
+                  initproperty QName(PackageNamespace(""),"angularDamping")
+                  getlocal0
+                  jump ofs009a
+                  lessthan
+                  getlocal2
+                  increment
+                  pushfalse
+                  typeof
+                  convert_s
+                  bitnot
+         ofs009a:
+                  pushtrue
+                  initproperty QName(PackageNamespace(""),"allowSleep")
+                  getlocal0
+                  jump ofs00aa
+                  getlocal1
+                  newactivation
+                  pushfalse
+                  dxnslate
+                  convert_o
+                  multiply
+                  modulo
+         ofs00aa:
+                  pushtrue
+                  initproperty QName(PackageNamespace(""),"awake")
+                  getlocal0
+                  pushfalse
+                  initproperty QName(PackageNamespace(""),"fixedRotation")
+                  getlocal0
+                  pushfalse
+                  initproperty QName(PackageNamespace(""),"bullet")
+                  getlocal0
+                  getlex QName(PackageNamespace("Box2D.Dynamics"),"b2Body")
+                  getproperty QName(PackageNamespace(""),"b2_staticBody")
+                  initproperty QName(PackageNamespace(""),"type")
+                  getlocal0
+                  pushtrue
+                  initproperty QName(PackageNamespace(""),"active")
+                  getlocal0
+                  pushbyte 1
+                  initproperty QName(PackageNamespace(""),"inertiaScale")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2BodyDef",[PackageNamespace("Box2D.Dynamics")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 30
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2BodyDef")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

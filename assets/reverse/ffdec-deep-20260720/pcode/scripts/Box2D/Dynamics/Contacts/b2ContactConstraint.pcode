@@ -1,0 +1,252 @@
+package Box2D.Dynamics.Contacts
+{
+   import Box2D.Collision.*;
+   import Box2D.Common.*;
+   import Box2D.Common.Math.*;
+   import Box2D.Dynamics.*;
+   
+   use namespace b2internal;
+   
+   public class b2ContactConstraint
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var points:Array;
+      
+      public var localPlaneNormal:b2Vec2;
+      
+      public var localPoint:b2Vec2;
+      
+      public var normal:b2Vec2;
+      
+      public var normalMass:b2Mat22;
+      
+      public var K:b2Mat22;
+      
+      public var bodyA:b2Body;
+      
+      public var bodyB:b2Body;
+      
+      public var type:int;
+      
+      public var radius:Number;
+      
+      public var friction:Number;
+      
+      public var restitution:Number;
+      
+      public var pointCount:int;
+      
+      public var manifold:b2Manifold;
+      
+      public function b2ContactConstraint()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 53
+               localcount 2
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  jump ofs001a
+                  increment_i
+                  newactivation
+                  pushfalse
+                  getglobalscope
+                  decrement
+                  getlocal1
+         ofs001a:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"localPlaneNormal")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"localPoint")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"normal")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22"), 0
+                  initproperty QName(PackageNamespace(""),"normalMass")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22"), 0
+                  initproperty QName(PackageNamespace(""),"K")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                  jump ofs005b
+                  lshift
+                  convert_i
+                  typeof
+                  popscope
+                  greaterequals
+                  bitnot
+         ofs005b:
+                  getproperty QName(PackageNamespace(""),"b2_maxManifoldPoints")
+                  constructprop QName(PackageNamespace(""),"Array"), 1
+                  jump ofs006b
+                  setlocal3
+                  decrement_i
+                  convert_i
+                  instanceof
+                  dxnslate
+                  getlocal3
+         ofs006b:
+                  initproperty QName(PackageNamespace(""),"points")
+                  pushbyte 0
+                  setlocal1
+                  nop
+         ofs0072:
+                  label
+                  getlocal1
+                  getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                  getproperty QName(PackageNamespace(""),"b2_maxManifoldPoints")
+                  iflt ofs0082
+                  jump ofs0086
+         ofs0082:
+                  jump ofs008a
+         ofs0086:
+                  jump ofs00d0
+         ofs008a:
+                  getlocal0
+                  jump ofs0095
+                  setlocal3
+                  decrement_i
+                  convert_i
+                  instanceof
+                  dxnslate
+                  getlocal3
+         ofs0095:
+                  getproperty QName(PackageNamespace(""),"points")
+                  getlocal1
+                  jump ofs00a3
+                  setlocal2
+                  lshift
+                  lessthan
+                  getlocal3
+                  nextvalue
+                  multiply_i
+         ofs00a3:
+                  findpropstrict QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactConstraintPoint")
+                  jump ofs00b0
+                  dxnslate
+                  increment_i
+                  pop
+                  modulo
+                  pushscope
+                  bitand
+         ofs00b0:
+                  constructprop QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactConstraintPoint"), 0
+                  pushfalse
+                  iffalse ofs00c3
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  pop
+                  jump ofs00c6
+         ofs00c3:
+                  setproperty MultinameL([PrivateNamespace(null,"179"),PackageNamespace("Box2D.Common.Math"),PackageNamespace(""),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Dynamics.Contacts"),PrivateNamespace(null,"180"),PackageInternalNs("Box2D.Dynamics.Contacts"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Dynamics"),Namespace("http://www.box2d.org/ns/b2internal"),ProtectedNamespace("Box2D.Dynamics.Contacts:b2ContactConstraint"),StaticProtectedNs("Box2D.Dynamics.Contacts:b2ContactConstraint"),StaticProtectedNs("Object")])
+         ofs00c6:
+                  inclocal_i 1
+                  pushbyte 2
+                  pushbyte 3
+                  ifne ofs0072
+         ofs00d0:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         jump ofs001a
+         getglobalscope
+         instanceof
+         bitand
+         negate
+         decrement
+         pushundefined
+ofs001a:
+         pushscope
+         findpropstrict Multiname("b2ContactConstraint",[PackageNamespace("Box2D.Dynamics.Contacts")])
+         jump ofs0028
+         nextname
+         subtract
+         dxnslate
+         multiply
+         getlocal1
+         add
+ofs0028:
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 111
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Dynamics.Contacts"),"b2ContactConstraint")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

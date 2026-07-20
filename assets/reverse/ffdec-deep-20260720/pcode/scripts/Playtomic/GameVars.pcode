@@ -1,0 +1,318 @@
+package Playtomic
+{
+   public final class GameVars
+   {
+      
+      private static var SECTION:String;
+      
+      private static var LOAD:String;
+      
+      private static var LOADSINGLE:String;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function GameVars()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      internal static function Initialise(param1:String) : void
+      {
+         trait method QName(PackageInternalNs("Playtomic"),"Initialise")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 4
+                  localcount 2
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PrivateNamespace(null,"81"),"SECTION")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "gamevars-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"81"),"SECTION")
+                     findproperty QName(PrivateNamespace(null,"81"),"LOAD")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "gamevars-load-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"81"),"LOAD")
+                     findproperty QName(PrivateNamespace(null,"81"),"LOADSINGLE")
+                     getlex QName(PackageInternalNs("Playtomic"),"Encode")
+                     pushstring "gamevars-loadsingle-"
+                     getlocal1
+                     add
+                     callproperty QName(PackageInternalNs("Playtomic"),"MD5"), 1
+                     setproperty QName(PrivateNamespace(null,"81"),"LOADSINGLE")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function Load(param1:Function) : void
+         {
+            trait method QName(PackageNamespace(""),"Load")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"Function")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 6
+                     localcount 2
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                        getlex QName(PrivateNamespace(null,"81"),"SECTION")
+                        getlex QName(PrivateNamespace(null,"81"),"LOAD")
+                        getlex QName(PrivateNamespace(null,"81"),"LoadComplete")
+                        getlocal1
+                        pushnull
+                        callpropvoid QName(PackageNamespace(""),"Load"), 5
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function LoadSingle(param1:String, param2:Function) : void
+            {
+               trait method QName(PackageNamespace(""),"LoadSingle")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     param QName(PackageNamespace(""),"Function")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 6
+                        localcount 4
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           findpropstrict QName(PackageNamespace(""),"Object")
+                           constructprop QName(PackageNamespace(""),"Object"), 0
+                           coerce QName(PackageNamespace(""),"Object")
+                           setlocal3
+                           getlocal3
+                           pushstring "name"
+                           getlocal1
+                           setproperty MultinameL([PrivateNamespace(null,"81"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"135"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GameVars"),StaticProtectedNs("Playtomic:GameVars"),StaticProtectedNs("Object")])
+                           getlex QName(PackageInternalNs("Playtomic"),"PRequest")
+                           getlex QName(PrivateNamespace(null,"81"),"SECTION")
+                           getlex QName(PrivateNamespace(null,"81"),"LOADSINGLE")
+                           getlex QName(PrivateNamespace(null,"81"),"LoadComplete")
+                           getlocal2
+                           getlocal3
+                           callpropvoid QName(PackageNamespace(""),"Load"), 5
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               private static function LoadComplete(param1:Function, param2:Object, param3:XML = null, param4:Response = null) : void
+               {
+                  trait method QName(PrivateNamespace(null,"81"),"LoadComplete")
+                     flag FINAL
+                     dispid 6
+                     method
+                        name null
+                        flag HAS_OPTIONAL
+                        param QName(PackageNamespace(""),"Function")
+                        param QName(PackageNamespace(""),"Object")
+                        param QName(PackageNamespace(""),"XML")
+                        param QName(PackageNamespace("Playtomic"),"Response")
+                        optional Null()
+                        optional Null()
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 4
+                           localcount 12
+                           initscopedepth 3
+                           maxscopedepth 4
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              pushnull
+                              coerce QName(PackageNamespace(""),"XMLList")
+                              setlocal 6
+                              pushnull
+                              coerce_s
+                              setlocal 7
+                              pushnull
+                              coerce_s
+                              setlocal 8
+                              pushnull
+                              coerce QName(PackageNamespace(""),"XML")
+                              setlocal 9
+                              getlocal1
+                              pushnull
+                              ifne ofs001c
+                              returnvoid
+                     ofs001c:
+                              findpropstrict QName(PackageNamespace(""),"Object")
+                              constructprop QName(PackageNamespace(""),"Object"), 0
+                              coerce QName(PackageNamespace(""),"Object")
+                              setlocal 5
+                              getlocal 4
+                              getproperty QName(PackageNamespace(""),"Success")
+                              iffalse ofs007a
+                              getlocal3
+                              pushstring "gamevar"
+                              getproperty MultinameL([PrivateNamespace(null,"81"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"135"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GameVars"),StaticProtectedNs("Playtomic:GameVars"),StaticProtectedNs("Object")])
+                              coerce QName(PackageNamespace(""),"XMLList")
+                              setlocal 6
+                              pushbyte 0
+                              setlocal 10
+                              getlocal 6
+                              coerce_a
+                              setlocal 11
+                              jump ofs006f
+                     ofs0047:
+                              label
+                              getlocal 11
+                              getlocal 10
+                              nextvalue
+                              coerce QName(PackageNamespace(""),"XML")
+                              dup
+                              setlocal 9
+                              pushstring "name"
+                              getproperty MultinameL([PrivateNamespace(null,"81"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"135"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GameVars"),StaticProtectedNs("Playtomic:GameVars"),StaticProtectedNs("Object")])
+                              coerce_s
+                              setlocal 7
+                              getlocal 9
+                              pushstring "value"
+                              getproperty MultinameL([PrivateNamespace(null,"81"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"135"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GameVars"),StaticProtectedNs("Playtomic:GameVars"),StaticProtectedNs("Object")])
+                              coerce_s
+                              setlocal 8
+                              getlocal 5
+                              getlocal 7
+                              getlocal 8
+                              setproperty MultinameL([PrivateNamespace(null,"81"),PackageInternalNs("Playtomic"),PackageNamespace(""),PrivateNamespace(null,"135"),PackageNamespace("Playtomic"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Playtomic:GameVars"),StaticProtectedNs("Playtomic:GameVars"),StaticProtectedNs("Object")])
+                     ofs006f:
+                              hasnext2 11, 10
+                              iftrue ofs0047
+                              kill 11
+                              kill 10
+                     ofs007a:
+                              getlocal2
+                              coerce QName(PackageNamespace(""),"Object")
+                              setlocal2
+                              getlocal1
+                              getglobalscope
+                              getlocal 5
+                              getlocal 4
+                              call 2
+                              pop
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 3
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("GameVars",[PackageNamespace("Playtomic")])
+                     getlex QName(PackageNamespace(""),"Object")
+                     pushscope
+                     getlex QName(PackageNamespace(""),"Object")
+                     newclass 25
+                     popscope
+                     initproperty QName(PackageNamespace("Playtomic"),"GameVars")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

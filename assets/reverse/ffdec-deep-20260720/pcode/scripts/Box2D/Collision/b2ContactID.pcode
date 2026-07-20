@@ -1,0 +1,383 @@
+package Box2D.Collision
+{
+   import Box2D.Common.b2internal;
+   
+   use namespace b2internal;
+   
+   public class b2ContactID
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               pop
+               modulo
+               checkfilter
+               istypelate
+               getlocal0
+               greaterthan
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var features:Features;
+      
+      b2internal var _key:uint;
+      
+      public function b2ContactID()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"Features")
+                  jump ofs001f
+                  pop
+                  getlocal1
+                  bitnot
+                  increment
+                  add_i
+                  getlocal2
+         ofs001f:
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"Features"), 0
+                  initproperty QName(PackageNamespace(""),"features")
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"features")
+                  getlocal0
+                  pushfalse
+                  iffalse ofs003c
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs003f
+         ofs003c:
+                  setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_m_id")
+         ofs003f:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function Set(param1:b2ContactID) : void
+      {
+         trait method QName(PackageNamespace(""),"Set")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Collision"),"b2ContactID")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     jump ofs001a
+                     popscope
+                     increment_i
+                     setlocal0
+                     add
+                     convert_b
+                     pushwith
+            ofs001a:
+                     pushscope
+                     getlocal0
+                     getlocal1
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                     initproperty QName(PackageNamespace(""),"key")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function Copy() : b2ContactID
+         {
+            trait method QName(PackageNamespace(""),"Copy")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace("Box2D.Collision"),"b2ContactID")
+                  
+                  body
+                     maxstack 52
+                     localcount 2
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2ContactID")
+                        constructprop QName(PackageNamespace("Box2D.Collision"),"b2ContactID"), 0
+                        coerce QName(PackageNamespace("Box2D.Collision"),"b2ContactID")
+                        setlocal1
+                        getlocal1
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"key")
+                        jump ofs0028
+                        negate_i
+                        pushscope
+                        add_i
+                        multiply_i
+                        newactivation
+                        convert_b
+               ofs0028:
+                        pushfalse
+                        iffalse ofs0036
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0039
+               ofs0036:
+                        setproperty QName(PackageNamespace(""),"key")
+               ofs0039:
+                        getlocal1
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function get key() : uint
+            {
+               trait getter QName(PackageNamespace(""),"key")
+                  dispid 0
+                  method
+                     name null
+                     returns QName(PackageNamespace(""),"uint")
+                     
+                     body
+                        maxstack 51
+                        localcount 1
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                           jump ofs001f
+                           decrement
+                           typeof
+                           pushwith
+                           hasnext
+                           pushfalse
+                           coerce_s
+                  ofs001f:
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function set key(param1:uint) : void
+               {
+                  trait setter QName(PackageNamespace(""),"key")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"uint")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 53
+                           localcount 2
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              getlocal1
+                              initproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"features")
+                              getlocal0
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                              pushshort 255
+                              bitand
+                              pushfalse
+                              iffalse ofs0030
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0033
+                     ofs0030:
+                              setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_referenceEdge")
+                     ofs0033:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"features")
+                              getlocal0
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                              pushint 65280
+                              bitand
+                              pushbyte 8
+                              rshift
+                              pushshort 255
+                              bitand
+                              pushfalse
+                              iffalse ofs0053
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0056
+                     ofs0053:
+                              setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_incidentEdge")
+                     ofs0056:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"features")
+                              getlocal0
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                              pushint 16711680
+                              bitand
+                              pushbyte 16
+                              rshift
+                              pushshort 255
+                              bitand
+                              pushfalse
+                              iffalse ofs0076
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0079
+                     ofs0076:
+                              setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_incidentVertex")
+                     ofs0079:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"features")
+                              jump ofs0085
+                              swap
+                              swap
+                              nextname
+                              modulo
+                     ofs0085:
+                              getlocal0
+                              getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_key")
+                              pushdouble 4278190080
+                              bitand
+                              pushbyte 24
+                              rshift
+                              pushshort 255
+                              bitand
+                              pushfalse
+                              iffalse ofs00a1
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00a4
+                     ofs00a1:
+                              setproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"_flip")
+                     ofs00a4:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 3
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("b2ContactID",[PackageNamespace("Box2D.Collision")])
+                     getlex QName(PackageNamespace(""),"Object")
+                     pushscope
+                     getlex QName(PackageNamespace(""),"Object")
+                     newclass 98
+                     popscope
+                     initproperty QName(PackageNamespace("Box2D.Collision"),"b2ContactID")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

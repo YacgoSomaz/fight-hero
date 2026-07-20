@@ -1,0 +1,1852 @@
+package fl.controls
+{
+   import fl.core.InvalidationType;
+   import fl.core.UIComponent;
+   import fl.events.InteractionInputType;
+   import fl.events.SliderEvent;
+   import fl.events.SliderEventClickTarget;
+   import fl.managers.IFocusManagerComponent;
+   import flash.display.DisplayObject;
+   import flash.display.Sprite;
+   import flash.events.KeyboardEvent;
+   import flash.events.MouseEvent;
+   import flash.ui.Keyboard;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1570")]
+   public class Slider extends UIComponent implements IFocusManagerComponent
+   {
+      
+      protected static var defaultStyles:Object;
+      
+      protected static const TRACK_STYLES:Object;
+      
+      protected static const THUMB_STYLES:Object;
+      
+      protected static const TICK_STYLES:Object;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 69
+            localcount 1
+            initscopedepth 9
+            maxscopedepth 10
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(StaticProtectedNs("fl.controls:Slider"),"defaultStyles")
+               pushstring "thumbUpSkin"
+               pushstring "SliderThumb_upSkin"
+               jump ofs0025
+               pushtrue
+               bitxor
+               setlocal1
+               setlocal3
+               lshift
+               instanceof
+               pushnan
+      ofs0025:
+               pushstring "thumbOverSkin"
+               pushstring "SliderThumb_overSkin"
+               pushstring "thumbDownSkin"
+               pushstring "SliderThumb_downSkin"
+               pushstring "thumbDisabledSkin"
+               pushstring "SliderThumb_disabledSkin"
+               pushstring "sliderTrackSkin"
+               pushstring "SliderTrack_skin"
+               pushstring "sliderTrackDisabledSkin"
+               pushstring "SliderTrack_disabledSkin"
+               pushstring "tickSkin"
+               jump ofs0051
+               negate
+               instanceof
+               getlocal2
+               typeof
+               decrement_i
+               convert_b
+               checkfilter
+      ofs0051:
+               pushstring "SliderTick_skin"
+               pushstring "focusRectSkin"
+               pushnull
+               pushstring "focusRectPadding"
+               pushnull
+               newobject 9
+               pushfalse
+               iffalse ofs006c
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs006f
+      ofs006c:
+               setproperty QName(StaticProtectedNs("fl.controls:Slider"),"defaultStyles")
+      ofs006f:
+               findproperty QName(StaticProtectedNs("fl.controls:Slider"),"TRACK_STYLES")
+               pushstring "upSkin"
+               pushstring "sliderTrackSkin"
+               pushstring "overSkin"
+               pushstring "sliderTrackSkin"
+               pushstring "downSkin"
+               pushstring "sliderTrackSkin"
+               pushstring "disabledSkin"
+               pushstring "sliderTrackDisabledSkin"
+               newobject 4
+               initproperty QName(StaticProtectedNs("fl.controls:Slider"),"TRACK_STYLES")
+               findproperty QName(StaticProtectedNs("fl.controls:Slider"),"THUMB_STYLES")
+               pushstring "upSkin"
+               pushstring "thumbUpSkin"
+               pushstring "overSkin"
+               pushstring "thumbOverSkin"
+               pushstring "downSkin"
+               pushstring "thumbDownSkin"
+               pushstring "disabledSkin"
+               jump ofs00b2
+               bitor
+               setlocal2
+               negate
+               newactivation
+               getlocal2
+               increment
+               dxnslate
+      ofs00b2:
+               pushstring "thumbDisabledSkin"
+               newobject 4
+               initproperty QName(StaticProtectedNs("fl.controls:Slider"),"THUMB_STYLES")
+               findproperty QName(StaticProtectedNs("fl.controls:Slider"),"TICK_STYLES")
+               pushstring "upSkin"
+               pushstring "tickSkin"
+               jump ofs00cb
+               increment
+               lshift
+               not
+               divide
+      ofs00cb:
+               newobject 1
+               initproperty QName(StaticProtectedNs("fl.controls:Slider"),"TICK_STYLES")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      protected var _direction:String;
+      
+      protected var _minimum:Number = 0;
+      
+      protected var _maximum:Number = 10;
+      
+      protected var _value:Number = 0;
+      
+      protected var _tickInterval:Number = 0;
+      
+      protected var _snapInterval:Number = 0;
+      
+      protected var _liveDragging:Boolean = false;
+      
+      protected var tickContainer:Sprite;
+      
+      protected var thumb:BaseButton;
+      
+      protected var track:BaseButton;
+      
+      public function Slider()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 2
+               localcount 1
+               initscopedepth 10
+               maxscopedepth 11
+               
+               code
+                  getlocal0
+                  pushscope
+                  findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                  getlex QName(PackageNamespace("fl.controls"),"SliderDirection")
+                  getproperty QName(PackageNamespace(""),"HORIZONTAL")
+                  initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                  getlocal0
+                  constructsuper 0
+                  findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"setStyles")
+                  callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"setStyles"), 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function getStyleDefinition() : Object
+      {
+         trait method QName(PackageNamespace(""),"getStyleDefinition")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"Object")
+               
+               body
+                  maxstack 1
+                  localcount 1
+                  initscopedepth 9
+                  maxscopedepth 10
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlex QName(StaticProtectedNs("fl.controls:Slider"),"defaultStyles")
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function get direction() : String
+         {
+            trait getter QName(PackageNamespace(""),"direction")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"String")
+                  
+                  body
+                     maxstack 1
+                     localcount 1
+                     initscopedepth 10
+                     maxscopedepth 11
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlex QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function set direction(param1:String) : void
+            {
+               trait setter QName(PackageNamespace(""),"direction")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 2
+                        localcount 3
+                        initscopedepth 10
+                        maxscopedepth 11
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                           getlocal1
+                           initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                           getlex QName(PackageNamespace("fl.controls"),"SliderDirection")
+                           getproperty QName(PackageNamespace(""),"VERTICAL")
+                           equals
+                           setlocal2
+                           getlex QName(ProtectedNamespace("fl.core:UIComponent"),"isLivePreview")
+                           iffalse ofs0051
+                           getlocal2
+                           iffalse ofs0038
+                           findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"setScaleY")
+                           pushbyte -1
+                           callpropvoid QName(ProtectedNamespace("fl.core:UIComponent"),"setScaleY"), 1
+                           findproperty QName(PackageNamespace(""),"y")
+                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                           getproperty QName(PackageNamespace(""),"height")
+                           initproperty QName(PackageNamespace(""),"y")
+                           jump ofs0049
+                  ofs0038:
+                           findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"setScaleY")
+                           pushbyte 1
+                           callpropvoid QName(ProtectedNamespace("fl.core:UIComponent"),"setScaleY"), 1
+                           findproperty QName(PackageNamespace(""),"y")
+                           pushbyte 0
+                           initproperty QName(PackageNamespace(""),"y")
+                  ofs0049:
+                           findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb")
+                           callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb"), 0
+                           returnvoid
+                  ofs0051:
+                           getlocal2
+                           convert_b
+                           dup
+                           iffalse ofs005d
+                           pop
+                           getlex QName(PackageNamespace(""),"componentInspectorSetting")
+                           convert_b
+                  ofs005d:
+                           iffalse ofs0076
+                           getlex QName(PackageNamespace(""),"rotation")
+                           pushbyte 90
+                           modulo
+                           pushbyte 0
+                           ifne ofs0076
+                           findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"setScaleY")
+                           pushbyte -1
+                           callpropvoid QName(ProtectedNamespace("fl.core:UIComponent"),"setScaleY"), 1
+                  ofs0076:
+                           getlex QName(PackageNamespace(""),"componentInspectorSetting")
+                           iftrue ofs0092
+                           findproperty QName(PackageNamespace(""),"rotation")
+                           getlocal2
+                           iffalse ofs008c
+                           pushbyte 90
+                           convert_d
+                           jump ofs008f
+                  ofs008c:
+                           pushbyte 0
+                           convert_d
+                  ofs008f:
+                           initproperty QName(PackageNamespace(""),"rotation")
+                  ofs0092:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function get minimum() : Number
+               {
+                  trait getter QName(PackageNamespace(""),"minimum")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"Number")
+                        
+                        body
+                           maxstack 1
+                           localcount 1
+                           initscopedepth 10
+                           maxscopedepth 11
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              getlex QName(ProtectedNamespace("fl.controls:Slider"),"_minimum")
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function set minimum(param1:Number) : void
+                  {
+                     trait setter QName(PackageNamespace(""),"minimum")
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace(""),"Number")
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 4
+                              localcount 2
+                              initscopedepth 10
+                              maxscopedepth 11
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_minimum")
+                                 getlocal1
+                                 initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_minimum")
+                                 getlocal0
+                                 getlex QName(PackageNamespace(""),"Math")
+                                 getlocal1
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"value")
+                                 callproperty QName(PackageNamespace(""),"max"), 2
+                                 setproperty QName(PackageNamespace(""),"value")
+                                 findpropstrict QName(PackageNamespace(""),"invalidate")
+                                 getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                 getproperty QName(PackageNamespace(""),"DATA")
+                                 callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function get maximum() : Number
+                     {
+                        trait getter QName(PackageNamespace(""),"maximum")
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace(""),"Number")
+                              
+                              body
+                                 maxstack 1
+                                 localcount 1
+                                 initscopedepth 10
+                                 maxscopedepth 11
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    getlex QName(ProtectedNamespace("fl.controls:Slider"),"_maximum")
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function set maximum(param1:Number) : void
+                        {
+                           trait setter QName(PackageNamespace(""),"maximum")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"Number")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 4
+                                    localcount 2
+                                    initscopedepth 10
+                                    maxscopedepth 11
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_maximum")
+                                       getlocal1
+                                       initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_maximum")
+                                       getlocal0
+                                       getlex QName(PackageNamespace(""),"Math")
+                                       getlocal1
+                                       getlocal0
+                                       getproperty QName(PackageNamespace(""),"value")
+                                       callproperty QName(PackageNamespace(""),"min"), 2
+                                       setproperty QName(PackageNamespace(""),"value")
+                                       findpropstrict QName(PackageNamespace(""),"invalidate")
+                                       getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                       getproperty QName(PackageNamespace(""),"DATA")
+                                       callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function get tickInterval() : Number
+                           {
+                              trait getter QName(PackageNamespace(""),"tickInterval")
+                                 dispid 0
+                                 method
+                                    name null
+                                    returns QName(PackageNamespace(""),"Number")
+                                    
+                                    body
+                                       maxstack 1
+                                       localcount 1
+                                       initscopedepth 10
+                                       maxscopedepth 11
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          getlex QName(ProtectedNamespace("fl.controls:Slider"),"_tickInterval")
+                                          returnvalue
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public function set tickInterval(param1:Number) : void
+                              {
+                                 trait setter QName(PackageNamespace(""),"tickInterval")
+                                    dispid 0
+                                    method
+                                       name null
+                                       param QName(PackageNamespace(""),"Number")
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 2
+                                          localcount 2
+                                          initscopedepth 10
+                                          maxscopedepth 11
+                                          
+                                          code
+                                             getlocal0
+                                             pushscope
+                                             findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_tickInterval")
+                                             getlocal1
+                                             initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_tickInterval")
+                                             findpropstrict QName(PackageNamespace(""),"invalidate")
+                                             getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                             getproperty QName(PackageNamespace(""),"SIZE")
+                                             callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public function get snapInterval() : Number
+                                 {
+                                    trait getter QName(PackageNamespace(""),"snapInterval")
+                                       dispid 0
+                                       method
+                                          name null
+                                          returns QName(PackageNamespace(""),"Number")
+                                          
+                                          body
+                                             maxstack 1
+                                             localcount 1
+                                             initscopedepth 10
+                                             maxscopedepth 11
+                                             
+                                             code
+                                                getlocal0
+                                                pushscope
+                                                getlex QName(ProtectedNamespace("fl.controls:Slider"),"_snapInterval")
+                                                returnvalue
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public function set snapInterval(param1:Number) : void
+                                    {
+                                       trait setter QName(PackageNamespace(""),"snapInterval")
+                                          dispid 0
+                                          method
+                                             name null
+                                             param QName(PackageNamespace(""),"Number")
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 2
+                                                localcount 2
+                                                initscopedepth 10
+                                                maxscopedepth 11
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushscope
+                                                   findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_snapInterval")
+                                                   getlocal1
+                                                   initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_snapInterval")
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public function set liveDragging(param1:Boolean) : void
+                                       {
+                                          trait setter QName(PackageNamespace(""),"liveDragging")
+                                             dispid 0
+                                             method
+                                                name null
+                                                param QName(PackageNamespace(""),"Boolean")
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 2
+                                                   localcount 2
+                                                   initscopedepth 10
+                                                   maxscopedepth 11
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushscope
+                                                      findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_liveDragging")
+                                                      getlocal1
+                                                      initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_liveDragging")
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          public function get liveDragging() : Boolean
+                                          {
+                                             trait getter QName(PackageNamespace(""),"liveDragging")
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   returns QName(PackageNamespace(""),"Boolean")
+                                                   
+                                                   body
+                                                      maxstack 1
+                                                      localcount 1
+                                                      initscopedepth 10
+                                                      maxscopedepth 11
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushscope
+                                                         getlex QName(ProtectedNamespace("fl.controls:Slider"),"_liveDragging")
+                                                         returnvalue
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             override public function get enabled() : Boolean
+                                             {
+                                                trait getter QName(PackageNamespace(""),"enabled")
+                                                   flag OVERRIDE
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      returns QName(PackageNamespace(""),"Boolean")
+                                                      
+                                                      body
+                                                         maxstack 1
+                                                         localcount 1
+                                                         initscopedepth 10
+                                                         maxscopedepth 11
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushscope
+                                                            getlocal0
+                                                            getsuper QName(PackageNamespace(""),"enabled")
+                                                            returnvalue
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                override public function set enabled(param1:Boolean) : void
+                                                {
+                                                   trait setter QName(PackageNamespace(""),"enabled")
+                                                      flag OVERRIDE
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         param QName(PackageNamespace(""),"Boolean")
+                                                         returns QName(PackageNamespace(""),"void")
+                                                         
+                                                         body
+                                                            maxstack 4
+                                                            localcount 3
+                                                            initscopedepth 10
+                                                            maxscopedepth 11
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushscope
+                                                               getlex QName(PackageNamespace(""),"enabled")
+                                                               getlocal1
+                                                               ifne ofs000b
+                                                               returnvoid
+                                                      ofs000b:
+                                                               getlocal0
+                                                               getlocal1
+                                                               setsuper QName(PackageNamespace(""),"enabled")
+                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                               getlocal1
+                                                               dup
+                                                               setlocal2
+                                                               setproperty QName(PackageNamespace(""),"enabled")
+                                                               getlocal2
+                                                               kill 2
+                                                               setproperty QName(PackageNamespace(""),"enabled")
+                                                               returnvoid
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                   
+                                                   override public function setSize(param1:Number, param2:Number) : void
+                                                   {
+                                                      trait method QName(PackageNamespace(""),"setSize")
+                                                         flag OVERRIDE
+                                                         dispid 0
+                                                         method
+                                                            name null
+                                                            param QName(PackageNamespace(""),"Number")
+                                                            param QName(PackageNamespace(""),"Number")
+                                                            returns QName(PackageNamespace(""),"void")
+                                                            
+                                                            body
+                                                               maxstack 3
+                                                               localcount 3
+                                                               initscopedepth 10
+                                                               maxscopedepth 11
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushscope
+                                                                  getlex QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                                                                  getlex QName(PackageNamespace("fl.controls"),"SliderDirection")
+                                                                  getproperty QName(PackageNamespace(""),"VERTICAL")
+                                                                  equals
+                                                                  dup
+                                                                  iffalse ofs0015
+                                                                  pop
+                                                                  getlex QName(ProtectedNamespace("fl.core:UIComponent"),"isLivePreview")
+                                                                  not
+                                                         ofs0015:
+                                                                  iffalse ofs0024
+                                                                  getlocal0
+                                                                  getlocal2
+                                                                  getlocal1
+                                                                  callsupervoid QName(PackageNamespace(""),"setSize"), 2
+                                                                  jump ofs002b
+                                                         ofs0024:
+                                                                  getlocal0
+                                                                  getlocal1
+                                                                  getlocal2
+                                                                  callsupervoid QName(PackageNamespace(""),"setSize"), 2
+                                                         ofs002b:
+                                                                  findpropstrict QName(PackageNamespace(""),"invalidate")
+                                                                  getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                                  getproperty QName(PackageNamespace(""),"SIZE")
+                                                                  callpropvoid QName(PackageNamespace(""),"invalidate"), 1
+                                                                  returnvoid
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                      }
+                                                      
+                                                      public function get value() : Number
+                                                      {
+                                                         trait getter QName(PackageNamespace(""),"value")
+                                                            dispid 0
+                                                            method
+                                                               name null
+                                                               returns QName(PackageNamespace(""),"Number")
+                                                               
+                                                               body
+                                                                  maxstack 1
+                                                                  localcount 1
+                                                                  initscopedepth 10
+                                                                  maxscopedepth 11
+                                                                  
+                                                                  code
+                                                                     getlocal0
+                                                                     pushscope
+                                                                     getlex QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                     returnvalue
+                                                                  end ; code
+                                                               end ; body
+                                                            end ; method
+                                                         }
+                                                         
+                                                         public function set value(param1:Number) : void
+                                                         {
+                                                            trait setter QName(PackageNamespace(""),"value")
+                                                               dispid 0
+                                                               method
+                                                                  name null
+                                                                  param QName(PackageNamespace(""),"Number")
+                                                                  returns QName(PackageNamespace(""),"void")
+                                                                  
+                                                                  body
+                                                                     maxstack 2
+                                                                     localcount 2
+                                                                     initscopedepth 10
+                                                                     maxscopedepth 11
+                                                                     
+                                                                     code
+                                                                        getlocal0
+                                                                        pushscope
+                                                                        findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue")
+                                                                        getlocal1
+                                                                        callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue"), 1
+                                                                        returnvoid
+                                                                     end ; code
+                                                                  end ; body
+                                                               end ; method
+                                                            }
+                                                            
+                                                            protected function doSetValue(param1:Number, param2:String = null, param3:String = null, param4:int = undefined) : void
+                                                            {
+                                                               trait method QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue")
+                                                                  dispid 0
+                                                                  method
+                                                                     name null
+                                                                     flag HAS_OPTIONAL
+                                                                     param QName(PackageNamespace(""),"Number")
+                                                                     param QName(PackageNamespace(""),"String")
+                                                                     param QName(PackageNamespace(""),"String")
+                                                                     param QName(PackageNamespace(""),"int")
+                                                                     optional Null()
+                                                                     optional Null()
+                                                                     optional Undefined()
+                                                                     returns QName(PackageNamespace(""),"void")
+                                                                     
+                                                                     body
+                                                                        maxstack 7
+                                                                        localcount 10
+                                                                        initscopedepth 10
+                                                                        maxscopedepth 11
+                                                                        
+                                                                        code
+                                                                           getlocal0
+                                                                           pushscope
+                                                                           pushnan
+                                                                           setlocal 6
+                                                                           pushnan
+                                                                           setlocal 7
+                                                                           pushnan
+                                                                           setlocal 8
+                                                                           pushnan
+                                                                           setlocal 9
+                                                                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                           convert_d
+                                                                           setlocal 5
+                                                                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"_snapInterval")
+                                                                           pushbyte 0
+                                                                           equals
+                                                                           not
+                                                                           dup
+                                                                           iffalse ofs0028
+                                                                           pop
+                                                                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"_snapInterval")
+                                                                           pushbyte 1
+                                                                           equals
+                                                                           not
+                                                                  ofs0028:
+                                                                           iffalse ofs0090
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           pushbyte 10
+                                                                           findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"getPrecision")
+                                                                           getlex QName(PackageNamespace(""),"snapInterval")
+                                                                           callproperty QName(ProtectedNamespace("fl.controls:Slider"),"getPrecision"), 1
+                                                                           callproperty QName(PackageNamespace(""),"pow"), 2
+                                                                           convert_d
+                                                                           setlocal 6
+                                                                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"_snapInterval")
+                                                                           getlocal 6
+                                                                           multiply
+                                                                           convert_d
+                                                                           setlocal 7
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlocal1
+                                                                           getlocal 6
+                                                                           multiply
+                                                                           callproperty QName(PackageNamespace(""),"round"), 1
+                                                                           convert_d
+                                                                           setlocal 8
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlocal 8
+                                                                           getlocal 7
+                                                                           divide
+                                                                           callproperty QName(PackageNamespace(""),"round"), 1
+                                                                           getlocal 7
+                                                                           multiply
+                                                                           convert_d
+                                                                           dup
+                                                                           setlocal 9
+                                                                           getlocal 6
+                                                                           divide
+                                                                           convert_d
+                                                                           setlocal1
+                                                                           findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlex QName(PackageNamespace(""),"minimum")
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlex QName(PackageNamespace(""),"maximum")
+                                                                           getlocal1
+                                                                           callproperty QName(PackageNamespace(""),"min"), 2
+                                                                           callproperty QName(PackageNamespace(""),"max"), 2
+                                                                           initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                           jump ofs00b2
+                                                                  ofs0090:
+                                                                           findproperty QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlex QName(PackageNamespace(""),"minimum")
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlex QName(PackageNamespace(""),"maximum")
+                                                                           getlex QName(PackageNamespace(""),"Math")
+                                                                           getlocal1
+                                                                           callproperty QName(PackageNamespace(""),"round"), 1
+                                                                           callproperty QName(PackageNamespace(""),"min"), 2
+                                                                           callproperty QName(PackageNamespace(""),"max"), 2
+                                                                           initproperty QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                  ofs00b2:
+                                                                           getlocal 5
+                                                                           getlex QName(ProtectedNamespace("fl.controls:Slider"),"_value")
+                                                                           equals
+                                                                           not
+                                                                           dup
+                                                                           iffalse ofs00da
+                                                                           pop
+                                                                           getlex QName(PackageNamespace(""),"liveDragging")
+                                                                           convert_b
+                                                                           dup
+                                                                           iffalse ofs00cd
+                                                                           pop
+                                                                           getlocal3
+                                                                           pushnull
+                                                                           equals
+                                                                           not
+                                                                  ofs00cd:
+                                                                           dup
+                                                                           iftrue ofs00da
+                                                                           pop
+                                                                           getlocal2
+                                                                           getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                           getproperty QName(PackageNamespace(""),"KEYBOARD")
+                                                                           equals
+                                                                  ofs00da:
+                                                                           iffalse ofs00f5
+                                                                           findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                           findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                           getlex QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                           getproperty QName(PackageNamespace(""),"CHANGE")
+                                                                           getlex QName(PackageNamespace(""),"value")
+                                                                           getlocal3
+                                                                           getlocal2
+                                                                           getlocal 4
+                                                                           constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 5
+                                                                           callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                  ofs00f5:
+                                                                           findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb")
+                                                                           callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb"), 0
+                                                                           returnvoid
+                                                                        end ; code
+                                                                     end ; body
+                                                                  end ; method
+                                                               }
+                                                               
+                                                               protected function setStyles() : void
+                                                               {
+                                                                  trait method QName(ProtectedNamespace("fl.controls:Slider"),"setStyles")
+                                                                     dispid 0
+                                                                     method
+                                                                        name null
+                                                                        returns QName(PackageNamespace(""),"void")
+                                                                        
+                                                                        body
+                                                                           maxstack 3
+                                                                           localcount 1
+                                                                           initscopedepth 10
+                                                                           maxscopedepth 11
+                                                                           
+                                                                           code
+                                                                              getlocal0
+                                                                              pushscope
+                                                                              findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"copyStylesToChild")
+                                                                              getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                              getlex QName(StaticProtectedNs("fl.controls:Slider"),"THUMB_STYLES")
+                                                                              callpropvoid QName(ProtectedNamespace("fl.core:UIComponent"),"copyStylesToChild"), 2
+                                                                              findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"copyStylesToChild")
+                                                                              getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                              getlex QName(StaticProtectedNs("fl.controls:Slider"),"TRACK_STYLES")
+                                                                              callpropvoid QName(ProtectedNamespace("fl.core:UIComponent"),"copyStylesToChild"), 2
+                                                                              returnvoid
+                                                                           end ; code
+                                                                        end ; body
+                                                                     end ; method
+                                                                  }
+                                                                  
+                                                                  override protected function draw() : void
+                                                                  {
+                                                                     trait method QName(ProtectedNamespace("fl.controls:Slider"),"draw")
+                                                                        flag OVERRIDE
+                                                                        dispid 0
+                                                                        method
+                                                                           name null
+                                                                           returns QName(PackageNamespace(""),"void")
+                                                                           
+                                                                           body
+                                                                              maxstack 3
+                                                                              localcount 1
+                                                                              initscopedepth 10
+                                                                              maxscopedepth 11
+                                                                              
+                                                                              code
+                                                                                 getlocal0
+                                                                                 pushscope
+                                                                                 findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid")
+                                                                                 getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                                                 getproperty QName(PackageNamespace(""),"STYLES")
+                                                                                 callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid"), 1
+                                                                                 iffalse ofs0028
+                                                                                 findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"setStyles")
+                                                                                 callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"setStyles"), 0
+                                                                                 findpropstrict QName(PackageNamespace(""),"invalidate")
+                                                                                 getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                                                 getproperty QName(PackageNamespace(""),"SIZE")
+                                                                                 pushfalse
+                                                                                 callpropvoid QName(PackageNamespace(""),"invalidate"), 2
+                                                                        ofs0028:
+                                                                                 findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid")
+                                                                                 getlex QName(PackageNamespace("fl.core"),"InvalidationType")
+                                                                                 getproperty QName(PackageNamespace(""),"SIZE")
+                                                                                 callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"isInvalid"), 1
+                                                                                 iffalse ofs0057
+                                                                                 getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                 getlex QName(ProtectedNamespace("fl.core:UIComponent"),"_width")
+                                                                                 getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                 getproperty QName(PackageNamespace(""),"height")
+                                                                                 callpropvoid QName(PackageNamespace(""),"setSize"), 2
+                                                                                 getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                 callpropvoid QName(PackageNamespace(""),"drawNow"), 0
+                                                                                 getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                 callpropvoid QName(PackageNamespace(""),"drawNow"), 0
+                                                                        ofs0057:
+                                                                                 getlex QName(PackageNamespace(""),"tickInterval")
+                                                                                 pushbyte 0
+                                                                                 ifngt ofs006b
+                                                                                 findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"drawTicks")
+                                                                                 callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"drawTicks"), 0
+                                                                                 jump ofs0072
+                                                                        ofs006b:
+                                                                                 findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"clearTicks")
+                                                                                 callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"clearTicks"), 0
+                                                                        ofs0072:
+                                                                                 findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb")
+                                                                                 callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb"), 0
+                                                                                 getlocal0
+                                                                                 callsupervoid QName(ProtectedNamespace("fl.core:UIComponent"),"draw"), 0
+                                                                                 returnvoid
+                                                                              end ; code
+                                                                           end ; body
+                                                                        end ; method
+                                                                     }
+                                                                     
+                                                                     protected function positionThumb() : void
+                                                                     {
+                                                                        trait method QName(ProtectedNamespace("fl.controls:Slider"),"positionThumb")
+                                                                           dispid 0
+                                                                           method
+                                                                              name null
+                                                                              returns QName(PackageNamespace(""),"void")
+                                                                              
+                                                                              body
+                                                                                 maxstack 4
+                                                                                 localcount 1
+                                                                                 initscopedepth 10
+                                                                                 maxscopedepth 11
+                                                                                 
+                                                                                 code
+                                                                                    getlocal0
+                                                                                    pushscope
+                                                                                    getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                    getlex QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                                                                                    getlex QName(PackageNamespace("fl.controls"),"SliderDirection")
+                                                                                    getproperty QName(PackageNamespace(""),"VERTICAL")
+                                                                                    ifne ofs001c
+                                                                                    getlex QName(PackageNamespace(""),"maximum")
+                                                                                    getlex QName(PackageNamespace(""),"value")
+                                                                                    subtract
+                                                                                    coerce_a
+                                                                                    jump ofs0023
+                                                                           ofs001c:
+                                                                                    getlex QName(PackageNamespace(""),"value")
+                                                                                    getlex QName(PackageNamespace(""),"minimum")
+                                                                                    subtract
+                                                                                    coerce_a
+                                                                           ofs0023:
+                                                                                    getlex QName(PackageNamespace(""),"maximum")
+                                                                                    getlex QName(PackageNamespace(""),"minimum")
+                                                                                    subtract
+                                                                                    divide
+                                                                                    getlex QName(ProtectedNamespace("fl.core:UIComponent"),"_width")
+                                                                                    multiply
+                                                                                    setproperty QName(PackageNamespace(""),"x")
+                                                                                    returnvoid
+                                                                                 end ; code
+                                                                              end ; body
+                                                                           end ; method
+                                                                        }
+                                                                        
+                                                                        protected function drawTicks() : void
+                                                                        {
+                                                                           trait method QName(ProtectedNamespace("fl.controls:Slider"),"drawTicks")
+                                                                              dispid 0
+                                                                              method
+                                                                                 name null
+                                                                                 returns QName(PackageNamespace(""),"void")
+                                                                                 
+                                                                                 body
+                                                                                    maxstack 3
+                                                                                    localcount 6
+                                                                                    initscopedepth 10
+                                                                                    maxscopedepth 11
+                                                                                    
+                                                                                    code
+                                                                                       getlocal0
+                                                                                       pushscope
+                                                                                       pushnull
+                                                                                       coerce QName(PackageNamespace("flash.display"),"DisplayObject")
+                                                                                       setlocal 5
+                                                                                       findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"clearTicks")
+                                                                                       callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"clearTicks"), 0
+                                                                                       findproperty QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                       findpropstrict QName(PackageNamespace("flash.display"),"Sprite")
+                                                                                       constructprop QName(PackageNamespace("flash.display"),"Sprite"), 0
+                                                                                       initproperty QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                       getlex QName(PackageNamespace(""),"maximum")
+                                                                                       pushbyte 1
+                                                                                       ifnlt ofs0030
+                                                                                       getlex QName(PackageNamespace(""),"tickInterval")
+                                                                                       pushbyte 100
+                                                                                       divide
+                                                                                       convert_d
+                                                                                       jump ofs0034
+                                                                              ofs0030:
+                                                                                       getlex QName(PackageNamespace(""),"tickInterval")
+                                                                                       convert_d
+                                                                              ofs0034:
+                                                                                       convert_d
+                                                                                       setlocal1
+                                                                                       getlex QName(PackageNamespace(""),"maximum")
+                                                                                       getlex QName(PackageNamespace(""),"minimum")
+                                                                                       subtract
+                                                                                       getlocal1
+                                                                                       divide
+                                                                                       convert_d
+                                                                                       setlocal2
+                                                                                       getlex QName(ProtectedNamespace("fl.core:UIComponent"),"_width")
+                                                                                       getlocal2
+                                                                                       divide
+                                                                                       convert_d
+                                                                                       setlocal3
+                                                                                       pushbyte 0
+                                                                                       convert_u
+                                                                                       setlocal 4
+                                                                                       jump ofs0093
+                                                                              ofs0051:
+                                                                                       label
+                                                                                       findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getDisplayObjectInstance")
+                                                                                       findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                                                       pushstring "tickSkin"
+                                                                                       callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                                                       callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getDisplayObjectInstance"), 1
+                                                                                       coerce QName(PackageNamespace("flash.display"),"DisplayObject")
+                                                                                       dup
+                                                                                       setlocal 5
+                                                                                       getlocal3
+                                                                                       getlocal 4
+                                                                                       multiply
+                                                                                       setproperty QName(PackageNamespace(""),"x")
+                                                                                       getlocal 5
+                                                                                       getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                       getproperty QName(PackageNamespace(""),"y")
+                                                                                       getlocal 5
+                                                                                       getproperty QName(PackageNamespace(""),"height")
+                                                                                       subtract
+                                                                                       pushbyte 2
+                                                                                       subtract
+                                                                                       setproperty QName(PackageNamespace(""),"y")
+                                                                                       getlex QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                       getlocal 5
+                                                                                       callpropvoid QName(PackageNamespace(""),"addChild"), 1
+                                                                                       getlocal 4
+                                                                                       increment
+                                                                                       convert_u
+                                                                                       setlocal 4
+                                                                              ofs0093:
+                                                                                       getlocal 4
+                                                                                       getlocal2
+                                                                                       ifle ofs0051
+                                                                                       findpropstrict QName(PackageNamespace(""),"addChild")
+                                                                                       getlex QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                       callpropvoid QName(PackageNamespace(""),"addChild"), 1
+                                                                                       returnvoid
+                                                                                    end ; code
+                                                                                 end ; body
+                                                                              end ; method
+                                                                           }
+                                                                           
+                                                                           protected function clearTicks() : void
+                                                                           {
+                                                                              trait method QName(ProtectedNamespace("fl.controls:Slider"),"clearTicks")
+                                                                                 dispid 0
+                                                                                 method
+                                                                                    name null
+                                                                                    returns QName(PackageNamespace(""),"void")
+                                                                                    
+                                                                                    body
+                                                                                       maxstack 2
+                                                                                       localcount 1
+                                                                                       initscopedepth 10
+                                                                                       maxscopedepth 11
+                                                                                       
+                                                                                       code
+                                                                                          getlocal0
+                                                                                          pushscope
+                                                                                          getlex QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                          not
+                                                                                          dup
+                                                                                          iftrue ofs0013
+                                                                                          pop
+                                                                                          getlex QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                          getproperty QName(PackageNamespace(""),"parent")
+                                                                                          not
+                                                                                 ofs0013:
+                                                                                          iffalse ofs0018
+                                                                                          returnvoid
+                                                                                 ofs0018:
+                                                                                          findpropstrict QName(PackageNamespace(""),"removeChild")
+                                                                                          getlex QName(ProtectedNamespace("fl.controls:Slider"),"tickContainer")
+                                                                                          callpropvoid QName(PackageNamespace(""),"removeChild"), 1
+                                                                                          returnvoid
+                                                                                       end ; code
+                                                                                    end ; body
+                                                                                 end ; method
+                                                                              }
+                                                                              
+                                                                              protected function calculateValue(param1:Number, param2:String, param3:String, param4:int = undefined) : void
+                                                                              {
+                                                                                 trait method QName(ProtectedNamespace("fl.controls:Slider"),"calculateValue")
+                                                                                    dispid 0
+                                                                                    method
+                                                                                       name null
+                                                                                       flag HAS_OPTIONAL
+                                                                                       param QName(PackageNamespace(""),"Number")
+                                                                                       param QName(PackageNamespace(""),"String")
+                                                                                       param QName(PackageNamespace(""),"String")
+                                                                                       param QName(PackageNamespace(""),"int")
+                                                                                       optional Undefined()
+                                                                                       returns QName(PackageNamespace(""),"void")
+                                                                                       
+                                                                                       body
+                                                                                          maxstack 5
+                                                                                          localcount 6
+                                                                                          initscopedepth 10
+                                                                                          maxscopedepth 11
+                                                                                          
+                                                                                          code
+                                                                                             getlocal0
+                                                                                             pushscope
+                                                                                             getlocal1
+                                                                                             getlex QName(ProtectedNamespace("fl.core:UIComponent"),"_width")
+                                                                                             divide
+                                                                                             getlex QName(PackageNamespace(""),"maximum")
+                                                                                             getlex QName(PackageNamespace(""),"minimum")
+                                                                                             subtract
+                                                                                             multiply
+                                                                                             convert_d
+                                                                                             setlocal 5
+                                                                                             getlex QName(ProtectedNamespace("fl.controls:Slider"),"_direction")
+                                                                                             getlex QName(PackageNamespace("fl.controls"),"SliderDirection")
+                                                                                             getproperty QName(PackageNamespace(""),"VERTICAL")
+                                                                                             ifne ofs002b
+                                                                                             getlex QName(PackageNamespace(""),"maximum")
+                                                                                             getlocal 5
+                                                                                             subtract
+                                                                                             convert_d
+                                                                                             setlocal 5
+                                                                                             jump ofs0034
+                                                                                    ofs002b:
+                                                                                             getlex QName(PackageNamespace(""),"minimum")
+                                                                                             getlocal 5
+                                                                                             add
+                                                                                             convert_d
+                                                                                             setlocal 5
+                                                                                    ofs0034:
+                                                                                             findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue")
+                                                                                             getlocal 5
+                                                                                             getlocal2
+                                                                                             getlocal3
+                                                                                             getlocal 4
+                                                                                             callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue"), 4
+                                                                                             returnvoid
+                                                                                          end ; code
+                                                                                       end ; body
+                                                                                    end ; method
+                                                                                 }
+                                                                                 
+                                                                                 protected function doDrag(param1:MouseEvent) : void
+                                                                                 {
+                                                                                    trait method QName(ProtectedNamespace("fl.controls:Slider"),"doDrag")
+                                                                                       dispid 0
+                                                                                       method
+                                                                                          name null
+                                                                                          param QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                          returns QName(PackageNamespace(""),"void")
+                                                                                          
+                                                                                          body
+                                                                                             maxstack 6
+                                                                                             localcount 4
+                                                                                             initscopedepth 10
+                                                                                             maxscopedepth 11
+                                                                                             
+                                                                                             code
+                                                                                                getlocal0
+                                                                                                pushscope
+                                                                                                getlex QName(ProtectedNamespace("fl.core:UIComponent"),"_width")
+                                                                                                getlex QName(PackageNamespace(""),"snapInterval")
+                                                                                                divide
+                                                                                                convert_d
+                                                                                                setlocal2
+                                                                                                getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                getproperty QName(PackageNamespace(""),"mouseX")
+                                                                                                convert_d
+                                                                                                setlocal3
+                                                                                                findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"calculateValue")
+                                                                                                getlocal3
+                                                                                                getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                getproperty QName(PackageNamespace(""),"THUMB")
+                                                                                                callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"calculateValue"), 3
+                                                                                                findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                                                findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                getlex QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                getproperty QName(PackageNamespace(""),"THUMB_DRAG")
+                                                                                                getlex QName(PackageNamespace(""),"value")
+                                                                                                getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                getproperty QName(PackageNamespace(""),"THUMB")
+                                                                                                getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 4
+                                                                                                callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                                                returnvoid
+                                                                                             end ; code
+                                                                                          end ; body
+                                                                                       end ; method
+                                                                                    }
+                                                                                    
+                                                                                    protected function thumbPressHandler(param1:MouseEvent) : void
+                                                                                    {
+                                                                                       trait method QName(ProtectedNamespace("fl.controls:Slider"),"thumbPressHandler")
+                                                                                          dispid 0
+                                                                                          method
+                                                                                             name null
+                                                                                             param QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                             returns QName(PackageNamespace(""),"void")
+                                                                                             
+                                                                                             body
+                                                                                                maxstack 6
+                                                                                                localcount 2
+                                                                                                initscopedepth 10
+                                                                                                maxscopedepth 11
+                                                                                                
+                                                                                                code
+                                                                                                   getlocal0
+                                                                                                   pushscope
+                                                                                                   getlex QName(PackageNamespace(""),"stage")
+                                                                                                   getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                   getproperty QName(PackageNamespace(""),"MOUSE_MOVE")
+                                                                                                   getlex QName(ProtectedNamespace("fl.controls:Slider"),"doDrag")
+                                                                                                   pushfalse
+                                                                                                   pushbyte 0
+                                                                                                   pushtrue
+                                                                                                   callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                                                                                   getlex QName(PackageNamespace(""),"stage")
+                                                                                                   getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                   getproperty QName(PackageNamespace(""),"MOUSE_UP")
+                                                                                                   getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumbReleaseHandler")
+                                                                                                   pushfalse
+                                                                                                   pushbyte 0
+                                                                                                   pushtrue
+                                                                                                   callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                                                                                   findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                                                   findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                   getlex QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                   getproperty QName(PackageNamespace(""),"THUMB_PRESS")
+                                                                                                   getlex QName(PackageNamespace(""),"value")
+                                                                                                   getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                   getproperty QName(PackageNamespace(""),"THUMB")
+                                                                                                   getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                   getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                   constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 4
+                                                                                                   callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                                                   returnvoid
+                                                                                                end ; code
+                                                                                             end ; body
+                                                                                          end ; method
+                                                                                       }
+                                                                                       
+                                                                                       protected function thumbReleaseHandler(param1:MouseEvent) : void
+                                                                                       {
+                                                                                          trait method QName(ProtectedNamespace("fl.controls:Slider"),"thumbReleaseHandler")
+                                                                                             dispid 0
+                                                                                             method
+                                                                                                name null
+                                                                                                param QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                returns QName(PackageNamespace(""),"void")
+                                                                                                
+                                                                                                body
+                                                                                                   maxstack 6
+                                                                                                   localcount 2
+                                                                                                   initscopedepth 10
+                                                                                                   maxscopedepth 11
+                                                                                                   
+                                                                                                   code
+                                                                                                      getlocal0
+                                                                                                      pushscope
+                                                                                                      getlex QName(PackageNamespace(""),"stage")
+                                                                                                      getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                      getproperty QName(PackageNamespace(""),"MOUSE_MOVE")
+                                                                                                      getlex QName(ProtectedNamespace("fl.controls:Slider"),"doDrag")
+                                                                                                      callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                                                                                      getlex QName(PackageNamespace(""),"stage")
+                                                                                                      getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                      getproperty QName(PackageNamespace(""),"MOUSE_UP")
+                                                                                                      getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumbReleaseHandler")
+                                                                                                      callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                                                                                      findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                                                      findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                      getlex QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                      getproperty QName(PackageNamespace(""),"THUMB_RELEASE")
+                                                                                                      getlex QName(PackageNamespace(""),"value")
+                                                                                                      getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                      getproperty QName(PackageNamespace(""),"THUMB")
+                                                                                                      getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                      getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                      constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 4
+                                                                                                      callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                                                      findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                                                      findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                      getlex QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                      getproperty QName(PackageNamespace(""),"CHANGE")
+                                                                                                      getlex QName(PackageNamespace(""),"value")
+                                                                                                      getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                      getproperty QName(PackageNamespace(""),"THUMB")
+                                                                                                      getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                      getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                      constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 4
+                                                                                                      callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                                                      returnvoid
+                                                                                                   end ; code
+                                                                                                end ; body
+                                                                                             end ; method
+                                                                                          }
+                                                                                          
+                                                                                          protected function onTrackClick(param1:MouseEvent) : void
+                                                                                          {
+                                                                                             trait method QName(ProtectedNamespace("fl.controls:Slider"),"onTrackClick")
+                                                                                                dispid 0
+                                                                                                method
+                                                                                                   name null
+                                                                                                   param QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                   returns QName(PackageNamespace(""),"void")
+                                                                                                   
+                                                                                                   body
+                                                                                                      maxstack 6
+                                                                                                      localcount 2
+                                                                                                      initscopedepth 10
+                                                                                                      maxscopedepth 11
+                                                                                                      
+                                                                                                      code
+                                                                                                         getlocal0
+                                                                                                         pushscope
+                                                                                                         findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"calculateValue")
+                                                                                                         getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                         getproperty QName(PackageNamespace(""),"mouseX")
+                                                                                                         getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                         getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                         getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                         getproperty QName(PackageNamespace(""),"TRACK")
+                                                                                                         callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"calculateValue"), 3
+                                                                                                         getlex QName(PackageNamespace(""),"liveDragging")
+                                                                                                         iftrue ofs003d
+                                                                                                         findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                                                         findpropstrict QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                         getlex QName(PackageNamespace("fl.events"),"SliderEvent")
+                                                                                                         getproperty QName(PackageNamespace(""),"CHANGE")
+                                                                                                         getlex QName(PackageNamespace(""),"value")
+                                                                                                         getlex QName(PackageNamespace("fl.events"),"SliderEventClickTarget")
+                                                                                                         getproperty QName(PackageNamespace(""),"TRACK")
+                                                                                                         getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                         getproperty QName(PackageNamespace(""),"MOUSE")
+                                                                                                         constructprop QName(PackageNamespace("fl.events"),"SliderEvent"), 4
+                                                                                                         callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                                                ofs003d:
+                                                                                                         returnvoid
+                                                                                                      end ; code
+                                                                                                   end ; body
+                                                                                                end ; method
+                                                                                             }
+                                                                                             
+                                                                                             override protected function keyDownHandler(param1:KeyboardEvent) : void
+                                                                                             {
+                                                                                                trait method QName(ProtectedNamespace("fl.controls:Slider"),"keyDownHandler")
+                                                                                                   flag OVERRIDE
+                                                                                                   dispid 0
+                                                                                                   method
+                                                                                                      name null
+                                                                                                      param QName(PackageNamespace("flash.events"),"KeyboardEvent")
+                                                                                                      returns QName(PackageNamespace(""),"void")
+                                                                                                      
+                                                                                                      body
+                                                                                                         maxstack 5
+                                                                                                         localcount 5
+                                                                                                         initscopedepth 10
+                                                                                                         maxscopedepth 11
+                                                                                                         
+                                                                                                         code
+                                                                                                            getlocal0
+                                                                                                            pushscope
+                                                                                                            pushnan
+                                                                                                            setlocal3
+                                                                                                            getlex QName(PackageNamespace(""),"enabled")
+                                                                                                            iftrue ofs000c
+                                                                                                            returnvoid
+                                                                                                   ofs000c:
+                                                                                                            getlex QName(PackageNamespace(""),"snapInterval")
+                                                                                                            pushbyte 0
+                                                                                                            ifngt ofs001d
+                                                                                                            getlex QName(PackageNamespace(""),"snapInterval")
+                                                                                                            convert_d
+                                                                                                            jump ofs0020
+                                                                                                   ofs001d:
+                                                                                                            pushbyte 1
+                                                                                                            convert_d
+                                                                                                   ofs0020:
+                                                                                                            convert_d
+                                                                                                            setlocal2
+                                                                                                            getlex QName(PackageNamespace(""),"direction")
+                                                                                                            getlex QName(PackageNamespace("fl.controls"),"SliderDirection")
+                                                                                                            getproperty QName(PackageNamespace(""),"HORIZONTAL")
+                                                                                                            equals
+                                                                                                            setlocal 4
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"DOWN")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs0040
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            not
+                                                                                                   ofs0040:
+                                                                                                            dup
+                                                                                                            iftrue ofs0059
+                                                                                                            pop
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"LEFT")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs0059
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            convert_b
+                                                                                                   ofs0059:
+                                                                                                            iffalse ofs0067
+                                                                                                            getlex QName(PackageNamespace(""),"value")
+                                                                                                            getlocal2
+                                                                                                            subtract
+                                                                                                            convert_d
+                                                                                                            setlocal3
+                                                                                                            jump ofs010f
+                                                                                                   ofs0067:
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"UP")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs007a
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            not
+                                                                                                   ofs007a:
+                                                                                                            dup
+                                                                                                            iftrue ofs0093
+                                                                                                            pop
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"RIGHT")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs0093
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            convert_b
+                                                                                                   ofs0093:
+                                                                                                            iffalse ofs00a1
+                                                                                                            getlex QName(PackageNamespace(""),"value")
+                                                                                                            getlocal2
+                                                                                                            add
+                                                                                                            convert_d
+                                                                                                            setlocal3
+                                                                                                            jump ofs010f
+                                                                                                   ofs00a1:
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"PAGE_DOWN")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs00b4
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            not
+                                                                                                   ofs00b4:
+                                                                                                            dup
+                                                                                                            iftrue ofs00cd
+                                                                                                            pop
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"HOME")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs00cd
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            convert_b
+                                                                                                   ofs00cd:
+                                                                                                            iffalse ofs00da
+                                                                                                            getlex QName(PackageNamespace(""),"minimum")
+                                                                                                            convert_d
+                                                                                                            setlocal3
+                                                                                                            jump ofs010f
+                                                                                                   ofs00da:
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"PAGE_UP")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs00ed
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            not
+                                                                                                   ofs00ed:
+                                                                                                            dup
+                                                                                                            iftrue ofs0106
+                                                                                                            pop
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                                            getproperty QName(PackageNamespace(""),"END")
+                                                                                                            equals
+                                                                                                            dup
+                                                                                                            iffalse ofs0106
+                                                                                                            pop
+                                                                                                            getlocal 4
+                                                                                                            convert_b
+                                                                                                   ofs0106:
+                                                                                                            iffalse ofs010f
+                                                                                                            getlex QName(PackageNamespace(""),"maximum")
+                                                                                                            convert_d
+                                                                                                            setlocal3
+                                                                                                   ofs010f:
+                                                                                                            findpropstrict QName(PackageNamespace(""),"isNaN")
+                                                                                                            getlocal3
+                                                                                                            callproperty QName(PackageNamespace(""),"isNaN"), 1
+                                                                                                            iftrue ofs0131
+                                                                                                            getlocal1
+                                                                                                            callpropvoid QName(PackageNamespace(""),"stopPropagation"), 0
+                                                                                                            findpropstrict QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue")
+                                                                                                            getlocal3
+                                                                                                            getlex QName(PackageNamespace("fl.events"),"InteractionInputType")
+                                                                                                            getproperty QName(PackageNamespace(""),"KEYBOARD")
+                                                                                                            pushnull
+                                                                                                            getlocal1
+                                                                                                            getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                                            callpropvoid QName(ProtectedNamespace("fl.controls:Slider"),"doSetValue"), 4
+                                                                                                   ofs0131:
+                                                                                                            returnvoid
+                                                                                                         end ; code
+                                                                                                      end ; body
+                                                                                                   end ; method
+                                                                                                }
+                                                                                                
+                                                                                                override protected function configUI() : void
+                                                                                                {
+                                                                                                   trait method QName(ProtectedNamespace("fl.controls:Slider"),"configUI")
+                                                                                                      flag OVERRIDE
+                                                                                                      dispid 0
+                                                                                                      method
+                                                                                                         name null
+                                                                                                         returns QName(PackageNamespace(""),"void")
+                                                                                                         
+                                                                                                         body
+                                                                                                            maxstack 6
+                                                                                                            localcount 1
+                                                                                                            initscopedepth 10
+                                                                                                            maxscopedepth 11
+                                                                                                            
+                                                                                                            code
+                                                                                                               getlocal0
+                                                                                                               pushscope
+                                                                                                               getlocal0
+                                                                                                               callsupervoid QName(ProtectedNamespace("fl.core:UIComponent"),"configUI"), 0
+                                                                                                               findproperty QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                                               findpropstrict QName(PackageNamespace("fl.controls"),"BaseButton")
+                                                                                                               constructprop QName(PackageNamespace("fl.controls"),"BaseButton"), 0
+                                                                                                               initproperty QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                                               pushbyte 13
+                                                                                                               dup
+                                                                                                               callpropvoid QName(PackageNamespace(""),"setSize"), 2
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                                               pushfalse
+                                                                                                               setproperty QName(PackageNamespace(""),"autoRepeat")
+                                                                                                               findpropstrict QName(PackageNamespace(""),"addChild")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                                               callpropvoid QName(PackageNamespace(""),"addChild"), 1
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumb")
+                                                                                                               getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                               getproperty QName(PackageNamespace(""),"MOUSE_DOWN")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"thumbPressHandler")
+                                                                                                               pushfalse
+                                                                                                               pushbyte 0
+                                                                                                               pushtrue
+                                                                                                               callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                                                                                               findproperty QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               findpropstrict QName(PackageNamespace("fl.controls"),"BaseButton")
+                                                                                                               constructprop QName(PackageNamespace("fl.controls"),"BaseButton"), 0
+                                                                                                               initproperty QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               pushbyte 0
+                                                                                                               dup
+                                                                                                               callpropvoid QName(PackageNamespace(""),"move"), 2
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               pushbyte 80
+                                                                                                               pushbyte 4
+                                                                                                               callpropvoid QName(PackageNamespace(""),"setSize"), 2
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               pushfalse
+                                                                                                               setproperty QName(PackageNamespace(""),"autoRepeat")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               pushfalse
+                                                                                                               setproperty QName(PackageNamespace(""),"useHandCursor")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                                                               getproperty QName(PackageNamespace(""),"CLICK")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"onTrackClick")
+                                                                                                               pushfalse
+                                                                                                               pushbyte 0
+                                                                                                               pushtrue
+                                                                                                               callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                                                                                               findpropstrict QName(PackageNamespace(""),"addChildAt")
+                                                                                                               getlex QName(ProtectedNamespace("fl.controls:Slider"),"track")
+                                                                                                               pushbyte 0
+                                                                                                               callpropvoid QName(PackageNamespace(""),"addChildAt"), 2
+                                                                                                               returnvoid
+                                                                                                            end ; code
+                                                                                                         end ; body
+                                                                                                      end ; method
+                                                                                                   }
+                                                                                                   
+                                                                                                   protected function getPrecision(param1:Number) : Number
+                                                                                                   {
+                                                                                                      trait method QName(ProtectedNamespace("fl.controls:Slider"),"getPrecision")
+                                                                                                         dispid 0
+                                                                                                         method
+                                                                                                            name null
+                                                                                                            param QName(PackageNamespace(""),"Number")
+                                                                                                            returns QName(PackageNamespace(""),"Number")
+                                                                                                            
+                                                                                                            body
+                                                                                                               maxstack 2
+                                                                                                               localcount 3
+                                                                                                               initscopedepth 10
+                                                                                                               maxscopedepth 11
+                                                                                                               
+                                                                                                               code
+                                                                                                                  getlocal0
+                                                                                                                  pushscope
+                                                                                                                  getlocal1
+                                                                                                                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"toString"), 0
+                                                                                                                  coerce_s
+                                                                                                                  setlocal2
+                                                                                                                  getlocal2
+                                                                                                                  pushstring "."
+                                                                                                                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                                                                                                  pushbyte -1
+                                                                                                                  ifne ofs001a
+                                                                                                                  pushbyte 0
+                                                                                                                  returnvalue
+                                                                                                         ofs001a:
+                                                                                                                  getlocal2
+                                                                                                                  pushstring "."
+                                                                                                                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"split"), 1
+                                                                                                                  callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"pop"), 0
+                                                                                                                  getproperty Multiname("length",[PrivateNamespace(null,"7"),StaticProtectedNs("fl.controls:Slider"),PackageNamespace(""),ProtectedNamespace("fl.controls:Slider"),PackageNamespace("fl.controls"),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"8"),PackageInternalNs("fl.controls"),StaticProtectedNs("fl.core:UIComponent"),StaticProtectedNs("flash.display:Sprite"),StaticProtectedNs("flash.display:DisplayObjectContainer"),StaticProtectedNs("flash.display:InteractiveObject"),StaticProtectedNs("flash.display:DisplayObject"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                                                                                                  returnvalue
+                                                                                                               end ; code
+                                                                                                            end ; body
+                                                                                                         end ; method
+                                                                                                      }
+                                                                                                   }
+                                                                                                }
+                                                                                                
+                                                                                                method
+                                                                                                   name null
+                                                                                                   returns null
+                                                                                                   
+                                                                                                   body
+                                                                                                      maxstack 52
+                                                                                                      localcount 1
+                                                                                                      initscopedepth 1
+                                                                                                      maxscopedepth 9
+                                                                                                      
+                                                                                                      code
+                                                                                                         getlocal0
+                                                                                                         pushbyte 37
+                                                                                                         pushbyte 34
+                                                                                                         ifne ofs0010
+                                                                                                         returnvoid
+                                                                                                         newobject 536870911
+                                                                                                ofs0010:
+                                                                                                         pushscope
+                                                                                                         getscopeobject 0
+                                                                                                         getlex QName(PackageNamespace(""),"Object")
+                                                                                                         pushscope
+                                                                                                         jump ofs0021
+                                                                                                         getlocal3
+                                                                                                         add
+                                                                                                         setlocal1
+                                                                                                         pushundefined
+                                                                                                         pushnull
+                                                                                                         urshift
+                                                                                                         lshift
+                                                                                                ofs0021:
+                                                                                                         getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                                                                                                         pushscope
+                                                                                                         getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                                                                                                         jump ofs0033
+                                                                                                         decrement
+                                                                                                         divide
+                                                                                                         getlocal2
+                                                                                                         coerce_s
+                                                                                                         hasnext
+                                                                                                         pushfalse
+                                                                                                         setlocal1
+                                                                                                ofs0033:
+                                                                                                         pushscope
+                                                                                                         getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                                                                                                         pushscope
+                                                                                                         getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                                                                                                         pushscope
+                                                                                                         getlex QName(PackageNamespace("flash.display"),"Sprite")
+                                                                                                         pushscope
+                                                                                                         getlex QName(PackageNamespace("fl.core"),"UIComponent")
+                                                                                                         pushscope
+                                                                                                         getlex QName(PackageNamespace("fl.core"),"UIComponent")
+                                                                                                         newclass 114
+                                                                                                         popscope
+                                                                                                         popscope
+                                                                                                         popscope
+                                                                                                         popscope
+                                                                                                         popscope
+                                                                                                         popscope
+                                                                                                         popscope
+                                                                                                         initproperty QName(PackageNamespace("fl.controls"),"Slider")
+                                                                                                         returnvoid
+                                                                                                      end ; code
+                                                                                                   end ; body
+                                                                                                end ; method
+                                                                                                

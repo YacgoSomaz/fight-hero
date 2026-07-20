@@ -1,0 +1,632 @@
+package
+{
+   public class Stats_Skills
+   {
+      
+      public static var skillOb:Object;
+      
+      public static var skillAr:Array;
+      
+      public static var classAr:Array;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               getlocal2
+               convert_u
+               bitnot
+               subtract
+               lshift
+               decrement
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var id:String;
+      
+      public var sprite:String;
+      
+      public var name:String;
+      
+      public var typeName:String;
+      
+      public var cost:int;
+      
+      public var lvlReq:uint;
+      
+      public var value:Number;
+      
+      public var special:String;
+      
+      public var desc:String;
+      
+      public function Stats_Skills()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function Init() : void
+      {
+         trait method QName(PackageNamespace(""),"Init")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 11
+                  localcount 2
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PackageNamespace(""),"skillOb")
+                     newobject 0
+                     setproperty QName(PackageNamespace(""),"skillOb")
+                     findproperty QName(PackageNamespace(""),"skillAr")
+                     newarray 0
+                     setproperty QName(PackageNamespace(""),"skillAr")
+                     findproperty QName(PackageNamespace(""),"classAr")
+                     newarray 0
+                     setproperty QName(PackageNamespace(""),"classAr")
+                     pushbyte 0
+                     convert_u
+                     setlocal1
+                     jump ofs0030
+            ofs0022:
+                     label
+                     getlex QName(PackageNamespace(""),"classAr")
+                     newarray 0
+                     callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                     getlocal1
+                     increment
+                     convert_u
+                     setlocal1
+            ofs0030:
+                     getlocal1
+                     pushbyte 5
+                     iflt ofs0022
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 0
+                     pushstring "blur2"
+                     pushstring "blur"
+                     pushstring "Blur"
+                     pushstring "Timed"
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte 10
+                     pushstring "Dodge all attacks when below 30% health"
+                     pushstring "When low on health, the Assassin will dodge all attacks for 3 seconds.\n\n(Can only occur once every 30 seconds)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 0
+                     pushstring "shadow2"
+                     pushstring "shadow"
+                     pushstring "Shadow Blend"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 1
+                     pushdouble 0.5
+                     pushstring "Become invisible while crouching\nMelee attacks get +50% critical when invisible"
+                     pushstring "By crouching and moving slowly, you\'re able to blend into the shadows, unable to be seen.\n\n(Attacking or being attacked will reveal you)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 1
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushstring "None"
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte -1
+                     pushstring ""
+                     pushstring "No skill equipped."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 1
+                     pushstring "combat"
+                     pushstring "mastery"
+                     pushstring "Combat Mastery"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 2
+                     pushbyte -1
+                     pushstring "+3% Critical\n+3% Aim\n+10% Ammo\n+10 Hp"
+                     pushstring "Being a jack of all trades, the Medic is adept at all forms of combat."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 1
+                     pushstring "regen"
+                     pushstring "regen"
+                     pushstring "Regenerative Tissue"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 4
+                     pushbyte -1
+                     pushstring "Immediate health regeneration"
+                     pushstring "After years in the field, the Medic\'s body tissue is so used to being healed that it is now always renegerating itself automatically."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 1
+                     pushstring "charisma"
+                     pushstring "charisma"
+                     pushstring "Charismatic"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 10
+                     pushbyte -1
+                     pushstring "All killstreaks require 1 less kill"
+                     pushstring "The Medic is a friend to all. Because of this, battle assistance comes to his aid quicker than others."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 1
+                     pushstring "operation"
+                     pushstring "operation"
+                     pushstring "Self Revive"
+                     pushstring "Timed"
+                     pushbyte 0
+                     pushbyte 16
+                     pushbyte 30
+                     pushstring "When about to die, heal 50% health"
+                     pushstring "After reaching 0 health, the Medic performs a last second operation on himself, regaining half of his health.\n\n(Can only occur once every 30 seconds)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 2
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushstring "None"
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte -1
+                     pushstring ""
+                     pushstring "No skill equipped."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 2
+                     pushstring "critical"
+                     pushstring "mastery"
+                     pushstring "Focus Mastery"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 2
+                     pushdouble 0.05
+                     pushstring "+5% Critical\n+5% Aim"
+                     pushstring "Extreme focus allows you to hone your aim and target enemy weakpoints."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 2
+                     pushstring "vital"
+                     pushstring "vital"
+                     pushstring "Vital Sight"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 4
+                     pushdouble 0.25
+                     pushstring "Criticals and Headshots do +25% damage"
+                     pushstring "Adds a laser sight to the weapon, allowing you to pinpoint enemy weakpoints."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 2
+                     pushstring "shadow"
+                     pushstring "shadow"
+                     pushstring "Shadow Blend"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 10
+                     pushdouble 0.5
+                     pushstring "Become invisible while crouching\nMelee attacks get +50% critical when invisible"
+                     pushstring "By crouching and moving slowly, the Assassin is able to blend into the shadows, unable to be seen.\n\n(Attacking or being attacked will reveal you)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 2
+                     pushstring "blur"
+                     pushstring "blur"
+                     pushstring "Blur"
+                     pushstring "Timed"
+                     pushbyte 0
+                     pushbyte 16
+                     pushbyte 30
+                     pushstring "Dodge all attacks when below 30% health"
+                     pushstring "When low on health, the Assassin will dodge all attacks for 2 seconds.\n\n(Can only occur once every 30 seconds)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 3
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushstring "None"
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte -1
+                     pushstring ""
+                     pushstring "No skill equipped."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 3
+                     pushstring "ammo"
+                     pushstring "mastery"
+                     pushstring "Ammo Mastery"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 2
+                     pushdouble 0.2
+                     pushstring "+20% Ammo"
+                     pushstring "All those extra pockets and slots aren\'t just for show."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 3
+                     pushstring "resist"
+                     pushstring "resist"
+                     pushstring "Flame Resistance"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 4
+                     pushdouble 0.6
+                     pushstring "-40% explosive damage"
+                     pushstring "Years of explosive training has conditioned the Commando to resist all explosives. No one knows how."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 3
+                     pushstring "clip"
+                     pushstring "clip"
+                     pushstring "Ammo Feed"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 10
+                     pushbyte -1
+                     pushstring "Never reload with a machine gun"
+                     pushstring "Instead of clips, the Commando feeds all his ammo directly into the gun so he never needs to reload.\n\n(Machine guns only)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 3
+                     pushstring "bomb"
+                     pushstring "bomb"
+                     pushstring "Martyrdom"
+                     pushstring "Timed"
+                     pushbyte 0
+                     pushbyte 16
+                     pushbyte 30
+                     pushstring "Explode on death"
+                     pushstring "Rigging himself with explosives, the Commando will explode on death, taking out all nearby enemies with him.\n\n(Can only occur every 30 seconds)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 4
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushstring "None"
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte -1
+                     pushstring ""
+                     pushstring "No skill equipped."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 4
+                     pushstring "health"
+                     pushstring "mastery"
+                     pushstring "Armor Mastery"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 2
+                     pushbyte 20
+                     pushstring "+20 Hp"
+                     pushstring "When it comes to bullets, the Tank can never have too much protection."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 4
+                     pushstring "adren"
+                     pushstring "adren"
+                     pushstring "Adrenaline"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 4
+                     pushbyte 3
+                     pushstring "3x Hp regeneration"
+                     pushstring "When in danger, the Tank gets a surge of Adrenaline, recovering his health extremely fast."
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 4
+                     pushstring "iron"
+                     pushstring "iron"
+                     pushstring "Full Protection"
+                     pushstring "Passive"
+                     pushbyte 0
+                     pushbyte 10
+                     pushdouble 0.85
+                     pushstring "Reduce all damage by 15% when using a shield"
+                     pushstring "When using a shield, the Tank becomes one with the it, allowing the unprotected parts of his body to reduce some damage as well.\n\n(Requires Shield)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     findpropstrict QName(PackageNamespace(""),"addSkill")
+                     pushbyte 4
+                     pushstring "will"
+                     pushstring "fist"
+                     pushstring "Iron Will"
+                     pushstring "Timed"
+                     pushbyte 0
+                     pushbyte 16
+                     pushbyte 5
+                     pushstring "Reduce next attack by 70%"
+                     pushstring "Every once in a while, the Tank can reduce the next damage he takes by 70%.\n\n(Can only occur once every 5 seconds)"
+                     callpropvoid QName(PackageNamespace(""),"addSkill"), 10
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function addSkill(param1:uint, param2:String, param3:String, param4:String, param5:String, param6:int, param7:uint, param8:Number, param9:String, param10:String) : void
+         {
+            trait method QName(PackageNamespace(""),"addSkill")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"uint")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"int")
+                  param QName(PackageNamespace(""),"uint")
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 4
+                     localcount 12
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlocal0
+                        construct 0
+                        coerce QName(PackageNamespace(""),"Stats_Skills")
+                        dup
+                        setlocal 11
+                        getlocal2
+                        setproperty QName(PackageNamespace(""),"id")
+                        getlocal 11
+                        getlocal3
+                        setproperty QName(PackageNamespace(""),"sprite")
+                        getlocal 11
+                        getlocal 4
+                        setproperty QName(PackageNamespace(""),"name")
+                        getlocal 11
+                        getlocal 5
+                        setproperty QName(PackageNamespace(""),"typeName")
+                        getlocal 11
+                        getlocal 6
+                        setproperty QName(PackageNamespace(""),"cost")
+                        getlocal 11
+                        getlocal 7
+                        setproperty QName(PackageNamespace(""),"lvlReq")
+                        getlocal 11
+                        getlocal 8
+                        setproperty QName(PackageNamespace(""),"value")
+                        getlocal 11
+                        getlocal 9
+                        setproperty QName(PackageNamespace(""),"special")
+                        getlocal 11
+                        getlocal 10
+                        setproperty QName(PackageNamespace(""),"desc")
+                        getlocal 11
+                        getlex QName(PackageNamespace(""),"Stats_Classes")
+                        getlocal 7
+                        pushstring "skill"
+                        callproperty QName(PackageNamespace(""),"getItemCost"), 2
+                        setproperty QName(PackageNamespace(""),"cost")
+                        getlex QName(PackageNamespace(""),"skillOb")
+                        getlocal2
+                        getlocal 11
+                        setproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                        getlex QName(PackageNamespace(""),"skillAr")
+                        getlocal 11
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                        getlex QName(PackageNamespace(""),"classAr")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                        getlocal 11
+                        callpropvoid Multiname("push",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")]), 1
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function getRandSkill(param1:Object) : String
+            {
+               trait method QName(PackageNamespace(""),"getRandSkill")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Object")
+                     returns QName(PackageNamespace(""),"String")
+                     
+                     body
+                        maxstack 3
+                        localcount 3
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           pushnull
+                           coerce_s
+                           setlocal2
+                           jump ofs000a
+                  ofs0009:
+                           label
+                  ofs000a:
+                           getlex QName(PackageNamespace(""),"UT")
+                           getlex QName(PackageNamespace(""),"classAr")
+                           getlocal1
+                           getproperty Multiname("soldier",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           callproperty QName(PackageNamespace(""),"randEl"), 1
+                           getproperty Multiname("id",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           coerce_s
+                           setlocal2
+                           getlex QName(PackageNamespace(""),"skillOb")
+                           getlocal2
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("id",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "none"
+                           equals
+                           dup
+                           iftrue ofs005b
+                           pop
+                           getlex QName(PackageNamespace(""),"Stats_Guns")
+                           getproperty QName(PackageNamespace(""),"gunOb")
+                           getlocal1
+                           getproperty Multiname("primary",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("typeName",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "Explosive"
+                           equals
+                           dup
+                           iffalse ofs005b
+                           pop
+                           getlex QName(PackageNamespace(""),"skillOb")
+                           getlocal2
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("id",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "clip"
+                           equals
+                  ofs005b:
+                           dup
+                           iftrue ofs0088
+                           pop
+                           getlex QName(PackageNamespace(""),"Stats_Guns")
+                           getproperty QName(PackageNamespace(""),"gunOb")
+                           getlocal1
+                           getproperty Multiname("primary",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("typeName",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "Shotgun"
+                           equals
+                           dup
+                           iffalse ofs0088
+                           pop
+                           getlex QName(PackageNamespace(""),"skillOb")
+                           getlocal2
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("id",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "iron"
+                           equals
+                  ofs0088:
+                           dup
+                           iftrue ofs00b5
+                           pop
+                           getlex QName(PackageNamespace(""),"Stats_Guns")
+                           getproperty QName(PackageNamespace(""),"gunOb")
+                           getlocal1
+                           getproperty Multiname("primary",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("typeName",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "Melee"
+                           equals
+                           dup
+                           iffalse ofs00b5
+                           pop
+                           getlex QName(PackageNamespace(""),"skillOb")
+                           getlocal2
+                           getproperty MultinameL([PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           getproperty Multiname("id",[PrivateNamespace(null,"107"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"108"),PackageInternalNs(""),ProtectedNamespace("Stats_Skills"),StaticProtectedNs("Stats_Skills"),StaticProtectedNs("Object")])
+                           pushstring "vital"
+                           equals
+                  ofs00b5:
+                           iftrue ofs0009
+                           getlocal2
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("Stats_Skills",[PackageNamespace("")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 5
+                  popscope
+                  initproperty QName(PackageNamespace(""),"Stats_Skills")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

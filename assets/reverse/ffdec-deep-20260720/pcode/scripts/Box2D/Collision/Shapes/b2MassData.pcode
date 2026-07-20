@@ -1,0 +1,121 @@
+package Box2D.Collision.Shapes
+{
+   import Box2D.Common.Math.b2Vec2;
+   
+   public class b2MassData
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               jump ofs001a
+               pushfalse
+               convert_b
+               swap
+               add
+               convert_i
+               decrement_i
+      ofs001a:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var mass:Number = 0;
+      
+      public var center:b2Vec2;
+      
+      public var I:Number = 0;
+      
+      public function b2MassData()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 54
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  pushbyte 0
+                  dup
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 2
+                  initproperty QName(PackageNamespace(""),"center")
+                  getlocal0
+                  jump ofs0028
+                  bitand
+                  getlocal0
+                  nextname
+                  convert_u
+                  setlocal3
+                  setlocal1
+         ofs0028:
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2MassData",[PackageNamespace("Box2D.Collision.Shapes")])
+         getlex QName(PackageNamespace(""),"Object")
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 57
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Collision.Shapes"),"b2MassData")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

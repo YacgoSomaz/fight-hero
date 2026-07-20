@@ -1,0 +1,1497 @@
+package mochi.as3
+{
+   import flash.events.Event;
+   import flash.events.EventDispatcher;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.net.ObjectEncoding;
+   import flash.net.URLLoader;
+   import flash.net.URLLoaderDataFormat;
+   import flash.net.URLRequest;
+   import flash.net.URLRequestHeader;
+   import flash.net.URLRequestMethod;
+   import flash.net.URLVariables;
+   import flash.utils.ByteArray;
+   
+   public class MochiUserData extends EventDispatcher
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 4
+            maxscopedepth 5
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var _loader:URLLoader;
+      
+      public var key:String = null;
+      
+      public var data:* = null;
+      
+      public var error:Event = null;
+      
+      public var operation:String = null;
+      
+      public var callback:Function = null;
+      
+      public function MochiUserData(param1:String = "", param2:Function = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"Function")
+            optional Utf8("")
+            optional Null()
+            returns null
+            
+            body
+               maxstack 52
+               localcount 3
+               initscopedepth 5
+               maxscopedepth 6
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PackageNamespace(""),"key")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PackageNamespace(""),"callback")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function get(param1:String, param2:Function) : void
+      {
+         trait method QName(PackageNamespace(""),"get")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               param QName(PackageNamespace(""),"Function")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 3
+                  localcount 4
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlocal0
+                     getlocal1
+                     getlocal2
+                     construct 2
+                     coerce QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                     setlocal3
+                     getlocal3
+                     callpropvoid QName(PackageNamespace(""),"getEvent"), 0
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function put(param1:String, param2:*, param3:Function) : void
+         {
+            trait method QName(PackageNamespace(""),"put")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"String")
+                  param null
+                  param QName(PackageNamespace(""),"Function")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 3
+                     localcount 5
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlocal0
+                        getlocal1
+                        getlocal3
+                        construct 2
+                        coerce QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                        dup
+                        setlocal 4
+                        getlocal2
+                        callpropvoid QName(PackageNamespace(""),"putEvent"), 1
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function serialize(param1:*) : ByteArray
+            {
+               trait method QName(PackageNamespace(""),"serialize")
+                  dispid 0
+                  method
+                     name null
+                     param null
+                     returns QName(PackageNamespace("flash.utils"),"ByteArray")
+                     
+                     body
+                        maxstack 52
+                        localcount 3
+                        initscopedepth 5
+                        maxscopedepth 6
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           findpropstrict QName(PackageNamespace("flash.utils"),"ByteArray")
+                           constructprop QName(PackageNamespace("flash.utils"),"ByteArray"), 0
+                           coerce QName(PackageNamespace("flash.utils"),"ByteArray")
+                           setlocal2
+                           getlocal2
+                           getlex QName(PackageNamespace("flash.net"),"ObjectEncoding")
+                           getproperty QName(PackageNamespace(""),"AMF3")
+                           pushfalse
+                           iffalse ofs002e
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0031
+                  ofs002e:
+                           setproperty QName(PackageNamespace(""),"objectEncoding")
+                  ofs0031:
+                           getlocal2
+                           getlocal1
+                           pushfalse
+                           iffalse ofs0041
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0045
+                  ofs0041:
+                           callpropvoid QName(PackageNamespace(""),"writeObject"), 1
+                  ofs0045:
+                           getlocal2
+                           pushfalse
+                           iffalse ofs0053
+                           pushbyte 5
+                           pop
+                           pop
+                           jump ofs0057
+                  ofs0053:
+                           callpropvoid QName(PackageNamespace(""),"compress"), 0
+                  ofs0057:
+                           getlocal2
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function deserialize(param1:ByteArray) : *
+               {
+                  trait method QName(PackageNamespace(""),"deserialize")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace("flash.utils"),"ByteArray")
+                        returns null
+                        
+                        body
+                           maxstack 52
+                           localcount 2
+                           initscopedepth 5
+                           maxscopedepth 6
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal1
+                              getlex QName(PackageNamespace("flash.net"),"ObjectEncoding")
+                              getproperty QName(PackageNamespace(""),"AMF3")
+                              pushfalse
+                              iffalse ofs0026
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0029
+                     ofs0026:
+                              setproperty QName(PackageNamespace(""),"objectEncoding")
+                     ofs0029:
+                              getlocal1
+                              pushfalse
+                              iffalse ofs0037
+                              pushbyte 5
+                              pop
+                              pop
+                              jump ofs003b
+                     ofs0037:
+                              callpropvoid QName(PackageNamespace(""),"uncompress"), 0
+                     ofs003b:
+                              getlocal1
+                              callproperty QName(PackageNamespace(""),"readObject"), 0
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function request(param1:String, param2:ByteArray) : void
+                  {
+                     trait method QName(PackageNamespace(""),"request")
+                        dispid 0
+                        method
+                           name null
+                           flag NEED_ACTIVATION
+                           param QName(PackageNamespace(""),"String")
+                           param QName(PackageNamespace("flash.utils"),"ByteArray")
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 57
+                              localcount 5
+                              initscopedepth 6
+                              maxscopedepth 11
+                              trait slot QName(PackageInternalNs("mochi.as3"),"_operation")
+                                 slotid 1
+                                 type QName(PackageNamespace(""),"String")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("mochi.as3"),"_data")
+                                 slotid 2
+                                 type QName(PackageNamespace("flash.utils"),"ByteArray")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("mochi.as3"),"api_url")
+                                 slotid 3
+                                 type QName(PackageNamespace(""),"String")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("mochi.as3"),"api_token")
+                                 slotid 4
+                                 type QName(PackageNamespace(""),"String")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("mochi.as3"),"args")
+                                 slotid 5
+                                 type QName(PackageNamespace("flash.net"),"URLVariables")
+                              end ; trait
+                              trait slot QName(PackageInternalNs("mochi.as3"),"req")
+                                 slotid 6
+                                 type QName(PackageNamespace("flash.net"),"URLRequest")
+                              end ; trait
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 newactivation
+                                 dup
+                                 setlocal3
+                                 pushscope
+                                 getscopeobject 1
+                                 getlocal1
+                                 jump ofs0023
+                                 increment_i
+                                 not
+                                 convert_o
+                                 getlocal0
+                                 typeof
+                                 decrement_i
+                                 lshift
+                        ofs0023:
+                                 setslot 1
+                                 getscopeobject 1
+                                 getlocal2
+                                 setslot 2
+                                 getlocal0
+                                 getscopeobject 1
+                                 getslot 1
+                                 initproperty QName(PackageNamespace(""),"operation")
+                                 getscopeobject 1
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                                 callproperty QName(PackageNamespace(""),"getAPIURL"), 0
+                                 coerce_s
+                                 jump ofs0047
+                                 lshift
+                                 modulo
+                                 increment
+                                 convert_u
+                                 pushtrue
+                                 increment_i
+                                 bitand
+                        ofs0047:
+                                 setslot 3
+                                 getscopeobject 1
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                                 callproperty QName(PackageNamespace(""),"getAPIToken"), 0
+                                 coerce_s
+                                 setslot 4
+                                 getscopeobject 1
+                                 jump ofs005f
+                                 setlocal3
+                                 hasnext
+                                 pushfalse
+                                 pushscope
+                        ofs005f:
+                                 getslot 3
+                                 jump ofs0069
+                                 setlocal3
+                                 hasnext
+                                 pushfalse
+                                 pushscope
+                        ofs0069:
+                                 pushnull
+                                 jump ofs0072
+                                 decrement_i
+                                 lessequals
+                                 convert_d
+                                 bitor
+                        ofs0072:
+                                 equals
+                                 dup
+                                 iftrue ofs0087
+                                 pop
+                                 getscopeobject 1
+                                 getslot 4
+                                 pushnull
+                                 jump ofs0086
+                                 swap
+                                 nextvalue
+                                 typeof
+                                 getlocal0
+                        ofs0086:
+                                 equals
+                        ofs0087:
+                                 iffalse ofs00ae
+                                 getlocal0
+                                 findpropstrict QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                 getlex QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                 getproperty QName(PackageNamespace(""),"IO_ERROR")
+                                 pushfalse
+                                 pushfalse
+                                 pushstring "not logged in"
+                                 constructprop QName(PackageNamespace("flash.events"),"IOErrorEvent"), 4
+                                 pushfalse
+                                 iffalse ofs00a9
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs00ad
+                        ofs00a9:
+                                 callpropvoid QName(PackageNamespace(""),"errorHandler"), 1
+                        ofs00ad:
+                                 returnvoid
+                        ofs00ae:
+                                 getlocal0
+                                 findpropstrict QName(PackageNamespace("flash.net"),"URLLoader")
+                                 constructprop QName(PackageNamespace("flash.net"),"URLLoader"), 0
+                                 initproperty QName(PackageNamespace(""),"_loader")
+                                 getscopeobject 1
+                                 findpropstrict QName(PackageNamespace("flash.net"),"URLVariables")
+                                 jump ofs00c6
+                                 convert_i
+                                 swap
+                                 getlocal2
+                                 bitxor
+                        ofs00c6:
+                                 constructprop QName(PackageNamespace("flash.net"),"URLVariables"), 0
+                                 coerce QName(PackageNamespace("flash.net"),"URLVariables")
+                                 setslot 5
+                                 getscopeobject 1
+                                 getslot 5
+                                 getscopeobject 1
+                                 getslot 1
+                                 pushfalse
+                                 iffalse ofs00e5
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs00e8
+                        ofs00e5:
+                                 setproperty Multiname("op",[PrivateNamespace(null,"198"),PackageNamespace("mochi.as3"),PackageNamespace(""),PrivateNamespace(null,"199"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiUserData"),StaticProtectedNs("mochi.as3:MochiUserData"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        ofs00e8:
+                                 getscopeobject 1
+                                 getslot 5
+                                 getlocal0
+                                 jump ofs00f5
+                                 convert_i
+                                 swap
+                                 getlocal2
+                                 bitxor
+                        ofs00f5:
+                                 getproperty QName(PackageNamespace(""),"key")
+                                 pushfalse
+                                 iffalse ofs0106
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0109
+                        ofs0106:
+                                 setproperty Multiname("key",[PrivateNamespace(null,"198"),PackageNamespace("mochi.as3"),PackageNamespace(""),PrivateNamespace(null,"199"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiUserData"),StaticProtectedNs("mochi.as3:MochiUserData"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                        ofs0109:
+                                 getscopeobject 1
+                                 findpropstrict QName(PackageNamespace("flash.net"),"URLRequest")
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiSocial")
+                                 callproperty QName(PackageNamespace(""),"getAPIURL"), 0
+                                 pushstring "/"
+                                 add
+                                 pushstring "MochiUserData?"
+                                 add
+                                 jump ofs0125
+                                 nextvalue
+                                 pushnull
+                                 lessthan
+                                 lessthan
+                        ofs0125:
+                                 getscopeobject 1
+                                 getslot 5
+                                 callproperty QName(PackageNamespace(""),"toString"), 0
+                                 add
+                                 jump ofs0136
+                                 strictequals
+                                 convert_b
+                                 pop
+                                 dup
+                        ofs0136:
+                                 constructprop QName(PackageNamespace("flash.net"),"URLRequest"), 1
+                                 coerce QName(PackageNamespace("flash.net"),"URLRequest")
+                                 setslot 6
+                                 getscopeobject 1
+                                 getslot 6
+                                 jump ofs014b
+                                 strictequals
+                                 convert_b
+                                 pop
+                                 dup
+                        ofs014b:
+                                 getlex QName(PackageNamespace("flash.net"),"URLRequestMethod")
+                                 getproperty QName(PackageNamespace(""),"POST")
+                                 pushfalse
+                                 iffalse ofs015f
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0162
+                        ofs015f:
+                                 setproperty QName(PackageNamespace(""),"method")
+                        ofs0162:
+                                 getscopeobject 1
+                                 getslot 6
+                                 jump ofs016e
+                                 lessequals
+                                 equals
+                                 equals
+                                 convert_b
+                        ofs016e:
+                                 pushstring "application/x-mochi-userdata"
+                                 pushfalse
+                                 iffalse ofs017f
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0182
+                        ofs017f:
+                                 setproperty QName(PackageNamespace(""),"contentType")
+                        ofs0182:
+                                 getscopeobject 1
+                                 jump ofs018c
+                                 newactivation
+                                 greaterequals
+                                 getlocal0
+                                 multiply_i
+                        ofs018c:
+                                 getslot 6
+                                 findpropstrict QName(PackageNamespace("flash.net"),"URLRequestHeader")
+                                 pushstring "x-mochi-services-version"
+                                 getlex QName(PackageNamespace("mochi.as3"),"MochiServices")
+                                 callproperty QName(PackageNamespace(""),"getVersion"), 0
+                                 constructprop QName(PackageNamespace("flash.net"),"URLRequestHeader"), 2
+                                 findpropstrict QName(PackageNamespace("flash.net"),"URLRequestHeader")
+                                 pushstring "x-mochi-api-token"
+                                 getscopeobject 1
+                                 getslot 4
+                                 constructprop QName(PackageNamespace("flash.net"),"URLRequestHeader"), 2
+                                 newarray 2
+                                 pushfalse
+                                 iffalse ofs01bd
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs01c0
+                        ofs01bd:
+                                 setproperty QName(PackageNamespace(""),"requestHeaders")
+                        ofs01c0:
+                                 getscopeobject 1
+                                 getslot 6
+                                 getscopeobject 1
+                                 getslot 2
+                                 pushfalse
+                                 iffalse ofs01d6
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs01d9
+                        ofs01d6:
+                                 setproperty QName(PackageNamespace(""),"data")
+                        ofs01d9:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"_loader")
+                                 getlex QName(PackageNamespace("flash.net"),"URLLoaderDataFormat")
+                                 getproperty QName(PackageNamespace(""),"BINARY")
+                                 pushfalse
+                                 iffalse ofs01f1
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs01f4
+                        ofs01f1:
+                                 setproperty QName(PackageNamespace(""),"dataFormat")
+                        ofs01f4:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"_loader")
+                                 getlex QName(PackageNamespace("flash.events"),"Event")
+                                 getproperty QName(PackageNamespace(""),"COMPLETE")
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"completeHandler")
+                                 pushfalse
+                                 iffalse ofs0210
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0214
+                        ofs0210:
+                                 callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                        ofs0214:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"_loader")
+                                 getlex QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                 getproperty QName(PackageNamespace(""),"IO_ERROR")
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"errorHandler")
+                                 pushfalse
+                                 iffalse ofs0230
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0234
+                        ofs0230:
+                                 callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                        ofs0234:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"_loader")
+                                 jump ofs0241
+                                 hasnext
+                                 bitor
+                                 decrement_i
+                                 strictequals
+                                 negate
+                        ofs0241:
+                                 getlex QName(PackageNamespace("flash.events"),"SecurityErrorEvent")
+                                 getproperty QName(PackageNamespace(""),"SECURITY_ERROR")
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"securityErrorHandler")
+                                 pushfalse
+                                 iffalse ofs0259
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs025d
+                        ofs0259:
+                                 callpropvoid QName(PackageNamespace(""),"addEventListener"), 2
+                        ofs025d:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"_loader")
+                                 getscopeobject 1
+                                 jump ofs026c
+                                 getlocal2
+                                 pushtrue
+                                 getlocal3
+                                 lessthan
+                                 lshift
+                        ofs026c:
+                                 getslot 6
+                                 pushfalse
+                                 iffalse ofs027c
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0280
+                        ofs027c:
+                                 callpropvoid QName(PackageNamespace(""),"load"), 1
+                        ofs0280:
+                                 jump ofs02cb
+                        ofs0284:
+                                 getlocal0
+                                 pushscope
+                                 getlocal3
+                                 pushscope
+                                 newcatch 0
+                                 dup
+                                 setlocal 4
+                                 dup
+                                 pushscope
+                                 swap
+                                 setslot 1
+                                 findpropstrict QName(PackageNamespace(""),"errorHandler")
+                                 findpropstrict QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                 getlex QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                 getproperty QName(PackageNamespace(""),"IO_ERROR")
+                                 pushfalse
+                                 pushfalse
+                                 pushstring "security error: "
+                                 jump ofs02aa
+                                 getglobalscope
+                                 convert_o
+                                 pushscope
+                                 dup
+                                 decrement_i
+                        ofs02aa:
+                                 getscopeobject 2
+                                 getslot 1
+                                 callproperty Multiname("toString",[PrivateNamespace(null,"198"),PackageNamespace("mochi.as3"),PackageNamespace(""),PrivateNamespace(null,"199"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiUserData"),StaticProtectedNs("mochi.as3:MochiUserData"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")]), 0
+                                 add
+                                 constructprop QName(PackageNamespace("flash.events"),"IOErrorEvent"), 4
+                                 pushfalse
+                                 iffalse ofs02c4
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs02c8
+                        ofs02c4:
+                                 callpropvoid QName(PackageNamespace(""),"errorHandler"), 1
+                        ofs02c8:
+                                 popscope
+                                 kill 4
+                        ofs02cb:
+                                 returnvoid
+                              end ; code
+                              try from ofs025d to ofs0280 target ofs0284 type QName(PackageNamespace(""),"SecurityError") name QName(PackageNamespace(""),"e") end
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function completeHandler(param1:Event) : void
+                     {
+                        trait method QName(PackageNamespace(""),"completeHandler")
+                           dispid 0
+                           method
+                              name null
+                              flag NEED_ACTIVATION
+                              param QName(PackageNamespace("flash.events"),"Event")
+                              returns QName(PackageNamespace(""),"void")
+                              
+                              body
+                                 maxstack 57
+                                 localcount 4
+                                 initscopedepth 6
+                                 maxscopedepth 11
+                                 trait slot QName(PackageInternalNs("mochi.as3"),"event")
+                                    slotid 1
+                                    type QName(PackageNamespace("flash.events"),"Event")
+                                 end ; trait
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    pushscope
+                                    newactivation
+                                    dup
+                                    setlocal2
+                                    pushscope
+                                    getscopeobject 1
+                                    getlocal1
+                                    setslot 1
+                           ofs001a:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"_loader")
+                                    getproperty QName(PackageNamespace(""),"data")
+                                    getproperty Multiname("length",[PrivateNamespace(null,"198"),PackageNamespace("mochi.as3"),PackageNamespace(""),PrivateNamespace(null,"199"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiUserData"),StaticProtectedNs("mochi.as3:MochiUserData"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")])
+                                    iffalse ofs0044
+                                    getlocal0
+                                    getlocal0
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"_loader")
+                                    getproperty QName(PackageNamespace(""),"data")
+                                    callproperty QName(PackageNamespace(""),"deserialize"), 1
+                                    jump ofs003d
+                                    dxnslate
+                                    convert_i
+                                    convert_s
+                                    dxnslate
+                           ofs003d:
+                                    initproperty QName(PackageNamespace(""),"data")
+                                    jump ofs0049
+                           ofs0044:
+                                    getlocal0
+                                    pushnull
+                                    initproperty QName(PackageNamespace(""),"data")
+                           ofs0049:
+                                    jump ofs00ab
+                           ofs004d:
+                                    getlocal0
+                                    pushscope
+                                    getlocal2
+                                    pushscope
+                                    newcatch 0
+                                    jump ofs005b
+                                    instanceof
+                                    decrement_i
+                                    bitxor
+                                    bitnot
+                           ofs005b:
+                                    dup
+                                    setlocal3
+                                    dup
+                                    jump ofs0066
+                                    instanceof
+                                    decrement_i
+                                    bitxor
+                                    bitnot
+                           ofs0066:
+                                    pushscope
+                                    swap
+                                    setslot 1
+                                    findpropstrict QName(PackageNamespace(""),"errorHandler")
+                                    jump ofs0075
+                                    convert_d
+                                    bitxor
+                                    pushnan
+                                    getlocal2
+                           ofs0075:
+                                    findpropstrict QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                    getlex QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                    getproperty QName(PackageNamespace(""),"IO_ERROR")
+                                    pushfalse
+                                    pushfalse
+                                    pushstring "deserialize error: "
+                                    getscopeobject 2
+                                    getslot 1
+                                    callproperty Multiname("toString",[PrivateNamespace(null,"198"),PackageNamespace("mochi.as3"),PackageNamespace(""),PrivateNamespace(null,"199"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiUserData"),StaticProtectedNs("mochi.as3:MochiUserData"),StaticProtectedNs("flash.events:EventDispatcher"),StaticProtectedNs("Object")]), 0
+                                    jump ofs0091
+                                    bitxor
+                                    instanceof
+                                    getglobalscope
+                                    add
+                           ofs0091:
+                                    add
+                                    constructprop QName(PackageNamespace("flash.events"),"IOErrorEvent"), 4
+                                    pushfalse
+                                    iffalse ofs00a3
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs00a7
+                           ofs00a3:
+                                    callpropvoid QName(PackageNamespace(""),"errorHandler"), 1
+                           ofs00a7:
+                                    returnvoid
+                                    popscope
+                                    kill 3
+                           ofs00ab:
+                                    getlocal0
+                                    getproperty QName(PackageNamespace(""),"callback")
+                                    jump ofs00b7
+                                    bitxor
+                                    instanceof
+                                    getglobalscope
+                                    add
+                           ofs00b7:
+                                    pushnull
+                                    ifeq ofs00d2
+                                    getlocal0
+                                    pushfalse
+                                    iffalse ofs00ca
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    jump ofs00ce
+                           ofs00ca:
+                                    callpropvoid QName(PackageNamespace(""),"performCallback"), 0
+                           ofs00ce:
+                                    jump ofs00f3
+                           ofs00d2:
+                                    findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                    getscopeobject 1
+                                    jump ofs00df
+                                    pushnull
+                                    setlocal2
+                                    getlocal1
+                                    pushfalse
+                           ofs00df:
+                                    getslot 1
+                                    pushfalse
+                                    iffalse ofs00ef
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    pop
+                                    jump ofs00f3
+                           ofs00ef:
+                                    callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                           ofs00f3:
+                                    getlocal0
+                                    jump ofs00fc
+                                    decrement_i
+                                    increment
+                                    coerce_s
+                                    dxnslate
+                           ofs00fc:
+                                    pushfalse
+                                    iffalse ofs0109
+                                    pushbyte 5
+                                    pop
+                                    pop
+                                    jump ofs010d
+                           ofs0109:
+                                    callpropvoid QName(PackageNamespace(""),"close"), 0
+                           ofs010d:
+                                    returnvoid
+                                 end ; code
+                                 try from ofs001a to ofs0049 target ofs004d type QName(PackageNamespace(""),"Error") name QName(PackageNamespace(""),"e") end
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function errorHandler(param1:IOErrorEvent) : void
+                        {
+                           trait method QName(PackageNamespace(""),"errorHandler")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 52
+                                    localcount 2
+                                    initscopedepth 5
+                                    maxscopedepth 6
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       getlocal0
+                                       pushnull
+                                       initproperty QName(PackageNamespace(""),"data")
+                                       getlocal0
+                                       getlocal1
+                                       initproperty QName(PackageNamespace(""),"error")
+                                       getlocal0
+                                       getproperty QName(PackageNamespace(""),"callback")
+                                       pushnull
+                                       ifeq ofs003a
+                                       getlocal0
+                                       pushfalse
+                                       iffalse ofs0032
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       jump ofs0036
+                              ofs0032:
+                                       callpropvoid QName(PackageNamespace(""),"performCallback"), 0
+                              ofs0036:
+                                       jump ofs0059
+                              ofs003a:
+                                       findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                       getlocal1
+                                       jump ofs0047
+                                       decrement_i
+                                       getglobalscope
+                                       dup
+                                       instanceof
+                                       increment_i
+                              ofs0047:
+                                       pushfalse
+                                       iffalse ofs0055
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs0059
+                              ofs0055:
+                                       callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                              ofs0059:
+                                       getlocal0
+                                       pushfalse
+                                       iffalse ofs0067
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       jump ofs006b
+                              ofs0067:
+                                       callpropvoid QName(PackageNamespace(""),"close"), 0
+                              ofs006b:
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function securityErrorHandler(param1:SecurityErrorEvent) : void
+                           {
+                              trait method QName(PackageNamespace(""),"securityErrorHandler")
+                                 dispid 0
+                                 method
+                                    name null
+                                    param QName(PackageNamespace("flash.events"),"SecurityErrorEvent")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 57
+                                       localcount 2
+                                       initscopedepth 5
+                                       maxscopedepth 6
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          getlocal0
+                                          findpropstrict QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                          getlex QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                          getproperty QName(PackageNamespace(""),"IO_ERROR")
+                                          pushfalse
+                                          pushfalse
+                                          pushstring "security error: "
+                                          getlocal1
+                                          callproperty QName(PackageNamespace(""),"toString"), 0
+                                          add
+                                          constructprop QName(PackageNamespace("flash.events"),"IOErrorEvent"), 4
+                                          pushfalse
+                                          iffalse ofs0035
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0039
+                                 ofs0035:
+                                          callpropvoid QName(PackageNamespace(""),"errorHandler"), 1
+                                 ofs0039:
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public function performCallback() : void
+                              {
+                                 trait method QName(PackageNamespace(""),"performCallback")
+                                    dispid 0
+                                    method
+                                       name null
+                                       flag NEED_ACTIVATION
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 53
+                                          localcount 3
+                                          initscopedepth 6
+                                          maxscopedepth 11
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             newactivation
+                                             dup
+                                             setlocal1
+                                             pushscope
+                                    ofs0015:
+                                             getlocal0
+                                             getlocal0
+                                             pushfalse
+                                             iffalse ofs0025
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs0029
+                                    ofs0025:
+                                             callpropvoid QName(PackageNamespace(""),"callback"), 1
+                                    ofs0029:
+                                             jump ofs0062
+                                    ofs002d:
+                                             getlocal0
+                                             pushscope
+                                             getlocal1
+                                             pushscope
+                                             newcatch 0
+                                             dup
+                                             setlocal2
+                                             jump ofs003d
+                                             coerce_s
+                                             modulo
+                                             pushundefined
+                                             setlocal1
+                                    ofs003d:
+                                             dup
+                                             pushscope
+                                             swap
+                                             setslot 1
+                                             findpropstrict QName(PackageNamespace(""),"trace")
+                                             pushstring "[MochiUserData] exception during callback: "
+                                             getscopeobject 2
+                                             getslot 1
+                                             add
+                                             pushfalse
+                                             iffalse ofs005b
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs005f
+                                    ofs005b:
+                                             callpropvoid QName(PackageNamespace(""),"trace"), 1
+                                    ofs005f:
+                                             popscope
+                                             kill 2
+                                    ofs0062:
+                                             returnvoid
+                                          end ; code
+                                          try from ofs0015 to ofs0029 target ofs002d type QName(PackageNamespace(""),"Error") name QName(PackageNamespace(""),"e") end
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public function close() : void
+                                 {
+                                    trait method QName(PackageNamespace(""),"close")
+                                       dispid 0
+                                       method
+                                          name null
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 53
+                                             localcount 1
+                                             initscopedepth 5
+                                             maxscopedepth 6
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"_loader")
+                                                iffalse ofs0093
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"_loader")
+                                                getlex QName(PackageNamespace("flash.events"),"Event")
+                                                getproperty QName(PackageNamespace(""),"COMPLETE")
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"completeHandler")
+                                                pushfalse
+                                                iffalse ofs0035
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0039
+                                       ofs0035:
+                                                callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                       ofs0039:
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"_loader")
+                                                getlex QName(PackageNamespace("flash.events"),"IOErrorEvent")
+                                                getproperty QName(PackageNamespace(""),"IO_ERROR")
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"errorHandler")
+                                                pushfalse
+                                                iffalse ofs0055
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0059
+                                       ofs0055:
+                                                callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                       ofs0059:
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"_loader")
+                                                getlex QName(PackageNamespace("flash.events"),"SecurityErrorEvent")
+                                                getproperty QName(PackageNamespace(""),"SECURITY_ERROR")
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"securityErrorHandler")
+                                                pushfalse
+                                                iffalse ofs0075
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0079
+                                       ofs0075:
+                                                callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                       ofs0079:
+                                                getlocal0
+                                                getproperty QName(PackageNamespace(""),"_loader")
+                                                pushfalse
+                                                iffalse ofs008a
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                jump ofs008e
+                                       ofs008a:
+                                                callpropvoid QName(PackageNamespace(""),"close"), 0
+                                       ofs008e:
+                                                getlocal0
+                                                pushnull
+                                                initproperty QName(PackageNamespace(""),"_loader")
+                                       ofs0093:
+                                                getlocal0
+                                                pushnull
+                                                initproperty QName(PackageNamespace(""),"error")
+                                                getlocal0
+                                                pushnull
+                                                initproperty QName(PackageNamespace(""),"callback")
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public function getEvent() : void
+                                    {
+                                       trait method QName(PackageNamespace(""),"getEvent")
+                                          dispid 0
+                                          method
+                                             name null
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 54
+                                                localcount 1
+                                                initscopedepth 5
+                                                maxscopedepth 6
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushbyte 37
+                                                   pushbyte 34
+                                                   ifne ofs0010
+                                                   returnvoid
+                                                   newobject 536870911
+                                          ofs0010:
+                                                   pushscope
+                                                   getlocal0
+                                                   pushstring "get"
+                                                   jump ofs0020
+                                                   pushscope
+                                                   urshift
+                                                   instanceof
+                                                   astypelate
+                                                   popscope
+                                                   coerce_s
+                                                   convert_o
+                                          ofs0020:
+                                                   getlocal0
+                                                   jump ofs0029
+                                                   coerce_a
+                                                   getlocal0
+                                                   add_i
+                                                   increment_i
+                                          ofs0029:
+                                                   pushnull
+                                                   callproperty QName(PackageNamespace(""),"serialize"), 1
+                                                   pushfalse
+                                                   iffalse ofs003d
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs0041
+                                          ofs003d:
+                                                   callpropvoid QName(PackageNamespace(""),"request"), 2
+                                          ofs0041:
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public function putEvent(param1:*) : void
+                                       {
+                                          trait method QName(PackageNamespace(""),"putEvent")
+                                             dispid 0
+                                             method
+                                                name null
+                                                param null
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 54
+                                                   localcount 2
+                                                   initscopedepth 5
+                                                   maxscopedepth 6
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      pushscope
+                                                      getlocal0
+                                                      pushstring "put"
+                                                      getlocal0
+                                                      getlocal1
+                                                      jump ofs0022
+                                                      getlocal2
+                                                      instanceof
+                                                      getlocal3
+                                                      setlocal1
+                                                      lessequals
+                                                      bitxor
+                                                      divide
+                                             ofs0022:
+                                                      callproperty QName(PackageNamespace(""),"serialize"), 1
+                                                      pushfalse
+                                                      iffalse ofs0035
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs0039
+                                             ofs0035:
+                                                      callpropvoid QName(PackageNamespace(""),"request"), 2
+                                             ofs0039:
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          override public function toString() : String
+                                          {
+                                             trait method QName(PackageNamespace(""),"toString")
+                                                flag OVERRIDE
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   returns QName(PackageNamespace(""),"String")
+                                                   
+                                                   body
+                                                      maxstack 52
+                                                      localcount 1
+                                                      initscopedepth 5
+                                                      maxscopedepth 6
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushbyte 37
+                                                         pushbyte 34
+                                                         ifne ofs0010
+                                                         returnvoid
+                                                         newobject 536870911
+                                                ofs0010:
+                                                         pushscope
+                                                         pushstring "[MochiUserData operation="
+                                                         getlocal0
+                                                         getproperty QName(PackageNamespace(""),"operation")
+                                                         add
+                                                         pushstring " key=\""
+                                                         add
+                                                         jump ofs0028
+                                                         modulo
+                                                         dup
+                                                         bitand
+                                                         pushfalse
+                                                         checkfilter
+                                                         pushfalse
+                                                         increment
+                                                ofs0028:
+                                                         getlocal0
+                                                         jump ofs0034
+                                                         astypelate
+                                                         modulo
+                                                         swap
+                                                         dxnslate
+                                                         popscope
+                                                         popscope
+                                                         typeof
+                                                ofs0034:
+                                                         getproperty QName(PackageNamespace(""),"key")
+                                                         jump ofs0042
+                                                         astypelate
+                                                         modulo
+                                                         swap
+                                                         dxnslate
+                                                         popscope
+                                                         popscope
+                                                         typeof
+                                                ofs0042:
+                                                         add
+                                                         jump ofs004e
+                                                         dup
+                                                         pop
+                                                         decrement
+                                                         bitnot
+                                                         multiply_i
+                                                         dup
+                                                         pop
+                                                ofs004e:
+                                                         pushstring "\" data="
+                                                         add
+                                                         getlocal0
+                                                         getproperty QName(PackageNamespace(""),"data")
+                                                         add
+                                                         pushstring " error=\""
+                                                         add
+                                                         getlocal0
+                                                         getproperty QName(PackageNamespace(""),"error")
+                                                         add
+                                                         pushstring "\"]"
+                                                         jump ofs006e
+                                                         subtract_i
+                                                         lessequals
+                                                         newactivation
+                                                         getlocal2
+                                                         setlocal1
+                                                         coerce_a
+                                                         decrement_i
+                                                ofs006e:
+                                                         add
+                                                         returnvalue
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                          }
+                                       }
+                                       
+                                       method
+                                          name null
+                                          returns null
+                                          
+                                          body
+                                             maxstack 52
+                                             localcount 1
+                                             initscopedepth 1
+                                             maxscopedepth 4
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                findpropstrict Multiname("MochiUserData",[PackageNamespace("mochi.as3")])
+                                                getlex QName(PackageNamespace(""),"Object")
+                                                pushscope
+                                                getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                                                pushscope
+                                                getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                                                newclass 159
+                                                popscope
+                                                popscope
+                                                initproperty QName(PackageNamespace("mochi.as3"),"MochiUserData")
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                       

@@ -1,0 +1,678 @@
+package Box2D.Collision
+{
+   import Box2D.Collision.Shapes.*;
+   import Box2D.Common.*;
+   import Box2D.Common.Math.*;
+   
+   use namespace b2internal;
+   
+   public class b2DistanceProxy
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var m_vertices:Array;
+      
+      public var m_count:int;
+      
+      public var m_radius:Number;
+      
+      public function b2DistanceProxy()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  jump ofs001a
+                  instanceof
+                  setlocal3
+                  add_i
+                  decrement_i
+                  negate_i
+                  setlocal2
+         ofs001a:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function Set(param1:b2Shape) : void
+      {
+         trait method QName(PackageNamespace(""),"Set")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Collision.Shapes"),"b2Shape")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 54
+                  localcount 5
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     pushnull
+                     coerce QName(PackageNamespace("Box2D.Collision.Shapes"),"b2CircleShape")
+                     setlocal2
+                     pushnull
+                     coerce QName(PackageNamespace("Box2D.Collision.Shapes"),"b2PolygonShape")
+                     setlocal3
+                     jump ofs00ca
+            ofs001d:
+                     label
+                     getlocal1
+                     getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2CircleShape")
+                     astypelate
+                     jump ofs002d
+                     bitand
+                     pushscope
+                     add_i
+                     dxnslate
+                     lshift
+                     getlocal0
+                     convert_u
+            ofs002d:
+                     coerce QName(PackageNamespace("Box2D.Collision.Shapes"),"b2CircleShape")
+                     setlocal2
+                     getlocal0
+                     findpropstrict QName(PackageNamespace(""),"Array")
+                     pushbyte 1
+                     pushtrue
+                     constructprop QName(PackageNamespace(""),"Array"), 2
+                     initproperty QName(PackageNamespace(""),"m_vertices")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"m_vertices")
+                     pushbyte 0
+                     jump ofs004d
+                     urshift
+                     nextvalue
+                     swap
+                     bitnot
+                     decrement_i
+                     not
+                     getlocal0
+            ofs004d:
+                     getlocal2
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_p")
+                     pushfalse
+                     iffalse ofs0060
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs0063
+            ofs0060:
+                     setproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+            ofs0063:
+                     getlocal0
+                     pushbyte 1
+                     initproperty QName(PackageNamespace(""),"m_count")
+                     getlocal0
+                     getlocal2
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_radius")
+                     initproperty QName(PackageNamespace(""),"m_radius")
+                     jump ofs011d
+            ofs0075:
+                     label
+                     getlocal1
+                     jump ofs0082
+                     pushwith
+                     swap
+                     istypelate
+                     getlocal2
+                     getlocal2
+                     coerce_s
+                     lessequals
+            ofs0082:
+                     getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2PolygonShape")
+                     astypelate
+                     jump ofs0090
+                     convert_s
+                     pushnull
+                     coerce_a
+                     add
+                     astypelate
+                     modulo
+                     increment
+            ofs0090:
+                     coerce QName(PackageNamespace("Box2D.Collision.Shapes"),"b2PolygonShape")
+                     setlocal3
+                     getlocal0
+                     getlocal3
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_vertices")
+                     initproperty QName(PackageNamespace(""),"m_vertices")
+                     getlocal0
+                     getlocal3
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_vertexCount")
+                     initproperty QName(PackageNamespace(""),"m_count")
+                     getlocal0
+                     getlocal3
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"m_radius")
+                     initproperty QName(PackageNamespace(""),"m_radius")
+                     jump ofs011d
+            ofs00af:
+                     label
+                     getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                     pushfalse
+                     pushfalse
+                     iffalse ofs00c2
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00c6
+            ofs00c2:
+                     callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+            ofs00c6:
+                     jump ofs011d
+            ofs00ca:
+                     getlocal1
+                     callproperty QName(PackageNamespace(""),"GetType"), 0
+                     setlocal 4
+                     getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2Shape")
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_circleShape")
+                     jump ofs00e1
+                     negate_i
+                     convert_d
+                     subtract
+                     pushfalse
+                     getlocal0
+                     nextname
+                     typeof
+            ofs00e1:
+                     getlocal 4
+                     ifstrictne ofs00ed
+                     pushbyte 0
+                     jump ofs010a
+            ofs00ed:
+                     getlex QName(PackageNamespace("Box2D.Collision.Shapes"),"b2Shape")
+                     getproperty QName(Namespace("http://www.box2d.org/ns/b2internal"),"e_polygonShape")
+                     getlocal 4
+                     ifstrictne ofs00fe
+                     pushbyte 1
+                     jump ofs010a
+            ofs00fe:
+                     jump ofs0108
+                     pushbyte 2
+                     jump ofs0108
+            ofs0108:
+                     pushbyte 2
+            ofs010a:
+                     kill 4
+                     pushbyte 2
+                     pop
+                     lookupswitch ofs00af, [ofs001d, ofs0075, ofs00af]
+            ofs011d:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function GetSupport(param1:b2Vec2) : Number
+         {
+            trait method QName(PackageNamespace(""),"GetSupport")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  returns QName(PackageNamespace(""),"Number")
+                  
+                  body
+                     maxstack 53
+                     localcount 6
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        pushnan
+                        setlocal 5
+                        pushbyte 0
+                        setlocal2
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"m_vertices")
+                        pushbyte 0
+                        jump ofs0028
+                        bitxor
+                        pushscope
+                        getlocal3
+                        add
+                        convert_b
+                        instanceof
+                        coerce_s
+               ofs0028:
+                        getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getproperty Multiname("x",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"x")
+                        multiply
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"m_vertices")
+                        pushbyte 0
+                        getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getproperty Multiname("y",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"y")
+                        multiply
+                        add
+                        convert_d
+                        setlocal3
+                        pushbyte 1
+                        setlocal 4
+                        nop
+               ofs004c:
+                        label
+                        getlocal 4
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"m_count")
+                        iflt ofs005b
+                        jump ofs005f
+               ofs005b:
+                        jump ofs0063
+               ofs005f:
+                        jump ofs00ca
+               ofs0063:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"m_vertices")
+                        getlocal 4
+                        getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getproperty Multiname("x",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        jump ofs007a
+                        decrement_i
+                        hasnext
+                        pushundefined
+                        dxnslate
+                        hasnext
+                        lshift
+                        subtract
+               ofs007a:
+                        getlocal1
+                        jump ofs0086
+                        decrement_i
+                        hasnext
+                        pushundefined
+                        dxnslate
+                        hasnext
+                        lshift
+                        subtract
+               ofs0086:
+                        getproperty QName(PackageNamespace(""),"x")
+                        jump ofs0094
+                        swap
+                        lessequals
+                        astypelate
+                        bitnot
+                        modulo
+                        greaterequals
+                        bitnot
+               ofs0094:
+                        multiply
+                        jump ofs009d
+                        convert_i
+                        nextvalue
+                        lshift
+                        getlocal2
+               ofs009d:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"m_vertices")
+                        getlocal 4
+                        getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getproperty Multiname("y",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"y")
+                        multiply
+                        add
+                        convert_d
+                        dup
+                        setlocal 5
+                        getlocal3
+                        ifngt ofs00c0
+                        getlocal 4
+                        convert_i
+                        setlocal2
+                        getlocal 5
+                        convert_d
+                        setlocal3
+               ofs00c0:
+                        inclocal_i 4
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs004c
+               ofs00ca:
+                        getlocal2
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function GetSupportVertex(param1:b2Vec2) : b2Vec2
+            {
+               trait method QName(PackageNamespace(""),"GetSupportVertex")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     returns QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     
+                     body
+                        maxstack 53
+                        localcount 6
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           pushnan
+                           setlocal 5
+                           pushbyte 0
+                           setlocal2
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"m_vertices")
+                           pushbyte 0
+                           getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           jump ofs002a
+                           add
+                           newactivation
+                           instanceof
+                           modulo
+                           pushnull
+                           convert_d
+                  ofs002a:
+                           getproperty Multiname("x",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"x")
+                           multiply
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"m_vertices")
+                           pushbyte 0
+                           jump ofs0042
+                           pushtrue
+                           strictequals
+                           convert_u
+                           dxnslate
+                           hasnext
+                           lshift
+                  ofs0042:
+                           getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           getproperty Multiname("y",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"y")
+                           multiply
+                           add
+                           convert_d
+                           setlocal3
+                           pushbyte 1
+                           setlocal 4
+                           nop
+                  ofs0055:
+                           label
+                           getlocal 4
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"m_count")
+                           iflt ofs0064
+                           jump ofs0068
+                  ofs0064:
+                           jump ofs006c
+                  ofs0068:
+                           jump ofs00be
+                  ofs006c:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"m_vertices")
+                           getlocal 4
+                           getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           getproperty Multiname("x",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"x")
+                           multiply
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"m_vertices")
+                           getlocal 4
+                           getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           getproperty Multiname("y",[PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           jump ofs0093
+                           negate
+                           convert_i
+                           hasnext
+                           bitnot
+                           modulo
+                           greaterequals
+                  ofs0093:
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"y")
+                           multiply
+                           add
+                           convert_d
+                           dup
+                           setlocal 5
+                           getlocal3
+                           jump ofs00a8
+                           bitor
+                           setlocal2
+                           pushtrue
+                           getlocal2
+                           multiply
+                           subtract
+                  ofs00a8:
+                           ifngt ofs00b4
+                           getlocal 4
+                           convert_i
+                           setlocal2
+                           getlocal 5
+                           convert_d
+                           setlocal3
+                  ofs00b4:
+                           inclocal_i 4
+                           pushbyte 2
+                           pushbyte 3
+                           ifne ofs0055
+                  ofs00be:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"m_vertices")
+                           getlocal2
+                           getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function GetVertexCount() : int
+               {
+                  trait method QName(PackageNamespace(""),"GetVertexCount")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"int")
+                        
+                        body
+                           maxstack 51
+                           localcount 1
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              jump ofs001b
+                              convert_b
+                              popscope
+                              astypelate
+                              negate
+                              increment_i
+                     ofs001b:
+                              getproperty QName(PackageNamespace(""),"m_count")
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function GetVertex(param1:int) : b2Vec2
+                  {
+                     trait method QName(PackageNamespace(""),"GetVertex")
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace(""),"int")
+                           returns QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                           
+                           body
+                              maxstack 53
+                              localcount 2
+                              initscopedepth 4
+                              maxscopedepth 5
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                                 pushbyte 0
+                                 getlocal1
+                                 lessequals
+                                 dup
+                                 iffalse ofs002e
+                                 pop
+                                 getlocal1
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"m_count")
+                                 lessthan
+                                 jump ofs002e
+                                 bitor
+                                 divide
+                                 pop
+                                 convert_b
+                                 add
+                                 getlocal1
+                        ofs002e:
+                                 pushfalse
+                                 iffalse ofs003c
+                                 pushbyte 5
+                                 pop
+                                 pop
+                                 pop
+                                 jump ofs0040
+                        ofs003c:
+                                 callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+                        ofs0040:
+                                 getlocal0
+                                 getproperty QName(PackageNamespace(""),"m_vertices")
+                                 getlocal1
+                                 getproperty MultinameL([PrivateNamespace(null,"161"),PackageNamespace("Box2D.Collision.Shapes"),PackageNamespace(""),Namespace("http://www.box2d.org/ns/b2internal"),PrivateNamespace(null,"162"),PackageNamespace("Box2D.Collision"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),PackageNamespace("Box2D.Common"),PackageNamespace("Box2D.Common.Math"),ProtectedNamespace("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Box2D.Collision:b2DistanceProxy"),StaticProtectedNs("Object")])
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                  }
+               }
+               
+               method
+                  name null
+                  returns null
+                  
+                  body
+                     maxstack 52
+                     localcount 1
+                     initscopedepth 1
+                     maxscopedepth 3
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        findpropstrict Multiname("b2DistanceProxy",[PackageNamespace("Box2D.Collision")])
+                        getlex QName(PackageNamespace(""),"Object")
+                        pushscope
+                        getlex QName(PackageNamespace(""),"Object")
+                        newclass 80
+                        popscope
+                        initproperty QName(PackageNamespace("Box2D.Collision"),"b2DistanceProxy")
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+               

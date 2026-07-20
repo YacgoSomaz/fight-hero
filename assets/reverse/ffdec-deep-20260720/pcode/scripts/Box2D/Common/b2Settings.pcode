@@ -1,0 +1,416 @@
+package Box2D.Common
+{
+   public class b2Settings
+   {
+      
+      public static const VERSION:String = "2.1alpha";
+      
+      public static const USHRT_MAX:int = 65535;
+      
+      public static const b2_pi:Number = 3.141592653589793;
+      
+      public static const b2_maxManifoldPoints:int = 2;
+      
+      public static const b2_aabbExtension:Number = 0.1;
+      
+      public static const b2_aabbMultiplier:Number = 2;
+      
+      public static const b2_polygonRadius:Number;
+      
+      public static const b2_linearSlop:Number = 0.005;
+      
+      public static const b2_angularSlop:Number = 0.03490658503988659;
+      
+      public static const b2_toiSlop:Number = 0.04;
+      
+      public static const b2_maxTOIContactsPerIsland:int = 32;
+      
+      public static const b2_maxTOIJointsPerIsland:int = 32;
+      
+      public static const b2_velocityThreshold:Number = 1;
+      
+      public static const b2_maxLinearCorrection:Number = 0.2;
+      
+      public static const b2_maxAngularCorrection:Number = 0.13962634015954636;
+      
+      public static const b2_maxTranslation:Number = 2;
+      
+      public static const b2_maxTranslationSquared:Number = 4;
+      
+      public static const b2_maxRotation:Number = 1.5707963267948966;
+      
+      public static const b2_maxRotationSquared:Number = 2.4674011002723395;
+      
+      public static const b2_contactBaumgarte:Number = 0.2;
+      
+      public static const b2_timeToSleep:Number = 0.5;
+      
+      public static const b2_linearSleepTolerance:Number = 0.01;
+      
+      public static const b2_angularSleepTolerance:Number = 0.03490658503988659;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 53
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PackageNamespace(""),"VERSION")
+               jump ofs001f
+               setlocal1
+               add_i
+               popscope
+               multiply
+               urshift
+               lessthan
+               pushnan
+      ofs001f:
+               pushstring "2.1alpha"
+               initproperty QName(PackageNamespace(""),"VERSION")
+               findproperty QName(PackageNamespace(""),"USHRT_MAX")
+               pushint 65535
+               initproperty QName(PackageNamespace(""),"USHRT_MAX")
+               findproperty QName(PackageNamespace(""),"b2_pi")
+               getlex QName(PackageNamespace(""),"Math")
+               getproperty QName(PackageNamespace(""),"PI")
+               jump ofs0041
+               convert_o
+               pushwith
+               pushnan
+               decrement
+               istypelate
+               pushnan
+               swap
+      ofs0041:
+               initproperty QName(PackageNamespace(""),"b2_pi")
+               findproperty QName(PackageNamespace(""),"b2_maxManifoldPoints")
+               pushbyte 2
+               initproperty QName(PackageNamespace(""),"b2_maxManifoldPoints")
+               findproperty QName(PackageNamespace(""),"b2_aabbExtension")
+               pushdouble 0.1
+               initproperty QName(PackageNamespace(""),"b2_aabbExtension")
+               findproperty QName(PackageNamespace(""),"b2_aabbMultiplier")
+               pushbyte 2
+               initproperty QName(PackageNamespace(""),"b2_aabbMultiplier")
+               findproperty QName(PackageNamespace(""),"b2_polygonRadius")
+               jump ofs006a
+               setlocal0
+               not
+               getglobalscope
+               nextname
+               bitor
+               bitnot
+               add
+      ofs006a:
+               pushbyte 2
+               getlex QName(PackageNamespace(""),"b2_linearSlop")
+               multiply
+               jump ofs007b
+               setlocal0
+               not
+               getglobalscope
+               nextname
+               bitor
+               bitnot
+               add
+      ofs007b:
+               initproperty QName(PackageNamespace(""),"b2_polygonRadius")
+               findproperty QName(PackageNamespace(""),"b2_linearSlop")
+               pushdouble 0.005
+               initproperty QName(PackageNamespace(""),"b2_linearSlop")
+               findproperty QName(PackageNamespace(""),"b2_angularSlop")
+               jump ofs0094
+               pushtrue
+               dup
+               getlocal1
+               negate
+               setlocal3
+               negate_i
+               convert_s
+      ofs0094:
+               pushbyte 2
+               pushshort 180
+               divide
+               getlex QName(PackageNamespace(""),"b2_pi")
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_angularSlop")
+               findproperty QName(PackageNamespace(""),"b2_toiSlop")
+               pushbyte 8
+               getlex QName(PackageNamespace(""),"b2_linearSlop")
+               jump ofs00b1
+               negate
+               modulo
+               coerce_s
+               multiply
+      ofs00b1:
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_toiSlop")
+               findproperty QName(PackageNamespace(""),"b2_maxTOIContactsPerIsland")
+               pushbyte 32
+               initproperty QName(PackageNamespace(""),"b2_maxTOIContactsPerIsland")
+               findproperty QName(PackageNamespace(""),"b2_maxTOIJointsPerIsland")
+               pushbyte 32
+               initproperty QName(PackageNamespace(""),"b2_maxTOIJointsPerIsland")
+               findproperty QName(PackageNamespace(""),"b2_velocityThreshold")
+               pushbyte 1
+               initproperty QName(PackageNamespace(""),"b2_velocityThreshold")
+               findproperty QName(PackageNamespace(""),"b2_maxLinearCorrection")
+               jump ofs00d8
+               bitor
+               pop
+               increment_i
+               convert_d
+      ofs00d8:
+               pushdouble 0.2
+               initproperty QName(PackageNamespace(""),"b2_maxLinearCorrection")
+               findproperty QName(PackageNamespace(""),"b2_maxAngularCorrection")
+               pushbyte 8
+               pushshort 180
+               divide
+               getlex QName(PackageNamespace(""),"b2_pi")
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_maxAngularCorrection")
+               findproperty QName(PackageNamespace(""),"b2_maxTranslation")
+               pushbyte 2
+               initproperty QName(PackageNamespace(""),"b2_maxTranslation")
+               findproperty QName(PackageNamespace(""),"b2_maxTranslationSquared")
+               getlex QName(PackageNamespace(""),"b2_maxTranslation")
+               getlex QName(PackageNamespace(""),"b2_maxTranslation")
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_maxTranslationSquared")
+               findproperty QName(PackageNamespace(""),"b2_maxRotation")
+               jump ofs010d
+               increment
+               pushscope
+               bitand
+               decrement
+      ofs010d:
+               pushdouble 0.5
+               getlex QName(PackageNamespace(""),"b2_pi")
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_maxRotation")
+               findproperty QName(PackageNamespace(""),"b2_maxRotationSquared")
+               jump ofs0121
+               greaterequals
+               nextvalue
+               swap
+               nextname
+      ofs0121:
+               getlex QName(PackageNamespace(""),"b2_maxRotation")
+               getlex QName(PackageNamespace(""),"b2_maxRotation")
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_maxRotationSquared")
+               findproperty QName(PackageNamespace(""),"b2_contactBaumgarte")
+               jump ofs0136
+               greaterequals
+               nextvalue
+               swap
+               nextname
+      ofs0136:
+               pushdouble 0.2
+               initproperty QName(PackageNamespace(""),"b2_contactBaumgarte")
+               findproperty QName(PackageNamespace(""),"b2_timeToSleep")
+               pushdouble 0.5
+               initproperty QName(PackageNamespace(""),"b2_timeToSleep")
+               findproperty QName(PackageNamespace(""),"b2_linearSleepTolerance")
+               jump ofs014e
+               subtract
+               swap
+               decrement
+               negate
+      ofs014e:
+               pushdouble 0.01
+               initproperty QName(PackageNamespace(""),"b2_linearSleepTolerance")
+               findproperty QName(PackageNamespace(""),"b2_angularSleepTolerance")
+               pushbyte 2
+               pushshort 180
+               divide
+               getlocal0
+               getproperty QName(PackageNamespace(""),"b2_pi")
+               multiply
+               initproperty QName(PackageNamespace(""),"b2_angularSleepTolerance")
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public function b2Settings()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function b2MixFriction(param1:Number, param2:Number) : Number
+      {
+         trait method QName(PackageNamespace(""),"b2MixFriction")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               param QName(PackageNamespace(""),"Number")
+               param QName(PackageNamespace(""),"Number")
+               returns QName(PackageNamespace(""),"Number")
+               
+               body
+                  maxstack 3
+                  localcount 3
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlex QName(PackageNamespace(""),"Math")
+                     getlocal1
+                     getlocal2
+                     multiply
+                     callproperty QName(PackageNamespace(""),"sqrt"), 1
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function b2MixRestitution(param1:Number, param2:Number) : Number
+         {
+            trait method QName(PackageNamespace(""),"b2MixRestitution")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"Number")
+                  returns QName(PackageNamespace(""),"Number")
+                  
+                  body
+                     maxstack 2
+                     localcount 3
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlocal1
+                        getlocal2
+                        greaterthan
+                        iffalse ofs000f
+                        getlocal1
+                        convert_d
+                        jump ofs0011
+               ofs000f:
+                        getlocal2
+                        convert_d
+               ofs0011:
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function b2Assert(param1:Boolean) : void
+            {
+               trait method QName(PackageNamespace(""),"b2Assert")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Boolean")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 1
+                        localcount 2
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           getlocal1
+                           iftrue ofs000b
+                           pushstring "Assertion Failed"
+                           throw
+                  ofs000b:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("b2Settings",[PackageNamespace("Box2D.Common")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 35
+                  jump ofs0024
+                  equals
+                  divide
+                  getlocal3
+                  pushnan
+                  bitnot
+         ofs0024:
+                  popscope
+                  initproperty QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

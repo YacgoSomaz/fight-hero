@@ -1,0 +1,2818 @@
+package Box2D.Collision
+{
+   import Box2D.Common.*;
+   import Box2D.Common.Math.*;
+   
+   public class b2DynamicTree
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var m_root:b2DynamicTreeNode;
+      
+      private var m_freeList:b2DynamicTreeNode;
+      
+      private var m_path:uint;
+      
+      private var m_insertionCount:int;
+      
+      public function b2DynamicTree()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  jump ofs001e
+                  nextname
+                  setlocal1
+                  getlocal1
+                  setlocal0
+                  convert_u
+         ofs001e:
+                  pushnull
+                  initproperty QName(PrivateNamespace(null,"28"),"m_root")
+                  getlocal0
+                  pushnull
+                  initproperty QName(PrivateNamespace(null,"28"),"m_freeList")
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PrivateNamespace(null,"28"),"m_path")
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PrivateNamespace(null,"28"),"m_insertionCount")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function CreateProxy(param1:b2AABB, param2:*) : b2DynamicTreeNode
+      {
+         trait method QName(PackageNamespace(""),"CreateProxy")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+               param null
+               returns QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+               
+               body
+                  maxstack 53
+                  localcount 6
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     pushnull
+                     coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                     setlocal3
+                     pushnan
+                     setlocal 4
+                     pushnan
+                     jump ofs0021
+                     subtract
+                     greaterequals
+                     multiply_i
+                     convert_d
+            ofs0021:
+                     setlocal 5
+                     getlocal0
+                     callproperty QName(PrivateNamespace(null,"28"),"AllocateNode"), 0
+                     coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                     setlocal3
+                     getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                     getproperty QName(PackageNamespace(""),"b2_aabbExtension")
+                     convert_d
+                     setlocal 4
+                     getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                     getproperty QName(PackageNamespace(""),"b2_aabbExtension")
+                     convert_d
+                     setlocal 5
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"aabb")
+                     getproperty QName(PackageNamespace(""),"lowerBound")
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"lowerBound")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 4
+                     jump ofs0055
+                     increment_i
+                     istypelate
+                     setlocal0
+                     nextname
+            ofs0055:
+                     subtract
+                     pushfalse
+                     iffalse ofs0064
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0067
+            ofs0064:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs0067:
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"aabb")
+                     getproperty QName(PackageNamespace(""),"lowerBound")
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"lowerBound")
+                     getproperty QName(PackageNamespace(""),"y")
+                     getlocal 5
+                     jump ofs007f
+                     increment_i
+                     istypelate
+                     setlocal0
+                     nextname
+            ofs007f:
+                     subtract
+                     pushfalse
+                     iffalse ofs008e
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0091
+            ofs008e:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0091:
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"aabb")
+                     getproperty QName(PackageNamespace(""),"upperBound")
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"upperBound")
+                     getproperty QName(PackageNamespace(""),"x")
+                     getlocal 4
+                     jump ofs00a9
+                     convert_b
+                     convert_o
+                     pushscope
+                     negate
+            ofs00a9:
+                     add
+                     pushfalse
+                     iffalse ofs00b8
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00bb
+            ofs00b8:
+                     setproperty QName(PackageNamespace(""),"x")
+            ofs00bb:
+                     getlocal3
+                     getproperty QName(PackageNamespace(""),"aabb")
+                     jump ofs00c7
+                     lshift
+                     setlocal1
+                     pushundefined
+                     multiply
+            ofs00c7:
+                     getproperty QName(PackageNamespace(""),"upperBound")
+                     getlocal1
+                     jump ofs00d3
+                     lshift
+                     setlocal1
+                     pushundefined
+                     multiply
+            ofs00d3:
+                     getproperty QName(PackageNamespace(""),"upperBound")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs00e1
+                     setlocal3
+                     decrement
+                     popscope
+                     convert_d
+            ofs00e1:
+                     getlocal 5
+                     add
+                     pushfalse
+                     iffalse ofs00f2
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs00f5
+            ofs00f2:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs00f5:
+                     getlocal3
+                     getlocal2
+                     pushfalse
+                     iffalse ofs0105
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0108
+            ofs0105:
+                     setproperty QName(PackageNamespace(""),"userData")
+            ofs0108:
+                     getlocal0
+                     getlocal3
+                     pushfalse
+                     iffalse ofs0118
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs011c
+            ofs0118:
+                     callpropvoid QName(PrivateNamespace(null,"28"),"InsertLeaf"), 1
+            ofs011c:
+                     getlocal3
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function DestroyProxy(param1:b2DynamicTreeNode) : void
+         {
+            trait method QName(PackageNamespace(""),"DestroyProxy")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 52
+                     localcount 2
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getlocal1
+                        pushfalse
+                        iffalse ofs0021
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0025
+               ofs0021:
+                        callpropvoid QName(PrivateNamespace(null,"28"),"RemoveLeaf"), 1
+               ofs0025:
+                        getlocal0
+                        jump ofs0031
+                        bitnot
+                        pushtrue
+                        convert_d
+                        lessequals
+                        instanceof
+                        setlocal0
+                        coerce_s
+               ofs0031:
+                        getlocal1
+                        jump ofs003d
+                        getlocal3
+                        pushundefined
+                        typeof
+                        getlocal1
+                        strictequals
+                        decrement
+                        hasnext
+               ofs003d:
+                        pushfalse
+                        iffalse ofs004b
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs004f
+               ofs004b:
+                        callpropvoid QName(PrivateNamespace(null,"28"),"FreeNode"), 1
+               ofs004f:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function MoveProxy(param1:b2DynamicTreeNode, param2:b2AABB, param3:b2Vec2) : Boolean
+            {
+               trait method QName(PackageNamespace(""),"MoveProxy")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                     param QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     returns QName(PackageNamespace(""),"Boolean")
+                     
+                     body
+                        maxstack 54
+                        localcount 6
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           pushnan
+                           setlocal 4
+                           pushnan
+                           setlocal 5
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getlocal1
+                           callproperty QName(PackageNamespace(""),"IsLeaf"), 0
+                           pushfalse
+                           iffalse ofs002d
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0031
+                  ofs002d:
+                           callpropvoid QName(PackageNamespace(""),"b2Assert"), 1
+                  ofs0031:
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"aabb")
+                           getlocal2
+                           callproperty QName(PackageNamespace(""),"Contains"), 1
+                           iffalse ofs0048
+                           pushfalse
+                           jump ofs0047
+                           negate_i
+                           strictequals
+                           getlocal3
+                           divide
+                  ofs0047:
+                           returnvalue
+                  ofs0048:
+                           getlocal0
+                           getlocal1
+                           pushfalse
+                           iffalse ofs0058
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs005c
+                  ofs0058:
+                           callpropvoid QName(PrivateNamespace(null,"28"),"RemoveLeaf"), 1
+                  ofs005c:
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getproperty QName(PackageNamespace(""),"b2_aabbExtension")
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getproperty QName(PackageNamespace(""),"b2_aabbMultiplier")
+                           jump ofs0070
+                           multiply_i
+                           convert_i
+                           lessequals
+                           not
+                  ofs0070:
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"x")
+                           jump ofs007c
+                           add_i
+                           decrement_i
+                           pushundefined
+                           setlocal3
+                  ofs007c:
+                           pushbyte 0
+                           greaterthan
+                           iffalse ofs0094
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"x")
+                           coerce_a
+                           jump ofs0090
+                           add_i
+                           decrement_i
+                           pushundefined
+                           setlocal3
+                  ofs0090:
+                           jump ofs009a
+                  ofs0094:
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"x")
+                           negate
+                           coerce_a
+                  ofs009a:
+                           multiply
+                           jump ofs00a3
+                           setlocal1
+                           bitxor
+                           astypelate
+                           typeof
+                  ofs00a3:
+                           add
+                           convert_d
+                           setlocal 4
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getproperty QName(PackageNamespace(""),"b2_aabbExtension")
+                           getlex QName(PackageNamespace("Box2D.Common"),"b2Settings")
+                           getproperty QName(PackageNamespace(""),"b2_aabbMultiplier")
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"y")
+                           pushbyte 0
+                           greaterthan
+                           iffalse ofs00c7
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"y")
+                           coerce_a
+                           jump ofs00cd
+                  ofs00c7:
+                           getlocal3
+                           getproperty QName(PackageNamespace(""),"y")
+                           negate
+                           coerce_a
+                  ofs00cd:
+                           multiply
+                           add
+                           convert_d
+                           setlocal 5
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"aabb")
+                           getproperty QName(PackageNamespace(""),"lowerBound")
+                           getlocal2
+                           jump ofs00e2
+                           greaterthan
+                           increment_i
+                           lshift
+                           newactivation
+                  ofs00e2:
+                           getproperty QName(PackageNamespace(""),"lowerBound")
+                           getproperty QName(PackageNamespace(""),"x")
+                           getlocal 4
+                           subtract
+                           pushfalse
+                           iffalse ofs00f9
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs00fc
+                  ofs00f9:
+                           setproperty QName(PackageNamespace(""),"x")
+                  ofs00fc:
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"aabb")
+                           getproperty QName(PackageNamespace(""),"lowerBound")
+                           getlocal2
+                           getproperty QName(PackageNamespace(""),"lowerBound")
+                           getproperty QName(PackageNamespace(""),"y")
+                           getlocal 5
+                           subtract
+                           pushfalse
+                           iffalse ofs011b
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs011e
+                  ofs011b:
+                           setproperty QName(PackageNamespace(""),"y")
+                  ofs011e:
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"aabb")
+                           getproperty QName(PackageNamespace(""),"upperBound")
+                           getlocal2
+                           getproperty QName(PackageNamespace(""),"upperBound")
+                           getproperty QName(PackageNamespace(""),"x")
+                           getlocal 4
+                           add
+                           jump ofs0138
+                           convert_o
+                           subtract
+                           pushwith
+                           divide
+                           decrement
+                  ofs0138:
+                           pushfalse
+                           iffalse ofs0146
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0149
+                  ofs0146:
+                           setproperty QName(PackageNamespace(""),"x")
+                  ofs0149:
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"aabb")
+                           getproperty QName(PackageNamespace(""),"upperBound")
+                           getlocal2
+                           jump ofs015a
+                           setlocal0
+                           increment
+                           nextvalue
+                           bitand
+                           getlocal1
+                  ofs015a:
+                           getproperty QName(PackageNamespace(""),"upperBound")
+                           getproperty QName(PackageNamespace(""),"y")
+                           getlocal 5
+                           add
+                           pushfalse
+                           iffalse ofs0171
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0174
+                  ofs0171:
+                           setproperty QName(PackageNamespace(""),"y")
+                  ofs0174:
+                           getlocal0
+                           getlocal1
+                           jump ofs017f
+                           istypelate
+                           negate
+                           setlocal1
+                           pushnull
+                           greaterequals
+                  ofs017f:
+                           pushfalse
+                           iffalse ofs018d
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0191
+                  ofs018d:
+                           callpropvoid QName(PrivateNamespace(null,"28"),"InsertLeaf"), 1
+                  ofs0191:
+                           pushtrue
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function Rebalance(param1:int) : void
+               {
+                  trait method QName(PackageNamespace(""),"Rebalance")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace(""),"int")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 52
+                           localcount 7
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              jump ofs001a
+                              popscope
+                              negate_i
+                              divide
+                              pushnull
+                              decrement
+                              popscope
+                     ofs001a:
+                              pushscope
+                              pushnull
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                              setlocal3
+                              pushbyte 0
+                              convert_u
+                              setlocal 4
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                              jump ofs0032
+                              multiply
+                              pushwith
+                              modulo
+                              getlocal1
+                              getlocal1
+                              multiply
+                     ofs0032:
+                              pushnull
+                              ifne ofs0038
+                              returnvoid
+                     ofs0038:
+                              pushbyte 0
+                              setlocal2
+                              nop
+                     ofs003c:
+                              label
+                              getlocal2
+                              getlocal1
+                              iflt ofs0047
+                              jump ofs004b
+                     ofs0047:
+                              jump ofs004f
+                     ofs004b:
+                              jump ofs0106
+                     ofs004f:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                              setlocal3
+                              pushbyte 0
+                              convert_u
+                              setlocal 4
+                              nop
+                     ofs005c:
+                              label
+                              getlocal3
+                              callproperty QName(PackageNamespace(""),"IsLeaf"), 0
+                              pushfalse
+                              ifeq ofs006b
+                              jump ofs006f
+                     ofs006b:
+                              jump ofs0073
+                     ofs006f:
+                              jump ofs00b1
+                     ofs0073:
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"28"),"m_path")
+                              getlocal 4
+                              rshift
+                              pushbyte 1
+                              bitand
+                              iffalse ofs008b
+                              getlocal3
+                              getproperty QName(PackageNamespace(""),"child2")
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                              jump ofs0091
+                     ofs008b:
+                              getlocal3
+                              getproperty QName(PackageNamespace(""),"child1")
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                     ofs0091:
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                              setlocal3
+                              getlocal 4
+                              pushbyte 1
+                              add
+                              pushbyte 31
+                              bitand
+                              convert_u
+                              jump ofs00a7
+                              bitand
+                              multiply
+                              urshift
+                              lshift
+                              dxnslate
+                              pop
+                     ofs00a7:
+                              setlocal 4
+                              pushbyte 2
+                              pushbyte 3
+                              ifne ofs005c
+                     ofs00b1:
+                              getlocal0
+                              dup
+                              setlocal 5
+                              getproperty QName(PrivateNamespace(null,"28"),"m_path")
+                              increment
+                              setlocal 6
+                              getlocal 5
+                              getlocal 6
+                              pushfalse
+                              iffalse ofs00cd
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00d0
+                     ofs00cd:
+                              setproperty QName(PrivateNamespace(null,"28"),"m_path")
+                     ofs00d0:
+                              kill 6
+                              kill 5
+                              getlocal0
+                              getlocal3
+                              pushfalse
+                              iffalse ofs00e4
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00e8
+                     ofs00e4:
+                              callpropvoid QName(PrivateNamespace(null,"28"),"RemoveLeaf"), 1
+                     ofs00e8:
+                              getlocal0
+                              getlocal3
+                              pushfalse
+                              iffalse ofs00f8
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00fc
+                     ofs00f8:
+                              callpropvoid QName(PrivateNamespace(null,"28"),"InsertLeaf"), 1
+                     ofs00fc:
+                              inclocal_i 2
+                              pushbyte 2
+                              pushbyte 3
+                              ifne ofs003c
+                     ofs0106:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function GetFatAABB(param1:b2DynamicTreeNode) : b2AABB
+                  {
+                     trait method QName(PackageNamespace(""),"GetFatAABB")
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                           returns QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                           
+                           body
+                              maxstack 51
+                              localcount 2
+                              initscopedepth 4
+                              maxscopedepth 5
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 getlocal1
+                                 getproperty QName(PackageNamespace(""),"aabb")
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function GetUserData(param1:b2DynamicTreeNode) : *
+                     {
+                        trait method QName(PackageNamespace(""),"GetUserData")
+                           dispid 0
+                           method
+                              name null
+                              param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                              returns null
+                              
+                              body
+                                 maxstack 51
+                                 localcount 2
+                                 initscopedepth 4
+                                 maxscopedepth 5
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    pushscope
+                                    getlocal1
+                                    jump ofs001b
+                                    setlocal1
+                                    hasnext
+                                    increment_i
+                                    astypelate
+                                    istypelate
+                           ofs001b:
+                                    getproperty QName(PackageNamespace(""),"userData")
+                                    jump ofs0027
+                                    greaterthan
+                                    pushnull
+                                    bitand
+                                    increment_i
+                                    getlocal1
+                           ofs0027:
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function Query(param1:Function, param2:b2AABB) : void
+                        {
+                           trait method QName(PackageNamespace(""),"Query")
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"Function")
+                                 param QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 53
+                                    localcount 10
+                                    initscopedepth 4
+                                    maxscopedepth 5
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       pushnull
+                                       coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                       setlocal 5
+                                       pushfalse
+                                       jump ofs0020
+                                       multiply
+                                       equals
+                                       getlocal1
+                                       convert_b
+                                       pushwith
+                              ofs0020:
+                                       setlocal 6
+                                       getlocal0
+                                       getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                       pushnull
+                                       ifne ofs002c
+                                       returnvoid
+                              ofs002c:
+                                       findpropstrict QName(PackageNamespace(""),"Array")
+                                       constructprop QName(PackageNamespace(""),"Array"), 0
+                                       coerce QName(PackageNamespace(""),"Array")
+                                       setlocal3
+                                       pushbyte 0
+                                       setlocal 4
+                                       getlocal3
+                                       getlocal 4
+                                       dup
+                                       increment_i
+                                       setlocal 4
+                                       dup
+                                       setlocal 7
+                                       getlocal0
+                                       getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                       pushfalse
+                                       iffalse ofs0055
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs0058
+                              ofs0055:
+                                       setproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                              ofs0058:
+                                       nop
+                              ofs0059:
+                                       label
+                                       getlocal 4
+                                       pushbyte 0
+                                       jump ofs0067
+                                       convert_s
+                                       setlocal1
+                                       decrement
+                                       convert_b
+                                       convert_i
+                              ofs0067:
+                                       ifgt ofs006f
+                                       jump ofs0073
+                              ofs006f:
+                                       jump ofs0077
+                              ofs0073:
+                                       jump ofs0122
+                              ofs0077:
+                                       getlocal3
+                                       getlocal 4
+                                       decrement_i
+                                       jump ofs0084
+                                       getlocal0
+                                       greaterequals
+                                       checkfilter
+                                       multiply_i
+                                       getlocal3
+                              ofs0084:
+                                       dup
+                                       convert_i
+                                       setlocal 4
+                                       getproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                                       coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                       dup
+                                       setlocal 5
+                                       getproperty QName(PackageNamespace(""),"aabb")
+                                       getlocal2
+                                       jump ofs009d
+                                       bitand
+                                       bitor
+                                       increment_i
+                                       strictequals
+                                       lessthan
+                              ofs009d:
+                                       callproperty QName(PackageNamespace(""),"TestOverlap"), 1
+                                       jump ofs00aa
+                                       urshift
+                                       pushtrue
+                                       bitand
+                                       lessthan
+                                       increment
+                              ofs00aa:
+                                       iffalse ofs0059
+                                       getlocal 5
+                                       callproperty QName(PackageNamespace(""),"IsLeaf"), 0
+                                       iffalse ofs00cb
+                                       getlocal1
+                                       getglobalscope
+                                       getlocal 5
+                                       call 1
+                                       convert_b
+                                       dup
+                                       setlocal 6
+                                       iftrue ofs00c7
+                                       returnvoid
+                              ofs00c7:
+                                       jump ofs0059
+                              ofs00cb:
+                                       getlocal3
+                                       getlocal 4
+                                       dup
+                                       increment_i
+                                       jump ofs00d9
+                                       pushwith
+                                       pushundefined
+                                       swap
+                                       dup
+                                       setlocal2
+                              ofs00d9:
+                                       setlocal 4
+                                       dup
+                                       setlocal 8
+                                       getlocal 5
+                                       getproperty QName(PackageNamespace(""),"child1")
+                                       pushfalse
+                                       iffalse ofs00f2
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs00f5
+                              ofs00f2:
+                                       setproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                              ofs00f5:
+                                       getlocal3
+                                       getlocal 4
+                                       dup
+                                       increment_i
+                                       setlocal 4
+                                       dup
+                                       setlocal 9
+                                       getlocal 5
+                                       getproperty QName(PackageNamespace(""),"child2")
+                                       pushfalse
+                                       iffalse ofs0113
+                                       pushbyte 5
+                                       pop
+                                       pop
+                                       pop
+                                       pop
+                                       jump ofs0116
+                              ofs0113:
+                                       setproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                              ofs0116:
+                                       kill 9
+                                       kill 8
+                                       pushbyte 2
+                                       pushbyte 3
+                                       ifne ofs0059
+                              ofs0122:
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function RayCast(param1:Function, param2:b2RayCastInput) : void
+                           {
+                              trait method QName(PackageNamespace(""),"RayCast")
+                                 dispid 0
+                                 method
+                                    name null
+                                    param QName(PackageNamespace(""),"Function")
+                                    param QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 55
+                                       localcount 22
+                                       initscopedepth 4
+                                       maxscopedepth 5
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal3
+                                          pushnull
+                                          jump ofs001e
+                                          decrement_i
+                                          getglobalscope
+                                          setlocal1
+                                          increment
+                                 ofs001e:
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                          setlocal 9
+                                          pushnan
+                                          setlocal 10
+                                          pushnan
+                                          setlocal 11
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                          setlocal 14
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal 15
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          jump ofs003d
+                                          swap
+                                          hasnext
+                                          getlocal2
+                                          bitand
+                                 ofs003d:
+                                          setlocal 16
+                                          pushnan
+                                          setlocal 17
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+                                          setlocal 18
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                          pushnull
+                                          ifne ofs0051
+                                          returnvoid
+                                 ofs0051:
+                                          getlocal2
+                                          getproperty QName(PackageNamespace(""),"p1")
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal3
+                                          getlocal2
+                                          jump ofs0061
+                                          convert_i
+                                          lessequals
+                                          lessthan
+                                          pushnull
+                                 ofs0061:
+                                          getproperty QName(PackageNamespace(""),"p2")
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal 4
+                                          getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                                          jump ofs0073
+                                          nextvalue
+                                          nextvalue
+                                          not
+                                          setlocal1
+                                 ofs0073:
+                                          getlocal3
+                                          getlocal 4
+                                          callproperty QName(PackageNamespace(""),"SubtractVV"), 2
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          jump ofs0085
+                                          strictequals
+                                          swap
+                                          equals
+                                          coerce_a
+                                          lshift
+                                 ofs0085:
+                                          dup
+                                          setlocal 5
+                                          pushfalse
+                                          iffalse ofs0095
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          jump ofs0099
+                                 ofs0095:
+                                          callpropvoid QName(PackageNamespace(""),"Normalize"), 0
+                                 ofs0099:
+                                          getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                                          pushbyte 1
+                                          getlocal 5
+                                          callproperty QName(PackageNamespace(""),"CrossFV"), 2
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal 6
+                                          getlex QName(PackageNamespace("Box2D.Common.Math"),"b2Math")
+                                          getlocal 6
+                                          callproperty QName(PackageNamespace(""),"AbsV"), 1
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          jump ofs00bc
+                                          pushscope
+                                          setlocal3
+                                          multiply_i
+                                          increment
+                                          decrement_i
+                                 ofs00bc:
+                                          setlocal 7
+                                          getlocal2
+                                          getproperty QName(PackageNamespace(""),"maxFraction")
+                                          convert_d
+                                          setlocal 8
+                                          findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                          constructprop QName(PackageNamespace("Box2D.Collision"),"b2AABB"), 0
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                          setlocal 9
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 8
+                                          jump ofs00dd
+                                          pushscope
+                                          setlocal3
+                                          multiply_i
+                                          increment
+                                          decrement_i
+                                 ofs00dd:
+                                          getlocal 4
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          subtract
+                                          multiply
+                                          add
+                                          convert_d
+                                          setlocal 10
+                                          getlocal3
+                                          jump ofs00f6
+                                          coerce_a
+                                          convert_b
+                                          decrement_i
+                                          bitand
+                                          getlocal2
+                                 ofs00f6:
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 8
+                                          getlocal 4
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          subtract
+                                          multiply
+                                          add
+                                          convert_d
+                                          setlocal 11
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"lowerBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 10
+                                          callproperty QName(PackageNamespace(""),"min"), 2
+                                          pushfalse
+                                          iffalse ofs012a
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs012d
+                                 ofs012a:
+                                          setproperty QName(PackageNamespace(""),"x")
+                                 ofs012d:
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"lowerBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 11
+                                          callproperty QName(PackageNamespace(""),"min"), 2
+                                          jump ofs0148
+                                          pop
+                                          equals
+                                          setlocal0
+                                          lessequals
+                                          astypelate
+                                 ofs0148:
+                                          pushfalse
+                                          iffalse ofs0156
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0159
+                                 ofs0156:
+                                          setproperty QName(PackageNamespace(""),"y")
+                                 ofs0159:
+                                          getlocal 9
+                                          jump ofs0164
+                                          checkfilter
+                                          greaterequals
+                                          pushscope
+                                          getlocal1
+                                          getlocal0
+                                 ofs0164:
+                                          getproperty QName(PackageNamespace(""),"upperBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 10
+                                          callproperty QName(PackageNamespace(""),"max"), 2
+                                          jump ofs017d
+                                          checkfilter
+                                          greaterequals
+                                          pushscope
+                                          getlocal1
+                                          getlocal0
+                                 ofs017d:
+                                          pushfalse
+                                          iffalse ofs018b
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs018e
+                                 ofs018b:
+                                          setproperty QName(PackageNamespace(""),"x")
+                                 ofs018e:
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"upperBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 11
+                                          jump ofs01a5
+                                          modulo
+                                          bitor
+                                          pushundefined
+                                          subtract_i
+                                          urshift
+                                 ofs01a5:
+                                          callproperty QName(PackageNamespace(""),"max"), 2
+                                          pushfalse
+                                          iffalse ofs01b7
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs01ba
+                                 ofs01b7:
+                                          setproperty QName(PackageNamespace(""),"y")
+                                 ofs01ba:
+                                          findpropstrict QName(PackageNamespace(""),"Array")
+                                          constructprop QName(PackageNamespace(""),"Array"), 0
+                                          coerce QName(PackageNamespace(""),"Array")
+                                          setlocal 12
+                                          pushbyte 0
+                                          setlocal 13
+                                          getlocal 12
+                                          getlocal 13
+                                          dup
+                                          jump ofs01d5
+                                          astypelate
+                                          istypelate
+                                          popscope
+                                          lshift
+                                          bitnot
+                                 ofs01d5:
+                                          increment_i
+                                          setlocal 13
+                                          dup
+                                          setlocal 19
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                          pushfalse
+                                          iffalse ofs01ee
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs01f1
+                                 ofs01ee:
+                                          setproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                                 ofs01f1:
+                                          nop
+                                 ofs01f2:
+                                          label
+                                          getlocal 13
+                                          pushbyte 0
+                                          ifgt ofs01ff
+                                          jump ofs0203
+                                 ofs01ff:
+                                          jump ofs0207
+                                 ofs0203:
+                                          jump ofs04c0
+                                 ofs0207:
+                                          getlocal 12
+                                          getlocal 13
+                                          decrement_i
+                                          dup
+                                          jump ofs0216
+                                          dup
+                                          convert_o
+                                          lshift
+                                          add_i
+                                          istypelate
+                                 ofs0216:
+                                          convert_i
+                                          setlocal 13
+                                          getproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                          dup
+                                          setlocal 14
+                                          getproperty QName(PackageNamespace(""),"aabb")
+                                          getlocal 9
+                                          callproperty QName(PackageNamespace(""),"TestOverlap"), 1
+                                          pushfalse
+                                          ifne ofs0233
+                                          jump ofs01f2
+                                 ofs0233:
+                                          getlocal 14
+                                          getproperty QName(PackageNamespace(""),"aabb")
+                                          callproperty QName(PackageNamespace(""),"GetCenter"), 0
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal 15
+                                          getlocal 14
+                                          getproperty QName(PackageNamespace(""),"aabb")
+                                          callproperty QName(PackageNamespace(""),"GetExtents"), 0
+                                          coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                          setlocal 16
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal 6
+                                          jump ofs025c
+                                          subtract_i
+                                          setlocal1
+                                          pushnan
+                                          lessequals
+                                          bitor
+                                          add_i
+                                 ofs025c:
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          jump ofs0269
+                                          subtract_i
+                                          setlocal1
+                                          pushnan
+                                          lessequals
+                                          bitor
+                                          add_i
+                                 ofs0269:
+                                          getlocal3
+                                          jump ofs0274
+                                          not
+                                          decrement
+                                          nextvalue
+                                          getlocal1
+                                          setlocal3
+                                          typeof
+                                 ofs0274:
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 15
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          subtract
+                                          multiply
+                                          jump ofs0288
+                                          coerce_s
+                                          bitnot
+                                          getlocal1
+                                          subtract_i
+                                          swap
+                                          pushwith
+                                 ofs0288:
+                                          getlocal 6
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 15
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          subtract
+                                          multiply
+                                          add
+                                          callproperty QName(PackageNamespace(""),"abs"), 1
+                                          getlocal 7
+                                          jump ofs02a9
+                                          coerce_s
+                                          bitnot
+                                          getlocal1
+                                          subtract_i
+                                          swap
+                                          pushwith
+                                 ofs02a9:
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 16
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          multiply
+                                          subtract
+                                          getlocal 7
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 16
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          multiply
+                                          subtract
+                                          jump ofs02c9
+                                          pushfalse
+                                          urshift
+                                          checkfilter
+                                          lshift
+                                          getglobalscope
+                                          popscope
+                                 ofs02c9:
+                                          convert_d
+                                          dup
+                                          setlocal 17
+                                          jump ofs02d7
+                                          popscope
+                                          getlocal0
+                                          negate
+                                          add_i
+                                          dup
+                                          dup
+                                 ofs02d7:
+                                          pushdouble 0
+                                          ifngt ofs02e1
+                                          jump ofs01f2
+                                 ofs02e1:
+                                          getlocal 14
+                                          callproperty QName(PackageNamespace(""),"IsLeaf"), 0
+                                          iffalse ofs045a
+                                          findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+                                          constructprop QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput"), 0
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+                                          dup
+                                          setlocal 18
+                                          getlocal2
+                                          getproperty QName(PackageNamespace(""),"p1")
+                                          pushfalse
+                                          iffalse ofs0307
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs030a
+                                 ofs0307:
+                                          setproperty QName(PackageNamespace(""),"p1")
+                                 ofs030a:
+                                          getlocal 18
+                                          getlocal2
+                                          getproperty QName(PackageNamespace(""),"p2")
+                                          pushfalse
+                                          iffalse ofs031e
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0321
+                                 ofs031e:
+                                          setproperty QName(PackageNamespace(""),"p2")
+                                 ofs0321:
+                                          getlocal 18
+                                          getlocal2
+                                          getproperty QName(PackageNamespace(""),"maxFraction")
+                                          pushfalse
+                                          iffalse ofs0335
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0338
+                                 ofs0335:
+                                          setproperty QName(PackageNamespace(""),"maxFraction")
+                                 ofs0338:
+                                          getlocal1
+                                          getglobalscope
+                                          getlocal 18
+                                          getlocal 14
+                                          call 2
+                                          convert_d
+                                          dup
+                                          jump ofs034c
+                                          multiply
+                                          popscope
+                                          bitand
+                                          lessequals
+                                          bitand
+                                          coerce_a
+                                 ofs034c:
+                                          setlocal 8
+                                          pushdouble 0
+                                          ifne ofs0355
+                                          returnvoid
+                                 ofs0355:
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          jump ofs0363
+                                          getlocal0
+                                          coerce_s
+                                          dxnslate
+                                          getlocal1
+                                          pushnan
+                                          pop
+                                 ofs0363:
+                                          getlocal 8
+                                          getlocal 4
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          jump ofs0374
+                                          add_i
+                                          subtract_i
+                                          decrement
+                                          getlocal0
+                                          setlocal0
+                                          getlocal2
+                                 ofs0374:
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          subtract
+                                          multiply
+                                          add
+                                          convert_d
+                                          setlocal 10
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 8
+                                          getlocal 4
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          jump ofs0394
+                                          typeof
+                                          nextname
+                                          newactivation
+                                          bitxor
+                                          negate
+                                          nextvalue
+                                          astypelate
+                                 ofs0394:
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          subtract
+                                          multiply
+                                          add
+                                          convert_d
+                                          setlocal 11
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"lowerBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 10
+                                          callproperty QName(PackageNamespace(""),"min"), 2
+                                          pushfalse
+                                          iffalse ofs03be
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs03c1
+                                 ofs03be:
+                                          setproperty QName(PackageNamespace(""),"x")
+                                 ofs03c1:
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"lowerBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          getlocal 11
+                                          callproperty QName(PackageNamespace(""),"min"), 2
+                                          pushfalse
+                                          iffalse ofs03e1
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs03e4
+                                 ofs03e1:
+                                          setproperty QName(PackageNamespace(""),"y")
+                                 ofs03e4:
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"upperBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          getlocal3
+                                          getproperty QName(PackageNamespace(""),"x")
+                                          getlocal 10
+                                          callproperty QName(PackageNamespace(""),"max"), 2
+                                          pushfalse
+                                          iffalse ofs0404
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0407
+                                 ofs0404:
+                                          setproperty QName(PackageNamespace(""),"x")
+                                 ofs0407:
+                                          getlocal 9
+                                          getproperty QName(PackageNamespace(""),"upperBound")
+                                          getlex QName(PackageNamespace(""),"Math")
+                                          jump ofs041a
+                                          pushnan
+                                          getlocal2
+                                          add
+                                          convert_u
+                                          lshift
+                                          bitxor
+                                          convert_d
+                                 ofs041a:
+                                          getlocal3
+                                          jump ofs0426
+                                          bitnot
+                                          newactivation
+                                          dup
+                                          pushscope
+                                          decrement_i
+                                          setlocal3
+                                          negate
+                                 ofs0426:
+                                          getproperty QName(PackageNamespace(""),"y")
+                                          jump ofs0434
+                                          bitnot
+                                          newactivation
+                                          dup
+                                          pushscope
+                                          decrement_i
+                                          setlocal3
+                                          negate
+                                 ofs0434:
+                                          getlocal 11
+                                          jump ofs0441
+                                          getlocal3
+                                          strictequals
+                                          greaterequals
+                                          bitor
+                                          getlocal2
+                                          setlocal2
+                                          multiply_i
+                                 ofs0441:
+                                          callproperty QName(PackageNamespace(""),"max"), 2
+                                          pushfalse
+                                          iffalse ofs0453
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0456
+                                 ofs0453:
+                                          setproperty QName(PackageNamespace(""),"y")
+                                 ofs0456:
+                                          jump ofs01f2
+                                 ofs045a:
+                                          getlocal 12
+                                          getlocal 13
+                                          dup
+                                          jump ofs046a
+                                          decrement
+                                          convert_i
+                                          convert_s
+                                          getlocal0
+                                          astypelate
+                                          equals
+                                          pushscope
+                                 ofs046a:
+                                          increment_i
+                                          setlocal 13
+                                          dup
+                                          setlocal 20
+                                          getlocal 14
+                                          getproperty QName(PackageNamespace(""),"child1")
+                                          pushfalse
+                                          iffalse ofs0484
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0487
+                                 ofs0484:
+                                          setproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                                 ofs0487:
+                                          getlocal 12
+                                          getlocal 13
+                                          dup
+                                          jump ofs0497
+                                          convert_u
+                                          setlocal2
+                                          bitxor
+                                          bitxor
+                                          getlocal0
+                                          negate
+                                          bitxor
+                                 ofs0497:
+                                          increment_i
+                                          setlocal 13
+                                          dup
+                                          setlocal 21
+                                          getlocal 14
+                                          getproperty QName(PackageNamespace(""),"child2")
+                                          pushfalse
+                                          iffalse ofs04b1
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs04b4
+                                 ofs04b1:
+                                          setproperty MultinameL([PrivateNamespace(null,"28"),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common"),PackageNamespace(""),PackageNamespace("Box2D.Common.Math"),PrivateNamespace(null,"181"),PackageInternalNs("Box2D.Collision"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Box2D.Collision:b2DynamicTree"),StaticProtectedNs("Object")])
+                                 ofs04b4:
+                                          kill 21
+                                          kill 20
+                                          pushbyte 2
+                                          pushbyte 3
+                                          ifne ofs01f2
+                                 ofs04c0:
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              private function AllocateNode() : b2DynamicTreeNode
+                              {
+                                 trait method QName(PrivateNamespace(null,"28"),"AllocateNode")
+                                    dispid 0
+                                    method
+                                       name null
+                                       returns QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                       
+                                       body
+                                          maxstack 52
+                                          localcount 2
+                                          initscopedepth 4
+                                          maxscopedepth 5
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             pushnull
+                                             coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                             setlocal1
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"28"),"m_freeList")
+                                             iffalse ofs0072
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"28"),"m_freeList")
+                                             coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                             setlocal1
+                                             getlocal0
+                                             getlocal1
+                                             getproperty QName(PackageNamespace(""),"parent")
+                                             initproperty QName(PrivateNamespace(null,"28"),"m_freeList")
+                                             getlocal1
+                                             pushnull
+                                             jump ofs0039
+                                             add
+                                             convert_u
+                                             convert_b
+                                             hasnext
+                                             modulo
+                                             urshift
+                                             instanceof
+                                    ofs0039:
+                                             pushfalse
+                                             iffalse ofs0047
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs004a
+                                    ofs0047:
+                                             setproperty QName(PackageNamespace(""),"parent")
+                                    ofs004a:
+                                             getlocal1
+                                             pushnull
+                                             pushfalse
+                                             iffalse ofs005a
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs005d
+                                    ofs005a:
+                                             setproperty QName(PackageNamespace(""),"child1")
+                                    ofs005d:
+                                             getlocal1
+                                             pushnull
+                                             pushfalse
+                                             iffalse ofs006d
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs0070
+                                    ofs006d:
+                                             setproperty QName(PackageNamespace(""),"child2")
+                                    ofs0070:
+                                             getlocal1
+                                             returnvalue
+                                    ofs0072:
+                                             findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                             constructprop QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode"), 0
+                                             returnvalue
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 private function FreeNode(param1:b2DynamicTreeNode) : void
+                                 {
+                                    trait method QName(PrivateNamespace(null,"28"),"FreeNode")
+                                       dispid 0
+                                       method
+                                          name null
+                                          param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 52
+                                             localcount 2
+                                             initscopedepth 4
+                                             maxscopedepth 5
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                getlocal1
+                                                getlocal0
+                                                getproperty QName(PrivateNamespace(null,"28"),"m_freeList")
+                                                pushfalse
+                                                iffalse ofs0024
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0027
+                                       ofs0024:
+                                                setproperty QName(PackageNamespace(""),"parent")
+                                       ofs0027:
+                                                getlocal0
+                                                getlocal1
+                                                initproperty QName(PrivateNamespace(null,"28"),"m_freeList")
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    private function InsertLeaf(param1:b2DynamicTreeNode) : void
+                                    {
+                                       trait method QName(PrivateNamespace(null,"28"),"InsertLeaf")
+                                          dispid 0
+                                          method
+                                             name null
+                                             param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 54
+                                                localcount 12
+                                                initscopedepth 4
+                                                maxscopedepth 5
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushbyte 37
+                                                   pushbyte 34
+                                                   ifne ofs0010
+                                                   returnvoid
+                                                   newobject 536870911
+                                          ofs0010:
+                                                   pushscope
+                                                   pushnull
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   jump ofs001d
+                                                   popscope
+                                                   setlocal1
+                                                   decrement
+                                                   subtract
+                                                   pushnull
+                                          ofs001d:
+                                                   setlocal 6
+                                                   pushnull
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal 7
+                                                   pushnan
+                                                   setlocal 8
+                                                   pushnan
+                                                   setlocal 9
+                                                   getlocal0
+                                                   dup
+                                                   setlocal 10
+                                                   getproperty QName(PrivateNamespace(null,"28"),"m_insertionCount")
+                                                   increment_i
+                                                   setlocal 11
+                                                   getlocal 10
+                                                   jump ofs0040
+                                                   multiply
+                                                   decrement
+                                                   newactivation
+                                                   pushwith
+                                                   hasnext
+                                                   convert_u
+                                          ofs0040:
+                                                   getlocal 11
+                                                   pushfalse
+                                                   iffalse ofs0050
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs0053
+                                          ofs0050:
+                                                   setproperty QName(PrivateNamespace(null,"28"),"m_insertionCount")
+                                          ofs0053:
+                                                   kill 11
+                                                   kill 10
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                   pushnull
+                                                   jump ofs0066
+                                                   multiply_i
+                                                   convert_s
+                                                   add
+                                                   swap
+                                                   modulo
+                                                   typeof
+                                          ofs0066:
+                                                   ifne ofs0086
+                                                   getlocal0
+                                                   getlocal1
+                                                   initproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                   pushnull
+                                                   pushfalse
+                                                   iffalse ofs0082
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs0085
+                                          ofs0082:
+                                                   setproperty QName(PackageNamespace(""),"parent")
+                                          ofs0085:
+                                                   returnvoid
+                                          ofs0086:
+                                                   getlocal1
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   callproperty QName(PackageNamespace(""),"GetCenter"), 0
+                                                   jump ofs0098
+                                                   typeof
+                                                   getlocal0
+                                                   setlocal3
+                                                   coerce_s
+                                                   add_i
+                                                   popscope
+                                          ofs0098:
+                                                   coerce QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                                                   setlocal2
+                                                   getlocal0
+                                                   getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal3
+                                                   getlocal3
+                                                   callproperty QName(PackageNamespace(""),"IsLeaf"), 0
+                                                   jump ofs00b1
+                                                   typeof
+                                                   getlocal0
+                                                   setlocal3
+                                                   coerce_s
+                                                   add_i
+                                                   popscope
+                                          ofs00b1:
+                                                   pushfalse
+                                                   ifne ofs020a
+                                                   jump ofs00bb
+                                          ofs00ba:
+                                                   label
+                                          ofs00bb:
+                                                   getlocal3
+                                                   getproperty QName(PackageNamespace(""),"child1")
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal 6
+                                                   getlocal3
+                                                   getproperty QName(PackageNamespace(""),"child2")
+                                                   jump ofs00d1
+                                                   pushnan
+                                                   popscope
+                                                   convert_s
+                                                   setlocal2
+                                                   greaterthan
+                                                   dup
+                                          ofs00d1:
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal 7
+                                                   getlex QName(PackageNamespace(""),"Math")
+                                                   getlocal 6
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"lowerBound")
+                                                   getproperty QName(PackageNamespace(""),"x")
+                                                   getlocal 6
+                                                   jump ofs00ef
+                                                   bitnot
+                                                   coerce_s
+                                                   bitxor
+                                                   pushnan
+                                                   add
+                                                   subtract_i
+                                          ofs00ef:
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"upperBound")
+                                                   getproperty QName(PackageNamespace(""),"x")
+                                                   add
+                                                   jump ofs0103
+                                                   getlocal3
+                                                   coerce_a
+                                                   greaterthan
+                                                   hasnext
+                                                   increment_i
+                                                   pop
+                                          ofs0103:
+                                                   pushbyte 2
+                                                   divide
+                                                   jump ofs0110
+                                                   getlocal3
+                                                   coerce_a
+                                                   greaterthan
+                                                   hasnext
+                                                   increment_i
+                                                   pop
+                                          ofs0110:
+                                                   getlocal2
+                                                   getproperty QName(PackageNamespace(""),"x")
+                                                   jump ofs011e
+                                                   decrement
+                                                   nextname
+                                                   getglobalscope
+                                                   pushundefined
+                                                   bitxor
+                                                   getlocal2
+                                          ofs011e:
+                                                   subtract
+                                                   callproperty QName(PackageNamespace(""),"abs"), 1
+                                                   jump ofs012e
+                                                   convert_u
+                                                   getlocal2
+                                                   bitor
+                                                   coerce_s
+                                                   newactivation
+                                                   nextvalue
+                                                   bitor
+                                          ofs012e:
+                                                   getlex QName(PackageNamespace(""),"Math")
+                                                   getlocal 6
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"lowerBound")
+                                                   getproperty QName(PackageNamespace(""),"y")
+                                                   getlocal 6
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"upperBound")
+                                                   getproperty QName(PackageNamespace(""),"y")
+                                                   add
+                                                   pushbyte 2
+                                                   divide
+                                                   getlocal2
+                                                   getproperty QName(PackageNamespace(""),"y")
+                                                   subtract
+                                                   jump ofs015b
+                                                   setlocal1
+                                                   newactivation
+                                                   coerce_s
+                                                   setlocal2
+                                                   checkfilter
+                                                   bitxor
+                                                   add_i
+                                          ofs015b:
+                                                   callproperty QName(PackageNamespace(""),"abs"), 1
+                                                   add
+                                                   jump ofs016b
+                                                   setlocal1
+                                                   newactivation
+                                                   coerce_s
+                                                   setlocal2
+                                                   checkfilter
+                                                   bitxor
+                                                   add_i
+                                          ofs016b:
+                                                   convert_d
+                                                   setlocal 8
+                                                   getlex QName(PackageNamespace(""),"Math")
+                                                   jump ofs017c
+                                                   greaterthan
+                                                   strictequals
+                                                   instanceof
+                                                   pushnan
+                                                   popscope
+                                                   pushnull
+                                                   coerce_a
+                                          ofs017c:
+                                                   getlocal 7
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"lowerBound")
+                                                   getproperty QName(PackageNamespace(""),"x")
+                                                   getlocal 7
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"upperBound")
+                                                   getproperty QName(PackageNamespace(""),"x")
+                                                   add
+                                                   pushbyte 2
+                                                   divide
+                                                   jump ofs01a1
+                                                   convert_o
+                                                   instanceof
+                                                   add_i
+                                                   hasnext
+                                                   multiply_i
+                                                   setlocal2
+                                                   setlocal3
+                                          ofs01a1:
+                                                   getlocal2
+                                                   getproperty QName(PackageNamespace(""),"x")
+                                                   subtract
+                                                   callproperty QName(PackageNamespace(""),"abs"), 1
+                                                   getlex QName(PackageNamespace(""),"Math")
+                                                   getlocal 7
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"lowerBound")
+                                                   getproperty QName(PackageNamespace(""),"y")
+                                                   getlocal 7
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getproperty QName(PackageNamespace(""),"upperBound")
+                                                   getproperty QName(PackageNamespace(""),"y")
+                                                   jump ofs01ce
+                                                   setlocal0
+                                                   setlocal2
+                                                   swap
+                                                   pushundefined
+                                                   setlocal1
+                                                   equals
+                                                   divide
+                                          ofs01ce:
+                                                   add
+                                                   pushbyte 2
+                                                   jump ofs01dc
+                                                   istypelate
+                                                   lshift
+                                                   istypelate
+                                                   coerce_s
+                                                   convert_o
+                                                   negate
+                                                   urshift
+                                          ofs01dc:
+                                                   divide
+                                                   getlocal2
+                                                   getproperty QName(PackageNamespace(""),"y")
+                                                   subtract
+                                                   callproperty QName(PackageNamespace(""),"abs"), 1
+                                                   add
+                                                   convert_d
+                                                   setlocal 9
+                                                   getlocal 8
+                                                   getlocal 9
+                                                   ifnlt ofs01fb
+                                                   getlocal 6
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal3
+                                                   jump ofs0200
+                                          ofs01fb:
+                                                   getlocal 7
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal3
+                                          ofs0200:
+                                                   getlocal3
+                                                   callproperty QName(PackageNamespace(""),"IsLeaf"), 0
+                                                   pushfalse
+                                                   ifeq ofs00ba
+                                          ofs020a:
+                                                   getlocal3
+                                                   getproperty QName(PackageNamespace(""),"parent")
+                                                   jump ofs0219
+                                                   lessthan
+                                                   increment_i
+                                                   coerce_a
+                                                   setlocal2
+                                                   pushtrue
+                                                   getlocal1
+                                                   hasnext
+                                          ofs0219:
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal 4
+                                                   getlocal0
+                                                   callproperty QName(PrivateNamespace(null,"28"),"AllocateNode"), 0
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   dup
+                                                   setlocal 5
+                                                   getlocal 4
+                                                   pushfalse
+                                                   iffalse ofs0237
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs023a
+                                          ofs0237:
+                                                   setproperty QName(PackageNamespace(""),"parent")
+                                          ofs023a:
+                                                   getlocal 5
+                                                   pushnull
+                                                   pushfalse
+                                                   iffalse ofs024b
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs024e
+                                          ofs024b:
+                                                   setproperty QName(PackageNamespace(""),"userData")
+                                          ofs024e:
+                                                   getlocal 5
+                                                   jump ofs025b
+                                                   bitor
+                                                   subtract
+                                                   subtract
+                                                   greaterthan
+                                                   convert_b
+                                                   divide
+                                                   setlocal2
+                                          ofs025b:
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getlocal1
+                                                   jump ofs0267
+                                                   increment
+                                                   increment
+                                                   multiply
+                                                   pop
+                                          ofs0267:
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getlocal3
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   pushfalse
+                                                   iffalse ofs027d
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs0281
+                                          ofs027d:
+                                                   callpropvoid QName(PackageNamespace(""),"Combine"), 2
+                                          ofs0281:
+                                                   getlocal 4
+                                                   iffalse ofs038c
+                                                   getlocal3
+                                                   getproperty QName(PackageNamespace(""),"parent")
+                                                   getproperty QName(PackageNamespace(""),"child1")
+                                                   getlocal3
+                                                   jump ofs0297
+                                                   increment
+                                                   increment
+                                                   multiply
+                                                   pop
+                                          ofs0297:
+                                                   ifne ofs02b4
+                                                   getlocal 4
+                                                   getlocal 5
+                                                   pushfalse
+                                                   iffalse ofs02ad
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs02b0
+                                          ofs02ad:
+                                                   setproperty QName(PackageNamespace(""),"child1")
+                                          ofs02b0:
+                                                   jump ofs02c9
+                                          ofs02b4:
+                                                   getlocal 4
+                                                   getlocal 5
+                                                   pushfalse
+                                                   iffalse ofs02c6
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs02c9
+                                          ofs02c6:
+                                                   setproperty QName(PackageNamespace(""),"child2")
+                                          ofs02c9:
+                                                   getlocal 5
+                                                   getlocal3
+                                                   pushfalse
+                                                   iffalse ofs02da
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs02dd
+                                          ofs02da:
+                                                   setproperty QName(PackageNamespace(""),"child1")
+                                          ofs02dd:
+                                                   getlocal 5
+                                                   getlocal1
+                                                   jump ofs02e8
+                                                   greaterequals
+                                                   lessthan
+                                                   pushnull
+                                                   greaterequals
+                                          ofs02e8:
+                                                   pushfalse
+                                                   iffalse ofs02f6
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs02f9
+                                          ofs02f6:
+                                                   setproperty QName(PackageNamespace(""),"child2")
+                                          ofs02f9:
+                                                   getlocal3
+                                                   getlocal 5
+                                                   pushfalse
+                                                   iffalse ofs030a
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs030d
+                                          ofs030a:
+                                                   setproperty QName(PackageNamespace(""),"parent")
+                                          ofs030d:
+                                                   getlocal1
+                                                   getlocal 5
+                                                   pushfalse
+                                                   iffalse ofs031e
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs0321
+                                          ofs031e:
+                                                   setproperty QName(PackageNamespace(""),"parent")
+                                          ofs0321:
+                                                   jump ofs0326
+                                          ofs0325:
+                                                   label
+                                          ofs0326:
+                                                   getlocal 4
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getlocal 5
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   callproperty QName(PackageNamespace(""),"Contains"), 1
+                                                   iffalse ofs033c
+                                                   jump ofs0388
+                                          ofs033c:
+                                                   getlocal 4
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getlocal 4
+                                                   getproperty QName(PackageNamespace(""),"child1")
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   getlocal 4
+                                                   jump ofs0353
+                                                   subtract
+                                                   setlocal0
+                                                   bitnot
+                                                   urshift
+                                          ofs0353:
+                                                   getproperty QName(PackageNamespace(""),"child2")
+                                                   getproperty QName(PackageNamespace(""),"aabb")
+                                                   pushfalse
+                                                   iffalse ofs0368
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs036c
+                                          ofs0368:
+                                                   callpropvoid QName(PackageNamespace(""),"Combine"), 2
+                                          ofs036c:
+                                                   getlocal 4
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   setlocal 5
+                                                   getlocal 4
+                                                   getproperty QName(PackageNamespace(""),"parent")
+                                                   jump ofs037f
+                                                   equals
+                                                   greaterthan
+                                                   strictequals
+                                                   decrement_i
+                                          ofs037f:
+                                                   coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   dup
+                                                   setlocal 4
+                                                   iftrue ofs0325
+                                          ofs0388:
+                                                   jump ofs03ea
+                                          ofs038c:
+                                                   getlocal 5
+                                                   getlocal3
+                                                   pushfalse
+                                                   iffalse ofs039d
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs03a0
+                                          ofs039d:
+                                                   setproperty QName(PackageNamespace(""),"child1")
+                                          ofs03a0:
+                                                   getlocal 5
+                                                   getlocal1
+                                                   pushfalse
+                                                   iffalse ofs03b1
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs03b4
+                                          ofs03b1:
+                                                   setproperty QName(PackageNamespace(""),"child2")
+                                          ofs03b4:
+                                                   getlocal3
+                                                   getlocal 5
+                                                   pushfalse
+                                                   iffalse ofs03c5
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs03c8
+                                          ofs03c5:
+                                                   setproperty QName(PackageNamespace(""),"parent")
+                                          ofs03c8:
+                                                   getlocal1
+                                                   getlocal 5
+                                                   pushfalse
+                                                   iffalse ofs03d9
+                                                   pushbyte 5
+                                                   pop
+                                                   pop
+                                                   pop
+                                                   jump ofs03dc
+                                          ofs03d9:
+                                                   setproperty QName(PackageNamespace(""),"parent")
+                                          ofs03dc:
+                                                   getlocal0
+                                                   getlocal 5
+                                                   jump ofs03e7
+                                                   increment_i
+                                                   convert_u
+                                                   divide
+                                                   greaterthan
+                                          ofs03e7:
+                                                   initproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                          ofs03ea:
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       private function RemoveLeaf(param1:b2DynamicTreeNode) : void
+                                       {
+                                          trait method QName(PrivateNamespace(null,"28"),"RemoveLeaf")
+                                             dispid 0
+                                             method
+                                                name null
+                                                param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 54
+                                                   localcount 6
+                                                   initscopedepth 4
+                                                   maxscopedepth 5
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      pushscope
+                                                      pushnull
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      setlocal 4
+                                                      pushnull
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                      setlocal 5
+                                                      getlocal1
+                                                      getlocal0
+                                                      getproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                      ifne ofs002a
+                                                      getlocal0
+                                                      pushnull
+                                                      initproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                      returnvoid
+                                             ofs002a:
+                                                      getlocal1
+                                                      getproperty QName(PackageNamespace(""),"parent")
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      setlocal2
+                                                      getlocal2
+                                                      getproperty QName(PackageNamespace(""),"parent")
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      setlocal3
+                                                      getlocal2
+                                                      getproperty QName(PackageNamespace(""),"child1")
+                                                      getlocal1
+                                                      jump ofs0045
+                                                      urshift
+                                                      lessequals
+                                                      setlocal3
+                                                      popscope
+                                             ofs0045:
+                                                      ifne ofs0055
+                                                      getlocal2
+                                                      getproperty QName(PackageNamespace(""),"child2")
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      setlocal 4
+                                                      jump ofs005d
+                                             ofs0055:
+                                                      getlocal2
+                                                      getproperty QName(PackageNamespace(""),"child1")
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      setlocal 4
+                                             ofs005d:
+                                                      getlocal3
+                                                      iffalse ofs014d
+                                                      getlocal3
+                                                      jump ofs006b
+                                                      pushwith
+                                                      nextvalue
+                                                      bitnot
+                                                      instanceof
+                                             ofs006b:
+                                                      getproperty QName(PackageNamespace(""),"child1")
+                                                      getlocal2
+                                                      ifne ofs0093
+                                                      getlocal3
+                                                      jump ofs007c
+                                                      convert_s
+                                                      swap
+                                                      strictequals
+                                                      getlocal3
+                                             ofs007c:
+                                                      getlocal 4
+                                                      pushfalse
+                                                      iffalse ofs008c
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs008f
+                                             ofs008c:
+                                                      setproperty QName(PackageNamespace(""),"child1")
+                                             ofs008f:
+                                                      jump ofs00af
+                                             ofs0093:
+                                                      getlocal3
+                                                      jump ofs009c
+                                                      convert_s
+                                                      swap
+                                                      strictequals
+                                                      getlocal3
+                                             ofs009c:
+                                                      getlocal 4
+                                                      pushfalse
+                                                      iffalse ofs00ac
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs00af
+                                             ofs00ac:
+                                                      setproperty QName(PackageNamespace(""),"child2")
+                                             ofs00af:
+                                                      getlocal 4
+                                                      jump ofs00b9
+                                                      negate_i
+                                                      pushnull
+                                                      greaterthan
+                                                      getglobalscope
+                                             ofs00b9:
+                                                      getlocal3
+                                                      pushfalse
+                                                      iffalse ofs00c8
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs00cb
+                                             ofs00c8:
+                                                      setproperty QName(PackageNamespace(""),"parent")
+                                             ofs00cb:
+                                                      getlocal0
+                                                      getlocal2
+                                                      pushfalse
+                                                      iffalse ofs00db
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs00df
+                                             ofs00db:
+                                                      callpropvoid QName(PrivateNamespace(null,"28"),"FreeNode"), 1
+                                             ofs00df:
+                                                      nop
+                                             ofs00e0:
+                                                      label
+                                                      getlocal3
+                                                      iftrue ofs00ea
+                                                      jump ofs00ee
+                                             ofs00ea:
+                                                      jump ofs00f2
+                                             ofs00ee:
+                                                      jump ofs0149
+                                             ofs00f2:
+                                                      getlocal3
+                                                      getproperty QName(PackageNamespace(""),"aabb")
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                      setlocal 5
+                                                      getlocal3
+                                                      getlex QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                                      getlocal3
+                                                      getproperty QName(PackageNamespace(""),"child1")
+                                                      getproperty QName(PackageNamespace(""),"aabb")
+                                                      getlocal3
+                                                      getproperty QName(PackageNamespace(""),"child2")
+                                                      getproperty QName(PackageNamespace(""),"aabb")
+                                                      callproperty QName(PackageNamespace(""),"Combine"), 2
+                                                      pushfalse
+                                                      iffalse ofs011d
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs0120
+                                             ofs011d:
+                                                      setproperty QName(PackageNamespace(""),"aabb")
+                                             ofs0120:
+                                                      getlocal 5
+                                                      getlocal3
+                                                      jump ofs012b
+                                                      multiply_i
+                                                      convert_b
+                                                      modulo
+                                                      pushtrue
+                                             ofs012b:
+                                                      getproperty QName(PackageNamespace(""),"aabb")
+                                                      callproperty QName(PackageNamespace(""),"Contains"), 1
+                                                      iffalse ofs013a
+                                                      jump ofs0149
+                                             ofs013a:
+                                                      getlocal3
+                                                      getproperty QName(PackageNamespace(""),"parent")
+                                                      coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      setlocal3
+                                                      pushbyte 2
+                                                      pushbyte 3
+                                                      ifne ofs00e0
+                                             ofs0149:
+                                                      jump ofs017b
+                                             ofs014d:
+                                                      getlocal0
+                                                      getlocal 4
+                                                      initproperty QName(PrivateNamespace(null,"28"),"m_root")
+                                                      getlocal 4
+                                                      pushnull
+                                                      pushfalse
+                                                      iffalse ofs0164
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs0167
+                                             ofs0164:
+                                                      setproperty QName(PackageNamespace(""),"parent")
+                                             ofs0167:
+                                                      getlocal0
+                                                      getlocal2
+                                                      pushfalse
+                                                      iffalse ofs0177
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs017b
+                                             ofs0177:
+                                                      callpropvoid QName(PrivateNamespace(null,"28"),"FreeNode"), 1
+                                             ofs017b:
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                       }
+                                    }
+                                    
+                                    method
+                                       name null
+                                       returns null
+                                       
+                                       body
+                                          maxstack 52
+                                          localcount 1
+                                          initscopedepth 1
+                                          maxscopedepth 3
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             findpropstrict Multiname("b2DynamicTree",[PackageNamespace("Box2D.Collision")])
+                                             getlex QName(PackageNamespace(""),"Object")
+                                             pushscope
+                                             getlex QName(PackageNamespace(""),"Object")
+                                             newclass 115
+                                             popscope
+                                             initproperty QName(PackageNamespace("Box2D.Collision"),"b2DynamicTree")
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                    

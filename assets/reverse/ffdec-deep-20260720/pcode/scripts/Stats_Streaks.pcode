@@ -1,0 +1,665 @@
+package
+{
+   public class Stats_Streaks
+   {
+      
+      public static var streakOb:Object;
+      
+      public static var streakAr:Array;
+      
+      public static var classAr:Array;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var id:String;
+      
+      public var sprite:String;
+      
+      public var name:String;
+      
+      public var global:Boolean;
+      
+      public var cost:int;
+      
+      public var lvlReq:uint;
+      
+      public var kills:Number;
+      
+      public var special:String;
+      
+      public var desc:String;
+      
+      public var allyUse:String;
+      
+      public var allySound:*;
+      
+      public var enemyUse:String;
+      
+      public var enemySound:*;
+      
+      public function Stats_Streaks()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function Init() : void
+      {
+         trait method QName(PackageNamespace(""),"Init")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 15
+                  localcount 2
+                  initscopedepth 3
+                  maxscopedepth 4
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     findproperty QName(PackageNamespace(""),"streakOb")
+                     newobject 0
+                     setproperty QName(PackageNamespace(""),"streakOb")
+                     findproperty QName(PackageNamespace(""),"streakAr")
+                     newarray 0
+                     setproperty QName(PackageNamespace(""),"streakAr")
+                     findproperty QName(PackageNamespace(""),"classAr")
+                     newarray 0
+                     setproperty QName(PackageNamespace(""),"classAr")
+                     pushbyte 0
+                     convert_u
+                     setlocal1
+                     jump ofs0030
+            ofs0022:
+                     label
+                     getlex QName(PackageNamespace(""),"classAr")
+                     newarray 0
+                     callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                     getlocal1
+                     increment
+                     convert_u
+                     setlocal1
+            ofs0030:
+                     getlocal1
+                     pushbyte 5
+                     iflt ofs0022
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 0
+                     pushstring "hotdog"
+                     pushstring "none"
+                     pushstring "None"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte 0
+                     pushstring ""
+                     pushstring "No killstreak equipped."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 1
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte 0
+                     pushstring ""
+                     pushstring "No killstreak equipped."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 1
+                     pushstring "surge"
+                     pushstring "surge"
+                     pushstring "Surge"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 3
+                     dup
+                     pushstring ""
+                     pushstring "Gain a sudden surge of power, increasing the damage you deal by 30%, while reducing the damage you take by 30% for 5 seconds."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 1
+                     pushstring "rapid"
+                     pushstring "rapid"
+                     pushstring "Rapid Regen"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 5
+                     pushbyte 4
+                     pushstring ""
+                     pushstring "Give all allies rapid health regeneration for 8 seconds."
+                     pushstring "Health regeneration up!"
+                     getlex QName(PackageNamespace(""),"V_k3")
+                     pushstring "Enemy is regenerating their health!"
+                     getlex QName(PackageNamespace(""),"V_k4")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 1
+                     pushstring "vest"
+                     pushstring "vest"
+                     pushstring "Kevlar Vests"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 12
+                     pushbyte 4
+                     pushstring ""
+                     pushstring "Equip the entire team with kevlar vests that block some damage."
+                     pushstring "Kevlar Vests out!"
+                     getlex QName(PackageNamespace(""),"V_k5")
+                     pushstring "Enemy has a Kevlar Vests, focus fire!"
+                     getlex QName(PackageNamespace(""),"V_k6")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 1
+                     pushstring "chopper"
+                     pushstring "chopper"
+                     pushstring "Attack Chopper"
+                     pushtrue
+                     pushbyte 0
+                     pushbyte 19
+                     pushbyte 5
+                     pushstring "*No effect on indoor maps*"
+                     pushstring "An attack chopper follows you around for 10 seconds."
+                     pushstring "Chopper inbound!"
+                     getlex QName(PackageNamespace(""),"V_k1")
+                     pushstring "Attack Chopper, take cover!"
+                     getlex QName(PackageNamespace(""),"V_k2")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 2
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte 0
+                     pushstring ""
+                     pushstring "No killstreak equipped."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 2
+                     pushstring "surge"
+                     pushstring "surge"
+                     pushstring "Surge"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 3
+                     dup
+                     pushstring ""
+                     pushstring "Gain a sudden surge of power, increasing the damage you deal by 30%, while reducing the damage you take by 30% for 5 seconds."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 2
+                     pushstring "smoke"
+                     pushstring "smoke"
+                     pushstring "Smoke Bomb"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 5
+                     pushbyte 2
+                     pushstring ""
+                     pushstring "Throw down a smoke bomb and teleport to a new area."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 2
+                     pushstring "radar"
+                     pushstring "radar"
+                     pushstring "Full Radar"
+                     pushtrue
+                     pushbyte 0
+                     pushbyte 12
+                     pushbyte 3
+                     pushstring ""
+                     pushstring "Grants vision of enemies on radar for 10 seconds.\nAllies will also be much more effective in combat."
+                     pushstring "Full Radar up, let \'em have it!"
+                     getlex QName(PackageNamespace(""),"V_k7")
+                     pushstring "Enemy has Full Radar, stay sharp!"
+                     getlex QName(PackageNamespace(""),"V_k8")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 2
+                     pushstring "chopper"
+                     pushstring "chopper"
+                     pushstring "Attack Chopper"
+                     pushtrue
+                     pushbyte 0
+                     pushbyte 19
+                     pushbyte 5
+                     pushstring "*No effect on indoor maps*"
+                     pushstring "An attack chopper follows you around for 10 seconds."
+                     pushstring "Chopper inbound!"
+                     getlex QName(PackageNamespace(""),"V_k1")
+                     pushstring "Attack Chopper, take cover!"
+                     getlex QName(PackageNamespace(""),"V_k2")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 3
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte 0
+                     pushstring ""
+                     pushstring "No killstreak equipped."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 3
+                     pushstring "surge"
+                     pushstring "surge"
+                     pushstring "Surge"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 3
+                     dup
+                     pushstring ""
+                     pushstring "Gain a sudden surge of power, increasing the damage you deal by 30%, while reducing the damage you take by 30% for 5 seconds."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 3
+                     pushstring "mine"
+                     pushstring "mine"
+                     pushstring "Bouncing Betty"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 5
+                     pushbyte 2
+                     pushstring ""
+                     pushstring "Drop a landmine that launches into the air and explodes when an enemy comes near.\n\n(Moving while crouched will not activate the mine)"
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 3
+                     pushstring "gas"
+                     pushstring "gas"
+                     pushstring "Tear Gas"
+                     pushtrue
+                     pushbyte 0
+                     pushbyte 12
+                     pushbyte 3
+                     pushstring ""
+                     pushstring "Fills the map with a thick tear gas for 8 seconds, making all enemies much less effective in combat."
+                     pushstring "Enemies are gassed, let \'em have it!"
+                     getlex QName(PackageNamespace(""),"V_k11")
+                     pushstring "We\'ve been gassed, stay sharp!"
+                     getlex QName(PackageNamespace(""),"V_k12")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 3
+                     pushstring "airstrike"
+                     pushstring "airstrike"
+                     pushstring "Air Strike"
+                     pushtrue
+                     pushbyte 0
+                     pushbyte 19
+                     pushbyte 4
+                     pushstring "*No effect on indoor maps*"
+                     pushstring "Rain bombs from the sky."
+                     pushstring "Airstrike inbound!"
+                     getlex QName(PackageNamespace(""),"V_k9")
+                     pushstring "Enemy Airstrike, take cover!"
+                     getlex QName(PackageNamespace(""),"V_k10")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 4
+                     pushstring "none"
+                     pushstring "none"
+                     pushstring "None"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 1
+                     pushbyte 0
+                     pushstring ""
+                     pushstring "No killstreak equipped."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 4
+                     pushstring "surge"
+                     pushstring "surge"
+                     pushstring "Surge"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 3
+                     dup
+                     pushstring ""
+                     pushstring "Gain a sudden surge of power, increasing the damage you deal by 30%, while reducing the damage you take by 30% for 5 seconds."
+                     pushstring ""
+                     pushnull
+                     pushstring ""
+                     pushnull
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 4
+                     pushstring "fire"
+                     pushstring "fire"
+                     pushstring "Combustion"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 5
+                     pushbyte 3
+                     pushstring ""
+                     pushstring "Burst into flames, dealing damage to everyone around you for 10 seconds."
+                     pushstring "HUUURRAAAAAAAGH!!"
+                     getlex QName(PackageNamespace(""),"V_k15")
+                     pushstring "Enemy tank is on fire, literally!"
+                     getlex QName(PackageNamespace(""),"V_k16")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 4
+                     pushstring "mirror"
+                     pushstring "mirror"
+                     pushstring "Ricochet"
+                     pushfalse
+                     pushbyte 0
+                     pushbyte 12
+                     pushbyte 3
+                     pushstring ""
+                     pushstring "Reflect all bullets and projectiles for 5 seconds."
+                     pushstring "Quit hitting yourself!"
+                     getlex QName(PackageNamespace(""),"V_k13")
+                     pushstring "Enemy tank reflecting bullets!"
+                     getlex QName(PackageNamespace(""),"V_k14")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     findpropstrict QName(PackageNamespace(""),"addStreak")
+                     pushbyte 4
+                     pushstring "airstrike"
+                     pushstring "airstrike"
+                     pushstring "Air Strike"
+                     pushtrue
+                     pushbyte 0
+                     pushbyte 19
+                     pushbyte 4
+                     pushstring "*No effect on indoor maps*"
+                     pushstring "Rain bombs from the sky."
+                     pushstring "Airstrike inbound!"
+                     getlex QName(PackageNamespace(""),"V_k9")
+                     pushstring "Enemy Airstrike, take cover!"
+                     getlex QName(PackageNamespace(""),"V_k10")
+                     callpropvoid QName(PackageNamespace(""),"addStreak"), 14
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public static function addStreak(param1:uint, param2:String, param3:String, param4:String, param5:Boolean, param6:int, param7:uint, param8:Number, param9:String, param10:String, param11:String, param12:*, param13:String, param14:*) : void
+         {
+            trait method QName(PackageNamespace(""),"addStreak")
+               flag FINAL
+               dispid 4
+               method
+                  name null
+                  param QName(PackageNamespace(""),"uint")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"Boolean")
+                  param QName(PackageNamespace(""),"int")
+                  param QName(PackageNamespace(""),"uint")
+                  param QName(PackageNamespace(""),"Number")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"String")
+                  param null
+                  param QName(PackageNamespace(""),"String")
+                  param null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 4
+                     localcount 16
+                     initscopedepth 3
+                     maxscopedepth 4
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        getlocal0
+                        construct 0
+                        coerce QName(PackageNamespace(""),"Stats_Streaks")
+                        dup
+                        setlocal 15
+                        getlocal2
+                        setproperty QName(PackageNamespace(""),"id")
+                        getlocal 15
+                        getlocal3
+                        setproperty QName(PackageNamespace(""),"sprite")
+                        getlocal 15
+                        getlocal 4
+                        setproperty QName(PackageNamespace(""),"name")
+                        getlocal 15
+                        getlocal 5
+                        setproperty QName(PackageNamespace(""),"global")
+                        getlocal 15
+                        getlocal 6
+                        setproperty QName(PackageNamespace(""),"cost")
+                        getlocal 15
+                        getlocal 7
+                        setproperty QName(PackageNamespace(""),"lvlReq")
+                        getlocal 15
+                        getlocal 8
+                        setproperty QName(PackageNamespace(""),"kills")
+                        getlocal 15
+                        getlocal 9
+                        setproperty QName(PackageNamespace(""),"special")
+                        getlocal 15
+                        getlocal 10
+                        setproperty QName(PackageNamespace(""),"desc")
+                        getlocal 15
+                        getlocal 11
+                        setproperty QName(PackageNamespace(""),"allyUse")
+                        getlocal 15
+                        getlocal 12
+                        setproperty QName(PackageNamespace(""),"allySound")
+                        getlocal 15
+                        getlocal 13
+                        setproperty QName(PackageNamespace(""),"enemyUse")
+                        getlocal 15
+                        getlocal 14
+                        setproperty QName(PackageNamespace(""),"enemySound")
+                        getlocal 15
+                        getlex QName(PackageNamespace(""),"Stats_Classes")
+                        getlocal 7
+                        pushstring "streak"
+                        callproperty QName(PackageNamespace(""),"getItemCost"), 2
+                        setproperty QName(PackageNamespace(""),"cost")
+                        getlex QName(PackageNamespace(""),"streakOb")
+                        getlocal2
+                        getlocal 15
+                        setproperty MultinameL([PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                        getlex QName(PackageNamespace(""),"streakAr")
+                        getlocal 15
+                        callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"push"), 1
+                        getlex QName(PackageNamespace(""),"classAr")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                        getlocal 15
+                        callpropvoid Multiname("push",[PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")]), 1
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public static function getRandStreak(param1:Object) : String
+            {
+               trait method QName(PackageNamespace(""),"getRandStreak")
+                  flag FINAL
+                  dispid 5
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Object")
+                     returns QName(PackageNamespace(""),"String")
+                     
+                     body
+                        maxstack 3
+                        localcount 3
+                        initscopedepth 3
+                        maxscopedepth 4
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           pushnull
+                           coerce_s
+                           setlocal2
+                           jump ofs000a
+                  ofs0009:
+                           label
+                  ofs000a:
+                           getlex QName(PackageNamespace(""),"UT")
+                           getlex QName(PackageNamespace(""),"classAr")
+                           getlocal1
+                           getproperty Multiname("soldier",[PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                           getproperty MultinameL([PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                           callproperty QName(PackageNamespace(""),"randEl"), 1
+                           getproperty Multiname("id",[PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                           coerce_s
+                           setlocal2
+                           getlex QName(PackageNamespace(""),"streakOb")
+                           getlocal2
+                           getproperty MultinameL([PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                           getproperty Multiname("id",[PrivateNamespace(null,"109"),PackageNamespace(""),Namespace("http://adobe.com/AS3/2006/builtin"),PrivateNamespace(null,"110"),PackageInternalNs(""),ProtectedNamespace("Stats_Streaks"),StaticProtectedNs("Stats_Streaks"),StaticProtectedNs("Object")])
+                           pushstring "none"
+                           ifeq ofs0009
+                           getlocal2
+                           returnvalue
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("Stats_Streaks",[PackageNamespace("")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 6
+                  popscope
+                  jump ofs0027
+                  pushscope
+                  dup
+                  convert_s
+                  modulo
+                  add_i
+                  convert_d
+                  popscope
+         ofs0027:
+                  initproperty QName(PackageNamespace(""),"Stats_Streaks")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

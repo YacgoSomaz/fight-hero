@@ -1,0 +1,65 @@
+package fl.managers
+{
+   public interface IFocusManagerGroup
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 50
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 3
+            
+            code
+               returnvoid
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0009
+      ofs0009:
+               returnvoid
+               newobject 536870911
+            end ; code
+         end ; body
+      end ; method
+      
+      function get groupName() : String;
+      
+      function set groupName(param1:String) : void;
+      
+      function get selected() : Boolean;
+      
+      function set selected(param1:Boolean) : void;
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 2
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("IFocusManagerGroup",[PackageNamespace("fl.managers")])
+         pushnull
+         newclass 0
+         initproperty QName(PackageNamespace("fl.managers"),"IFocusManagerGroup")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

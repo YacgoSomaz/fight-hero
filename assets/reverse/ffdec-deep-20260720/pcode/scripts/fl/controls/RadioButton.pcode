@@ -1,0 +1,1614 @@
+package fl.controls
+{
+   import fl.managers.IFocusManager;
+   import fl.managers.IFocusManagerGroup;
+   import flash.display.DisplayObject;
+   import flash.display.Graphics;
+   import flash.display.Shape;
+   import flash.events.Event;
+   import flash.events.KeyboardEvent;
+   import flash.events.MouseEvent;
+   import flash.ui.Keyboard;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol1008")]
+   public class RadioButton extends LabelButton implements IFocusManagerGroup
+   {
+      
+      private static var defaultStyles:Object;
+      
+      public static var createAccessibilityImplementation:Function;
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 81
+            localcount 1
+            initscopedepth 11
+            maxscopedepth 12
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               findproperty QName(PrivateNamespace(null,"77"),"defaultStyles")
+               pushstring "icon"
+               pushnull
+               pushstring "upIcon"
+               pushstring "RadioButton_upIcon"
+               pushstring "downIcon"
+               pushstring "RadioButton_downIcon"
+               pushstring "overIcon"
+               pushstring "RadioButton_overIcon"
+               pushstring "disabledIcon"
+               jump ofs0035
+               multiply_i
+               convert_o
+               bitnot
+               dxnslate
+      ofs0035:
+               pushstring "RadioButton_disabledIcon"
+               pushstring "selectedDisabledIcon"
+               pushstring "RadioButton_selectedDisabledIcon"
+               pushstring "selectedUpIcon"
+               pushstring "RadioButton_selectedUpIcon"
+               pushstring "selectedDownIcon"
+               jump ofs004f
+               add_i
+               setlocal1
+               nextname
+               bitnot
+      ofs004f:
+               pushstring "RadioButton_selectedDownIcon"
+               pushstring "selectedOverIcon"
+               pushstring "RadioButton_selectedOverIcon"
+               pushstring "focusRectSkin"
+               pushnull
+               pushstring "focusRectPadding"
+               pushnull
+               pushstring "textFormat"
+               pushnull
+               pushstring "disabledTextFormat"
+               pushnull
+               pushstring "embedFonts"
+               pushnull
+               pushstring "textPadding"
+               pushbyte 5
+               newobject 15
+               jump ofs007b
+               typeof
+               multiply_i
+               divide
+               getlocal2
+      ofs007b:
+               pushfalse
+               iffalse ofs0089
+               pushbyte 5
+               pop
+               pop
+               pop
+               jump ofs008c
+      ofs0089:
+               setproperty QName(PrivateNamespace(null,"77"),"defaultStyles")
+      ofs008c:
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      protected var _value:Object;
+      
+      protected var _group:RadioButtonGroup;
+      
+      protected var defaultGroupName:String = "RadioButtonGroup";
+      
+      public function RadioButton()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 2
+               localcount 1
+               initscopedepth 12
+               maxscopedepth 13
+               
+               code
+                  getlocal0
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"mode")
+                  pushstring "border"
+                  initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"mode")
+                  findproperty QName(PackageNamespace(""),"groupName")
+                  getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"defaultGroupName")
+                  initproperty QName(PackageNamespace(""),"groupName")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public static function getStyleDefinition() : Object
+      {
+         trait method QName(PackageNamespace(""),"getStyleDefinition")
+            flag FINAL
+            dispid 3
+            method
+               name null
+               returns QName(PackageNamespace(""),"Object")
+               
+               body
+                  maxstack 1
+                  localcount 1
+                  initscopedepth 11
+                  maxscopedepth 12
+                  
+                  code
+                     getlocal0
+                     pushscope
+                     getlex QName(PrivateNamespace(null,"77"),"defaultStyles")
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         override public function get toggle() : Boolean
+         {
+            trait getter QName(PackageNamespace(""),"toggle")
+               flag OVERRIDE
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"Boolean")
+                  
+                  body
+                     maxstack 1
+                     localcount 1
+                     initscopedepth 12
+                     maxscopedepth 13
+                     
+                     code
+                        getlocal0
+                        pushscope
+                        pushtrue
+                        returnvalue
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            override public function set toggle(param1:Boolean) : void
+            {
+               trait setter QName(PackageNamespace(""),"toggle")
+                  flag OVERRIDE
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"Boolean")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 2
+                        localcount 2
+                        initscopedepth 12
+                        maxscopedepth 13
+                        
+                        code
+                           getlocal0
+                           pushscope
+                           findpropstrict QName(PackageNamespace(""),"Error")
+                           pushstring "Warning: You cannot change a RadioButtons toggle."
+                           constructprop QName(PackageNamespace(""),"Error"), 1
+                           throw
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               override public function get autoRepeat() : Boolean
+               {
+                  trait getter QName(PackageNamespace(""),"autoRepeat")
+                     flag OVERRIDE
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"Boolean")
+                        
+                        body
+                           maxstack 1
+                           localcount 1
+                           initscopedepth 12
+                           maxscopedepth 13
+                           
+                           code
+                              getlocal0
+                              pushscope
+                              pushfalse
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  override public function set autoRepeat(param1:Boolean) : void
+                  {
+                     trait setter QName(PackageNamespace(""),"autoRepeat")
+                        flag OVERRIDE
+                        dispid 0
+                        method
+                           name null
+                           param QName(PackageNamespace(""),"Boolean")
+                           returns QName(PackageNamespace(""),"void")
+                           
+                           body
+                              maxstack 1
+                              localcount 2
+                              initscopedepth 12
+                              maxscopedepth 13
+                              
+                              code
+                                 getlocal0
+                                 pushscope
+                                 returnvoid
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     override public function get selected() : Boolean
+                     {
+                        trait getter QName(PackageNamespace(""),"selected")
+                           flag OVERRIDE
+                           dispid 0
+                           method
+                              name null
+                              returns QName(PackageNamespace(""),"Boolean")
+                              
+                              body
+                                 maxstack 1
+                                 localcount 1
+                                 initscopedepth 12
+                                 maxscopedepth 13
+                                 
+                                 code
+                                    getlocal0
+                                    pushscope
+                                    getlocal0
+                                    getsuper QName(PackageNamespace(""),"selected")
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        override public function set selected(param1:Boolean) : void
+                        {
+                           trait setter QName(PackageNamespace(""),"selected")
+                              flag OVERRIDE
+                              dispid 0
+                              method
+                                 name null
+                                 param QName(PackageNamespace(""),"Boolean")
+                                 returns QName(PackageNamespace(""),"void")
+                                 
+                                 body
+                                    maxstack 2
+                                    localcount 2
+                                    initscopedepth 12
+                                    maxscopedepth 13
+                                    
+                                    code
+                                       getlocal0
+                                       pushscope
+                                       getlocal1
+                                       pushfalse
+                                       equals
+                                       dup
+                                       iftrue ofs000f
+                                       pop
+                                       getlex QName(PackageNamespace(""),"selected")
+                                       convert_b
+                              ofs000f:
+                                       iffalse ofs0014
+                                       returnvoid
+                              ofs0014:
+                                       getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                       pushnull
+                                       ifeq ofs0027
+                                       getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                       getlocal0
+                                       setproperty QName(PackageNamespace(""),"selection")
+                                       jump ofs002c
+                              ofs0027:
+                                       getlocal0
+                                       getlocal1
+                                       setsuper QName(PackageNamespace(""),"selected")
+                              ofs002c:
+                                       returnvoid
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           override protected function configUI() : void
+                           {
+                              trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"configUI")
+                                 flag OVERRIDE
+                                 dispid 0
+                                 method
+                                    name null
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 6
+                                       localcount 3
+                                       initscopedepth 12
+                                       maxscopedepth 13
+                                       
+                                       code
+                                          getlocal0
+                                          pushscope
+                                          getlocal0
+                                          callsupervoid QName(ProtectedNamespace("fl.controls:LabelButton"),"configUI"), 0
+                                          getlocal0
+                                          pushtrue
+                                          setsuper QName(PackageNamespace(""),"toggle")
+                                          findpropstrict QName(PackageNamespace("flash.display"),"Shape")
+                                          constructprop QName(PackageNamespace("flash.display"),"Shape"), 0
+                                          coerce QName(PackageNamespace("flash.display"),"Shape")
+                                          setlocal1
+                                          getlocal1
+                                          getproperty QName(PackageNamespace(""),"graphics")
+                                          coerce QName(PackageNamespace("flash.display"),"Graphics")
+                                          setlocal2
+                                          getlocal2
+                                          pushbyte 0
+                                          dup
+                                          callpropvoid QName(PackageNamespace(""),"beginFill"), 2
+                                          getlocal2
+                                          pushbyte 0
+                                          dup
+                                          pushbyte 100
+                                          dup
+                                          callpropvoid QName(PackageNamespace(""),"drawRect"), 4
+                                          getlocal2
+                                          callpropvoid QName(PackageNamespace(""),"endFill"), 0
+                                          findproperty QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                          getlocal1
+                                          getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                                          astypelate
+                                          initproperty QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                          findpropstrict QName(PackageNamespace(""),"addChildAt")
+                                          getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                          pushbyte 0
+                                          callpropvoid QName(PackageNamespace(""),"addChildAt"), 2
+                                          findpropstrict QName(PackageNamespace(""),"addEventListener")
+                                          getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                          getproperty QName(PackageNamespace(""),"CLICK")
+                                          getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"handleClick")
+                                          pushfalse
+                                          pushbyte 0
+                                          pushtrue
+                                          callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              override protected function drawLayout() : void
+                              {
+                                 trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"drawLayout")
+                                    flag OVERRIDE
+                                    dispid 0
+                                    method
+                                       name null
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 5
+                                          localcount 3
+                                          initscopedepth 12
+                                          maxscopedepth 13
+                                          
+                                          code
+                                             getlocal0
+                                             pushscope
+                                             getlocal0
+                                             callsupervoid QName(ProtectedNamespace("fl.controls:LabelButton"),"drawLayout"), 0
+                                             findpropstrict QName(PackageNamespace(""),"Number")
+                                             findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                             pushstring "textPadding"
+                                             callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                             callproperty QName(PackageNamespace(""),"Number"), 1
+                                             convert_d
+                                             setlocal1
+                                             jump ofs0119
+                                    ofs001c:
+                                             label
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getlocal1
+                                             setproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             getlocal1
+                                             add
+                                             add
+                                             setproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             add
+                                             getlocal1
+                                             add
+                                             setproperty QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"Math")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"height")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"height")
+                                             callproperty QName(PackageNamespace(""),"max"), 2
+                                             getlocal1
+                                             pushbyte 2
+                                             multiply
+                                             add
+                                             setproperty QName(PackageNamespace(""),"height")
+                                             jump ofs0183
+                                    ofs0070:
+                                             label
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getlex QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             subtract
+                                             getlocal1
+                                             subtract
+                                             setproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getlex QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             subtract
+                                             getlocal1
+                                             pushbyte 2
+                                             multiply
+                                             subtract
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             subtract
+                                             setproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             add
+                                             getlocal1
+                                             pushbyte 3
+                                             multiply
+                                             add
+                                             setproperty QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"Math")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"height")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"height")
+                                             callproperty QName(PackageNamespace(""),"max"), 2
+                                             getlocal1
+                                             pushbyte 2
+                                             multiply
+                                             add
+                                             setproperty QName(PackageNamespace(""),"height")
+                                             jump ofs0183
+                                    ofs00d9:
+                                             label
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"Math")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"width")
+                                             callproperty QName(PackageNamespace(""),"max"), 2
+                                             getlocal1
+                                             pushbyte 2
+                                             multiply
+                                             add
+                                             setproperty QName(PackageNamespace(""),"width")
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"height")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"height")
+                                             add
+                                             getlocal1
+                                             pushbyte 3
+                                             multiply
+                                             add
+                                             setproperty QName(PackageNamespace(""),"height")
+                                             jump ofs0183
+                                    ofs0114:
+                                             label
+                                             jump ofs0183
+                                    ofs0119:
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_labelPlacement")
+                                             setlocal2
+                                             getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                             getproperty QName(PackageNamespace(""),"RIGHT")
+                                             getlocal2
+                                             ifstrictne ofs012e
+                                             pushbyte 0
+                                             jump ofs016d
+                                    ofs012e:
+                                             getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                             getproperty QName(PackageNamespace(""),"LEFT")
+                                             getlocal2
+                                             ifstrictne ofs013f
+                                             pushbyte 1
+                                             jump ofs016d
+                                    ofs013f:
+                                             getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                             getproperty QName(PackageNamespace(""),"TOP")
+                                             getlocal2
+                                             ifstrictne ofs0150
+                                             pushbyte 2
+                                             jump ofs016d
+                                    ofs0150:
+                                             getlex QName(PackageNamespace("fl.controls"),"ButtonLabelPlacement")
+                                             getproperty QName(PackageNamespace(""),"BOTTOM")
+                                             getlocal2
+                                             ifstrictne ofs0161
+                                             pushbyte 3
+                                             jump ofs016d
+                                    ofs0161:
+                                             jump ofs016b
+                                             pushbyte 4
+                                             jump ofs016b
+                                    ofs016b:
+                                             pushbyte 4
+                                    ofs016d:
+                                             kill 2
+                                             lookupswitch ofs0114, [ofs001c, ofs0070, ofs00d9, ofs00d9, ofs0114]
+                                    ofs0183:
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"Math")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"x")
+                                             getlocal1
+                                             subtract
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"x")
+                                             getlocal1
+                                             subtract
+                                             callproperty QName(PackageNamespace(""),"min"), 2
+                                             setproperty QName(PackageNamespace(""),"x")
+                                             getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                             getlex QName(PackageNamespace(""),"Math")
+                                             getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"icon")
+                                             getproperty QName(PackageNamespace(""),"y")
+                                             getlocal1
+                                             subtract
+                                             getlex QName(PackageNamespace(""),"textField")
+                                             getproperty QName(PackageNamespace(""),"y")
+                                             getlocal1
+                                             subtract
+                                             callproperty QName(PackageNamespace(""),"min"), 2
+                                             setproperty QName(PackageNamespace(""),"y")
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public function get groupName() : String
+                                 {
+                                    trait getter QName(PackageNamespace(""),"groupName")
+                                       dispid 0
+                                       method
+                                          name null
+                                          returns QName(PackageNamespace(""),"String")
+                                          
+                                          body
+                                             maxstack 2
+                                             localcount 1
+                                             initscopedepth 12
+                                             maxscopedepth 13
+                                             
+                                             code
+                                                getlocal0
+                                                pushscope
+                                                getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                pushnull
+                                                ifne ofs0010
+                                                pushnull
+                                                coerce_s
+                                                jump ofs0017
+                                       ofs0010:
+                                                getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                getproperty QName(PackageNamespace(""),"name")
+                                                coerce_s
+                                       ofs0017:
+                                                returnvalue
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public function set groupName(param1:String) : void
+                                    {
+                                       trait setter QName(PackageNamespace(""),"groupName")
+                                          dispid 0
+                                          method
+                                             name null
+                                             param QName(PackageNamespace(""),"String")
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 6
+                                                localcount 2
+                                                initscopedepth 12
+                                                maxscopedepth 13
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushscope
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   pushnull
+                                                   ifeq ofs0021
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   getlocal0
+                                                   callpropvoid QName(PackageNamespace(""),"removeRadioButton"), 1
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   getlex QName(PackageNamespace("flash.events"),"Event")
+                                                   getproperty QName(PackageNamespace(""),"CHANGE")
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"handleChange")
+                                                   callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+                                          ofs0021:
+                                                   findproperty QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   getlocal1
+                                                   pushnull
+                                                   ifne ofs0031
+                                                   pushnull
+                                                   coerce QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                   jump ofs003a
+                                          ofs0031:
+                                                   getlex QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                   getlocal1
+                                                   callproperty QName(PackageNamespace(""),"getGroup"), 1
+                                                   coerce QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                          ofs003a:
+                                                   initproperty QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   pushnull
+                                                   ifeq ofs0060
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   getlocal0
+                                                   callpropvoid QName(PackageNamespace(""),"addRadioButton"), 1
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                   getlex QName(PackageNamespace("flash.events"),"Event")
+                                                   getproperty QName(PackageNamespace(""),"CHANGE")
+                                                   getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"handleChange")
+                                                   pushfalse
+                                                   pushbyte 0
+                                                   pushtrue
+                                                   callpropvoid QName(PackageNamespace(""),"addEventListener"), 5
+                                          ofs0060:
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public function get group() : RadioButtonGroup
+                                       {
+                                          trait getter QName(PackageNamespace(""),"group")
+                                             dispid 0
+                                             method
+                                                name null
+                                                returns QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                
+                                                body
+                                                   maxstack 1
+                                                   localcount 1
+                                                   initscopedepth 12
+                                                   maxscopedepth 13
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushscope
+                                                      getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                      returnvalue
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          public function set group(param1:RadioButtonGroup) : void
+                                          {
+                                             trait setter QName(PackageNamespace(""),"group")
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   param QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                   returns QName(PackageNamespace(""),"void")
+                                                   
+                                                   body
+                                                      maxstack 2
+                                                      localcount 2
+                                                      initscopedepth 12
+                                                      maxscopedepth 13
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushscope
+                                                         findproperty QName(PackageNamespace(""),"groupName")
+                                                         getlocal1
+                                                         getproperty QName(PackageNamespace(""),"name")
+                                                         initproperty QName(PackageNamespace(""),"groupName")
+                                                         returnvoid
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             public function get value() : Object
+                                             {
+                                                trait getter QName(PackageNamespace(""),"value")
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      returns QName(PackageNamespace(""),"Object")
+                                                      
+                                                      body
+                                                         maxstack 1
+                                                         localcount 1
+                                                         initscopedepth 12
+                                                         maxscopedepth 13
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushscope
+                                                            getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_value")
+                                                            returnvalue
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                public function set value(param1:Object) : void
+                                                {
+                                                   trait setter QName(PackageNamespace(""),"value")
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         param QName(PackageNamespace(""),"Object")
+                                                         returns QName(PackageNamespace(""),"void")
+                                                         
+                                                         body
+                                                            maxstack 2
+                                                            localcount 2
+                                                            initscopedepth 12
+                                                            maxscopedepth 13
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushscope
+                                                               findproperty QName(ProtectedNamespace("fl.controls:RadioButton"),"_value")
+                                                               getlocal1
+                                                               initproperty QName(ProtectedNamespace("fl.controls:RadioButton"),"_value")
+                                                               returnvoid
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                   
+                                                   override public function drawFocus(param1:Boolean) : void
+                                                   {
+                                                      trait method QName(PackageNamespace(""),"drawFocus")
+                                                         flag OVERRIDE
+                                                         dispid 0
+                                                         method
+                                                            name null
+                                                            param QName(PackageNamespace(""),"Boolean")
+                                                            returns QName(PackageNamespace(""),"void")
+                                                            
+                                                            body
+                                                               maxstack 4
+                                                               localcount 3
+                                                               initscopedepth 12
+                                                               maxscopedepth 13
+                                                               
+                                                               code
+                                                                  getlocal0
+                                                                  pushscope
+                                                                  pushnan
+                                                                  setlocal2
+                                                                  getlocal0
+                                                                  getlocal1
+                                                                  callsupervoid QName(PackageNamespace(""),"drawFocus"), 1
+                                                                  getlocal1
+                                                                  iffalse ofs005e
+                                                                  findpropstrict QName(PackageNamespace(""),"Number")
+                                                                  findpropstrict QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue")
+                                                                  pushstring "focusRectPadding"
+                                                                  callproperty QName(ProtectedNamespace("fl.core:UIComponent"),"getStyleValue"), 1
+                                                                  callproperty QName(PackageNamespace(""),"Number"), 1
+                                                                  convert_d
+                                                                  setlocal2
+                                                                  getlex QName(ProtectedNamespace("fl.core:UIComponent"),"uiFocusRect")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                                                  getproperty QName(PackageNamespace(""),"x")
+                                                                  getlocal2
+                                                                  subtract
+                                                                  setproperty QName(PackageNamespace(""),"x")
+                                                                  getlex QName(ProtectedNamespace("fl.core:UIComponent"),"uiFocusRect")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                                                  getproperty QName(PackageNamespace(""),"y")
+                                                                  getlocal2
+                                                                  subtract
+                                                                  setproperty QName(PackageNamespace(""),"y")
+                                                                  getlex QName(ProtectedNamespace("fl.core:UIComponent"),"uiFocusRect")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                                                  getproperty QName(PackageNamespace(""),"width")
+                                                                  getlocal2
+                                                                  pushbyte 2
+                                                                  multiply
+                                                                  add
+                                                                  setproperty QName(PackageNamespace(""),"width")
+                                                                  getlex QName(ProtectedNamespace("fl.core:UIComponent"),"uiFocusRect")
+                                                                  getlex QName(ProtectedNamespace("fl.controls:BaseButton"),"background")
+                                                                  getproperty QName(PackageNamespace(""),"height")
+                                                                  getlocal2
+                                                                  pushbyte 2
+                                                                  multiply
+                                                                  add
+                                                                  setproperty QName(PackageNamespace(""),"height")
+                                                         ofs005e:
+                                                                  returnvoid
+                                                               end ; code
+                                                            end ; body
+                                                         end ; method
+                                                      }
+                                                      
+                                                      protected function handleChange(param1:Event) : void
+                                                      {
+                                                         trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"handleChange")
+                                                            dispid 0
+                                                            method
+                                                               name null
+                                                               param QName(PackageNamespace("flash.events"),"Event")
+                                                               returns QName(PackageNamespace(""),"void")
+                                                               
+                                                               body
+                                                                  maxstack 4
+                                                                  localcount 2
+                                                                  initscopedepth 12
+                                                                  maxscopedepth 13
+                                                                  
+                                                                  code
+                                                                     getlocal0
+                                                                     pushscope
+                                                                     getlocal0
+                                                                     getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                                     getproperty QName(PackageNamespace(""),"selection")
+                                                                     getlocal0
+                                                                     equals
+                                                                     setsuper QName(PackageNamespace(""),"selected")
+                                                                     findpropstrict QName(PackageNamespace(""),"dispatchEvent")
+                                                                     findpropstrict QName(PackageNamespace("flash.events"),"Event")
+                                                                     getlex QName(PackageNamespace("flash.events"),"Event")
+                                                                     getproperty QName(PackageNamespace(""),"CHANGE")
+                                                                     pushtrue
+                                                                     constructprop QName(PackageNamespace("flash.events"),"Event"), 2
+                                                                     callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                     returnvoid
+                                                                  end ; code
+                                                               end ; body
+                                                            end ; method
+                                                         }
+                                                         
+                                                         protected function handleClick(param1:MouseEvent) : void
+                                                         {
+                                                            trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"handleClick")
+                                                               dispid 0
+                                                               method
+                                                                  name null
+                                                                  param QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                  returns QName(PackageNamespace(""),"void")
+                                                                  
+                                                                  body
+                                                                     maxstack 4
+                                                                     localcount 2
+                                                                     initscopedepth 12
+                                                                     maxscopedepth 13
+                                                                     
+                                                                     code
+                                                                        getlocal0
+                                                                        pushscope
+                                                                        getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                                        pushnull
+                                                                        ifne ofs000b
+                                                                        returnvoid
+                                                               ofs000b:
+                                                                        getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                                        findpropstrict QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                        getlex QName(PackageNamespace("flash.events"),"MouseEvent")
+                                                                        getproperty QName(PackageNamespace(""),"CLICK")
+                                                                        pushtrue
+                                                                        constructprop QName(PackageNamespace("flash.events"),"MouseEvent"), 2
+                                                                        callpropvoid QName(PackageNamespace(""),"dispatchEvent"), 1
+                                                                        returnvoid
+                                                                     end ; code
+                                                                  end ; body
+                                                               end ; method
+                                                            }
+                                                            
+                                                            override protected function draw() : void
+                                                            {
+                                                               trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"draw")
+                                                                  flag OVERRIDE
+                                                                  dispid 0
+                                                                  method
+                                                                     name null
+                                                                     returns QName(PackageNamespace(""),"void")
+                                                                     
+                                                                     body
+                                                                        maxstack 1
+                                                                        localcount 1
+                                                                        initscopedepth 12
+                                                                        maxscopedepth 13
+                                                                        
+                                                                        code
+                                                                           getlocal0
+                                                                           pushscope
+                                                                           getlocal0
+                                                                           callsupervoid QName(ProtectedNamespace("fl.controls:LabelButton"),"draw"), 0
+                                                                           returnvoid
+                                                                        end ; code
+                                                                     end ; body
+                                                                  end ; method
+                                                               }
+                                                               
+                                                               override protected function drawBackground() : void
+                                                               {
+                                                                  trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"drawBackground")
+                                                                     flag OVERRIDE
+                                                                     dispid 0
+                                                                     method
+                                                                        name null
+                                                                        returns QName(PackageNamespace(""),"void")
+                                                                        
+                                                                        body
+                                                                           maxstack 1
+                                                                           localcount 1
+                                                                           initscopedepth 12
+                                                                           maxscopedepth 13
+                                                                           
+                                                                           code
+                                                                              getlocal0
+                                                                              pushscope
+                                                                              returnvoid
+                                                                           end ; code
+                                                                        end ; body
+                                                                     end ; method
+                                                                  }
+                                                                  
+                                                                  override protected function initializeAccessibility() : void
+                                                                  {
+                                                                     trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"initializeAccessibility")
+                                                                        flag OVERRIDE
+                                                                        dispid 0
+                                                                        method
+                                                                           name null
+                                                                           returns QName(PackageNamespace(""),"void")
+                                                                           
+                                                                           body
+                                                                              maxstack 2
+                                                                              localcount 1
+                                                                              initscopedepth 12
+                                                                              maxscopedepth 13
+                                                                              
+                                                                              code
+                                                                                 getlocal0
+                                                                                 pushscope
+                                                                                 getlex QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                 getproperty QName(PackageNamespace(""),"createAccessibilityImplementation")
+                                                                                 pushnull
+                                                                                 ifeq ofs0013
+                                                                                 getlex QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                 getlocal0
+                                                                                 callpropvoid QName(PackageNamespace(""),"createAccessibilityImplementation"), 1
+                                                                        ofs0013:
+                                                                                 returnvoid
+                                                                              end ; code
+                                                                           end ; body
+                                                                        end ; method
+                                                                     }
+                                                                     
+                                                                     override protected function keyDownHandler(param1:KeyboardEvent) : void
+                                                                     {
+                                                                        trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"keyDownHandler")
+                                                                           flag OVERRIDE
+                                                                           dispid 0
+                                                                           method
+                                                                              name null
+                                                                              param QName(PackageNamespace("flash.events"),"KeyboardEvent")
+                                                                              returns QName(PackageNamespace(""),"void")
+                                                                              
+                                                                              body
+                                                                                 maxstack 2
+                                                                                 localcount 3
+                                                                                 initscopedepth 12
+                                                                                 maxscopedepth 13
+                                                                                 
+                                                                                 code
+                                                                                    getlocal0
+                                                                                    pushscope
+                                                                                    jump ofs007c
+                                                                           ofs0006:
+                                                                                    label
+                                                                                    findpropstrict QName(PrivateNamespace(null,"77"),"setNext")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"ctrlKey")
+                                                                                    not
+                                                                                    callpropvoid QName(PrivateNamespace(null,"77"),"setNext"), 1
+                                                                                    getlocal1
+                                                                                    callpropvoid QName(PackageNamespace(""),"stopPropagation"), 0
+                                                                                    jump ofs00fb
+                                                                           ofs001c:
+                                                                                    label
+                                                                                    findpropstrict QName(PrivateNamespace(null,"77"),"setPrev")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"ctrlKey")
+                                                                                    not
+                                                                                    callpropvoid QName(PrivateNamespace(null,"77"),"setPrev"), 1
+                                                                                    getlocal1
+                                                                                    callpropvoid QName(PackageNamespace(""),"stopPropagation"), 0
+                                                                                    jump ofs00fb
+                                                                           ofs0032:
+                                                                                    label
+                                                                                    findpropstrict QName(PrivateNamespace(null,"77"),"setPrev")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"ctrlKey")
+                                                                                    not
+                                                                                    callpropvoid QName(PrivateNamespace(null,"77"),"setPrev"), 1
+                                                                                    getlocal1
+                                                                                    callpropvoid QName(PackageNamespace(""),"stopPropagation"), 0
+                                                                                    jump ofs00fb
+                                                                           ofs0048:
+                                                                                    label
+                                                                                    findpropstrict QName(PrivateNamespace(null,"77"),"setNext")
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"ctrlKey")
+                                                                                    not
+                                                                                    callpropvoid QName(PrivateNamespace(null,"77"),"setNext"), 1
+                                                                                    getlocal1
+                                                                                    callpropvoid QName(PackageNamespace(""),"stopPropagation"), 0
+                                                                                    jump ofs00fb
+                                                                           ofs005e:
+                                                                                    label
+                                                                                    findpropstrict QName(PrivateNamespace(null,"77"),"setThis")
+                                                                                    callpropvoid QName(PrivateNamespace(null,"77"),"setThis"), 0
+                                                                                    findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                                                                    pushfalse
+                                                                                    initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                                                           ofs006d:
+                                                                                    label
+                                                                                    getlocal0
+                                                                                    getlocal1
+                                                                                    callsupervoid QName(ProtectedNamespace("fl.controls:LabelButton"),"keyDownHandler"), 1
+                                                                                    jump ofs00fb
+                                                                                    jump ofs007c
+                                                                           ofs007c:
+                                                                                    getlocal1
+                                                                                    getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                    setlocal2
+                                                                                    getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                    getproperty QName(PackageNamespace(""),"DOWN")
+                                                                                    getlocal2
+                                                                                    ifstrictne ofs0092
+                                                                                    pushbyte 0
+                                                                                    jump ofs00e2
+                                                                           ofs0092:
+                                                                                    getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                    getproperty QName(PackageNamespace(""),"UP")
+                                                                                    getlocal2
+                                                                                    ifstrictne ofs00a3
+                                                                                    pushbyte 1
+                                                                                    jump ofs00e2
+                                                                           ofs00a3:
+                                                                                    getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                    getproperty QName(PackageNamespace(""),"LEFT")
+                                                                                    getlocal2
+                                                                                    ifstrictne ofs00b4
+                                                                                    pushbyte 2
+                                                                                    jump ofs00e2
+                                                                           ofs00b4:
+                                                                                    getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                    getproperty QName(PackageNamespace(""),"RIGHT")
+                                                                                    getlocal2
+                                                                                    ifstrictne ofs00c5
+                                                                                    pushbyte 3
+                                                                                    jump ofs00e2
+                                                                           ofs00c5:
+                                                                                    getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                    getproperty QName(PackageNamespace(""),"SPACE")
+                                                                                    getlocal2
+                                                                                    ifstrictne ofs00d6
+                                                                                    pushbyte 4
+                                                                                    jump ofs00e2
+                                                                           ofs00d6:
+                                                                                    jump ofs00e0
+                                                                                    pushbyte 5
+                                                                                    jump ofs00e0
+                                                                           ofs00e0:
+                                                                                    pushbyte 5
+                                                                           ofs00e2:
+                                                                                    kill 2
+                                                                                    lookupswitch ofs006d, [ofs0006, ofs001c, ofs0032, ofs0048, ofs005e, ofs006d]
+                                                                           ofs00fb:
+                                                                                    returnvoid
+                                                                                 end ; code
+                                                                              end ; body
+                                                                           end ; method
+                                                                        }
+                                                                        
+                                                                        override protected function keyUpHandler(param1:KeyboardEvent) : void
+                                                                        {
+                                                                           trait method QName(ProtectedNamespace("fl.controls:RadioButton"),"keyUpHandler")
+                                                                              flag OVERRIDE
+                                                                              dispid 0
+                                                                              method
+                                                                                 name null
+                                                                                 param QName(PackageNamespace("flash.events"),"KeyboardEvent")
+                                                                                 returns QName(PackageNamespace(""),"void")
+                                                                                 
+                                                                                 body
+                                                                                    maxstack 2
+                                                                                    localcount 2
+                                                                                    initscopedepth 12
+                                                                                    maxscopedepth 13
+                                                                                    
+                                                                                    code
+                                                                                       getlocal0
+                                                                                       pushscope
+                                                                                       getlocal0
+                                                                                       getlocal1
+                                                                                       callsupervoid QName(ProtectedNamespace("fl.controls:LabelButton"),"keyUpHandler"), 1
+                                                                                       getlocal1
+                                                                                       getproperty QName(PackageNamespace(""),"keyCode")
+                                                                                       getlex QName(PackageNamespace("flash.ui"),"Keyboard")
+                                                                                       getproperty QName(PackageNamespace(""),"SPACE")
+                                                                                       equals
+                                                                                       dup
+                                                                                       iffalse ofs001d
+                                                                                       pop
+                                                                                       getlex QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                                                                       not
+                                                                              ofs001d:
+                                                                                       iffalse ofs0028
+                                                                                       findproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                                                                       pushtrue
+                                                                                       initproperty QName(ProtectedNamespace("fl.controls:LabelButton"),"_toggle")
+                                                                              ofs0028:
+                                                                                       returnvoid
+                                                                                    end ; code
+                                                                                 end ; body
+                                                                              end ; method
+                                                                           }
+                                                                           
+                                                                           private function setPrev(param1:Boolean = true) : void
+                                                                           {
+                                                                              trait method QName(PrivateNamespace(null,"77"),"setPrev")
+                                                                                 dispid 0
+                                                                                 method
+                                                                                    name null
+                                                                                    flag HAS_OPTIONAL
+                                                                                    param QName(PackageNamespace(""),"Boolean")
+                                                                                    optional True()
+                                                                                    returns QName(PackageNamespace(""),"void")
+                                                                                    
+                                                                                    body
+                                                                                       maxstack 2
+                                                                                       localcount 7
+                                                                                       initscopedepth 12
+                                                                                       maxscopedepth 13
+                                                                                       
+                                                                                       code
+                                                                                          getlocal0
+                                                                                          pushscope
+                                                                                          pushnull
+                                                                                          coerce QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                          setlocal 6
+                                                                                          getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                                                          coerce QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                                                          setlocal2
+                                                                                          getlocal2
+                                                                                          pushnull
+                                                                                          ifne ofs0014
+                                                                                          returnvoid
+                                                                                 ofs0014:
+                                                                                          getlex QName(PackageNamespace(""),"focusManager")
+                                                                                          coerce QName(PackageNamespace("fl.managers"),"IFocusManager")
+                                                                                          setlocal3
+                                                                                          getlocal3
+                                                                                          iffalse ofs0024
+                                                                                          getlocal3
+                                                                                          pushtrue
+                                                                                          setproperty QName(Namespace("fl.managers:IFocusManager"),"showFocusIndicator")
+                                                                                 ofs0024:
+                                                                                          getlocal2
+                                                                                          getlocal0
+                                                                                          callproperty QName(PackageNamespace(""),"getRadioButtonIndex"), 1
+                                                                                          convert_i
+                                                                                          dup
+                                                                                          setlocal 4
+                                                                                          convert_i
+                                                                                          setlocal 5
+                                                                                          getlocal 4
+                                                                                          pushbyte -1
+                                                                                          ifeq ofs00b5
+                                                                                          jump ofs003e
+                                                                                 ofs003d:
+                                                                                          label
+                                                                                 ofs003e:
+                                                                                          getlocal 5
+                                                                                          decrement_i
+                                                                                          dup
+                                                                                          setlocal 5
+                                                                                          pushbyte -1
+                                                                                          ifne ofs0054
+                                                                                          getlocal2
+                                                                                          getproperty QName(PackageNamespace(""),"numRadioButtons")
+                                                                                          decrement
+                                                                                          convert_i
+                                                                                          jump ofs0057
+                                                                                 ofs0054:
+                                                                                          getlocal 5
+                                                                                          convert_i
+                                                                                 ofs0057:
+                                                                                          convert_i
+                                                                                          setlocal 5
+                                                                                          getlocal2
+                                                                                          getlocal 5
+                                                                                          callproperty QName(PackageNamespace(""),"getRadioButtonAt"), 1
+                                                                                          coerce QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                          dup
+                                                                                          setlocal 6
+                                                                                          convert_b
+                                                                                          dup
+                                                                                          iffalse ofs0073
+                                                                                          pop
+                                                                                          getlocal 6
+                                                                                          getproperty QName(PackageNamespace(""),"enabled")
+                                                                                          convert_b
+                                                                                 ofs0073:
+                                                                                          iffalse ofs0089
+                                                                                          getlocal1
+                                                                                          iffalse ofs0082
+                                                                                          getlocal2
+                                                                                          getlocal 6
+                                                                                          setproperty QName(PackageNamespace(""),"selection")
+                                                                                 ofs0082:
+                                                                                          getlocal 6
+                                                                                          callpropvoid QName(PackageNamespace(""),"setFocus"), 0
+                                                                                          returnvoid
+                                                                                 ofs0089:
+                                                                                          getlocal1
+                                                                                          convert_b
+                                                                                          dup
+                                                                                          iffalse ofs009e
+                                                                                          pop
+                                                                                          getlocal2
+                                                                                          getlocal 5
+                                                                                          callproperty QName(PackageNamespace(""),"getRadioButtonAt"), 1
+                                                                                          getlocal2
+                                                                                          getproperty QName(PackageNamespace(""),"selection")
+                                                                                          equals
+                                                                                          not
+                                                                                 ofs009e:
+                                                                                          iffalse ofs00a7
+                                                                                          getlocal2
+                                                                                          getlocal0
+                                                                                          setproperty QName(PackageNamespace(""),"selection")
+                                                                                 ofs00a7:
+                                                                                          getlocal0
+                                                                                          pushtrue
+                                                                                          callpropvoid QName(PackageNamespace(""),"drawFocus"), 1
+                                                                                          getlocal 5
+                                                                                          getlocal 4
+                                                                                          ifne ofs003d
+                                                                                 ofs00b5:
+                                                                                          returnvoid
+                                                                                       end ; code
+                                                                                    end ; body
+                                                                                 end ; method
+                                                                              }
+                                                                              
+                                                                              private function setNext(param1:Boolean = true) : void
+                                                                              {
+                                                                                 trait method QName(PrivateNamespace(null,"77"),"setNext")
+                                                                                    dispid 0
+                                                                                    method
+                                                                                       name null
+                                                                                       flag HAS_OPTIONAL
+                                                                                       param QName(PackageNamespace(""),"Boolean")
+                                                                                       optional True()
+                                                                                       returns QName(PackageNamespace(""),"void")
+                                                                                       
+                                                                                       body
+                                                                                          maxstack 3
+                                                                                          localcount 8
+                                                                                          initscopedepth 12
+                                                                                          maxscopedepth 13
+                                                                                          
+                                                                                          code
+                                                                                             getlocal0
+                                                                                             pushscope
+                                                                                             pushnull
+                                                                                             coerce QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                             setlocal 7
+                                                                                             getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                                                             coerce QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                                                             setlocal2
+                                                                                             getlocal2
+                                                                                             pushnull
+                                                                                             ifne ofs0014
+                                                                                             returnvoid
+                                                                                    ofs0014:
+                                                                                             getlex QName(PackageNamespace(""),"focusManager")
+                                                                                             coerce QName(PackageNamespace("fl.managers"),"IFocusManager")
+                                                                                             setlocal3
+                                                                                             getlocal3
+                                                                                             iffalse ofs0024
+                                                                                             getlocal3
+                                                                                             pushtrue
+                                                                                             setproperty QName(Namespace("fl.managers:IFocusManager"),"showFocusIndicator")
+                                                                                    ofs0024:
+                                                                                             getlocal2
+                                                                                             getlocal0
+                                                                                             callproperty QName(PackageNamespace(""),"getRadioButtonIndex"), 1
+                                                                                             convert_i
+                                                                                             setlocal 4
+                                                                                             getlocal2
+                                                                                             getproperty QName(PackageNamespace(""),"numRadioButtons")
+                                                                                             convert_d
+                                                                                             setlocal 5
+                                                                                             getlocal 4
+                                                                                             convert_i
+                                                                                             setlocal 6
+                                                                                             getlocal 4
+                                                                                             pushbyte -1
+                                                                                             ifeq ofs00ba
+                                                                                             jump ofs0046
+                                                                                    ofs0045:
+                                                                                             label
+                                                                                    ofs0046:
+                                                                                             inclocal_i 6
+                                                                                             getlocal 6
+                                                                                             getlocal2
+                                                                                             getproperty QName(PackageNamespace(""),"numRadioButtons")
+                                                                                             decrement
+                                                                                             ifngt ofs0059
+                                                                                             pushbyte 0
+                                                                                             jump ofs005c
+                                                                                    ofs0059:
+                                                                                             getlocal 6
+                                                                                             convert_i
+                                                                                    ofs005c:
+                                                                                             convert_i
+                                                                                             setlocal 6
+                                                                                             getlocal2
+                                                                                             getlocal 6
+                                                                                             callproperty QName(PackageNamespace(""),"getRadioButtonAt"), 1
+                                                                                             coerce QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                             dup
+                                                                                             setlocal 7
+                                                                                             convert_b
+                                                                                             dup
+                                                                                             iffalse ofs0078
+                                                                                             pop
+                                                                                             getlocal 7
+                                                                                             getproperty QName(PackageNamespace(""),"enabled")
+                                                                                             convert_b
+                                                                                    ofs0078:
+                                                                                             iffalse ofs008e
+                                                                                             getlocal1
+                                                                                             iffalse ofs0087
+                                                                                             getlocal2
+                                                                                             getlocal 7
+                                                                                             setproperty QName(PackageNamespace(""),"selection")
+                                                                                    ofs0087:
+                                                                                             getlocal 7
+                                                                                             callpropvoid QName(PackageNamespace(""),"setFocus"), 0
+                                                                                             returnvoid
+                                                                                    ofs008e:
+                                                                                             getlocal1
+                                                                                             convert_b
+                                                                                             dup
+                                                                                             iffalse ofs00a3
+                                                                                             pop
+                                                                                             getlocal2
+                                                                                             getlocal 6
+                                                                                             callproperty QName(PackageNamespace(""),"getRadioButtonAt"), 1
+                                                                                             getlocal2
+                                                                                             getproperty QName(PackageNamespace(""),"selection")
+                                                                                             equals
+                                                                                             not
+                                                                                    ofs00a3:
+                                                                                             iffalse ofs00ac
+                                                                                             getlocal2
+                                                                                             getlocal0
+                                                                                             setproperty QName(PackageNamespace(""),"selection")
+                                                                                    ofs00ac:
+                                                                                             getlocal0
+                                                                                             pushtrue
+                                                                                             callpropvoid QName(PackageNamespace(""),"drawFocus"), 1
+                                                                                             getlocal 6
+                                                                                             getlocal 4
+                                                                                             ifne ofs0045
+                                                                                    ofs00ba:
+                                                                                             returnvoid
+                                                                                          end ; code
+                                                                                       end ; body
+                                                                                    end ; method
+                                                                                 }
+                                                                                 
+                                                                                 private function setThis() : void
+                                                                                 {
+                                                                                    trait method QName(PrivateNamespace(null,"77"),"setThis")
+                                                                                       dispid 0
+                                                                                       method
+                                                                                          name null
+                                                                                          returns QName(PackageNamespace(""),"void")
+                                                                                          
+                                                                                          body
+                                                                                             maxstack 2
+                                                                                             localcount 2
+                                                                                             initscopedepth 12
+                                                                                             maxscopedepth 13
+                                                                                             
+                                                                                             code
+                                                                                                getlocal0
+                                                                                                pushscope
+                                                                                                getlex QName(ProtectedNamespace("fl.controls:RadioButton"),"_group")
+                                                                                                coerce QName(PackageNamespace("fl.controls"),"RadioButtonGroup")
+                                                                                                setlocal1
+                                                                                                getlocal1
+                                                                                                pushnull
+                                                                                                ifeq ofs0020
+                                                                                                getlocal1
+                                                                                                getproperty QName(PackageNamespace(""),"selection")
+                                                                                                getlocal0
+                                                                                                ifeq ofs001c
+                                                                                                getlocal1
+                                                                                                getlocal0
+                                                                                                setproperty QName(PackageNamespace(""),"selection")
+                                                                                       ofs001c:
+                                                                                                jump ofs0025
+                                                                                       ofs0020:
+                                                                                                getlocal0
+                                                                                                pushtrue
+                                                                                                setsuper QName(PackageNamespace(""),"selected")
+                                                                                       ofs0025:
+                                                                                                returnvoid
+                                                                                             end ; code
+                                                                                          end ; body
+                                                                                       end ; method
+                                                                                    }
+                                                                                 }
+                                                                              }
+                                                                              
+                                                                              method
+                                                                                 name null
+                                                                                 returns null
+                                                                                 
+                                                                                 body
+                                                                                    maxstack 52
+                                                                                    localcount 1
+                                                                                    initscopedepth 1
+                                                                                    maxscopedepth 11
+                                                                                    
+                                                                                    code
+                                                                                       getlocal0
+                                                                                       pushbyte 37
+                                                                                       pushbyte 34
+                                                                                       ifne ofs0010
+                                                                                       returnvoid
+                                                                                       newobject 536870911
+                                                                              ofs0010:
+                                                                                       pushscope
+                                                                                       findpropstrict Multiname("RadioButton",[PackageNamespace("fl.controls")])
+                                                                                       getlex QName(PackageNamespace(""),"Object")
+                                                                                       pushscope
+                                                                                       getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                                                                                       pushscope
+                                                                                       jump ofs0024
+                                                                                       getlocal0
+                                                                                       bitxor
+                                                                                       convert_u
+                                                                                       instanceof
+                                                                                       bitor
+                                                                              ofs0024:
+                                                                                       getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                                                                                       pushscope
+                                                                                       getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                                                                                       jump ofs0032
+                                                                                       bitand
+                                                                                       instanceof
+                                                                                       pop
+                                                                                       getlocal3
+                                                                                       setlocal3
+                                                                              ofs0032:
+                                                                                       pushscope
+                                                                                       getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                                                                                       pushscope
+                                                                                       jump ofs003f
+                                                                                       urshift
+                                                                                       subtract
+                                                                                       pushtrue
+                                                                                       getglobalscope
+                                                                                       swap
+                                                                              ofs003f:
+                                                                                       getlex QName(PackageNamespace("flash.display"),"Sprite")
+                                                                                       pushscope
+                                                                                       getlex QName(PackageNamespace("fl.core"),"UIComponent")
+                                                                                       pushscope
+                                                                                       getlex QName(PackageNamespace("fl.controls"),"BaseButton")
+                                                                                       pushscope
+                                                                                       jump ofs0052
+                                                                                       urshift
+                                                                                       subtract
+                                                                                       pushtrue
+                                                                                       getglobalscope
+                                                                                       swap
+                                                                              ofs0052:
+                                                                                       getlex QName(PackageNamespace("fl.controls"),"LabelButton")
+                                                                                       pushscope
+                                                                                       getlex QName(PackageNamespace("fl.controls"),"LabelButton")
+                                                                                       newclass 382
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       jump ofs0067
+                                                                                       pushnan
+                                                                                       increment
+                                                                                       getlocal0
+                                                                                       pushtrue
+                                                                                       getglobalscope
+                                                                              ofs0067:
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       popscope
+                                                                                       jump ofs0077
+                                                                                       bitnot
+                                                                                       negate
+                                                                                       setlocal2
+                                                                                       convert_s
+                                                                                       dup
+                                                                              ofs0077:
+                                                                                       initproperty QName(PackageNamespace("fl.controls"),"RadioButton")
+                                                                                       returnvoid
+                                                                                    end ; code
+                                                                                 end ; body
+                                                                              end ; method
+                                                                              

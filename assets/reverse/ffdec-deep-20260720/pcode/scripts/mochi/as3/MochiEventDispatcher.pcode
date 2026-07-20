@@ -1,0 +1,436 @@
+package mochi.as3
+{
+   public class MochiEventDispatcher
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var eventTable:Object;
+      
+      public function MochiEventDispatcher()
+      {
+         method
+            name null
+            returns QName(PackageNamespace(""),"void")
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  jump ofs001a
+                  urshift
+                  negate_i
+                  divide
+                  getglobalscope
+         ofs001a:
+                  constructsuper 0
+                  getlocal0
+                  newobject 0
+                  jump ofs0027
+                  urshift
+                  negate_i
+                  divide
+                  getglobalscope
+         ofs0027:
+                  initproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function addEventListener(param1:String, param2:Function) : void
+      {
+         trait method QName(PackageNamespace(""),"addEventListener")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace(""),"String")
+               param QName(PackageNamespace(""),"Function")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 53
+                  localcount 3
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getlocal1
+                     getlocal2
+                     pushfalse
+                     iffalse ofs0023
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     pop
+                     jump ofs0027
+            ofs0023:
+                     callpropvoid QName(PackageNamespace(""),"removeEventListener"), 2
+            ofs0027:
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                     getlocal1
+                     getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                     getlocal2
+                     pushfalse
+                     iffalse ofs003e
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0042
+            ofs003e:
+                     callpropvoid Multiname("push",[PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")]), 1
+            ofs0042:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function removeEventListener(param1:String, param2:Function) : void
+         {
+            trait method QName(PackageNamespace(""),"removeEventListener")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace(""),"String")
+                  param QName(PackageNamespace(""),"Function")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 53
+                     localcount 6
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        jump ofs001a
+                        increment_i
+                        multiply
+                        hasnext
+                        pushundefined
+                        not
+                        bitxor
+               ofs001a:
+                        pushscope
+                        pushnull
+                        coerce QName(PackageNamespace(""),"Object")
+                        setlocal3
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                        getlex QName(PackageNamespace(""),"undefined")
+                        ifne ofs0052
+                        getlocal0
+                        jump ofs0039
+                        convert_b
+                        pushfalse
+                        pushtrue
+                        coerce_s
+                        pushwith
+                        setlocal3
+               ofs0039:
+                        getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                        getlocal1
+                        newarray 0
+                        pushfalse
+                        iffalse ofs004e
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs0051
+               ofs004e:
+                        setproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+               ofs0051:
+                        returnvoid
+               ofs0052:
+                        pushbyte 0
+                        setlocal 4
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                        jump ofs0064
+                        lshift
+                        not
+                        subtract_i
+                        setlocal2
+                        getlocal3
+                        subtract
+               ofs0064:
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                        coerce_a
+                        setlocal 5
+                        nop
+               ofs006c:
+                        label
+                        hasnext2 5, 4
+                        iftrue ofs0078
+                        jump ofs007c
+               ofs0078:
+                        jump ofs0080
+               ofs007c:
+                        jump ofs00dc
+               ofs0080:
+                        getlocal 5
+                        getlocal 4
+                        nextname
+                        coerce QName(PackageNamespace(""),"Object")
+                        setlocal3
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                        getlocal3
+                        getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                        getlocal2
+                        ifeq ofs009d
+                        jump ofs006c
+               ofs009d:
+                        getlocal0
+                        jump ofs00a8
+                        setlocal3
+                        dup
+                        setlocal2
+                        pushnan
+                        lessthan
+                        equals
+               ofs00a8:
+                        getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                        getlocal1
+                        getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                        findpropstrict QName(PackageNamespace(""),"Number")
+                        jump ofs00bb
+                        decrement_i
+                        getglobalscope
+                        negate_i
+                        hasnext
+                        increment
+                        negate
+               ofs00bb:
+                        getlocal3
+                        callproperty QName(PackageNamespace(""),"Number"), 1
+                        pushbyte 1
+                        pushfalse
+                        iffalse ofs00d0
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        pop
+                        jump ofs00d4
+               ofs00d0:
+                        callpropvoid Multiname("splice",[PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")]), 2
+               ofs00d4:
+                        pushbyte 2
+                        pushbyte 3
+                        ifne ofs006c
+               ofs00dc:
+                        kill 5
+                        kill 4
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function triggerEvent(param1:String, param2:Object) : void
+            {
+               trait method QName(PackageNamespace(""),"triggerEvent")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace(""),"String")
+                     param QName(PackageNamespace(""),"Object")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 53
+                        localcount 7
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           pushnull
+                           coerce QName(PackageNamespace(""),"Object")
+                           setlocal3
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                           getlocal1
+                           getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                           getlex QName(PackageNamespace(""),"undefined")
+                           ifne ofs0025
+                           returnvoid
+                  ofs0025:
+                           pushbyte 0
+                           setlocal 4
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                           getlocal1
+                           getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                           jump ofs003c
+                           not
+                           pushnull
+                           pushnan
+                           add
+                           increment
+                           increment
+                           instanceof
+                  ofs003c:
+                           coerce_a
+                           setlocal 5
+                           nop
+                  ofs0040:
+                           label
+                           hasnext2 5, 4
+                           iftrue ofs004c
+                           jump ofs0050
+                  ofs004c:
+                           jump ofs0054
+                  ofs0050:
+                           jump ofs0091
+                  ofs0054:
+                           getlocal 5
+                           getlocal 4
+                           nextname
+                           coerce QName(PackageNamespace(""),"Object")
+                           jump ofs0066
+                           coerce_s
+                           convert_d
+                           nextvalue
+                           pushfalse
+                           setlocal2
+                           pushundefined
+                           pushtrue
+                  ofs0066:
+                           setlocal3
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"19"),"eventTable")
+                           getlocal1
+                           getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                           dup
+                           setlocal 6
+                           jump ofs007d
+                           pushfalse
+                           equals
+                           getlocal1
+                           dxnslate
+                           convert_i
+                           setlocal0
+                           negate_i
+                  ofs007d:
+                           getlocal3
+                           getproperty MultinameL([PrivateNamespace(null,"19"),PackageNamespace(""),PrivateNamespace(null,"152"),PackageNamespace("mochi.as3"),PackageInternalNs("mochi.as3"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("mochi.as3:MochiEventDispatcher"),StaticProtectedNs("Object")])
+                           getlocal 6
+                           getlocal2
+                           call 1
+                           pop
+                           kill 6
+                           pushbyte 2
+                           pushbyte 3
+                           ifne ofs0040
+                  ofs0091:
+                           kill 5
+                           kill 4
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+            }
+         }
+         
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 1
+               maxscopedepth 3
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  findpropstrict Multiname("MochiEventDispatcher",[PackageNamespace("mochi.as3")])
+                  getlex QName(PackageNamespace(""),"Object")
+                  pushscope
+                  getlex QName(PackageNamespace(""),"Object")
+                  newclass 60
+                  popscope
+                  initproperty QName(PackageNamespace("mochi.as3"),"MochiEventDispatcher")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+         

@@ -1,0 +1,1240 @@
+package Box2D.Collision
+{
+   import Box2D.Common.Math.*;
+   
+   public class b2DynamicTreeBroadPhase implements IBroadPhase
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      private var m_tree:b2DynamicTree;
+      
+      private var m_proxyCount:int;
+      
+      private var m_moveBuffer:Array;
+      
+      private var m_pairBuffer:Array;
+      
+      private var m_pairCount:int = 0;
+      
+      public function b2DynamicTreeBroadPhase()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2DynamicTree")
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"b2DynamicTree"), 0
+                  initproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  constructprop QName(PackageNamespace(""),"Array"), 0
+                  initproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace(""),"Array")
+                  constructprop QName(PackageNamespace(""),"Array"), 0
+                  jump ofs0033
+                  pushtrue
+                  pushtrue
+                  convert_o
+                  pushwith
+         ofs0033:
+                  initproperty QName(PrivateNamespace(null,"36"),"m_pairBuffer")
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function CreateProxy(param1:b2AABB, param2:*) : *
+      {
+         trait method QName(PackageNamespace(""),"CreateProxy")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+               param null
+               returns null
+               
+               body
+                  maxstack 53
+                  localcount 6
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                     getlocal1
+                     getlocal2
+                     callproperty QName(PackageNamespace(""),"CreateProxy"), 2
+                     coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                     setlocal3
+                     getlocal0
+                     dup
+                     setlocal 4
+                     getproperty QName(PrivateNamespace(null,"36"),"m_proxyCount")
+                     increment_i
+                     setlocal 5
+                     getlocal 4
+                     getlocal 5
+                     pushfalse
+                     iffalse ofs003a
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs003d
+            ofs003a:
+                     setproperty QName(PrivateNamespace(null,"36"),"m_proxyCount")
+            ofs003d:
+                     kill 5
+                     kill 4
+                     getlocal0
+                     getlocal3
+                     jump ofs004c
+                     istypelate
+                     convert_o
+                     decrement
+                     newactivation
+                     pushtrue
+            ofs004c:
+                     pushfalse
+                     iffalse ofs005a
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs005e
+            ofs005a:
+                     callpropvoid QName(PrivateNamespace(null,"36"),"BufferMove"), 1
+            ofs005e:
+                     getlocal3
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function DestroyProxy(param1:*) : void
+         {
+            trait method QName(PackageNamespace(""),"DestroyProxy")
+               dispid 0
+               method
+                  name null
+                  param null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 52
+                     localcount 4
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        getlocal1
+                        pushfalse
+                        iffalse ofs0021
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0025
+               ofs0021:
+                        callpropvoid QName(PrivateNamespace(null,"36"),"UnBufferMove"), 1
+               ofs0025:
+                        getlocal0
+                        dup
+                        setlocal2
+                        getproperty QName(PrivateNamespace(null,"36"),"m_proxyCount")
+                        decrement_i
+                        setlocal3
+                        getlocal2
+                        getlocal3
+                        pushfalse
+                        iffalse ofs003d
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0040
+               ofs003d:
+                        setproperty QName(PrivateNamespace(null,"36"),"m_proxyCount")
+               ofs0040:
+                        kill 3
+                        kill 2
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                        getlocal1
+                        pushfalse
+                        iffalse ofs0057
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs005b
+               ofs0057:
+                        callpropvoid QName(PackageNamespace(""),"DestroyProxy"), 1
+               ofs005b:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function MoveProxy(param1:*, param2:b2AABB, param3:b2Vec2) : void
+            {
+               trait method QName(PackageNamespace(""),"MoveProxy")
+                  dispid 0
+                  method
+                     name null
+                     param null
+                     param QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 54
+                        localcount 5
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                           getlocal1
+                           getlocal2
+                           getlocal3
+                           callproperty QName(PackageNamespace(""),"MoveProxy"), 3
+                           convert_b
+                           dup
+                           jump ofs0026
+                           negate_i
+                           decrement_i
+                           negate_i
+                           dup
+                  ofs0026:
+                           setlocal 4
+                           iffalse ofs0040
+                           getlocal0
+                           getlocal1
+                           pushfalse
+                           iffalse ofs003c
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0040
+                  ofs003c:
+                           callpropvoid QName(PrivateNamespace(null,"36"),"BufferMove"), 1
+                  ofs0040:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function TestOverlap(param1:*, param2:*) : Boolean
+               {
+                  trait method QName(PackageNamespace(""),"TestOverlap")
+                     dispid 0
+                     method
+                        name null
+                        param null
+                        param null
+                        returns QName(PackageNamespace(""),"Boolean")
+                        
+                        body
+                           maxstack 52
+                           localcount 5
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                              getlocal1
+                              jump ofs0021
+                              convert_i
+                              newactivation
+                              bitor
+                              coerce_a
+                              popscope
+                              urshift
+                              modulo
+                     ofs0021:
+                              callproperty QName(PackageNamespace(""),"GetFatAABB"), 1
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                              setlocal3
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                              getlocal2
+                              callproperty QName(PackageNamespace(""),"GetFatAABB"), 1
+                              jump ofs003c
+                              nextvalue
+                              strictequals
+                              coerce_s
+                              increment
+                              multiply_i
+                              pushfalse
+                              instanceof
+                     ofs003c:
+                              coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                              setlocal 4
+                              getlocal3
+                              getlocal 4
+                              callproperty QName(PackageNamespace(""),"TestOverlap"), 1
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+                  
+                  public function GetUserData(param1:*) : *
+                  {
+                     trait method QName(PackageNamespace(""),"GetUserData")
+                        dispid 0
+                        method
+                           name null
+                           param null
+                           returns null
+                           
+                           body
+                              maxstack 52
+                              localcount 2
+                              initscopedepth 4
+                              maxscopedepth 5
+                              
+                              code
+                                 getlocal0
+                                 pushbyte 37
+                                 pushbyte 34
+                                 ifne ofs0010
+                                 returnvoid
+                                 newobject 536870911
+                        ofs0010:
+                                 pushscope
+                                 getlocal0
+                                 getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                 getlocal1
+                                 callproperty QName(PackageNamespace(""),"GetUserData"), 1
+                                 returnvalue
+                              end ; code
+                           end ; body
+                        end ; method
+                     }
+                     
+                     public function GetFatAABB(param1:*) : b2AABB
+                     {
+                        trait method QName(PackageNamespace(""),"GetFatAABB")
+                           dispid 0
+                           method
+                              name null
+                              param null
+                              returns QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                              
+                              body
+                                 maxstack 52
+                                 localcount 2
+                                 initscopedepth 4
+                                 maxscopedepth 5
+                                 
+                                 code
+                                    getlocal0
+                                    pushbyte 37
+                                    pushbyte 34
+                                    ifne ofs0010
+                                    returnvoid
+                                    newobject 536870911
+                           ofs0010:
+                                    pushscope
+                                    getlocal0
+                                    getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                    getlocal1
+                                    callproperty QName(PackageNamespace(""),"GetFatAABB"), 1
+                                    returnvalue
+                                 end ; code
+                              end ; body
+                           end ; method
+                        }
+                        
+                        public function GetProxyCount() : int
+                        {
+                           trait method QName(PackageNamespace(""),"GetProxyCount")
+                              dispid 0
+                              method
+                                 name null
+                                 returns QName(PackageNamespace(""),"int")
+                                 
+                                 body
+                                    maxstack 51
+                                    localcount 1
+                                    initscopedepth 4
+                                    maxscopedepth 5
+                                    
+                                    code
+                                       getlocal0
+                                       pushbyte 37
+                                       pushbyte 34
+                                       ifne ofs0010
+                                       returnvoid
+                                       newobject 536870911
+                              ofs0010:
+                                       pushscope
+                                       getlocal0
+                                       getproperty QName(PrivateNamespace(null,"36"),"m_proxyCount")
+                                       returnvalue
+                                    end ; code
+                                 end ; body
+                              end ; method
+                           }
+                           
+                           public function UpdatePairs(param1:Function) : void
+                           {
+                              trait method QName(PackageNamespace(""),"UpdatePairs")
+                                 dispid 0
+                                 method
+                                    name null
+                                    flag NEED_ACTIVATION
+                                    param QName(PackageNamespace(""),"Function")
+                                    returns QName(PackageNamespace(""),"void")
+                                    
+                                    body
+                                       maxstack 54
+                                       localcount 5
+                                       initscopedepth 5
+                                       maxscopedepth 7
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"callback")
+                                          slotid 1
+                                          type QName(PackageNamespace(""),"Function")
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"queryProxy")
+                                          slotid 2
+                                          type QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"i")
+                                          slotid 3
+                                          type QName(PackageNamespace(""),"int")
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"QueryCallback")
+                                          slotid 4
+                                          type QName(PackageNamespace(""),"Function")
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"fatAABB")
+                                          slotid 5
+                                          type QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"primaryPair")
+                                          slotid 6
+                                          type QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"userDataA")
+                                          slotid 7
+                                          type null
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"userDataB")
+                                          slotid 8
+                                          type null
+                                       end ; trait
+                                       trait slot QName(PackageInternalNs("Box2D.Collision"),"pair")
+                                          slotid 9
+                                          type QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                       end ; trait
+                                       
+                                       code
+                                          getlocal0
+                                          pushbyte 37
+                                          pushbyte 34
+                                          ifne ofs0010
+                                          returnvoid
+                                          newobject 536870911
+                                 ofs0010:
+                                          pushscope
+                                          newactivation
+                                          dup
+                                          setlocal2
+                                          pushscope
+                                          getscopeobject 1
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                          setslot 2
+                                          getscopeobject 1
+                                          pushbyte 0
+                                          setslot 3
+                                          getscopeobject 1
+                                          jump ofs002f
+                                          decrement
+                                          coerce_a
+                                          nextvalue
+                                          pushfalse
+                                          pop
+                                          nextvalue
+                                          decrement_i
+                                 ofs002f:
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                          jump ofs003d
+                                          convert_u
+                                          strictequals
+                                          setlocal1
+                                          dxnslate
+                                          pushfalse
+                                          bitxor
+                                          greaterequals
+                                 ofs003d:
+                                          setslot 5
+                                          getscopeobject 1
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                          jump ofs004f
+                                          setlocal1
+                                          convert_i
+                                          checkfilter
+                                          bitnot
+                                          negate_i
+                                          pushnull
+                                          pushnan
+                                 ofs004f:
+                                          setslot 6
+                                          getscopeobject 1
+                                          pushundefined
+                                          coerce_a
+                                          setslot 7
+                                          getscopeobject 1
+                                          pushundefined
+                                          coerce_a
+                                          setslot 8
+                                          getscopeobject 1
+                                          jump ofs006a
+                                          greaterthan
+                                          decrement_i
+                                          negate
+                                          getlocal2
+                                          convert_u
+                                          setlocal2
+                                          checkfilter
+                                 ofs006a:
+                                          pushnull
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                          jump ofs0078
+                                          convert_o
+                                          bitxor
+                                          bitand
+                                          add
+                                          divide
+                                          equals
+                                          swap
+                                 ofs0078:
+                                          setslot 9
+                                          getscopeobject 1
+                                          jump ofs0087
+                                          setlocal0
+                                          instanceof
+                                          dxnslate
+                                          pushfalse
+                                          subtract
+                                          negate
+                                          add
+                                 ofs0087:
+                                          getlocal1
+                                          jump ofs0093
+                                          setlocal0
+                                          instanceof
+                                          dxnslate
+                                          pushfalse
+                                          subtract
+                                          negate
+                                          add
+                                 ofs0093:
+                                          setslot 1
+                                          getlocal0
+                                          jump ofs00a1
+                                          istypelate
+                                          subtract
+                                          decrement
+                                          swap
+                                          instanceof
+                                          getlocal1
+                                          convert_s
+                                 ofs00a1:
+                                          pushbyte 0
+                                          initproperty QName(PrivateNamespace(null,"36"),"m_pairCount")
+                                          pushbyte 0
+                                          setlocal3
+                                          getlocal0
+                                          jump ofs00b2
+                                          negate
+                                          increment
+                                          newactivation
+                                          convert_o
+                                 ofs00b2:
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                                          coerce_a
+                                          setlocal 4
+                                          nop
+                                 ofs00b9:
+                                          label
+                                          hasnext2 4, 3
+                                          iftrue ofs00c5
+                                          jump ofs00c9
+                                 ofs00c5:
+                                          jump ofs00cd
+                                 ofs00c9:
+                                          jump ofs0121
+                                 ofs00cd:
+                                          getscopeobject 1
+                                          getlocal 4
+                                          getlocal3
+                                          nextvalue
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                          setslot 2
+                                          getscopeobject 1
+                                          newfunction 1466
+                                          coerce QName(PackageNamespace(""),"Function")
+                                          setslot 4
+                                          getscopeobject 1
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                          getscopeobject 1
+                                          getslot 2
+                                          callproperty QName(PackageNamespace(""),"GetFatAABB"), 1
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                          setslot 5
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                          getscopeobject 1
+                                          jump ofs0100
+                                          bitor
+                                          negate
+                                          setlocal0
+                                          checkfilter
+                                 ofs0100:
+                                          getslot 4
+                                          getscopeobject 1
+                                          getslot 5
+                                          pushfalse
+                                          iffalse ofs0115
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0119
+                                 ofs0115:
+                                          callpropvoid QName(PackageNamespace(""),"Query"), 2
+                                 ofs0119:
+                                          pushbyte 2
+                                          pushbyte 3
+                                          ifne ofs00b9
+                                 ofs0121:
+                                          kill 4
+                                          kill 3
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                                          pushbyte 0
+                                          jump ofs0133
+                                          increment
+                                          add
+                                          dup
+                                          subtract
+                                 ofs0133:
+                                          pushfalse
+                                          iffalse ofs0141
+                                          pushbyte 5
+                                          pop
+                                          pop
+                                          pop
+                                          jump ofs0144
+                                 ofs0141:
+                                          setproperty QName(PackageNamespace(""),"length")
+                                 ofs0144:
+                                          getscopeobject 1
+                                          pushbyte 0
+                                          setslot 3
+                                          nop
+                                 ofs014b:
+                                          label
+                                          getscopeobject 1
+                                          getslot 3
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_pairCount")
+                                          iflt ofs015c
+                                          jump ofs0160
+                                 ofs015c:
+                                          jump ofs0164
+                                 ofs0160:
+                                          jump ofs0262
+                                 ofs0164:
+                                          getscopeobject 1
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_pairBuffer")
+                                          getscopeobject 1
+                                          getslot 3
+                                          getproperty MultinameL([PrivateNamespace(null,"36"),PackageNamespace(""),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common.Math"),PackageInternalNs("Box2D.Collision"),PrivateNamespace(null,"195"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTreeBroadPhase"),StaticProtectedNs("Box2D.Collision:b2DynamicTreeBroadPhase"),StaticProtectedNs("Object")])
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                          setslot 6
+                                          getscopeobject 1
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                          getscopeobject 1
+                                          jump ofs0185
+                                          greaterequals
+                                          divide
+                                          greaterequals
+                                          pushwith
+                                 ofs0185:
+                                          getslot 6
+                                          getproperty QName(PackageNamespace(""),"proxyA")
+                                          callproperty QName(PackageNamespace(""),"GetUserData"), 1
+                                          coerce_a
+                                          setslot 7
+                                          getscopeobject 1
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                          getscopeobject 1
+                                          getslot 6
+                                          getproperty QName(PackageNamespace(""),"proxyB")
+                                          callproperty QName(PackageNamespace(""),"GetUserData"), 1
+                                          coerce_a
+                                          jump ofs01ab
+                                          greaterequals
+                                          divide
+                                          greaterequals
+                                          pushwith
+                                 ofs01ab:
+                                          setslot 8
+                                          getscopeobject 1
+                                          getslot 1
+                                          getglobalscope
+                                          getscopeobject 1
+                                          getslot 7
+                                          getscopeobject 1
+                                          getslot 8
+                                          call 2
+                                          pop
+                                          getscopeobject 1
+                                          getslot 3
+                                          increment_i
+                                          getscopeobject 1
+                                          jump ofs01cc
+                                          subtract
+                                          convert_u
+                                          convert_s
+                                          swap
+                                 ofs01cc:
+                                          swap
+                                          setslot 3
+                                          nop
+                                 ofs01d0:
+                                          label
+                                          getscopeobject 1
+                                          getslot 3
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_pairCount")
+                                          iflt ofs01e1
+                                          jump ofs01e5
+                                 ofs01e1:
+                                          jump ofs01e9
+                                 ofs01e5:
+                                          jump ofs025a
+                                 ofs01e9:
+                                          getscopeobject 1
+                                          getlocal0
+                                          getproperty QName(PrivateNamespace(null,"36"),"m_pairBuffer")
+                                          getscopeobject 1
+                                          getslot 3
+                                          jump ofs01fb
+                                          equals
+                                          getlocal3
+                                          bitxor
+                                          convert_o
+                                 ofs01fb:
+                                          getproperty MultinameL([PrivateNamespace(null,"36"),PackageNamespace(""),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common.Math"),PackageInternalNs("Box2D.Collision"),PrivateNamespace(null,"195"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTreeBroadPhase"),StaticProtectedNs("Box2D.Collision:b2DynamicTreeBroadPhase"),StaticProtectedNs("Object")])
+                                          jump ofs0206
+                                          equals
+                                          getlocal3
+                                          bitxor
+                                          convert_o
+                                 ofs0206:
+                                          coerce QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                          jump ofs0210
+                                          increment_i
+                                          pushnan
+                                          greaterthan
+                                          checkfilter
+                                 ofs0210:
+                                          setslot 9
+                                          getscopeobject 1
+                                          getslot 9
+                                          getproperty QName(PackageNamespace(""),"proxyA")
+                                          getscopeobject 1
+                                          getslot 6
+                                          getproperty QName(PackageNamespace(""),"proxyA")
+                                          equals
+                                          not
+                                          dup
+                                          iftrue ofs0240
+                                          pop
+                                          getscopeobject 1
+                                          getslot 9
+                                          getproperty QName(PackageNamespace(""),"proxyB")
+                                          getscopeobject 1
+                                          getslot 6
+                                          getproperty QName(PackageNamespace(""),"proxyB")
+                                          jump ofs023e
+                                          convert_b
+                                          add_i
+                                          getglobalscope
+                                          subtract
+                                 ofs023e:
+                                          equals
+                                          not
+                                 ofs0240:
+                                          iffalse ofs0248
+                                          jump ofs014b
+                                 ofs0248:
+                                          getscopeobject 1
+                                          getslot 3
+                                          increment_i
+                                          getscopeobject 1
+                                          swap
+                                          setslot 3
+                                          pushbyte 2
+                                          pushbyte 3
+                                          ifne ofs01d0
+                                 ofs025a:
+                                          pushbyte 2
+                                          pushbyte 3
+                                          ifne ofs014b
+                                 ofs0262:
+                                          returnvoid
+                                       end ; code
+                                    end ; body
+                                 end ; method
+                              }
+                              
+                              public function Query(param1:Function, param2:b2AABB) : void
+                              {
+                                 trait method QName(PackageNamespace(""),"Query")
+                                    dispid 0
+                                    method
+                                       name null
+                                       param QName(PackageNamespace(""),"Function")
+                                       param QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                                       returns QName(PackageNamespace(""),"void")
+                                       
+                                       body
+                                          maxstack 53
+                                          localcount 3
+                                          initscopedepth 4
+                                          maxscopedepth 5
+                                          
+                                          code
+                                             getlocal0
+                                             pushbyte 37
+                                             pushbyte 34
+                                             ifne ofs0010
+                                             returnvoid
+                                             newobject 536870911
+                                    ofs0010:
+                                             pushscope
+                                             getlocal0
+                                             getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                             getlocal1
+                                             getlocal2
+                                             pushfalse
+                                             iffalse ofs0026
+                                             pushbyte 5
+                                             pop
+                                             pop
+                                             pop
+                                             pop
+                                             jump ofs002a
+                                    ofs0026:
+                                             callpropvoid QName(PackageNamespace(""),"Query"), 2
+                                    ofs002a:
+                                             returnvoid
+                                          end ; code
+                                       end ; body
+                                    end ; method
+                                 }
+                                 
+                                 public function RayCast(param1:Function, param2:b2RayCastInput) : void
+                                 {
+                                    trait method QName(PackageNamespace(""),"RayCast")
+                                       dispid 0
+                                       method
+                                          name null
+                                          param QName(PackageNamespace(""),"Function")
+                                          param QName(PackageNamespace("Box2D.Collision"),"b2RayCastInput")
+                                          returns QName(PackageNamespace(""),"void")
+                                          
+                                          body
+                                             maxstack 53
+                                             localcount 3
+                                             initscopedepth 4
+                                             maxscopedepth 5
+                                             
+                                             code
+                                                getlocal0
+                                                pushbyte 37
+                                                pushbyte 34
+                                                ifne ofs0010
+                                                returnvoid
+                                                newobject 536870911
+                                       ofs0010:
+                                                pushscope
+                                                getlocal0
+                                                getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                                jump ofs001f
+                                                nextname
+                                                setlocal1
+                                                nextname
+                                                negate_i
+                                                greaterequals
+                                                bitand
+                                       ofs001f:
+                                                getlocal1
+                                                getlocal2
+                                                pushfalse
+                                                iffalse ofs0030
+                                                pushbyte 5
+                                                pop
+                                                pop
+                                                pop
+                                                pop
+                                                jump ofs0034
+                                       ofs0030:
+                                                callpropvoid QName(PackageNamespace(""),"RayCast"), 2
+                                       ofs0034:
+                                                returnvoid
+                                             end ; code
+                                          end ; body
+                                       end ; method
+                                    }
+                                    
+                                    public function Validate() : void
+                                    {
+                                       trait method QName(PackageNamespace(""),"Validate")
+                                          dispid 0
+                                          method
+                                             name null
+                                             returns QName(PackageNamespace(""),"void")
+                                             
+                                             body
+                                                maxstack 51
+                                                localcount 1
+                                                initscopedepth 4
+                                                maxscopedepth 5
+                                                
+                                                code
+                                                   getlocal0
+                                                   pushbyte 37
+                                                   pushbyte 34
+                                                   ifne ofs0010
+                                                   returnvoid
+                                                   newobject 536870911
+                                          ofs0010:
+                                                   pushscope
+                                                   returnvoid
+                                                end ; code
+                                             end ; body
+                                          end ; method
+                                       }
+                                       
+                                       public function Rebalance(param1:int) : void
+                                       {
+                                          trait method QName(PackageNamespace(""),"Rebalance")
+                                             dispid 0
+                                             method
+                                                name null
+                                                param QName(PackageNamespace(""),"int")
+                                                returns QName(PackageNamespace(""),"void")
+                                                
+                                                body
+                                                   maxstack 52
+                                                   localcount 2
+                                                   initscopedepth 4
+                                                   maxscopedepth 5
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      pushscope
+                                                      getlocal0
+                                                      getproperty QName(PrivateNamespace(null,"36"),"m_tree")
+                                                      getlocal1
+                                                      pushfalse
+                                                      iffalse ofs0024
+                                                      pushbyte 5
+                                                      pop
+                                                      pop
+                                                      pop
+                                                      jump ofs0028
+                                             ofs0024:
+                                                      callpropvoid QName(PackageNamespace(""),"Rebalance"), 1
+                                             ofs0028:
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                          }
+                                          
+                                          private function BufferMove(param1:b2DynamicTreeNode) : void
+                                          {
+                                             trait method QName(PrivateNamespace(null,"36"),"BufferMove")
+                                                dispid 0
+                                                method
+                                                   name null
+                                                   param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                   returns QName(PackageNamespace(""),"void")
+                                                   
+                                                   body
+                                                      maxstack 53
+                                                      localcount 2
+                                                      initscopedepth 4
+                                                      maxscopedepth 5
+                                                      
+                                                      code
+                                                         getlocal0
+                                                         pushbyte 37
+                                                         pushbyte 34
+                                                         ifne ofs0010
+                                                         returnvoid
+                                                         newobject 536870911
+                                                ofs0010:
+                                                         jump ofs001a
+                                                         increment_i
+                                                         decrement_i
+                                                         nextname
+                                                         pushnull
+                                                         swap
+                                                         urshift
+                                                ofs001a:
+                                                         pushscope
+                                                         getlocal0
+                                                         getproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                                                         getlocal0
+                                                         getproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                                                         getproperty QName(PackageNamespace(""),"length")
+                                                         getlocal1
+                                                         pushfalse
+                                                         iffalse ofs0036
+                                                         pushbyte 5
+                                                         pop
+                                                         pop
+                                                         pop
+                                                         pop
+                                                         jump ofs0039
+                                                ofs0036:
+                                                         setproperty MultinameL([PrivateNamespace(null,"36"),PackageNamespace(""),PackageNamespace("Box2D.Collision"),PackageNamespace("Box2D.Common.Math"),PackageInternalNs("Box2D.Collision"),PrivateNamespace(null,"195"),Namespace("http://adobe.com/AS3/2006/builtin"),ProtectedNamespace("Box2D.Collision:b2DynamicTreeBroadPhase"),StaticProtectedNs("Box2D.Collision:b2DynamicTreeBroadPhase"),StaticProtectedNs("Object")])
+                                                ofs0039:
+                                                         returnvoid
+                                                      end ; code
+                                                   end ; body
+                                                end ; method
+                                             }
+                                             
+                                             private function UnBufferMove(param1:b2DynamicTreeNode) : void
+                                             {
+                                                trait method QName(PrivateNamespace(null,"36"),"UnBufferMove")
+                                                   dispid 0
+                                                   method
+                                                      name null
+                                                      param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+                                                      returns QName(PackageNamespace(""),"void")
+                                                      
+                                                      body
+                                                         maxstack 53
+                                                         localcount 3
+                                                         initscopedepth 4
+                                                         maxscopedepth 5
+                                                         
+                                                         code
+                                                            getlocal0
+                                                            pushbyte 37
+                                                            pushbyte 34
+                                                            ifne ofs0010
+                                                            returnvoid
+                                                            newobject 536870911
+                                                   ofs0010:
+                                                            pushscope
+                                                            getlocal0
+                                                            getproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                                                            getlocal1
+                                                            callproperty QName(Namespace("http://adobe.com/AS3/2006/builtin"),"indexOf"), 1
+                                                            convert_i
+                                                            setlocal2
+                                                            getlocal0
+                                                            getproperty QName(PrivateNamespace(null,"36"),"m_moveBuffer")
+                                                            getlocal2
+                                                            pushbyte 1
+                                                            pushfalse
+                                                            iffalse ofs0032
+                                                            pushbyte 5
+                                                            pop
+                                                            pop
+                                                            pop
+                                                            pop
+                                                            jump ofs0036
+                                                   ofs0032:
+                                                            callpropvoid QName(Namespace("http://adobe.com/AS3/2006/builtin"),"splice"), 2
+                                                   ofs0036:
+                                                            returnvoid
+                                                         end ; code
+                                                      end ; body
+                                                   end ; method
+                                                }
+                                                
+                                                private function ComparePairs(param1:b2DynamicTreePair, param2:b2DynamicTreePair) : int
+                                                {
+                                                   trait method QName(PrivateNamespace(null,"36"),"ComparePairs")
+                                                      dispid 0
+                                                      method
+                                                         name null
+                                                         param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                                         param QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreePair")
+                                                         returns QName(PackageNamespace(""),"int")
+                                                         
+                                                         body
+                                                            maxstack 51
+                                                            localcount 3
+                                                            initscopedepth 4
+                                                            maxscopedepth 5
+                                                            
+                                                            code
+                                                               getlocal0
+                                                               pushbyte 37
+                                                               pushbyte 34
+                                                               ifne ofs0010
+                                                               returnvoid
+                                                               newobject 536870911
+                                                      ofs0010:
+                                                               pushscope
+                                                               pushbyte 0
+                                                               returnvalue
+                                                            end ; code
+                                                         end ; body
+                                                      end ; method
+                                                   }
+                                                }
+                                             }
+                                             
+                                             method
+                                                name null
+                                                returns null
+                                                
+                                                body
+                                                   maxstack 52
+                                                   localcount 1
+                                                   initscopedepth 1
+                                                   maxscopedepth 3
+                                                   
+                                                   code
+                                                      getlocal0
+                                                      pushbyte 37
+                                                      pushbyte 34
+                                                      ifne ofs0010
+                                                      returnvoid
+                                                      newobject 536870911
+                                             ofs0010:
+                                                      pushscope
+                                                      findpropstrict Multiname("b2DynamicTreeBroadPhase",[PackageNamespace("Box2D.Collision")])
+                                                      getlex QName(PackageNamespace(""),"Object")
+                                                      pushscope
+                                                      getlex QName(PackageNamespace(""),"Object")
+                                                      jump ofs0024
+                                                      subtract
+                                                      checkfilter
+                                                      bitand
+                                                      convert_d
+                                                      setlocal0
+                                                      pop
+                                                      pushundefined
+                                             ofs0024:
+                                                      newclass 142
+                                                      popscope
+                                                      initproperty QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeBroadPhase")
+                                                      returnvoid
+                                                   end ; code
+                                                end ; body
+                                             end ; method
+                                             

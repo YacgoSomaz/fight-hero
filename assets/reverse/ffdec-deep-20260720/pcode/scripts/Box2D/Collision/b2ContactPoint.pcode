@@ -1,0 +1,152 @@
+package Box2D.Collision
+{
+   import Box2D.Collision.Shapes.b2Shape;
+   import Box2D.Common.Math.b2Vec2;
+   
+   public class b2ContactPoint
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var shape1:b2Shape;
+      
+      public var shape2:b2Shape;
+      
+      public var position:b2Vec2;
+      
+      public var velocity:b2Vec2;
+      
+      public var normal:b2Vec2;
+      
+      public var separation:Number;
+      
+      public var friction:Number;
+      
+      public var restitution:Number;
+      
+      public var id:b2ContactID;
+      
+      public function b2ContactPoint()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  jump ofs0022
+                  bitnot
+                  strictequals
+                  convert_d
+                  pushscope
+                  decrement_i
+                  getlocal0
+                  coerce_s
+         ofs0022:
+                  initproperty QName(PackageNamespace(""),"position")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"velocity")
+                  getlocal0
+                  jump ofs003a
+                  getlocal3
+                  convert_i
+                  typeof
+                  bitor
+                  getlocal2
+                  not
+                  swap
+         ofs003a:
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"normal")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2ContactID")
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"b2ContactID"), 0
+                  initproperty QName(PackageNamespace(""),"id")
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+   }
+}
+
+method
+   name null
+   returns null
+   
+   body
+      maxstack 52
+      localcount 1
+      initscopedepth 1
+      maxscopedepth 3
+      
+      code
+         getlocal0
+         pushbyte 37
+         pushbyte 34
+         ifne ofs0010
+         returnvoid
+         newobject 536870911
+ofs0010:
+         pushscope
+         findpropstrict Multiname("b2ContactPoint",[PackageNamespace("Box2D.Collision")])
+         getlex QName(PackageNamespace(""),"Object")
+         jump ofs001e
+         negate
+         convert_d
+         add_i
+         greaterequals
+ofs001e:
+         pushscope
+         getlex QName(PackageNamespace(""),"Object")
+         newclass 102
+         popscope
+         initproperty QName(PackageNamespace("Box2D.Collision"),"b2ContactPoint")
+         returnvoid
+      end ; code
+   end ; body
+end ; method
+

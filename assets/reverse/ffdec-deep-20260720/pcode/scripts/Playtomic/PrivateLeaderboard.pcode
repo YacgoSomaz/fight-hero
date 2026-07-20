@@ -1,0 +1,249 @@
+package Playtomic
+{
+   public class PrivateLeaderboard
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var TableId:String;
+      
+      public var Name:String;
+      
+      public var Bitly:String;
+      
+      public var Permalink:String;
+      
+      public var Highest:Boolean = true;
+      
+      public var RealName:String;
+      
+      public function PrivateLeaderboard(param1:String = null, param2:String = null, param3:String = null, param4:String = null, param5:Boolean = false, param6:String = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"String")
+            param QName(PackageNamespace(""),"Boolean")
+            param QName(PackageNamespace(""),"String")
+            optional Null()
+            optional Null()
+            optional Null()
+            optional Null()
+            optional False()
+            optional Null()
+            returns null
+            
+            body
+               maxstack 52
+               localcount 7
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  getlocal1
+                  initproperty QName(PackageNamespace(""),"TableId")
+                  getlocal0
+                  getlocal2
+                  initproperty QName(PackageNamespace(""),"Name")
+                  getlocal0
+                  getlocal3
+                  jump ofs002a
+                  checkfilter
+                  bitand
+                  swap
+                  negate_i
+                  pushscope
+                  strictequals
+         ofs002a:
+                  initproperty QName(PackageNamespace(""),"Bitly")
+                  getlocal0
+                  getlocal 4
+                  initproperty QName(PackageNamespace(""),"Permalink")
+                  getlocal0
+                  getlocal 5
+                  initproperty QName(PackageNamespace(""),"Highest")
+                  getlocal0
+                  jump ofs0044
+                  modulo
+                  multiply
+                  decrement
+                  nextvalue
+                  not
+                  pushnull
+         ofs0044:
+                  getlocal 6
+                  initproperty QName(PackageNamespace(""),"RealName")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function toString() : String
+      {
+         trait method QName(PackageNamespace(""),"toString")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"String")
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     pushstring "Playtomic.PrivateLeaderboard:"
+                     pushstring "\nTableId: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"TableId")
+                     jump ofs0024
+                     subtract
+                     add
+                     multiply_i
+                     subtract_i
+            ofs0024:
+                     add
+                     jump ofs002d
+                     equals
+                     divide
+                     decrement_i
+                     lshift
+            ofs002d:
+                     pushstring "\nName: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Name")
+                     add
+                     jump ofs003e
+                     increment_i
+                     lessthan
+                     setlocal0
+                     add_i
+            ofs003e:
+                     pushstring "\nBitly: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Bitly")
+                     add
+                     pushstring "\nPermalink: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Permalink")
+                     add
+                     jump ofs0058
+                     increment_i
+                     lessthan
+                     setlocal0
+                     add_i
+            ofs0058:
+                     pushstring "\nHighest: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"Highest")
+                     add
+                     pushstring "\nRealName: "
+                     add
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"RealName")
+                     add
+                     jump ofs0073
+                     convert_b
+                     getlocal3
+                     pushscope
+                     pushscope
+                     nextvalue
+            ofs0073:
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 3
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            jump ofs001a
+            dup
+            subtract_i
+            convert_u
+            pushundefined
+            increment
+            equals
+   ofs001a:
+            pushscope
+            findpropstrict Multiname("PrivateLeaderboard",[PackageNamespace("Playtomic")])
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            getlex QName(PackageNamespace(""),"Object")
+            newclass 71
+            popscope
+            initproperty QName(PackageNamespace("Playtomic"),"PrivateLeaderboard")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

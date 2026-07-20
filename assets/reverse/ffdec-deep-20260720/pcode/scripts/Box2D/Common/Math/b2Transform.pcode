@@ -1,0 +1,396 @@
+package Box2D.Common.Math
+{
+   public class b2Transform
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var position:b2Vec2;
+      
+      public var R:b2Mat22;
+      
+      public function b2Transform(param1:b2Vec2 = null, param2:b2Mat22 = null)
+      {
+         method
+            name null
+            flag HAS_OPTIONAL
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+            param QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+            optional Null()
+            optional Null()
+            returns QName(PackageNamespace(""),"void")
+            
+            body
+               maxstack 52
+               localcount 3
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2"), 0
+                  initproperty QName(PackageNamespace(""),"position")
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+                  constructprop QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22"), 0
+                  initproperty QName(PackageNamespace(""),"R")
+                  getlocal0
+                  constructsuper 0
+                  getlocal1
+                  iffalse ofs0062
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"position")
+                  getlocal1
+                  jump ofs0039
+                  subtract_i
+                  pushscope
+                  increment
+                  pushnull
+                  not
+         ofs0039:
+                  pushfalse
+                  iffalse ofs0047
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs004b
+         ofs0047:
+                  callpropvoid QName(PackageNamespace(""),"SetV"), 1
+         ofs004b:
+                  getlocal0
+                  getproperty QName(PackageNamespace(""),"R")
+                  getlocal2
+                  pushfalse
+                  iffalse ofs005e
+                  pushbyte 5
+                  pop
+                  pop
+                  pop
+                  jump ofs0062
+         ofs005e:
+                  callpropvoid QName(PackageNamespace(""),"SetM"), 1
+         ofs0062:
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function Initialize(param1:b2Vec2, param2:b2Mat22) : void
+      {
+         trait method QName(PackageNamespace(""),"Initialize")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Vec2")
+               param QName(PackageNamespace("Box2D.Common.Math"),"b2Mat22")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 3
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"position")
+                     getlocal1
+                     pushfalse
+                     iffalse ofs0024
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0028
+            ofs0024:
+                     callpropvoid QName(PackageNamespace(""),"SetV"), 1
+            ofs0028:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"R")
+                     getlocal2
+                     pushfalse
+                     iffalse ofs003b
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs003f
+            ofs003b:
+                     callpropvoid QName(PackageNamespace(""),"SetM"), 1
+            ofs003f:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function SetIdentity() : void
+         {
+            trait method QName(PackageNamespace(""),"SetIdentity")
+               dispid 0
+               method
+                  name null
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 51
+                     localcount 1
+                     initscopedepth 4
+                     maxscopedepth 5
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        pushscope
+                        getlocal0
+                        jump ofs001d
+                        getlocal1
+                        dup
+                        typeof
+                        negate
+                        nextvalue
+                        newactivation
+                        lessequals
+               ofs001d:
+                        getproperty QName(PackageNamespace(""),"position")
+                        pushfalse
+                        iffalse ofs002d
+                        pushbyte 5
+                        pop
+                        pop
+                        jump ofs0031
+               ofs002d:
+                        callpropvoid QName(PackageNamespace(""),"SetZero"), 0
+               ofs0031:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"R")
+                        pushfalse
+                        iffalse ofs0042
+                        pushbyte 5
+                        pop
+                        pop
+                        jump ofs0046
+               ofs0042:
+                        callpropvoid QName(PackageNamespace(""),"SetIdentity"), 0
+               ofs0046:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function Set(param1:b2Transform) : void
+            {
+               trait method QName(PackageNamespace(""),"Set")
+                  dispid 0
+                  method
+                     name null
+                     param QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 52
+                        localcount 2
+                        initscopedepth 4
+                        maxscopedepth 5
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"position")
+                           jump ofs0020
+                           instanceof
+                           getlocal0
+                           getlocal1
+                           setlocal3
+                           bitor
+                           pushfalse
+                           newactivation
+                  ofs0020:
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"position")
+                           pushfalse
+                           iffalse ofs0032
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0036
+                  ofs0032:
+                           callpropvoid QName(PackageNamespace(""),"SetV"), 1
+                  ofs0036:
+                           getlocal0
+                           getproperty QName(PackageNamespace(""),"R")
+                           getlocal1
+                           getproperty QName(PackageNamespace(""),"R")
+                           pushfalse
+                           iffalse ofs004c
+                           pushbyte 5
+                           pop
+                           pop
+                           pop
+                           jump ofs0050
+                  ofs004c:
+                           callpropvoid QName(PackageNamespace(""),"SetM"), 1
+                  ofs0050:
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function GetAngle() : Number
+               {
+                  trait method QName(PackageNamespace(""),"GetAngle")
+                     dispid 0
+                     method
+                        name null
+                        returns QName(PackageNamespace(""),"Number")
+                        
+                        body
+                           maxstack 53
+                           localcount 1
+                           initscopedepth 4
+                           maxscopedepth 5
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlex QName(PackageNamespace(""),"Math")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"R")
+                              jump ofs0020
+                              getlocal2
+                              negate_i
+                              typeof
+                              setlocal0
+                     ofs0020:
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"y")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"R")
+                              jump ofs0032
+                              getglobalscope
+                              pushwith
+                              getlocal2
+                              modulo
+                     ofs0032:
+                              getproperty QName(PackageNamespace(""),"col1")
+                              getproperty QName(PackageNamespace(""),"x")
+                              jump ofs0040
+                              nextname
+                              not
+                              lessthan
+                              equals
+                     ofs0040:
+                              callproperty QName(PackageNamespace(""),"atan2"), 2
+                              jump ofs004c
+                              nextname
+                              not
+                              lessthan
+                              equals
+                     ofs004c:
+                              returnvalue
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 3
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("b2Transform",[PackageNamespace("Box2D.Common.Math")])
+                     getlex QName(PackageNamespace(""),"Object")
+                     pushscope
+                     jump ofs001f
+                     coerce_s
+                     bitnot
+                     coerce_s
+                     getlocal0
+            ofs001f:
+                     getlex QName(PackageNamespace(""),"Object")
+                     newclass 50
+                     popscope
+                     initproperty QName(PackageNamespace("Box2D.Common.Math"),"b2Transform")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

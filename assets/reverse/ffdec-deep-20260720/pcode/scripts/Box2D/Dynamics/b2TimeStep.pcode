@@ -1,0 +1,192 @@
+package Box2D.Dynamics
+{
+   public class b2TimeStep
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var dt:Number;
+      
+      public var inv_dt:Number;
+      
+      public var dtRatio:Number;
+      
+      public var velocityIterations:int;
+      
+      public var positionIterations:int;
+      
+      public var warmStarting:Boolean;
+      
+      public function b2TimeStep()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 51
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function Set(param1:b2TimeStep) : void
+      {
+         trait method QName(PackageNamespace(""),"Set")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("Box2D.Dynamics"),"b2TimeStep")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 52
+                  localcount 2
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     jump ofs001a
+                     typeof
+                     subtract_i
+                     greaterthan
+                     dxnslate
+                     not
+                     greaterthan
+            ofs001a:
+                     pushscope
+                     getlocal0
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"dt")
+                     jump ofs002a
+                     pushnan
+                     astypelate
+                     modulo
+                     bitnot
+                     pushwith
+                     convert_o
+            ofs002a:
+                     initproperty QName(PackageNamespace(""),"dt")
+                     getlocal0
+                     jump ofs0038
+                     bitnot
+                     checkfilter
+                     bitor
+                     getlocal2
+                     getlocal3
+                     getlocal3
+            ofs0038:
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"inv_dt")
+                     initproperty QName(PackageNamespace(""),"inv_dt")
+                     getlocal0
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"positionIterations")
+                     initproperty QName(PackageNamespace(""),"positionIterations")
+                     getlocal0
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"velocityIterations")
+                     initproperty QName(PackageNamespace(""),"velocityIterations")
+                     getlocal0
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"warmStarting")
+                     jump ofs005e
+                     getlocal3
+                     coerce_a
+                     urshift
+                     add
+                     lessthan
+                     multiply_i
+            ofs005e:
+                     initproperty QName(PackageNamespace(""),"warmStarting")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 3
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("b2TimeStep",[PackageNamespace("Box2D.Dynamics")])
+            jump ofs001d
+            typeof
+            multiply
+            greaterequals
+            pushnan
+            bitor
+   ofs001d:
+            getlex QName(PackageNamespace(""),"Object")
+            pushscope
+            getlex QName(PackageNamespace(""),"Object")
+            newclass 87
+            popscope
+            initproperty QName(PackageNamespace("Box2D.Dynamics"),"b2TimeStep")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

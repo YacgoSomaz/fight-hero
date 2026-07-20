@@ -1,0 +1,858 @@
+package
+{
+   import flash.display.MovieClip;
+   import flash.events.MouseEvent;
+   
+   [Embed(source="/_assets/assets.swf", symbol="symbol960")]
+   public class ScrollBar extends MovieClip
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 9
+            maxscopedepth 10
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var but_down:MovieClip;
+      
+      public var but_up:MovieClip;
+      
+      public var bar:MovieClip;
+      
+      public var scrollPos:Number;
+      
+      private var barGrab:Number;
+      
+      public function ScrollBar()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 10
+               maxscopedepth 11
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  jump ofs001a
+                  increment_i
+                  negate
+                  swap
+                  lessequals
+                  pushwith
+                  dup
+         ofs001a:
+                  pushscope
+                  getlocal0
+                  constructsuper 0
+                  getlocal0
+                  pushbyte 0
+                  initproperty QName(PackageNamespace(""),"scrollPos")
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function EnterFrame(param1:MovieClip) : void
+      {
+         trait method QName(PackageNamespace(""),"EnterFrame")
+            dispid 0
+            method
+               name null
+               param QName(PackageNamespace("flash.display"),"MovieClip")
+               returns QName(PackageNamespace(""),"void")
+               
+               body
+                  maxstack 54
+                  localcount 2
+                  initscopedepth 10
+                  maxscopedepth 11
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null),"barGrab")
+                     pushbyte 0
+                     ifnge ofs0038
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     getlex QName(PackageNamespace(""),"mouseY")
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null),"barGrab")
+                     subtract
+                     pushfalse
+                     iffalse ofs0035
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0038
+            ofs0035:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0038:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs004a
+                     multiply_i
+                     increment
+                     astypelate
+                     lessequals
+                     istypelate
+                     getlocal1
+                     getglobalscope
+            ofs004a:
+                     pushbyte 24
+                     ifnlt ofs0067
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     pushbyte 24
+                     pushfalse
+                     iffalse ofs0064
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0067
+            ofs0064:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs0067:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     getproperty QName(PackageNamespace(""),"y")
+                     pushshort 240
+                     ifngt ofs008d
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     pushshort 240
+                     pushfalse
+                     iffalse ofs008a
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs008d
+            ofs008a:
+                     setproperty QName(PackageNamespace(""),"y")
+            ofs008d:
+                     getlocal0
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     getproperty QName(PackageNamespace(""),"y")
+                     jump ofs00a0
+                     add_i
+                     lessthan
+                     lshift
+                     getlocal1
+                     bitor
+                     greaterthan
+                     increment_i
+            ofs00a0:
+                     pushbyte 24
+                     subtract
+                     pushshort 240
+                     pushbyte 24
+                     subtract
+                     divide
+                     jump ofs00b5
+                     typeof
+                     setlocal0
+                     pushwith
+                     getlocal0
+                     setlocal3
+                     convert_o
+                     decrement
+            ofs00b5:
+                     initproperty QName(PackageNamespace(""),"scrollPos")
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     jump ofs00c7
+                     pushnan
+                     greaterthan
+                     convert_d
+                     bitxor
+                     dxnslate
+                     getlocal3
+                     multiply
+            ofs00c7:
+                     getlocal1
+                     jump ofs00d3
+                     bitnot
+                     convert_u
+                     setlocal1
+                     convert_u
+                     nextvalue
+                     multiply_i
+                     strictequals
+            ofs00d3:
+                     getproperty QName(PackageNamespace(""),"mouseX")
+                     jump ofs00e1
+                     bitnot
+                     convert_u
+                     setlocal1
+                     convert_u
+                     nextvalue
+                     multiply_i
+                     strictequals
+            ofs00e1:
+                     getlocal1
+                     jump ofs00ed
+                     getlocal3
+                     getlocal3
+                     getlocal2
+                     pushscope
+                     pushscope
+                     bitand
+                     bitor
+            ofs00ed:
+                     getproperty QName(PackageNamespace(""),"mouseY")
+                     pushfalse
+                     jump ofs00fc
+                     decrement
+                     pushwith
+                     negate
+                     bitor
+                     not
+                     coerce_s
+                     convert_u
+            ofs00fc:
+                     callproperty QName(PackageNamespace(""),"hitTestPoint"), 3
+                     convert_b
+                     dup
+                     iftrue ofs010e
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null),"barGrab")
+                     pushbyte 0
+                     greaterequals
+            ofs010e:
+                     iffalse ofs0138
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     jump ofs0121
+                     convert_u
+                     bitand
+                     not
+                     getlocal0
+                     pushwith
+                     pushfalse
+                     subtract_i
+            ofs0121:
+                     pushbyte 1
+                     pushfalse
+                     iffalse ofs0131
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0134
+            ofs0131:
+                     setproperty QName(PackageNamespace(""),"alpha")
+            ofs0134:
+                     jump ofs0157
+            ofs0138:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"bar")
+                     jump ofs0144
+                     setlocal1
+                     multiply
+                     dxnslate
+                     bitxor
+            ofs0144:
+                     pushdouble 0.5
+                     pushfalse
+                     iffalse ofs0154
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0157
+            ofs0154:
+                     setproperty QName(PackageNamespace(""),"alpha")
+            ofs0157:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"but_up")
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"mouseX")
+                     jump ofs0167
+                     divide
+                     pushfalse
+                     multiply_i
+                     convert_u
+            ofs0167:
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"mouseY")
+                     pushfalse
+                     callproperty QName(PackageNamespace(""),"hitTestPoint"), 3
+                     convert_b
+                     dup
+                     iffalse ofs017e
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null),"barGrab")
+                     pushbyte 0
+                     lessthan
+            ofs017e:
+                     iffalse ofs01a5
+                     getlocal0
+                     jump ofs018b
+                     pushundefined
+                     not
+                     decrement_i
+                     pushscope
+            ofs018b:
+                     getproperty QName(PackageNamespace(""),"but_up")
+                     pushbyte 1
+                     pushfalse
+                     iffalse ofs019e
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs01a1
+            ofs019e:
+                     setproperty QName(PackageNamespace(""),"alpha")
+            ofs01a1:
+                     jump ofs01c4
+            ofs01a5:
+                     getlocal0
+                     jump ofs01ae
+                     pushundefined
+                     not
+                     decrement_i
+                     pushscope
+            ofs01ae:
+                     getproperty QName(PackageNamespace(""),"but_up")
+                     pushdouble 0.5
+                     pushfalse
+                     iffalse ofs01c1
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs01c4
+            ofs01c1:
+                     setproperty QName(PackageNamespace(""),"alpha")
+            ofs01c4:
+                     getlocal0
+                     jump ofs01cd
+                     add
+                     pushscope
+                     setlocal0
+                     bitor
+            ofs01cd:
+                     getproperty QName(PackageNamespace(""),"but_down")
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"mouseX")
+                     getlocal1
+                     getproperty QName(PackageNamespace(""),"mouseY")
+                     pushfalse
+                     callproperty QName(PackageNamespace(""),"hitTestPoint"), 3
+                     convert_b
+                     dup
+                     iffalse ofs01eb
+                     pop
+                     getlocal0
+                     getproperty QName(PrivateNamespace(null),"barGrab")
+                     pushbyte 0
+                     lessthan
+            ofs01eb:
+                     iffalse ofs0212
+                     getlocal0
+                     jump ofs01f8
+                     pushtrue
+                     getglobalscope
+                     pushscope
+                     getlocal0
+            ofs01f8:
+                     getproperty QName(PackageNamespace(""),"but_down")
+                     pushbyte 1
+                     pushfalse
+                     iffalse ofs020b
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs020e
+            ofs020b:
+                     setproperty QName(PackageNamespace(""),"alpha")
+            ofs020e:
+                     jump ofs0229
+            ofs0212:
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"but_down")
+                     pushdouble 0.5
+                     pushfalse
+                     iffalse ofs0226
+                     pushbyte 5
+                     pop
+                     pop
+                     pop
+                     jump ofs0229
+            ofs0226:
+                     setproperty QName(PackageNamespace(""),"alpha")
+            ofs0229:
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+         }
+         
+         public function MouseDown(param1:MovieClip) : void
+         {
+            trait method QName(PackageNamespace(""),"MouseDown")
+               dispid 0
+               method
+                  name null
+                  param QName(PackageNamespace("flash.display"),"MovieClip")
+                  returns QName(PackageNamespace(""),"void")
+                  
+                  body
+                     maxstack 54
+                     localcount 2
+                     initscopedepth 10
+                     maxscopedepth 11
+                     
+                     code
+                        getlocal0
+                        pushbyte 37
+                        pushbyte 34
+                        ifne ofs0010
+                        returnvoid
+                        newobject 536870911
+               ofs0010:
+                        jump ofs001a
+                        coerce_a
+                        nextvalue
+                        getlocal1
+                        instanceof
+                        nextname
+                        convert_d
+               ofs001a:
+                        pushscope
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"mouseX")
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"mouseY")
+                        pushfalse
+                        callproperty QName(PackageNamespace(""),"hitTestPoint"), 3
+                        iffalse ofs0049
+                        getlocal0
+                        getlex QName(PackageNamespace(""),"mouseY")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        jump ofs0042
+                        pop
+                        swap
+                        checkfilter
+                        getlocal3
+                        subtract_i
+                        lshift
+               ofs0042:
+                        getproperty QName(PackageNamespace(""),"y")
+                        subtract
+                        initproperty QName(PrivateNamespace(null),"barGrab")
+               ofs0049:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"but_down")
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"mouseX")
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"mouseY")
+                        pushfalse
+                        callproperty QName(PackageNamespace(""),"hitTestPoint"), 3
+                        convert_b
+                        dup
+                        iffalse ofs007c
+                        pop
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null),"barGrab")
+                        jump ofs006f
+                        coerce_s
+                        pushnull
+                        increment_i
+                        getglobalscope
+                        urshift
+                        setlocal3
+               ofs006f:
+                        pushbyte 0
+                        jump ofs007b
+                        pushfalse
+                        convert_d
+                        bitand
+                        equals
+                        bitnot
+                        subtract
+               ofs007b:
+                        lessthan
+               ofs007c:
+                        iffalse ofs00d9
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        getproperty QName(PackageNamespace(""),"y")
+                        pushbyte 50
+                        jump ofs0097
+                        popscope
+                        dxnslate
+                        swap
+                        convert_s
+                        istypelate
+                        pushtrue
+               ofs0097:
+                        add
+                        pushfalse
+                        iffalse ofs00a6
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs00a9
+               ofs00a6:
+                        setproperty QName(PackageNamespace(""),"y")
+               ofs00a9:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        getproperty QName(PackageNamespace(""),"y")
+                        pushshort 240
+                        jump ofs00bd
+                        multiply
+                        greaterequals
+                        decrement
+                        convert_i
+                        bitor
+                        lessthan
+               ofs00bd:
+                        ifngt ofs00d9
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        pushshort 240
+                        pushfalse
+                        iffalse ofs00d6
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs00d9
+               ofs00d6:
+                        setproperty QName(PackageNamespace(""),"y")
+               ofs00d9:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"but_up")
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"mouseX")
+                        getlocal1
+                        getproperty QName(PackageNamespace(""),"mouseY")
+                        pushfalse
+                        callproperty QName(PackageNamespace(""),"hitTestPoint"), 3
+                        convert_b
+                        dup
+                        iffalse ofs00f8
+                        pop
+                        getlocal0
+                        getproperty QName(PrivateNamespace(null),"barGrab")
+                        pushbyte 0
+                        lessthan
+               ofs00f8:
+                        iffalse ofs014a
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        jump ofs010b
+                        getlocal0
+                        bitor
+                        coerce_a
+                        setlocal0
+                        setlocal3
+                        setlocal1
+                        pushnan
+               ofs010b:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        getproperty QName(PackageNamespace(""),"y")
+                        pushbyte 50
+                        subtract
+                        pushfalse
+                        iffalse ofs0123
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs0126
+               ofs0123:
+                        setproperty QName(PackageNamespace(""),"y")
+               ofs0126:
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        getproperty QName(PackageNamespace(""),"y")
+                        pushbyte 24
+                        ifnlt ofs014a
+                        getlocal0
+                        getproperty QName(PackageNamespace(""),"bar")
+                        pushbyte 24
+                        pushfalse
+                        iffalse ofs0147
+                        pushbyte 5
+                        pop
+                        pop
+                        pop
+                        jump ofs014a
+               ofs0147:
+                        setproperty QName(PackageNamespace(""),"y")
+               ofs014a:
+                        returnvoid
+                     end ; code
+                  end ; body
+               end ; method
+            }
+            
+            public function MouseUp() : void
+            {
+               trait method QName(PackageNamespace(""),"MouseUp")
+                  dispid 0
+                  method
+                     name null
+                     returns QName(PackageNamespace(""),"void")
+                     
+                     body
+                        maxstack 52
+                        localcount 1
+                        initscopedepth 10
+                        maxscopedepth 11
+                        
+                        code
+                           getlocal0
+                           pushbyte 37
+                           pushbyte 34
+                           ifne ofs0010
+                           returnvoid
+                           newobject 536870911
+                  ofs0010:
+                           pushscope
+                           getlocal0
+                           pushbyte -1
+                           initproperty QName(PrivateNamespace(null),"barGrab")
+                           returnvoid
+                        end ; code
+                     end ; body
+                  end ; method
+               }
+               
+               public function MouseWheel(param1:MouseEvent) : void
+               {
+                  trait method QName(PackageNamespace(""),"MouseWheel")
+                     dispid 0
+                     method
+                        name null
+                        param QName(PackageNamespace("flash.events"),"MouseEvent")
+                        returns QName(PackageNamespace(""),"void")
+                        
+                        body
+                           maxstack 54
+                           localcount 2
+                           initscopedepth 10
+                           maxscopedepth 11
+                           
+                           code
+                              getlocal0
+                              pushbyte 37
+                              pushbyte 34
+                              ifne ofs0010
+                              returnvoid
+                              newobject 536870911
+                     ofs0010:
+                              pushscope
+                              getlocal0
+                              getproperty QName(PrivateNamespace(null),"barGrab")
+                              pushbyte 0
+                              ifnlt ofs00b5
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"bar")
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"bar")
+                              jump ofs002d
+                              convert_b
+                              typeof
+                              nextvalue
+                              lshift
+                              astypelate
+                              nextvalue
+                     ofs002d:
+                              getproperty QName(PackageNamespace(""),"y")
+                              getlocal1
+                              getproperty QName(PackageNamespace(""),"delta")
+                              pushbyte 0
+                              greaterthan
+                              iffalse ofs0042
+                              pushbyte -20
+                              coerce_a
+                              jump ofs0045
+                     ofs0042:
+                              pushbyte 20
+                              coerce_a
+                     ofs0045:
+                              add
+                              jump ofs0050
+                              lshift
+                              multiply_i
+                              getlocal1
+                              add_i
+                              getlocal0
+                              bitxor
+                     ofs0050:
+                              pushfalse
+                              iffalse ofs005e
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs0061
+                     ofs005e:
+                              setproperty QName(PackageNamespace(""),"y")
+                     ofs0061:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"bar")
+                              getproperty QName(PackageNamespace(""),"y")
+                              pushbyte 24
+                              jump ofs0074
+                              setlocal3
+                              convert_s
+                              checkfilter
+                              lessequals
+                              urshift
+                              setlocal3
+                     ofs0074:
+                              ifnlt ofs008f
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"bar")
+                              pushbyte 24
+                              pushfalse
+                              iffalse ofs008c
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs008f
+                     ofs008c:
+                              setproperty QName(PackageNamespace(""),"y")
+                     ofs008f:
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"bar")
+                              getproperty QName(PackageNamespace(""),"y")
+                              pushshort 240
+                              ifngt ofs00b5
+                              getlocal0
+                              getproperty QName(PackageNamespace(""),"bar")
+                              pushshort 240
+                              pushfalse
+                              iffalse ofs00b2
+                              pushbyte 5
+                              pop
+                              pop
+                              pop
+                              jump ofs00b5
+                     ofs00b2:
+                              setproperty QName(PackageNamespace(""),"y")
+                     ofs00b5:
+                              returnvoid
+                           end ; code
+                        end ; body
+                     end ; method
+                  }
+               }
+            }
+            
+            method
+               name null
+               returns null
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 1
+                  maxscopedepth 9
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     findpropstrict Multiname("ScrollBar",[PackageNamespace("")])
+                     getlex QName(PackageNamespace(""),"Object")
+                     pushscope
+                     getlex QName(PackageNamespace("flash.events"),"EventDispatcher")
+                     pushscope
+                     getlex QName(PackageNamespace("flash.display"),"DisplayObject")
+                     pushscope
+                     getlex QName(PackageNamespace("flash.display"),"InteractiveObject")
+                     pushscope
+                     getlex QName(PackageNamespace("flash.display"),"DisplayObjectContainer")
+                     pushscope
+                     jump ofs0031
+                     setlocal0
+                     coerce_s
+                     lshift
+                     typeof
+                     swap
+                     lessthan
+            ofs0031:
+                     getlex QName(PackageNamespace("flash.display"),"Sprite")
+                     pushscope
+                     getlex QName(PackageNamespace("flash.display"),"MovieClip")
+                     pushscope
+                     getlex QName(PackageNamespace("flash.display"),"MovieClip")
+                     newclass 104
+                     popscope
+                     popscope
+                     popscope
+                     popscope
+                     popscope
+                     popscope
+                     popscope
+                     initproperty QName(PackageNamespace(""),"ScrollBar")
+                     returnvoid
+                  end ; code
+               end ; body
+            end ; method
+            

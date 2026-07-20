@@ -1,0 +1,150 @@
+package Box2D.Collision
+{
+   public class b2DynamicTreeNode
+   {
+      
+      method
+         name null
+         returns null
+         
+         body
+            maxstack 51
+            localcount 1
+            initscopedepth 3
+            maxscopedepth 4
+            
+            code
+               getlocal0
+               pushbyte 37
+               pushbyte 34
+               ifne ofs0010
+               returnvoid
+               newobject 536870911
+      ofs0010:
+               pushscope
+               returnvoid
+            end ; code
+         end ; body
+      end ; method
+      
+      public var userData:*;
+      
+      public var aabb:b2AABB;
+      
+      public var parent:b2DynamicTreeNode;
+      
+      public var child1:b2DynamicTreeNode;
+      
+      public var child2:b2DynamicTreeNode;
+      
+      public function b2DynamicTreeNode()
+      {
+         method
+            name null
+            returns null
+            
+            body
+               maxstack 52
+               localcount 1
+               initscopedepth 4
+               maxscopedepth 5
+               
+               code
+                  getlocal0
+                  pushbyte 37
+                  pushbyte 34
+                  ifne ofs0010
+                  returnvoid
+                  newobject 536870911
+         ofs0010:
+                  pushscope
+                  getlocal0
+                  findpropstrict QName(PackageNamespace("Box2D.Collision"),"b2AABB")
+                  constructprop QName(PackageNamespace("Box2D.Collision"),"b2AABB"), 0
+                  initproperty QName(PackageNamespace(""),"aabb")
+                  getlocal0
+                  constructsuper 0
+                  returnvoid
+               end ; code
+            end ; body
+         end ; method
+      }
+      
+      public function IsLeaf() : Boolean
+      {
+         trait method QName(PackageNamespace(""),"IsLeaf")
+            dispid 0
+            method
+               name null
+               returns QName(PackageNamespace(""),"Boolean")
+               
+               body
+                  maxstack 52
+                  localcount 1
+                  initscopedepth 4
+                  maxscopedepth 5
+                  
+                  code
+                     getlocal0
+                     pushbyte 37
+                     pushbyte 34
+                     ifne ofs0010
+                     returnvoid
+                     newobject 536870911
+            ofs0010:
+                     pushscope
+                     getlocal0
+                     getproperty QName(PackageNamespace(""),"child1")
+                     pushnull
+                     equals
+                     returnvalue
+                  end ; code
+               end ; body
+            end ; method
+         }
+      }
+   }
+   
+   method
+      name null
+      returns null
+      
+      body
+         maxstack 52
+         localcount 1
+         initscopedepth 1
+         maxscopedepth 3
+         
+         code
+            getlocal0
+            pushbyte 37
+            pushbyte 34
+            ifne ofs0010
+            returnvoid
+            newobject 536870911
+   ofs0010:
+            pushscope
+            findpropstrict Multiname("b2DynamicTreeNode",[PackageNamespace("Box2D.Collision")])
+            jump ofs001c
+            convert_b
+            coerce_a
+            dxnslate
+            nextname
+   ofs001c:
+            getlex QName(PackageNamespace(""),"Object")
+            jump ofs0026
+            lshift
+            nextname
+            decrement
+            negate
+   ofs0026:
+            pushscope
+            getlex QName(PackageNamespace(""),"Object")
+            newclass 114
+            popscope
+            initproperty QName(PackageNamespace("Box2D.Collision"),"b2DynamicTreeNode")
+            returnvoid
+         end ; code
+      end ; body
+   end ; method
+   

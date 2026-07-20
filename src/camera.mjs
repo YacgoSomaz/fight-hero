@@ -1,6 +1,7 @@
-// The map bitmap contains a large lab scene. This rectangle is the playable source area
-// within that bitmap; the game now shows a moving viewport into it instead of fitting it all.
-export const MAP_CROP = Object.freeze({ x: 603, y: 579, width: 2591, height: 1457 });
+// The extracted Foundry artwork is already cropped to Arena's playable root.
+// Adding the old laboratory offset here caused most camera samples to point
+// outside the source bitmap, which was the black lower part of the screen.
+export const MAP_CROP = Object.freeze({ x: 0, y: 0, width: 2874, height: 863 });
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));

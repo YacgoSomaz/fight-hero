@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createWorld, hasLineOfSight, isSolid, step } from '../src/engine.mjs';
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
+import { FOUNDRY_LAYOUT } from '../src/foundry-layout.mjs';
 import { getUnitRigPose } from '../src/unit-rig.mjs';
 
 test('the web replica starts with a local player and a migrated AI opponent', () => {
@@ -11,6 +12,28 @@ test('the web replica starts with a local player and a migrated AI opponent', ()
   assert.equal(world.players[0].id, 'p1');
   assert.equal(world.bots.length, 1);
   assert.equal(world.bots[0].isBot, true);
+});
+
+test('Foundry uses the decoded Arena wall dimensions, spawns, and navigation nodes', () => {
+  const world = createWorld({ foundry: true });
+
+  assert.equal(world.config.width, 2874);
+  assert.equal(world.config.height, 863);
+  assert.deepEqual({ x: world.players[0].spawnX, y: world.players[0].spawnY }, FOUNDRY_LAYOUT.spawns.p1);
+  assert.equal(world.navigation.length, 38);
+  assert.deepEqual(world.navigation.filter((point) => point.type === 'waypoint').length, 21);
+  assert.deepEqual(world.navigation.filter((point) => point.type === 'jump').length, 17);
+});
+
+test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
+  const world = createWorld({ foundry: true });
+  const bot = world.bots[0];
+  bot.ai.scanFrame = -1;
+
+  step(world, {}, 1 / 60);
+
+  assert.equal(bot.ai.navIndex, 28);
+  assert.ok(bot.vx > 0);
 });
 
 test('the single player responds to independent left and right input', () => {
@@ -270,4 +293,15 @@ test('the follow camera renders a local source window and converts mouse coordin
   assert.equal(source.height, 720);
   assert.ok(source.x > MAP_CROP.x);
   assert.deepEqual(worldPoint, { x: camera.x, y: camera.y });
+});
+
+test('Foundry camera samples its extracted bitmap directly without the retired laboratory offset', () => {
+  const world = createWorld({ foundry: true });
+  const camera = getFollowCamera(world.players[0], world.config, 1280, 720);
+  const source = getMapSourceRect(camera, 1280, 720);
+
+  assert.deepEqual(MAP_CROP, { x: 0, y: 0, width: 2874, height: 863 });
+  assert.ok(source.x >= 0 && source.y >= 0);
+  assert.ok(source.x + source.width <= world.config.width);
+  assert.ok(source.y + source.height <= world.config.height);
 });

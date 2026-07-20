@@ -1,3 +1,5 @@
+import { FOUNDRY_LAYOUT } from './foundry-layout.mjs';
+
 const MAP_SCALE = 2591 / 1280;
 
 function makePlatform(x, y, width, height = 20) {
@@ -27,16 +29,41 @@ const CONFIG = {
   ],
 };
 
-function makeActor(id, spawnX, spawnY, color, isBot = false) {
+// `wallMC` is 2874×863 in Arena's Foundry frame.  This configuration must
+// remain 1:1 with its alpha bitmap: Arena.as reads the same bitmap with
+// getPixel32 for movement and bullets.
+const FOUNDRY_CONFIG = Object.freeze({
+  width: FOUNDRY_LAYOUT.width,
+  height: FOUNDRY_LAYOUT.height,
+  floorY: 704,
+  gravity: 1500,
+  moveSpeed: 300,
+  crouchSpeed: 165,
+  jumpSpeed: 620,
+  bulletSpeed: 780,
+  fireCooldown: 0.18,
+  reloadDuration: 0.8,
+  respawnDuration: 2,
+  muzzleFlashDuration: 0.075,
+  climbDuration: 0.28,
+  playerHitbox: { halfWidth: 13, height: 62, crouchHeight: 38 },
+  // The alpha wall replaces this after it loads.  These are only safe
+  // footholds for the small interval before the image is decoded.
+  platforms: [
+    { x: 0, y: 704, width: 1194, height: 20 }, { x: 1413, y: 704, width: 1461, height: 20 },
+  ],
+});
+
+function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
   return {
     id, spawnX, spawnY, x: spawnX, y: spawnY, vx: 0, vy: 0, facing: 1,
     aimX: spawnX + 100, aimY: spawnY - 47, aimAngle: 0,
     animation: 'idle', animationTime: 0, animationFrame: 1, climb: null,
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
-    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: CONFIG.reloadDuration },
-    color, isBot, ai: isBot ? { scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6, crouchTimer: 0 } : null,
-    hitbox: { ...CONFIG.playerHitbox },
+    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration },
+    color, isBot, ai: isBot ? { scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6, crouchTimer: 0, navIndex: null } : null,
+    hitbox: { ...config.playerHitbox },
   };
 }
 
@@ -47,11 +74,16 @@ export const UNITMC_FRAMES = Object.freeze({
 });
 
 export function createWorld(options = {}) {
-  const p1 = makeActor('p1', 430 * MAP_SCALE, 551 * MAP_SCALE, '#48b7ff');
-  const humans = options.multiplayer ? [makeActor('p2', 1040 * MAP_SCALE, 525 * MAP_SCALE, '#f4a35f')] : [];
-  const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', 1040 * MAP_SCALE, 525 * MAP_SCALE, '#ef806d', true)];
+  const foundry = Boolean(options.foundry);
+  const baseConfig = foundry ? FOUNDRY_CONFIG : CONFIG;
+  const p1Spawn = foundry ? FOUNDRY_LAYOUT.spawns.p1 : { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
+  const p2Spawn = foundry ? FOUNDRY_LAYOUT.spawns.p2 : { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
+  const p1 = makeActor('p1', p1Spawn.x, p1Spawn.y, '#48b7ff', false, baseConfig);
+  const humans = options.multiplayer ? [makeActor('p2', p2Spawn.x, p2Spawn.y, '#f4a35f', false, baseConfig)] : [];
+  const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig)];
   return {
-    config: { ...CONFIG, playerHitbox: { ...CONFIG.playerHitbox }, platforms: CONFIG.platforms.map((platform) => ({ ...platform })) },
+    config: { ...baseConfig, playerHitbox: { ...baseConfig.playerHitbox }, platforms: baseConfig.platforms.map((platform) => ({ ...platform })) },
+    navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
     // `wall.isSolid(x, y)` is the direct equivalent of Arena.wall.getPixel32(...).
     // It is installed by the browser after it decodes the extracted Foundry wall PNG.
     wall: options.wall ?? null,
@@ -134,8 +166,9 @@ function applyPlatformPhysics(world, actor, dt) {
   const previousY = actor.y; actor.vy += world.config.gravity * dt; actor.y += actor.vy * dt; actor.grounded = false;
   if (world.wall?.isSolid) {
     const height = actorHeight(actor);
-    if (actor.vy >= 0 && isSolid(world, actor.x, actor.y)) { actor.y = previousY; actor.vy = 0; actor.grounded = true; }
-    else if (actor.vy < 0 && isSolid(world, actor.x, actor.y - height)) { actor.y = previousY; actor.vy = 0; }
+    const footSamples = [actor.x - actor.hitbox.halfWidth + 2, actor.x, actor.x + actor.hitbox.halfWidth - 2];
+    if (actor.vy >= 0 && footSamples.some((x) => isSolid(world, x, actor.y))) { actor.y = previousY; actor.vy = 0; actor.grounded = true; }
+    else if (actor.vy < 0 && footSamples.some((x) => isSolid(world, x, actor.y - height))) { actor.y = previousY; actor.vy = 0; }
     return;
   }
   if (actor.vy >= 0) {
@@ -200,7 +233,24 @@ function botInput(world, bot) {
     ai.targetId = candidates.filter((target) => Math.hypot(target.x - bot.x, target.y - bot.y) < 450 && hasLineOfSight(world, { x: bot.x, y: bot.y - (bot.crouching ? 20 : 50) }, { x: target.x, y: target.y - (target.crouching ? 20 : 40) })).sort((a, b) => Math.hypot(a.x - bot.x, a.y - bot.y) - Math.hypot(b.x - bot.x, b.y - bot.y))[0]?.id ?? null;
   }
   const target = world.players.find((actor) => actor.id === ai.targetId);
-  if (!target) return { left: Math.sin(world.elapsed * .7 + ai.scanFrame) < 0, right: Math.sin(world.elapsed * .7 + ai.scanFrame) >= 0, aimX: bot.x + bot.facing * 80, aimY: bot.y - 45 };
+  if (!target) {
+    // Arena's hidden NodeWaypoint/NodeJump clips are the original patrol
+    // anchors.  Their decoded coordinates replace the former sine-wave walk.
+    const nodes = world.navigation;
+    if (nodes.length) {
+      if (ai.navIndex === null) ai.navIndex = nodes.reduce((closest, point, index) => (
+        Math.hypot(point.x - bot.x, point.y - bot.y) < Math.hypot(nodes[closest].x - bot.x, nodes[closest].y - bot.y) ? index : closest
+      ), 0);
+      let node = nodes[ai.navIndex];
+      if (Math.hypot(node.x - bot.x, node.y - bot.y) < 28) {
+        ai.navIndex = (ai.navIndex + 1) % nodes.length;
+        node = nodes[ai.navIndex];
+      }
+      const dx = node.x - bot.x;
+      return { left: dx < -12, right: dx > 12, jump: node.type === 'jump' && Math.abs(dx) < 32 && bot.grounded, aimX: node.x, aimY: node.y - 40 };
+    }
+    return { left: Math.sin(world.elapsed * .7 + ai.scanFrame) < 0, right: Math.sin(world.elapsed * .7 + ai.scanFrame) >= 0, aimX: bot.x + bot.facing * 80, aimY: bot.y - 45 };
+  }
   const distanceX = target.x - bot.x; const crouch = Math.abs(distanceX) < 160 && Math.floor(world.elapsed * 2) % 5 === 0;
   return { left: distanceX < -120, right: distanceX > 120, down: crouch, aimX: target.x, aimY: target.y - (target.crouching ? 20 : 40), fire: true, reload: bot.weapon.clip < 4 };
 }

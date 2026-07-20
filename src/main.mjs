@@ -18,30 +18,26 @@ const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
 const map = new Image();
 map.src = './public/assets/maps/foundry.png';
-// The old prototype referenced untracked placeholder files here.  These
-// sentinel objects keep the optional enhancement branches quiet; Canvas
-// fallbacks below are used unless an extracted source image is present.
-const unitSprite = { complete: false, naturalWidth: 0 };
-const gunArmSprite = new Image();
-gunArmSprite.src = './source-assets/DefineSprite_501_MBFZ_fla.arm_gun_316/1.png';
-const frontArmSprite = new Image();
-frontArmSprite.src = './source-assets/DefineSprite_668_MBFZ_fla.arm_front_328/1.png';
+function image(source) { const result = new Image(); result.src = source; return result; }
+// These are tight crops of UnitMC's actual child symbols (501/538/568/598/
+// 631/666/668).  Do not use the exported UnitMC preview sheets: each PNG
+// contains multiple reference instances and cannot be used as a timeline.
+const unitParts = Object.freeze({
+  backArm: image('./public/assets/unit-parts/tight/back_arm.png'),
+  foot: image('./public/assets/unit-parts/tight/foot.png'),
+  legLower: image('./public/assets/unit-parts/tight/leg_lower.png'),
+  legUpper: image('./public/assets/unit-parts/tight/leg_upper.png'),
+  torso: image('./public/assets/unit-parts/tight/body.png'),
+  head: image('./public/assets/unit-parts/tight/head.png'),
+  frontArm: image('./public/assets/unit-parts/tight/front_arm.png'),
+});
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
-const unitMatrixFrames = new Map();
-function getUnitMatrixFrame(frame) {
-  if (!unitMatrixFrames.has(frame)) {
-    const image = new Image();
-    image.src = `./assets/reverse/unitmc-frames/DefineSprite_669_UnitMC/${frame}.png`;
-    unitMatrixFrames.set(frame, image);
-  }
-  return unitMatrixFrames.get(frame);
-}
 const foundryWall = new Image();
 foundryWall.src = './assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png';
-let world = createWorld();
+let world = createWorld({ foundry: true });
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
 const held = new Set();
@@ -60,12 +56,13 @@ function installFoundryMask() {
   const maskContext = maskCanvas.getContext('2d', { willReadFrequently: true });
   maskContext.drawImage(foundryWall, 0, 0);
   const pixels = maskContext.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-  const scaleX = maskCanvas.width / world.config.width;
-  const scaleY = maskCanvas.height / world.config.height;
+  if (maskCanvas.width !== world.config.width || maskCanvas.height !== world.config.height) {
+    throw new Error(`Foundry wall size ${maskCanvas.width}×${maskCanvas.height} does not match world ${world.config.width}×${world.config.height}`);
+  }
   world.wall = { isSolid(x, y) {
-    const sx = Math.floor(x * scaleX);
-    const sy = Math.floor(y * scaleY);
-    return sx >= 0 && sy >= 0 && sx < maskCanvas.width && sy < maskCanvas.height && pixels[(sy * maskCanvas.width + sx) * 4 + 3] === 255;
+    const sx = Math.floor(x);
+    const sy = Math.floor(y);
+    return sx >= 0 && sy >= 0 && sx < maskCanvas.width && sy < maskCanvas.height && pixels[(sy * maskCanvas.width + sx) * 4 + 3] > 0;
   } };
 }
 foundryWall.addEventListener('load', installFoundryMask);
@@ -85,7 +82,7 @@ start.addEventListener('click', async () => {
     const room = roomInput.value.trim();
     if (room) {
       online = await joinPrivateRoom(room);
-      world = createWorld({ multiplayer: true });
+      world = createWorld({ multiplayer: true, foundry: true });
       applyRoomState(world, online.state);
       if (foundryWall.complete) installFoundryMask();
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
@@ -110,7 +107,7 @@ for (const type of ['keydown', 'keyup']) {
 window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFirePressed = false; });
 reset.addEventListener('click', () => {
   online = null;
-  world = createWorld();
+  world = createWorld({ foundry: true });
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   if (foundryWall.complete) installFoundryMask();
@@ -267,42 +264,36 @@ function drawPlayer(player) {
   const scale = 0.94;
   const height = 76;
 
-  function drawIdleCrop(sourceX, sourceY, sourceWidth, sourceHeight, part, width, height) {
-    if (!unitSprite.complete || !unitSprite.naturalWidth) return;
-    ctx.save();
-    ctx.translate(part.x * scale, part.y * scale);
-    ctx.rotate(part.rotation * Math.PI / 180);
-    ctx.drawImage(unitSprite, sourceX, sourceY, sourceWidth, sourceHeight, -width / 2, -height, width, height);
-    ctx.restore();
-  }
-
-  function drawExtractedArm(sprite, source, part, width, height) {
+  function drawTightPart(sprite, part, width, height, pivotX = width / 2, pivotY = height / 2) {
     if (!sprite.complete || !sprite.naturalWidth) return;
     ctx.save();
     ctx.translate(part.x * scale, part.y * scale);
     ctx.rotate(part.rotation * Math.PI / 180);
-    ctx.drawImage(sprite, source.x, source.y, source.width, source.height, 0, -height / 2, width, height);
+    ctx.drawImage(sprite, -pivotX, -pivotY, width, height);
     ctx.restore();
+  }
+
+  function drawLeg(part) {
+    drawTightPart(unitParts.legUpper, part, 18, 18, 9, 9);
+    const lower = { x: part.x + Math.sin(part.rotation * Math.PI / 180) * 7, y: part.y + 13, rotation: part.rotation };
+    drawTightPart(unitParts.legLower, lower, 15, 20, 7, 2);
+    const foot = { x: lower.x + Math.sin(part.rotation * Math.PI / 180) * 10, y: lower.y + 18, rotation: part.rotation };
+    drawTightPart(unitParts.foot, foot, 14, 14, 7, 10);
   }
 
   ctx.save();
   ctx.translate(screen.x, screen.y);
   ctx.scale(pose.facing, 1);
-  const timelineFrame = getUnitMatrixFrame(player.animationFrame);
-  if (timelineFrame.complete && timelineFrame.naturalWidth) {
-    // FFDec exports the UnitMC matrix in a 257×242 stage.  This crop is the
-    // lower playable unit; the upper reference instance is deliberately not
-    // rendered.  Frame selection comes from UnitMC's original label ranges.
-    ctx.drawImage(timelineFrame, 25, 112, 125, 125, -54, -101, 108, 108);
-  } else if (unitSprite.complete && unitSprite.naturalWidth) {
-    // UnitMC hierarchy: legup/leglow/foot → body → head → arm2 (back) → arm1 (front+gun).
-    // Source crops retain the extracted original pixel art; each crop is now transformed by its own pivot.
-    drawIdleCrop(60, 164, 34, 40, pose.backLeg, 31, 42);
-    drawExtractedArm(gunArmSprite, { x: 87, y: 92, width: 32, height: 17 }, pose.backArm, 34, 18);
-    drawIdleCrop(66, 127, 27, 45, pose.torso, 28, 47);
-    drawIdleCrop(60, 164, 34, 40, pose.frontLeg, 31, 42);
-    drawIdleCrop(74, 127, 19, 20, pose.head, 20, 21);
-    drawExtractedArm(frontArmSprite, { x: 66, y: 40, width: 24, height: 29 }, pose.frontArm, 25, 30);
+  if (unitParts.torso.complete && unitParts.torso.naturalWidth) {
+    // UnitMC display order: rear leg, rear gun arm, body, front leg, head,
+    // then front arm. Each image is one SWF child symbol, so a frame cannot
+    // leak a second reference character into the next animation frame.
+    drawLeg(pose.backLeg);
+    drawTightPart(unitParts.backArm, pose.backArm, 32, 17, 0, 8.5);
+    drawTightPart(unitParts.torso, pose.torso, 24, 27, 12, 13.5);
+    drawLeg(pose.frontLeg);
+    drawTightPart(unitParts.head, pose.head, 23, 25, 11.5, 12.5);
+    drawTightPart(unitParts.frontArm, pose.frontArm, 24, 29, 0, 14.5);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);

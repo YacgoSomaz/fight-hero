@@ -269,10 +269,11 @@ function drawPlayer(player) {
       // FFDec's tight leg crops preserve their SWF registration point but
       // omit the original transparent canvas above the feet.  Apply that
       // calibration in world space so rotated run frames stay attached.
-      // Re-anchor the decoded leg artwork at the actor's real centre-foot
-      // contact.  The prior -26px crop correction left visible boots above
-      // the physical foot point and made a grounded player look airborne.
-      const legLift = name.startsWith('leg') || name.startsWith('foot') ? -10 : 0;
+      // FFDec cropped the fixed Medic leg symbols but retained their original
+      // UnitMC matrix origins.  Keep the measured -26px registration-point
+      // correction from the original frame exports; using the actor collider
+      // here (the former -10px value) separates both legs from the body.
+      const legLift = name.startsWith('leg') || name.startsWith('foot') ? -26 : 0;
       ctx.translate(anchor.x, anchor.y + legLift);
       if (aimFactor === null) ctx.transform(item.scaleX, item.skewY, item.skewX, item.scaleY, 0, 0);
       else {

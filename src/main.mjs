@@ -1,6 +1,5 @@
 import { createWorld, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
-import { getUnitRigPose } from './unit-rig.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
 
@@ -19,24 +18,19 @@ const audio = new AudioBank({ muted: Boolean(saved.muted) });
 const map = new Image();
 map.src = './public/assets/maps/foundry.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
-// These are tight crops of UnitMC's actual child symbols (501/538/568/598/
-// 631/666/668).  Do not use the exported UnitMC preview sheets: each PNG
-// contains multiple reference instances and cannot be used as a timeline.
-const unitParts = Object.freeze({
-  backArm: image('./public/assets/unit-parts/tight/back_arm.png'),
-  foot: image('./public/assets/unit-parts/tight/foot.png'),
-  legLower: image('./public/assets/unit-parts/tight/leg_lower.png'),
-  legUpper: image('./public/assets/unit-parts/tight/leg_upper.png'),
-  torso: image('./public/assets/unit-parts/tight/body.png'),
-  head: image('./public/assets/unit-parts/tight/head.png'),
-  frontArm: image('./public/assets/unit-parts/tight/front_arm.png'),
-});
+// A complete lower UnitMC instance, cropped from the original idle frame.
+// It is used until every per-frame child matrix is decoded; this preserves
+// the original character as one whole sprite instead of misplacing limbs.
+const unitIdle = image('./public/assets/unit-parts/unit-idle.png');
+const foundryLava = image('./public/assets/maps/foundry-lava.png');
+const foundryPot = image('./public/assets/maps/foundry-pot.png');
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
 const foundryWall = new Image();
 foundryWall.src = './assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png';
+let foundryTerrain = null;
 let world = createWorld({ foundry: true });
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
@@ -59,6 +53,27 @@ function installFoundryMask() {
   if (maskCanvas.width !== world.config.width || maskCanvas.height !== world.config.height) {
     throw new Error(`Foundry wall size ${maskCanvas.width}×${maskCanvas.height} does not match world ${world.config.width}×${world.config.height}`);
   }
+  // Arena.as hides wallMC and uses it for getPixel32 collision.  Draw a
+  // neutral metal version here so the same authentic geometry is visible to
+  // players rather than leaving gameplay platforms as invisible walls.
+  const terrainCanvas = document.createElement('canvas');
+  terrainCanvas.width = maskCanvas.width;
+  terrainCanvas.height = maskCanvas.height;
+  const terrainContext = terrainCanvas.getContext('2d');
+  const terrainPixels = terrainContext.createImageData(terrainCanvas.width, terrainCanvas.height);
+  for (let y = 0; y < terrainCanvas.height; y += 1) {
+    for (let x = 0; x < terrainCanvas.width; x += 1) {
+      const index = (y * terrainCanvas.width + x) * 4;
+      if (!pixels[index + 3]) continue;
+      const topEdge = y === 0 || !pixels[index - terrainCanvas.width * 4 + 3];
+      terrainPixels.data[index] = topEdge ? 163 : 55;
+      terrainPixels.data[index + 1] = topEdge ? 112 : 47;
+      terrainPixels.data[index + 2] = topEdge ? 68 : 42;
+      terrainPixels.data[index + 3] = topEdge ? 230 : 210;
+    }
+  }
+  terrainContext.putImageData(terrainPixels, 0, 0);
+  foundryTerrain = terrainCanvas;
   world.wall = { isSolid(x, y) {
     const sx = Math.floor(x);
     const sy = Math.floor(y);
@@ -250,50 +265,13 @@ function drawAimer(player) {
 function drawPlayer(player) {
   if (!player.alive) return;
   const screen = worldToScreen(player, camera, canvas.width, canvas.height);
-  const localAimAngle = player.facing < 0
-    ? Math.atan2(Math.sin(Math.PI - player.aimAngle), Math.cos(Math.PI - player.aimAngle))
-    : player.aimAngle;
-  const pose = getUnitRigPose({
-    animation: player.animation,
-    animationTime: player.animationTime,
-    aimAngle: localAimAngle,
-    facing: player.facing,
-    recoil: player.recoil,
-    reload: player.weapon.reloadRemaining / player.weapon.reloadDuration,
-  });
-  const scale = 0.94;
   const height = 76;
-
-  function drawTightPart(sprite, part, width, height, pivotX = width / 2, pivotY = height / 2) {
-    if (!sprite.complete || !sprite.naturalWidth) return;
-    ctx.save();
-    ctx.translate(part.x * scale, part.y * scale);
-    ctx.rotate(part.rotation * Math.PI / 180);
-    ctx.drawImage(sprite, -pivotX, -pivotY, width, height);
-    ctx.restore();
-  }
-
-  function drawLeg(part) {
-    drawTightPart(unitParts.legUpper, part, 18, 18, 9, 9);
-    const lower = { x: part.x + Math.sin(part.rotation * Math.PI / 180) * 7, y: part.y + 13, rotation: part.rotation };
-    drawTightPart(unitParts.legLower, lower, 15, 20, 7, 2);
-    const foot = { x: lower.x + Math.sin(part.rotation * Math.PI / 180) * 10, y: lower.y + 18, rotation: part.rotation };
-    drawTightPart(unitParts.foot, foot, 14, 14, 7, 10);
-  }
 
   ctx.save();
   ctx.translate(screen.x, screen.y);
-  ctx.scale(pose.facing, 1);
-  if (unitParts.torso.complete && unitParts.torso.naturalWidth) {
-    // UnitMC display order: rear leg, rear gun arm, body, front leg, head,
-    // then front arm. Each image is one SWF child symbol, so a frame cannot
-    // leak a second reference character into the next animation frame.
-    drawLeg(pose.backLeg);
-    drawTightPart(unitParts.backArm, pose.backArm, 32, 17, 0, 8.5);
-    drawTightPart(unitParts.torso, pose.torso, 24, 27, 12, 13.5);
-    drawLeg(pose.frontLeg);
-    drawTightPart(unitParts.head, pose.head, 23, 25, 11.5, 12.5);
-    drawTightPart(unitParts.frontArm, pose.frontArm, 24, 29, 0, 14.5);
+  ctx.scale(player.facing, 1);
+  if (unitIdle.complete && unitIdle.naturalWidth) {
+    ctx.drawImage(unitIdle, -38, -78, 76, 80);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);
@@ -311,6 +289,14 @@ function drawPlayer(player) {
   ctx.textAlign = 'center';
   ctx.fillText(player.isBot ? 'AI' : 'P1', screen.x, screen.y - height - 8);
   ctx.textAlign = 'left';
+}
+
+function drawWorldLayer(sprite, x = 0, y = 0) {
+  if (!sprite?.width && (!sprite?.complete || !sprite.naturalWidth)) return;
+  const screen = worldToScreen({ x, y }, camera, canvas.width, canvas.height);
+  const width = sprite.width ?? sprite.naturalWidth;
+  const height = sprite.height ?? sprite.naturalHeight;
+  ctx.drawImage(sprite, screen.x, screen.y, width * camera.zoom, height * camera.zoom);
 }
 
 function drawTracer(bullet) {
@@ -352,6 +338,13 @@ function render() {
     ctx.fillStyle = '#19202a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
+  if (foundryTerrain) {
+    const source = getMapSourceRect(camera, canvas.width, canvas.height);
+    ctx.drawImage(foundryTerrain, source.x, source.y, source.width, source.height, 0, 0, canvas.width, canvas.height);
+  }
+  // These sprites are Arena frame 2 children at their decoded SWF matrices.
+  drawWorldLayer(foundryPot, 1046.4, -65.05);
+  drawWorldLayer(foundryLava, 1160.2, 722.95);
   ctx.fillStyle = 'rgba(3, 7, 13, .12)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (const bullet of world.bullets) drawTracer(bullet);

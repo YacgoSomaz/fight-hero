@@ -82,12 +82,11 @@ export const UNITMC_FRAMES = Object.freeze({
   duckrunback: [355, 387], climbsmall: [392, 396], climbbig: [397, 408], landhard: [409, 449],
 });
 
-// Unit.as aims from MC.arm1, not from the unit's foot/centre.  These values
-// are decoded from UnitMC's idle holder and the complete arm_gun_316 frame 51
-// canvas: the alpha tip of the rifle barrel is at (172, 72.5) and that canvas
-// registers at (-92.13406066894532, -105.37676849365235).
+// Unit.as aims from MC.arm1, not from the unit's foot/centre.  The arm canvas
+// is reconstructed from the original rifle idle label (501/668 frame 77),
+// its M4 gun child (375 frame 20), and the fixed Medic skin subparts.
 const ARM1_PIVOT = Object.freeze({ x: 0.3, y: -42 });
-const RIFLE_BARREL_TIP = Object.freeze({ x: 79.86593933105469, y: -32.87676849365235 });
+const RIFLE_BARREL_TIP = Object.freeze({ x: 76, y: 8 });
 export const RIFLE_ARM_BASE_ANGLE = Math.atan2(RIFLE_BARREL_TIP.y, RIFLE_BARREL_TIP.x);
 const RIFLE_MUZZLE_DISTANCE = Math.hypot(RIFLE_BARREL_TIP.x, RIFLE_BARREL_TIP.y);
 
@@ -97,7 +96,7 @@ export function getAimPivot(actor, facing = actor.facing) {
 
 export function getMuzzleOrigin(actor) {
   const pivot = getAimPivot(actor);
-  // The renderer compensates this exported canvas's built-in barrel tilt by
+  // The renderer compensates this reconstructed canvas's small barrel tilt by
   // RIFLE_ARM_BASE_ANGLE.  Its visible tip therefore lies exactly on the
   // actor aim ray for either mirrored facing direction.
   const cosine = Math.cos(actor.aimAngle) * RIFLE_MUZZLE_DISTANCE;

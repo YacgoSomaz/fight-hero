@@ -213,8 +213,8 @@ test('the browser receives every decoded UnitMC body-part matrix without skin sw
 
 test('the UnitMC renderer ships complete decoded arm assemblies', () => {
   for (const asset of [
-    '../public/assets/unit-parts/full/rifle_arm_51.png',
-    '../public/assets/unit-parts/full/front_arm_51.png',
+    '../public/assets/unit-parts/full/rifle_arm_rifle_idle.png',
+    '../public/assets/unit-parts/full/front_arm_rifle_idle.png',
   ]) {
     const data = fs.readFileSync(new URL(asset, import.meta.url));
     assert.deepEqual([...data.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
@@ -365,15 +365,15 @@ test('rifle shots start at the decoded arm-canvas barrel tip', () => {
 
   const pivot = getAimPivot(p1);
   const muzzle = getMuzzleOrigin(p1);
-  assert.ok(RIFLE_ARM_BASE_ANGLE < 0);
+  assert.ok(RIFLE_ARM_BASE_ANGLE > 0);
   assert.ok(Math.abs(pivot.x - 400.3) < 0.001);
   assert.ok(Math.abs(pivot.y - 458) < 0.001);
-  assert.ok(Math.abs(muzzle.x - (pivot.x + 86.36841915592938)) < 0.001);
+  assert.ok(Math.abs(muzzle.x - (pivot.x + 76.4198926981712)) < 0.001);
   assert.ok(Math.abs(muzzle.y - pivot.y) < 0.001);
   p1.facing = -1; p1.aimAngle = Math.PI;
   const leftPivot = getAimPivot(p1);
   const leftMuzzle = getMuzzleOrigin(p1);
-  assert.ok(Math.abs(leftMuzzle.x - (leftPivot.x - 86.36841915592938)) < 0.001);
+  assert.ok(Math.abs(leftMuzzle.x - (leftPivot.x - 76.4198926981712)) < 0.001);
   assert.ok(Math.abs(leftMuzzle.y - leftPivot.y) < 0.001);
 });
 

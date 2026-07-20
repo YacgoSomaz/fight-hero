@@ -22,12 +22,9 @@ map.src = './public/assets/maps/foundry.png';
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
-// The root UnitMC sheet retains the original labelled pose timing.  The
-// runtime skin swap lives below this level and is decoded separately.
-const UNIT_FRAME_WIDTH = 86;
-const UNIT_FRAME_HEIGHT = 90;
-const UNIT_FRAME_COLUMNS = 19;
-const unitFrameSheet = image('./public/assets/unit-frames.png');
+// One fixed Medic skin is used for the render-side rig.  The flattened UnitMC
+// sheet mixes runtime skins, so it cannot be used as a player animation atlas.
+const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
@@ -226,18 +223,37 @@ function drawPlayer(player) {
   if (!player.alive) return;
   const screen = worldToScreen(player, camera, canvas.width, canvas.height);
   const height = 76;
-  const frameIndex = player.animationFrame - 1;
-  const sourceX = frameIndex % UNIT_FRAME_COLUMNS * UNIT_FRAME_WIDTH;
-  const sourceY = Math.floor(frameIndex / UNIT_FRAME_COLUMNS) * UNIT_FRAME_HEIGHT;
 
   ctx.save();
   ctx.translate(screen.x, screen.y);
-  ctx.scale(player.facing, 1);
-  if (unitFrameSheet.complete && unitFrameSheet.naturalWidth) {
-    // The physical actor point is the original centre-foot wall probe.  The
-    // The lower UnitMC export's sole is at source y≈83.  This anchors the
-    // animated sole on the decoded wall contact surface.
-    ctx.drawImage(unitFrameSheet, sourceX, sourceY, UNIT_FRAME_WIDTH, UNIT_FRAME_HEIGHT, -38, -72, 76, 80);
+  ctx.scale(player.facing * .884, .884);
+  if (unitSkin.complete && unitSkin.naturalWidth) {
+    const moving = ['run', 'runback', 'duckrun', 'duckrunback'].includes(player.animation);
+    const airborne = ['jump', 'fall', 'fallloop', 'climbsmall', 'climbbig'].includes(player.animation);
+    const phase = player.animationTime * Math.PI * 10;
+    const stride = moving ? Math.sin(phase) * .48 : airborne ? .24 : 0;
+    const crouch = player.crouching ? 11 : 0;
+    const baseY = -63 + crouch;
+    const localAim = Math.max(-.72, Math.min(.72, player.aimAngle * player.facing));
+    const drawJointSlice = (sourceX, sourceY, sourceWidth, sourceHeight, pivotX, pivotY, anchorX, anchorY, rotation) => {
+      ctx.save();
+      ctx.translate(anchorX, anchorY);
+      ctx.rotate(rotation);
+      ctx.drawImage(unitSkin, sourceX, sourceY, sourceWidth, sourceHeight, -pivotX, -pivotY, sourceWidth, sourceHeight);
+      ctx.restore();
+    };
+
+    // Lower body is intentionally rebuilt as two independent legs.  It keeps
+    // a single skin while producing a real alternating gait instead of moving
+    // one complete bitmap across the map.
+    drawJointSlice(7, 51, 30, 37, 18, 5, -17, baseY + 56, -stride - (airborne ? .18 : 0));
+    drawJointSlice(31, 52, 31, 37, 9, 5, -3, baseY + 57, stride + (airborne ? .18 : 0));
+    // Torso is drawn above the legs so their roots remain clean when walking.
+    ctx.drawImage(unitSkin, 8, 29, 39, 31, -35, baseY + 29, 39, 31);
+    // The weapon arm and head are separate pivots.  They follow the pointer
+    // without changing the selected Medic skin.
+    drawJointSlice(36, 28, 31, 25, 6, 8, -1, baseY + 36, localAim * .58);
+    drawJointSlice(23, 7, 30, 24, 16, 20, -3, baseY + 30, localAim * .34);
   } else {
     ctx.fillStyle = '#838b59';
     ctx.fillRect(-12, -56, 24, 56);

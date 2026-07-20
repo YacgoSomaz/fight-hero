@@ -28,13 +28,15 @@ test('Foundry uses the decoded Arena wall dimensions, spawns, and navigation nod
   assert.equal(world.pickups.length, 4);
 });
 
-test('Foundry player collision uses only decoded blue NodePhysBox rectangles', () => {
+test('Foundry player collision uses calibrated horizontal blue-box landing surfaces', () => {
   const world = createWorld({ foundry: true, bots: false });
   const crate = FOUNDRY_LAYOUT.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
+  const floor = world.config.platforms.find((platform) => platform.x < 485 && platform.x + platform.width > 485 && platform.y > 690);
 
   assert.ok(crate);
-  assert.equal(isSolid(world, crate.x, crate.y), true);
-  assert.equal(isSolid(world, crate.x - crate.width / 2 - 3, crate.y), false);
+  assert.ok(floor);
+  assert.equal(isSolid(world, 485, floor.y), true);
+  assert.equal(isSolid(world, crate.x, crate.y), false, 'tall PhysWorld boxes cannot lift a live player');
   assert.equal(isSolid(world, 1200, 550), false, 'unmarked Foundry artwork cannot create a wall');
 });
 

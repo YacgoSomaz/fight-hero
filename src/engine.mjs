@@ -30,8 +30,23 @@ const CONFIG = {
   ],
 };
 
-// Foundry's authored player collision is its NodePhysBox layer.  Each blue
-// box is kept in the original stage coordinate system.
+// Player movement needs only the walkable, horizontal tops of the editor's
+// blue boxes.  The full NodePhysBox volume is for PhysWorld (ragdolls), and
+// treating its tall/vertical boxes as unit walls is what lifted players into
+// empty space beside background props.
+const FOUNDRY_PLAYER_PLATFORMS = Object.freeze(
+  FOUNDRY_LAYOUT.collisionBoxes
+    .filter((box) => box.y > 100 && box.y < 800 && box.width >= box.height * 2)
+    .map((box) => Object.freeze({
+      x: box.x - box.width / 2,
+      y: box.y - box.height / 2,
+      width: box.width,
+      // A thin solid strip preserves the decoded upper edge as the exact
+      // landing height without turning the whole debug volume into a wall.
+      height: 6,
+    })),
+);
+
 const FOUNDRY_CONFIG = Object.freeze({
   width: FOUNDRY_LAYOUT.width,
   height: FOUNDRY_LAYOUT.height,
@@ -47,11 +62,7 @@ const FOUNDRY_CONFIG = Object.freeze({
   muzzleFlashDuration: 0.075,
   climbDuration: 0.28,
   playerHitbox: { halfWidth: 17, height: 55, crouchHeight: 38 },
-  // The alpha wall replaces this after it loads.  These are only safe
-  // footholds for the small interval before the image is decoded.
-  platforms: [
-    { x: 0, y: 704, width: 1194, height: 20 }, { x: 1413, y: 704, width: 1461, height: 20 },
-  ],
+  platforms: FOUNDRY_PLAYER_PLATFORMS,
 });
 
 function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
@@ -74,8 +85,8 @@ export const UNITMC_FRAMES = Object.freeze({
 });
 
 function foundryPhysicsSolid(x, y) {
-  return FOUNDRY_LAYOUT.collisionBoxes.some((box) => x >= box.x - box.width / 2 && x <= box.x + box.width / 2
-    && y >= box.y - box.height / 2 && y <= box.y + box.height / 2);
+  return FOUNDRY_PLAYER_PLATFORMS.some((platform) => x >= platform.x && x <= platform.x + platform.width
+    && y >= platform.y && y <= platform.y + platform.height);
 }
 
 export function createWorld(options = {}) {
@@ -91,8 +102,8 @@ export function createWorld(options = {}) {
     navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
     actions: foundry ? FOUNDRY_LAYOUT.actions.map((point) => ({ ...point })) : [],
     pickups: foundry ? FOUNDRY_LAYOUT.pickups.map((point) => ({ ...point })) : [],
-    // NodePhysBox is the blue authored collision layer in the Foundry frame.
-    // Do not derive physics from the foreground or hanging-object artwork.
+    // The blue NodePhysBox layer supplies calibrated player landing surfaces;
+    // hanging artwork and tall ragdoll boxes do not block player movement.
     wall: options.wall ?? (foundry ? { isSolid: foundryPhysicsSolid } : null),
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };

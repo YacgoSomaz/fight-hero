@@ -17,21 +17,19 @@ const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
 const map = new Image();
-map.src = './assets/lab-map.jpg';
-const unitSprite = new Image();
-unitSprite.src = './assets/unitmc-idle-original.png';
+map.src = './public/assets/maps/foundry.png';
+// The old prototype referenced untracked placeholder files here.  These
+// sentinel objects keep the optional enhancement branches quiet; Canvas
+// fallbacks below are used unless an extracted source image is present.
+const unitSprite = { complete: false, naturalWidth: 0 };
 const gunArmSprite = new Image();
 gunArmSprite.src = './source-assets/DefineSprite_501_MBFZ_fla.arm_gun_316/1.png';
 const frontArmSprite = new Image();
 frontArmSprite.src = './source-assets/DefineSprite_668_MBFZ_fla.arm_front_328/1.png';
-const muzzleFlashSprite = new Image();
-muzzleFlashSprite.src = './assets/muzzle-flash-original.png';
-const aimerCircleSprite = new Image();
-aimerCircleSprite.src = './assets/aimer-circle-original.png';
-const aimerCenterSprite = new Image();
-aimerCenterSprite.src = './assets/aimer-original.png';
-const hudRifleSprite = new Image();
-hudRifleSprite.src = './assets/hud-rifle-original.png';
+const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
+const aimerCircleSprite = { complete: false, naturalWidth: 0 };
+const aimerCenterSprite = { complete: false, naturalWidth: 0 };
+const hudRifleSprite = { complete: false, naturalWidth: 0 };
 const unitMatrixFrames = new Map();
 function getUnitMatrixFrame(frame) {
   if (!unitMatrixFrames.has(frame)) {
@@ -239,6 +237,17 @@ function drawAimer(player) {
     // The Aimer sprite exports at the original stage size; its centre is at 640,480.
     ctx.drawImage(aimerCenterSprite, 600, 440, 80, 80, pointer.x - 40, pointer.y - 40, 80, 80);
   }
+  if (!aimerCircleSprite.naturalWidth) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(243, 248, 205, .9)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(pointer.x, pointer.y, spread, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(pointer.x - 6, pointer.y); ctx.lineTo(pointer.x + 6, pointer.y);
+    ctx.moveTo(pointer.x, pointer.y - 6); ctx.lineTo(pointer.x, pointer.y + 6);
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function drawPlayer(player) {
@@ -324,19 +333,30 @@ function drawTracer(bullet) {
 }
 
 function drawMuzzleFlash(flash) {
-  if (!muzzleFlashSprite.complete || !muzzleFlashSprite.naturalWidth) return;
   const screen = worldToScreen(flash, camera, canvas.width, canvas.height);
   ctx.save();
   ctx.translate(screen.x, screen.y);
   ctx.rotate(flash.angle);
-  ctx.drawImage(muzzleFlashSprite, 0, 0, muzzleFlashSprite.naturalWidth, muzzleFlashSprite.naturalHeight, 0, -12, 30, 24);
+  if (muzzleFlashSprite.complete && muzzleFlashSprite.naturalWidth) {
+    ctx.drawImage(muzzleFlashSprite, 0, 0, muzzleFlashSprite.naturalWidth, muzzleFlashSprite.naturalHeight, 0, -12, 30, 24);
+  } else {
+    ctx.fillStyle = 'rgba(255, 231, 122, .95)';
+    ctx.beginPath(); ctx.moveTo(34, 0); ctx.lineTo(4, -10); ctx.lineTo(9, 0); ctx.lineTo(4, 10); ctx.closePath(); ctx.fill();
+  }
   ctx.restore();
 }
 
 function render() {
   if (map.complete && map.naturalWidth) {
     const source = getMapSourceRect(camera, canvas.width, canvas.height);
-    ctx.drawImage(map, source.x, source.y, source.width, source.height, 0, 0, canvas.width, canvas.height);
+    // Camera coordinates live in the logical collision world; the exported
+    // Foundry artwork has its own native dimensions, so transform the source
+    // rectangle instead of assuming the old missing lab image's dimensions.
+    const sourceX = source.x / world.config.width * map.naturalWidth;
+    const sourceY = source.y / world.config.height * map.naturalHeight;
+    const sourceWidth = source.width / world.config.width * map.naturalWidth;
+    const sourceHeight = source.height / world.config.height * map.naturalHeight;
+    ctx.drawImage(map, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
   } else {
     ctx.fillStyle = '#19202a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);

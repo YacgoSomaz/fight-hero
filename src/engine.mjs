@@ -30,9 +30,8 @@ const CONFIG = {
   ],
 };
 
-// `wallMC` is 2874×863 in Arena's Foundry frame.  This configuration must
-// remain 1:1 with its alpha bitmap: Arena.as reads the same bitmap with
-// getPixel32 for movement and bullets.
+// Foundry's authored player collision is its NodePhysBox layer.  Each blue
+// box is kept in the original stage coordinate system.
 const FOUNDRY_CONFIG = Object.freeze({
   width: FOUNDRY_LAYOUT.width,
   height: FOUNDRY_LAYOUT.height,
@@ -74,6 +73,11 @@ export const UNITMC_FRAMES = Object.freeze({
   duckrunback: [355, 387], climbsmall: [392, 396], climbbig: [397, 408], landhard: [409, 449],
 });
 
+function foundryPhysicsSolid(x, y) {
+  return FOUNDRY_LAYOUT.collisionBoxes.some((box) => x >= box.x - box.width / 2 && x <= box.x + box.width / 2
+    && y >= box.y - box.height / 2 && y <= box.y + box.height / 2);
+}
+
 export function createWorld(options = {}) {
   const foundry = Boolean(options.foundry);
   const baseConfig = foundry ? FOUNDRY_CONFIG : CONFIG;
@@ -87,9 +91,9 @@ export function createWorld(options = {}) {
     navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
     actions: foundry ? FOUNDRY_LAYOUT.actions.map((point) => ({ ...point })) : [],
     pickups: foundry ? FOUNDRY_LAYOUT.pickups.map((point) => ({ ...point })) : [],
-    // `wall.isSolid(x, y)` is the direct equivalent of Arena.wall.getPixel32(...).
-    // It is installed by the browser after it decodes the extracted Foundry wall PNG.
-    wall: options.wall ?? null,
+    // NodePhysBox is the blue authored collision layer in the Foundry frame.
+    // Do not derive physics from the foreground or hanging-object artwork.
+    wall: options.wall ?? (foundry ? { isSolid: foundryPhysicsSolid } : null),
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };
 }

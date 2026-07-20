@@ -32,8 +32,6 @@ const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
-const foundryWall = new Image();
-foundryWall.src = './assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png';
 let world = createWorld({ foundry: true });
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
@@ -45,26 +43,6 @@ let mouseFirePressed = false;
 let running = false;
 let online = null;
 let onlineAccumulator = 0;
-
-function installFoundryMask() {
-  const maskCanvas = document.createElement('canvas');
-  maskCanvas.width = foundryWall.naturalWidth;
-  maskCanvas.height = foundryWall.naturalHeight;
-  const maskContext = maskCanvas.getContext('2d', { willReadFrequently: true });
-  maskContext.drawImage(foundryWall, 0, 0);
-  const pixels = maskContext.getImageData(0, 0, maskCanvas.width, maskCanvas.height).data;
-  if (maskCanvas.width !== world.config.width || maskCanvas.height !== world.config.height) {
-    throw new Error(`Foundry wall size ${maskCanvas.width}×${maskCanvas.height} does not match world ${world.config.width}×${world.config.height}`);
-  }
-  world.wall = { isSolid(x, y) {
-    const sx = Math.floor(x);
-    const sy = Math.floor(y);
-    // Original Movement.hitTest accepts only an FF alpha byte. Translucent
-    // antialiasing above terrain must not become a collision surface.
-    return sx >= 0 && sy >= 0 && sx < maskCanvas.width && sy < maskCanvas.height && pixels[(sy * maskCanvas.width + sx) * 4 + 3] === 255;
-  } };
-}
-foundryWall.addEventListener('load', installFoundryMask);
 
 function saveSettings() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({ muted: audio.muted, difficulty: Number(difficulty.value), score: world.score }));
@@ -83,7 +61,6 @@ start.addEventListener('click', async () => {
       online = await joinPrivateRoom(room);
       world = createWorld({ multiplayer: true, foundry: true });
       applyRoomState(world, online.state);
-      if (foundryWall.complete) installFoundryMask();
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
     } else {
       online = null;
@@ -109,7 +86,6 @@ reset.addEventListener('click', () => {
   world = createWorld({ foundry: true });
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
-  if (foundryWall.complete) installFoundryMask();
   running = true;
   saveSettings();
 });

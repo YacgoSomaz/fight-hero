@@ -23,8 +23,19 @@ test('Foundry uses the decoded Arena wall dimensions, spawns, and navigation nod
   assert.deepEqual({ x: world.players[0].spawnX, y: world.players[0].spawnY }, { x: p1Spawn.x, y: p1Spawn.y });
   assert.equal(world.navigation.length, 17);
   assert.equal(world.actions.length, 21);
+  assert.equal(FOUNDRY_LAYOUT.collisionBoxes.length, 33);
   assert.equal(FOUNDRY_LAYOUT.spawns.length, 31);
   assert.equal(world.pickups.length, 4);
+});
+
+test('Foundry player collision uses only decoded blue NodePhysBox rectangles', () => {
+  const world = createWorld({ foundry: true, bots: false });
+  const crate = FOUNDRY_LAYOUT.collisionBoxes.find((box) => Math.abs(box.x - 491.15) < .01);
+
+  assert.ok(crate);
+  assert.equal(isSolid(world, crate.x, crate.y), true);
+  assert.equal(isSolid(world, crate.x - crate.width / 2 - 3, crate.y), false);
+  assert.equal(isSolid(world, 1200, 550), false, 'unmarked Foundry artwork cannot create a wall');
 });
 
 test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {

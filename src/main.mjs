@@ -10,6 +10,7 @@ import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QU
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
+import { commitStartedGameFrame } from './game-start-render.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 import { getUnitOverheadHud } from './unit-status.mjs';
@@ -204,7 +205,9 @@ async function launchSelectedMatch() {
       start.textContent = '战斗中';
     }
     camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
-    running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click'); saveSettings();
+    running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click');
+    commitStartedGameFrame(render);
+    saveSettings();
   } catch (error) { saveStatus.textContent = `启动失败：${error.message}`; }
 }
 start.addEventListener('click', () => { void launchSelectedMatch(); });
@@ -260,6 +263,7 @@ reset.addEventListener('click', async () => {
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;
+  commitStartedGameFrame(render);
   saveSettings();
 });
 

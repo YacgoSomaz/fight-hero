@@ -131,7 +131,7 @@ test('Foundry AI uses its difficulty-based shot probability instead of firing ev
 test('Foundry AI jumps when its connected route is blocked by a reachable box', () => {
   const world = createWorld({ foundry: true, random: () => .5 });
   const bot = world.bots[0];
-  world.players[0].alive = false;
+  world.players[0].alive = false; world.players[0].deathTimer = 999;
   world.navigation = [{ id: 'b', connections: '', x: 700, y: 620 }];
   world.actions = [];
   world.collisionBoxes = [{ x: 540, y: 595, width: 60, height: 50 }];
@@ -146,9 +146,9 @@ test('Foundry AI jumps when its connected route is blocked by a reachable box', 
 test('Foundry AI executes the decoded j_h action box across the right-hand pit', () => {
   const world = createWorld({ foundry: true, random: () => .5 });
   const bot = world.bots[0];
-  world.players[0].alive = false;
+  world.players[0].alive = false; world.players[0].deathTimer = 999;
   world.collisionBoxes = [{ x: 1437, y: 800, width: 2874, height: 196 }];
-  bot.x = 2344.7; bot.y = 702; bot.vy = 0; bot.grounded = true;
+  bot.x = 2350; bot.y = 702; bot.vy = 0; bot.grounded = true;
   bot.ai.difficulty = 15;
   bot.ai.nextWaypointId = 'h';
 

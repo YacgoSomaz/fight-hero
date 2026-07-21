@@ -83,13 +83,17 @@ export function formatQuickMatchSummary(selection) {
   return `${map.name} · ${mode.name} · Score ${selection.score} · ${QUICKMATCH_SOLDIER_NAMES[selection.soldiers] ?? QUICKMATCH_SOLDIER_NAMES[0]} · ${QUICKMATCH_DIFFICULTY_NAMES[selection.difficulty] ?? QUICKMATCH_DIFFICULTY_NAMES[1]}`;
 }
 
-// Every source Arena terrain now has its own decoded geometry and local art
-// layers.  Deathmatch is the one shared match rule fully wired to that common
-// map runtime; the other original rules remain visibly unavailable.
-export function isPlayableSelection(selection) { return ORIGINAL_MAPS.some(({ id }) => id === selection.map) && selection.mode === 'dm'; }
+// These three rules now consume Arena's decoded spawn/objective nodes in the
+// local runtime.  Juggernaut still needs Unit.as's role-transfer setup, so it
+// stays unavailable instead of being represented by a fake launch button.
+const PLAYABLE_SOURCE_MODES = new Set(['dm', 'tdm', 'ctf', 'dom']);
+const PLAYABLE_MODE_NAMES = Object.freeze({ dm: '死亡竞赛', tdm: '团队死斗', ctf: '夺旗', dom: '据点占领' });
+export function isPlayableSelection(selection) {
+  return ORIGINAL_MAPS.some(({ id }) => id === selection.map) && PLAYABLE_SOURCE_MODES.has(selection.mode);
+}
 
 export function getQuickMatchStatus(selection) {
   return isPlayableSelection(selection)
-    ? { canLaunch: true, message: '原场景地图、碰撞、导航与本地死亡竞赛已接入。' }
+    ? { canLaunch: true, message: `原场景地图、碰撞、导航与本地${PLAYABLE_MODE_NAMES[selection.mode]}规则已接入。` }
     : { canLaunch: false, message: '该地图或模式尚未完成原版地图、碰撞与规则迁移。' };
 }

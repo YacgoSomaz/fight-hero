@@ -164,7 +164,7 @@ start.addEventListener('click', async () => {
     } else {
       online = null;
       await loadMapVisual(matchSelection.map);
-      world = createWorld({ mapId: matchSelection.map });
+      world = createWorld({ mapId: matchSelection.map, mode: matchSelection.mode, score: matchSelection.score });
       world.matchSettings = { ...matchSelection };
       world.bots.forEach((bot) => { bot.ai.difficulty = matchSelection.difficulty; });
       start.textContent = '战斗中';
@@ -208,7 +208,7 @@ window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFi
 reset.addEventListener('click', async () => {
   online = null;
   await loadMapVisual(matchSelection.map);
-  world = createWorld({ mapId: matchSelection.map });
+  world = createWorld({ mapId: matchSelection.map, mode: matchSelection.mode, score: matchSelection.score });
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;

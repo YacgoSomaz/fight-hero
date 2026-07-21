@@ -92,9 +92,16 @@ export function formatQuickMatchSummary(selection) {
 // runtime.  Juggernaut additionally applies the original Unit.setJug role
 // transfer, so it is no longer represented by a fake launch button.
 const PLAYABLE_SOURCE_MODES = new Set(['dm', 'jug', 'tdm', 'ctf', 'dom']);
+// Quick Match exposes only Stats_Maps entries, while Campaign/Challenges
+// additionally use the decoded Dropship and Missile Arena timelines.
+const PLAYABLE_SOURCE_MAPS = new Set([
+  ...ORIGINAL_MAPS.map(({ id }) => id),
+  ...CAMPAIGN_MISSIONS.map(({ map }) => map),
+  ...CHALLENGE_MISSIONS.map(({ map }) => map),
+]);
 const PLAYABLE_MODE_NAMES = Object.freeze({ dm: '死亡竞赛', jug: 'Juggernaut', tdm: '团队死斗', ctf: '夺旗', dom: '据点占领' });
 export function isPlayableSelection(selection) {
-  return ORIGINAL_MAPS.some(({ id }) => id === selection.map) && PLAYABLE_SOURCE_MODES.has(selection.mode);
+  return PLAYABLE_SOURCE_MAPS.has(selection.map) && PLAYABLE_SOURCE_MODES.has(selection.mode);
 }
 
 export function getQuickMatchStatus(selection) {

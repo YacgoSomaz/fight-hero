@@ -340,6 +340,34 @@ Bot 的“随机”发生在**建局时**，不是每次复活或每帧重新抽
 覆盖档案武器。网页实现若要追求原版，应把“建局档案随机”和“party 覆盖”分成两个
 可复现的随机源，不能在 AI 的每个 update 中随机改枪。
 
+### 技能、连杀与状态机的交叉关系
+
+技能不是一个附加特效层。`Unit.setClass()` 会在创建角色时把部分技能永久写入基础
+属性：health 改 HP、ammo 改弹药倍率、critical 同时改 aim/crit、combat 同时改
+HP/弹药/aim/crit、vital 改爆头与暴击倍率、adren 改每帧再生倍率。其余技能在
+`Status.damage()` 或 `Status.EnterFrame()` 中作为条件状态消费，例如：
+
+- blur/blur2 在低于 30% HP 时启动短暂无敌/闪避状态，并有独立冷却；
+- shadow/shadow2 用 crouch、持旗和攻击/受击延迟驱动 `sInvis` 渐变，AI 选敌会跳过
+  完全隐身目标；
+- clip 把机枪的弹药模型改成直接消耗备用弹，改变 `Guns.shoot()` 与 `setGuns()`；
+- resist、iron、will、operation、bomb 分别进入爆炸伤害、盾牌减伤、下一击减伤、
+  濒死自救和死亡后爆炸分支。
+
+连杀的可用性从 `Score.addKill()` 开始，不由 HUD 自己计算：击杀增加 streak；达到
+`Stats_Streaks` 对应的 kills 阈值后进入 `canUseStreak`。Medic 的 charisma 只把
+这一阈值减一。`Unit.useKillstreak()` 再把同一配置分流为两类：
+
+```text
+global = true  → Game.createKillstreak()（雷达、毒气、直升机、空袭等全局对象）
+global = false → Unit / Status / Bullet（地雷、烟雾传送、surge、反射、燃烧、护甲、快速治疗）
+```
+
+持续类连杀会保留 `streakInProgress`，直到对应的 Status 计时器结束才调用
+`endKillstreak()`；一次性地雷、烟雾和护甲则立即结束。因此不能把所有连杀简化成
+“按键后立刻加一个 buff”，否则会破坏击杀阈值、持续状态、死亡取消和 AI 自动使用
+之间的关系。
+
 ## 9. 迁移优先级
 
 1. **P0：像素墙体**：导出/转换 `wallMC`，统一 `isSolid`；先让移动、攀爬、子弹命中和 AI 视线使用同一份数据。
@@ -353,7 +381,7 @@ Bot 的“随机”发生在**建局时**，不是每次复活或每帧重新抽
 
 **可当作事实：** 文件头、标签数量、SymbolClass ID、`UnitMC` 的 449 帧标签、`Movement` 常量、`Arena` 的 BitmapData 墙体流程、`AI` 选敌和射击公式，均来自二进制解析或源码/P-code 双导出。
 
-**仍需运行时/逐帧采样：** 每个部件每帧的 transform/pivot、某个具体地图帧同时活跃的节点数、所有武器最终数值表、地图 `wallMC` 的精确像素导出参数、原版屏幕滤镜和音频混音。这些不能仅凭一个 decompiler 的高层 AS3 还原安全地断言。
+**仍需运行时/逐帧采样：** 每个部件每帧的 transform/pivot、某个具体地图帧同时活跃的节点数、81 条枪械定义在实际播放时的所有子帧/声音触发、各投射物子类的全部碰撞边例、地图 `wallMC` 的精确像素导出参数、原版屏幕滤镜和音频混音。这些不能仅凭一个 decompiler 的高层 AS3 还原安全地断言。
 
 FFDec 的变量名在部分时间轴绑定中已有混淆痕迹；本报告只以明确的类名、符号名、常量、分支和 P-code 可对应的调用为依据。所有导出的原始素材应继续保持私有、在获得授权的范围内使用。
 

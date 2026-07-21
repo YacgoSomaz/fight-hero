@@ -73,7 +73,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
     fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, shootDelay: 0.15 },
     color, isBot, ai: isBot ? {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
-      navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0,
+      navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,
       waitFrames: 0, noWaitFrames: 0, crouchFrames: 0, aimX: null, aimY: null,
     } : null,
     hitbox: { ...config.playerHitbox },
@@ -475,6 +475,23 @@ function actionInput(world, bot, next) {
   }
   return {};
 }
+function aiObstacleAhead(world, bot, direction) {
+  if (!direction || !bot.grounded) return false;
+  const leadX = bot.x + direction * (bot.hitbox.halfWidth + 3);
+  const bodyBlocked = [-20, -35].some((offset) => isSolid(world, leadX, bot.y + offset));
+  // Only jump a ledge that is below the original head-clearance probe. A
+  // solid tower should send the bot back to its waypoint graph, not make it
+  // repeatedly jump into a ceiling.
+  return bodyBlocked && !isSolid(world, leadX, bot.y - 55);
+}
+function rerouteBlockedWaypoint(world, bot) {
+  const ai = bot.ai;
+  const origin = waypointById(world, ai.currentWaypointId) ?? getClosestWaypoint(world, bot);
+  if (!origin) return null;
+  const alternatives = [...origin.connections].filter((id) => id !== ai.nextWaypointId).map((id) => waypointById(world, id)).filter(Boolean);
+  if (!alternatives.length) return null;
+  return setNextWaypoint(world, ai, alternatives[Math.floor(aiRandom(world) * alternatives.length)].id);
+}
 function botInput(world, bot, dt) {
   const ai = bot.ai;
   const frameUnits = dt * 30;
@@ -502,13 +519,24 @@ function botInput(world, bot, dt) {
   }
   if (target && !ai.crouchFrames && aiChance(world, .02 * diffReverse * .3, dt)) ai.crouchFrames = (2 + Math.floor(aiRandom(world) * 3)) * diffReverse * .1 * 30;
 
-  const move = next && !ai.waitFrames ? { left: next.x < bot.x - 30, right: next.x > bot.x + 30 } : {};
+  let move = next && !ai.waitFrames ? { left: next.x < bot.x - 30, right: next.x > bot.x + 30 } : {};
+  let direction = move.left ? -1 : move.right ? 1 : 0;
+  let obstacleJump = aiObstacleAhead(world, bot, direction);
+  if (obstacleJump) ai.blockedFrames += frameUnits;
+  else if (bot.grounded) ai.blockedFrames = Math.max(0, ai.blockedFrames - frameUnits * 2);
+  if (ai.blockedFrames >= 30) {
+    next = rerouteBlockedWaypoint(world, bot) ?? next;
+    ai.blockedFrames = 0;
+    move = next && !ai.waitFrames ? { left: next.x < bot.x - 30, right: next.x > bot.x + 30 } : {};
+    direction = move.left ? -1 : move.right ? 1 : 0;
+    obstacleJump = aiObstacleAhead(world, bot, direction);
+  }
   const action = next ? actionInput(world, bot, next) : {};
   const aim = originalAiAim(world, bot, target);
   const shootBase = .05 + (1 - Math.min(bot.weapon.shootDelay ?? world.config.fireCooldown, .9)) * .2;
   const shotChance = difficulty === 10 ? 1000 : difficulty * .29 + .1;
   const fire = Boolean(target) && difficulty > 0 && aiChance(world, shootBase * shotChance, dt);
-  return { ...move, ...action, down: Boolean(action.down || ai.crouchFrames), ...aim, fire, reload: bot.weapon.clip < 4 };
+  return { ...move, ...action, jump: Boolean(action.jump || obstacleJump), down: Boolean(action.down || ai.crouchFrames), ...aim, fire, reload: bot.weapon.clip < 4 };
 }
 
 function segmentHitsActor(bullet, actor) {

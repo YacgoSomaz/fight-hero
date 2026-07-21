@@ -64,6 +64,13 @@ const FOUNDRY_CONFIG = Object.freeze({
   platforms: [],
 });
 
+// Exact Stats_Maps.as `map` field: variants change Bg/BgSky, not Arena's
+// terrain timeline.  Keeping the requested id separately lets the renderer
+// choose the correct original day/night art without duplicating physics.
+const TERRAIN_MAP_BY_ID = Object.freeze({
+  foundry2: 'foundry', plane2: 'plane', swamp2: 'swamp', cave2: 'cave', missile2: 'missile',
+});
+
 function sourcePoint(item) {
   const [id, connections = ''] = item.name.split('_');
   const point = { name: item.name, id, connections, x: item.x, y: item.y };
@@ -172,7 +179,8 @@ function boxSolid(boxes, x, y) {
 
 export function createWorld(options = {}) {
   const mapId = options.mapId ?? (options.foundry ? 'foundry' : 'prototype');
-  const map = decodedMap(mapId);
+  const terrainMapId = TERRAIN_MAP_BY_ID[mapId] ?? mapId;
+  const map = decodedMap(terrainMapId);
   const baseConfig = map?.config ?? CONFIG;
   const p1Spawn = map?.spawns.find((spawn) => spawn.name === 'b_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_0')) ?? { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
   const p2Spawn = map?.spawns.find((spawn) => spawn.name === 'g_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_2')) ?? { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
@@ -181,6 +189,7 @@ export function createWorld(options = {}) {
   const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig)];
   return {
     mapId,
+    terrainMapId,
     config: { ...baseConfig, playerHitbox: { ...baseConfig.playerHitbox }, platforms: baseConfig.platforms.map((platform) => ({ ...platform })) },
     navigation: map ? map.navigation.map((point) => ({ ...point })) : [],
     actions: map ? map.actions.map((point) => ({ ...point })) : [],

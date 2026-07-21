@@ -22,3 +22,15 @@ test('every original Arena map is registered only with decoded source layout dat
     assert.ok(world.players[0].spawnX > 0, `${mapId} needs an authored spawn`);
   }
 });
+
+test('source day/night map variants retain their requested id while sharing the original Arena terrain', () => {
+  const nightFoundry = createWorld({ mapId: 'foundry2', bots: false });
+  const dawnPlane = createWorld({ mapId: 'plane2', bots: false });
+  const duskCave = createWorld({ mapId: 'cave2', bots: false });
+
+  assert.equal(nightFoundry.mapId, 'foundry2');
+  assert.equal(nightFoundry.terrainMapId, 'foundry');
+  assert.equal(nightFoundry.collisionBoxes.length, 33);
+  assert.equal(dawnPlane.terrainMapId, 'plane');
+  assert.equal(duskCave.terrainMapId, 'cave');
+});

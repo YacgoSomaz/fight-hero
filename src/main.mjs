@@ -99,7 +99,7 @@ function renderQuickmatchOverlay() {
 
 function showSourceMenu(screen = 'home') {
   const asset = MENU_SCREEN_ASSETS[screen];
-  const copy = MENU_CHINESE_COPY[screen];
+  const copy = MENU_CHINESE_COPY[screen] ?? MENU_CHINESE_COPY.home;
   menuSurface.dataset.screen = screen;
   menuSurface.dataset.presentation = MENU_PRESENTATION_MODE;
   menuImage.src = `./public/assets/${asset.file}`;
@@ -160,8 +160,7 @@ menuButtons.addEventListener('click', (event) => {
   const action = event.target.closest('[data-menu-action]')?.dataset.menuAction;
   if (action === 'preview:campaign') showSourceMenu('campaign');
   else if (action === 'preview:challenges') showSourceMenu('challenges');
-  else if (action === 'show:quickmatch') showSourceMenu('quickmatch');
-  else if (action === 'show:home') showSourceMenu('home');
+  else if (action?.startsWith('show:')) showSourceMenu(action.split(':')[1]);
   else if (action?.startsWith('quick:mode:')) {
     matchSelection = updateMatchSelection(matchSelection, { mode: action.split(':')[2] });
     quickSelectionChanged = true; quickStatus = isPlayableSelection(matchSelection) ? '' : 'NOT MIGRATED'; renderQuickmatchOverlay();

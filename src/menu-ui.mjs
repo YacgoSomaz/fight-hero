@@ -2,11 +2,23 @@
 // frames. We expose only controls which already have an actual local action.
 const area = (id, action, label, left, top, width, height) => Object.freeze({ id, action, label, left, top, width, height });
 
+// Menu.as: tabbuts = ["play", "soldiers", "options", "medals", "tips", "version"].
+// Measured against the FFDec-exported 1440×1080 timeline frames.
+const TAB_AREAS = Object.freeze([
+  area('tab-play', 'show:home', '开始 / Play', 26.7, 66.4, 8.8, 3.9),
+  area('tab-soldiers', 'show:soldiers', '士兵 / Soldiers', 35.7, 66.4, 9.2, 3.9),
+  area('tab-options', 'show:options', '选项 / Options', 45.0, 66.4, 9.2, 3.9),
+  area('tab-medals', 'show:medals', '勋章 / Medals', 54.3, 66.4, 9.0, 3.9),
+  area('tab-tips', 'show:tips', '提示 / Tips', 63.4, 66.4, 8.2, 3.9),
+  area('tab-version', 'show:version', '版本说明 / Version', 71.7, 66.4, 5.6, 3.9),
+]);
+
 const MENU_HIT_AREAS = Object.freeze({
   home: Object.freeze([
     area('home-campaign', 'preview:campaign', '战役（仅原始菜单预览）', 27.5, 55.0, 13.5, 3.7),
     area('home-challenges', 'preview:challenges', '挑战（仅原始菜单预览）', 27.5, 58.6, 13.5, 3.7),
     area('home-quickmatch', 'show:quickmatch', '快速对战', 27.5, 62.0, 13.5, 3.9),
+    ...TAB_AREAS,
   ]),
   quickmatch: Object.freeze([
     area('quick-mode-dm', 'quick:mode:dm', 'Deathmatch', 27.6, 30.0, 2.9, 4.5),
@@ -31,8 +43,13 @@ const MENU_HIT_AREAS = Object.freeze({
     area('quick-back', 'show:home', '返回', 45.0, 60.4, 10.0, 4.3),
     area('quick-start', 'start:foundry-deathmatch', '开始游戏', 64.0, 60.4, 13.0, 4.3),
   ]),
-  campaign: Object.freeze([area('campaign-back', 'show:home', '返回', 45.0, 60.4, 10.0, 4.3)]),
-  challenges: Object.freeze([area('challenges-back', 'show:home', '返回', 45.0, 60.4, 10.0, 4.3)]),
+  campaign: Object.freeze([area('campaign-back', 'show:home', '返回', 45.0, 60.4, 10.0, 4.3), ...TAB_AREAS]),
+  challenges: Object.freeze([area('challenges-back', 'show:home', '返回', 45.0, 60.4, 10.0, 4.3), ...TAB_AREAS]),
+  soldiers: TAB_AREAS,
+  options: TAB_AREAS,
+  medals: TAB_AREAS,
+  tips: TAB_AREAS,
+  version: TAB_AREAS,
 });
 
 export const DEFAULT_MENU_SCREEN = 'home';

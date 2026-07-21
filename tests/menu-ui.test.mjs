@@ -37,8 +37,8 @@ test('only source-menu actions with a real local outcome receive a hit area', ()
     { id: 'quick-back', action: 'show:home' },
     { id: 'quick-start', action: 'start:foundry-deathmatch' },
   ]);
-  assert.deepEqual(getMenuHitAreas('campaign').map(({ id }) => id), ['campaign-back']);
-  assert.deepEqual(getMenuHitAreas('challenges').map(({ id }) => id), ['challenges-back']);
+  assert.deepEqual(getMenuHitAreas('campaign').map(({ id }) => id), ['campaign-back', 'tab-play', 'tab-soldiers', 'tab-options', 'tab-medals', 'tab-tips', 'tab-version']);
+  assert.deepEqual(getMenuHitAreas('challenges').map(({ id }) => id), ['challenges-back', 'tab-play', 'tab-soldiers', 'tab-options', 'tab-medals', 'tab-tips', 'tab-version']);
   for (const screen of ['soldiers', 'options', 'medals', 'tips', 'version']) {
     assert.deepEqual(getMenuHitAreas(screen).map(({ id, action }) => ({ id, action })), [
       { id: 'tab-play', action: 'show:home' },

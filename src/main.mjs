@@ -1,10 +1,10 @@
 import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { AudioBank } from './audio.mjs';
+import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
 import { selectM4Action } from './m4-action-selector.mjs';
 import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
-import { CAMPAIGN_MISSIONS, CHALLENGE_MISSIONS, ORIGINAL_MAPS, ORIGINAL_MODES, createMatchSelection, getQuickMatchStatus, updateMatchSelection } from './menu-state.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -12,17 +12,9 @@ const reset = document.querySelector('#reset');
 const start = document.querySelector('#start');
 const difficulty = document.querySelector('#difficulty');
 const difficultyValue = document.querySelector('#difficultyValue');
+const roomInput = document.querySelector('#room');
 const music = document.querySelector('#music');
 const saveStatus = document.querySelector('#saveStatus');
-const frontMenu = document.querySelector('#frontMenu');
-const gameStage = document.querySelector('#gameStage');
-const leaveMatch = document.querySelector('#leaveMatch');
-const mapSelect = document.querySelector('#mapSelect');
-const modeSelect = document.querySelector('#modeSelect');
-const scoreSelect = document.querySelector('#scoreSelect');
-const quickStatus = document.querySelector('#quickStatus');
-const skills = document.querySelector('#skills');
-const streaks = document.querySelector('#streaks');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
@@ -69,64 +61,35 @@ const pointer = { x: canvas.width * 0.75, y: canvas.height * 0.52 };
 let mouseFire = false;
 let mouseFirePressed = false;
 let running = false;
-let selection = createMatchSelection({ difficulty: Number(saved.difficulty ?? 1) });
+let online = null;
+let onlineAccumulator = 0;
 
 function saveSettings() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({ muted: audio.muted, difficulty: Number(difficulty.value), score: world.score }));
   saveStatus.textContent = `已保存：P1 ${world.score.p1 ?? 0} 击倒 · AI ${world.score.bot1 ?? 0} 击倒`;
 }
-difficulty.value = selection.difficulty;
+difficulty.value = saved.difficulty ?? 6;
 difficultyValue.value = difficulty.value;
 music.checked = !audio.muted;
 saveStatus.textContent = saved.score ? `读取存档：P1 ${saved.score.p1 ?? 0} 击倒` : '本地存档尚未创建';
-difficulty.addEventListener('input', () => { difficultyValue.value = difficulty.value; selection = updateMatchSelection(selection, { difficulty: Number(difficulty.value) }); if (world.bots[0]) world.bots[0].ai.difficulty = Number(difficulty.value); });
+difficulty.addEventListener('input', () => { difficultyValue.value = difficulty.value; if (world.bots[0]) world.bots[0].ai.difficulty = Number(difficulty.value); saveSettings(); });
 music.addEventListener('change', () => { audio.setMuted(!music.checked); if (music.checked && !running) audio.startMenu(); saveSettings(); });
-function option(value, label) { const item = document.createElement('option'); item.value = value; item.textContent = label; return item; }
-function renderMissionList(element, missions) {
-  for (const mission of missions) {
-    const map = ORIGINAL_MAPS.find((item) => item.id === mission.map)?.name ?? mission.map;
-    const mode = ORIGINAL_MODES.find((item) => item.id === mission.mode)?.name ?? mission.mode;
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>${mission.title}</strong><span>${map} · ${mode}</span><span>目标 ${mission.score} · 难度 ${mission.difficulty}</span><em>规则待迁入</em>`;
-    element.append(li);
-  }
-}
-function renderQuickMatch() {
-  mapSelect.replaceChildren(...ORIGINAL_MAPS.map((map) => option(map.id, map.name)));
-  modeSelect.replaceChildren(...ORIGINAL_MODES.map((mode) => option(mode.id, mode.name)));
-  mapSelect.value = selection.map; modeSelect.value = selection.mode;
-  const mode = ORIGINAL_MODES.find((entry) => entry.id === selection.mode);
-  scoreSelect.replaceChildren(...mode.scores.map((score) => option(String(score), `${mode.scoreType}：${score}`)));
-  scoreSelect.value = String(selection.score);
-  skills.checked = selection.skills; streaks.checked = selection.streaks;
-  const status = getQuickMatchStatus(selection);
-  quickStatus.textContent = status.message;
-  start.disabled = !status.canLaunch;
-}
-function setView(view) {
-  document.querySelectorAll('[data-view-panel]').forEach((panel) => { const active = panel.dataset.viewPanel === view; panel.hidden = !active; panel.classList.toggle('active', active); });
-  document.querySelectorAll('.rail-item').forEach((button) => button.classList.toggle('active', button.dataset.view === view));
-  if (view === 'quick') renderQuickMatch();
-}
-document.querySelectorAll('[data-view]').forEach((button) => button.addEventListener('click', () => setView(button.dataset.view)));
-document.querySelectorAll('[data-view-link]').forEach((link) => link.addEventListener('click', () => setView(link.dataset.viewLink)));
-mapSelect.addEventListener('change', () => { selection = updateMatchSelection(selection, { map: mapSelect.value }); renderQuickMatch(); });
-modeSelect.addEventListener('change', () => { selection = updateMatchSelection(selection, { mode: modeSelect.value }); renderQuickMatch(); });
-scoreSelect.addEventListener('change', () => { selection = updateMatchSelection(selection, { score: Number(scoreSelect.value) }); });
-skills.addEventListener('change', () => { selection = updateMatchSelection(selection, { skills: skills.checked }); });
-streaks.addEventListener('change', () => { selection = updateMatchSelection(selection, { streaks: streaks.checked }); });
-renderMissionList(document.querySelector('#campaignList'), CAMPAIGN_MISSIONS);
-renderMissionList(document.querySelector('#challengeList'), CHALLENGE_MISSIONS);
-renderQuickMatch();
-start.addEventListener('click', () => {
-  if (!getQuickMatchStatus(selection).canLaunch) return;
-  world = createWorld({ foundry: true });
-  world.bots[0].ai.difficulty = selection.difficulty;
-  camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
-  running = true; document.body.dataset.screen = 'game'; frontMenu.hidden = true; gameStage.hidden = false;
-  audio.stopMenu(); audio.play('click'); saveSettings();
+start.addEventListener('click', async () => {
+  try {
+    const room = roomInput.value.trim();
+    if (room) {
+      online = await joinPrivateRoom(room);
+      world = createWorld({ multiplayer: true, foundry: true });
+      applyRoomState(world, online.state);
+      start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
+    } else {
+      online = null;
+      world.bots[0].ai.difficulty = Number(difficulty.value);
+      start.textContent = '战斗中';
+    }
+    running = true; audio.stopMenu(); audio.play('click'); saveSettings();
+  } catch (error) { saveStatus.textContent = `联机失败：${error.message}`; }
 });
-leaveMatch.addEventListener('click', () => { running = false; document.body.dataset.screen = 'menu'; gameStage.hidden = true; frontMenu.hidden = false; start.textContent = '开始战斗'; if (!audio.muted) audio.startMenu(); });
 audio.startMenu();
 
 for (const type of ['keydown', 'keyup']) {
@@ -139,8 +102,9 @@ for (const type of ['keydown', 'keyup']) {
 }
 window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFirePressed = false; });
 reset.addEventListener('click', () => {
+  online = null;
   world = createWorld({ foundry: true });
-  world.bots[0].ai.difficulty = selection.difficulty;
+  world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;
   saveSettings();
@@ -487,8 +451,17 @@ function frame(now) {
   last = now;
   if (running) {
     const input = inputForPlayer();
-    step(world, { p1: input }, dt);
-    for (const event of world.events.splice(0)) audio.play(event.type);
+    if (online) {
+      onlineAccumulator += dt;
+      if (onlineAccumulator >= 1 / 20) {
+        const networkDt = onlineAccumulator;
+        onlineAccumulator = 0;
+        sendRoomInput(online, input, networkDt).then((state) => { if (state) applyRoomState(world, state); }).catch((error) => { saveStatus.textContent = `联机断开：${error.message}`; });
+      }
+    } else {
+      step(world, { p1: input }, dt);
+      for (const event of world.events.splice(0)) audio.play(event.type);
+    }
     if (Math.floor(world.elapsed) !== Math.floor(world.elapsed - dt)) saveSettings();
   }
   const targetCamera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);

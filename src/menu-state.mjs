@@ -39,20 +39,6 @@ export function createMatchSelection(overrides = {}) {
   return { map: 'foundry', mode: 'dm', score: 10, difficulty: 1, bots: 1, skills: true, streaks: true, modifier: 'none', ...overrides };
 }
 
-export function updateMatchSelection(selection, changes) {
-  const next = { ...selection, ...changes };
-  const mode = ORIGINAL_MODES.find((entry) => entry.id === next.mode) ?? ORIGINAL_MODES[0];
-  const scoreOptions = [...mode.scores];
-  if (!scoreOptions.includes(next.score) || Object.hasOwn(changes, 'mode')) next.score = scoreOptions[0];
-  return { ...next, scoreOptions };
-}
-
 // Only this combination has already had its map art, collision, node graph and
 // match rule migrated. The menu must not present unported source data as playable.
 export function isPlayableSelection(selection) { return selection.map === 'foundry' && selection.mode === 'dm'; }
-
-export function getQuickMatchStatus(selection) {
-  return isPlayableSelection(selection)
-    ? { canLaunch: true, message: 'Foundry · Deathmatch 已完成地图、碰撞、导航及基础对战迁移。' }
-    : { canLaunch: false, message: '该地图或模式尚未完成原版地图、碰撞与规则迁移。' };
-}

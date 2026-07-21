@@ -7,6 +7,12 @@ test('only source-menu actions with a real local outcome receive a hit area', ()
     { id: 'home-campaign', action: 'preview:campaign' },
     { id: 'home-challenges', action: 'preview:challenges' },
     { id: 'home-quickmatch', action: 'show:quickmatch' },
+    { id: 'tab-play', action: 'show:home' },
+    { id: 'tab-soldiers', action: 'show:soldiers' },
+    { id: 'tab-options', action: 'show:options' },
+    { id: 'tab-medals', action: 'show:medals' },
+    { id: 'tab-tips', action: 'show:tips' },
+    { id: 'tab-version', action: 'show:version' },
   ]);
   assert.deepEqual(getMenuHitAreas('quickmatch').map(({ id, action }) => ({ id, action })), [
     { id: 'quick-mode-dm', action: 'quick:mode:dm' },
@@ -33,6 +39,16 @@ test('only source-menu actions with a real local outcome receive a hit area', ()
   ]);
   assert.deepEqual(getMenuHitAreas('campaign').map(({ id }) => id), ['campaign-back']);
   assert.deepEqual(getMenuHitAreas('challenges').map(({ id }) => id), ['challenges-back']);
+  for (const screen of ['soldiers', 'options', 'medals', 'tips', 'version']) {
+    assert.deepEqual(getMenuHitAreas(screen).map(({ id, action }) => ({ id, action })), [
+      { id: 'tab-play', action: 'show:home' },
+      { id: 'tab-soldiers', action: 'show:soldiers' },
+      { id: 'tab-options', action: 'show:options' },
+      { id: 'tab-medals', action: 'show:medals' },
+      { id: 'tab-tips', action: 'show:tips' },
+      { id: 'tab-version', action: 'show:version' },
+    ]);
+  }
 });
 
 test('visible Chinese copy marks preview-only screens instead of promising unported gameplay', () => {
@@ -44,7 +60,7 @@ test('visible Chinese copy marks preview-only screens instead of promising unpor
 
 test('the first visible menu is the source home screen with real menu controls', () => {
   assert.equal(DEFAULT_MENU_SCREEN, 'home');
-  assert.equal(getMenuHitAreas(DEFAULT_MENU_SCREEN).length, 3);
+  assert.equal(getMenuHitAreas(DEFAULT_MENU_SCREEN).length, 9);
 });
 
 test('Chinese availability copy stays below the original bottom navigation art', () => {

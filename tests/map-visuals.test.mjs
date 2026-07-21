@@ -18,7 +18,25 @@ test('source background sprites use their authored visible bounds rather than tr
 test('Tutorial terrain uses its authored visible bounds instead of the empty FFDec stage canvas', () => {
   const visual = getMapVisual('tut');
   assert.match(visual.terrain, /arena-clean-art-export\/DefineSprite_1413_Arena\/8\.png$/);
-  assert.deepEqual(getMapLayerCrop(visual.terrain), { x: 530, y: 522, width: 2952, height: 1708 });
+  assert.deepEqual(getMapLayerCrop(visual.terrain), { x: 526, y: 509, width: 2961, height: 1730 });
+});
+
+test('every decoded Arena foreground removes its transparent FFDec stage border before camera sampling', () => {
+  const root = './private-assets/arena-clean-art-export/DefineSprite_1413_Arena';
+  const crops = {
+    2: { x: 426, y: 496, width: 3102, height: 1000 },
+    3: { x: 520, y: 1708, width: 3172, height: 874 },
+    4: { x: 520, y: 1708, width: 3172, height: 874 },
+    5: { x: 724, y: 929, width: 2532, height: 935 },
+    6: { x: 437, y: 598, width: 3030, height: 1378 },
+    7: { x: 422, y: 535, width: 3105, height: 1415 },
+    8: { x: 526, y: 509, width: 2961, height: 1730 },
+    9: { x: 1766, y: 1701, width: 521, height: 279 },
+    10: { x: 1133, y: 929, width: 1637, height: 1093 },
+  };
+  for (const [frame, expected] of Object.entries(crops)) {
+    assert.deepEqual(getMapLayerCrop(`${root}/${frame}.png`), expected, `Arena frame ${frame}`);
+  }
 });
 
 test('night variants use their original background selection while retaining the matching terrain map', () => {

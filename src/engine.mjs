@@ -71,6 +71,12 @@ const TERRAIN_MAP_BY_ID = Object.freeze({
   foundry2: 'foundry', plane2: 'plane', swamp2: 'swamp', cave2: 'cave', missile2: 'missile',
 });
 
+// Stats_Misc.as defines these three as the team rule sets.  Keep this small
+// table close to world creation so an Arena node can be used without guessing
+// which side a player or bot belongs to.
+const TEAM_MODES = new Set(['tdm', 'ctf', 'dom']);
+const MODE_SCORE_DEFAULTS = Object.freeze({ dm: 10, tdm: 25, ctf: 3, dom: 50, jug: 10 });
+
 function sourcePoint(item) {
   const [id, connections = ''] = item.name.split('_');
   const point = { name: item.name, id, connections, x: item.x, y: item.y };
@@ -143,7 +149,7 @@ function decodedObjectives(map, mode, random) {
   return { flags: [], holdpoints: [] };
 }
 
-function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
+function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG, team = 0) {
   return {
     id, spawnX, spawnY, x: spawnX, y: spawnY, vx: 0, vy: 0, facing: 1,
     aimX: spawnX + 100, aimY: spawnY - 47, aimAngle: 0,
@@ -151,7 +157,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
     fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, shootDelay: 0.15 },
-    color, isBot, ai: isBot ? {
+    color, team, carriedFlagId: null, isBot, ai: isBot ? {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
       navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,
       huntTargetId: null, huntGoalWaypointId: null, huntFrames: 0, routeIds: [],
@@ -210,12 +216,15 @@ export function createWorld(options = {}) {
   const terrainMapId = TERRAIN_MAP_BY_ID[mapId] ?? mapId;
   const map = decodedMap(terrainMapId);
   const mode = options.mode ?? 'dm';
+  const usesTeams = TEAM_MODES.has(mode);
   const baseConfig = map?.config ?? CONFIG;
-  const p1Spawn = map?.spawns.find((spawn) => spawn.name === 'b_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_0')) ?? { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
-  const p2Spawn = map?.spawns.find((spawn) => spawn.name === 'g_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_2')) ?? { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
-  const p1 = makeActor('p1', p1Spawn.x, p1Spawn.y, '#48b7ff', false, baseConfig);
-  const humans = options.multiplayer ? [makeActor('p2', p2Spawn.x, p2Spawn.y, '#f4a35f', false, baseConfig)] : [];
-  const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig)];
+  const soloP1Spawn = map?.spawns.find((spawn) => spawn.name === 'b_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_0')) ?? { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
+  const soloP2Spawn = map?.spawns.find((spawn) => spawn.name === 'g_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_2')) ?? { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
+  const p1Spawn = usesTeams ? map?.spawns.find((spawn) => spawn.name.endsWith('_1')) ?? soloP1Spawn : soloP1Spawn;
+  const p2Spawn = usesTeams ? map?.spawns.find((spawn) => spawn.name.endsWith('_2')) ?? soloP2Spawn : soloP2Spawn;
+  const p1 = makeActor('p1', p1Spawn.x, p1Spawn.y, '#48b7ff', false, baseConfig, usesTeams ? 1 : 0);
+  const humans = options.multiplayer ? [makeActor('p2', p2Spawn.x, p2Spawn.y, '#f4a35f', false, baseConfig, usesTeams ? 2 : 0)] : [];
+  const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig, usesTeams ? 2 : 0)];
   return {
     mapId,
     terrainMapId,
@@ -232,7 +241,9 @@ export function createWorld(options = {}) {
     // Keep original Arena node coordinates while the retained physical boxes
     // stay aligned to the existing Foundry art/collision baseline.
     nodeOffset: map?.nodeOffset ?? { x: 0, y: 0 },
-    players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
+    players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 },
+    match: { scoreLimit: Number(options.score) || (MODE_SCORE_DEFAULTS[mode] ?? 10), teamScores: { 1: 0, 2: 0 }, winnerTeam: null, winnerId: null, ended: false, objectiveElapsed: 0 },
+    elapsed: 0, frame: 0,
   };
 }
 
@@ -490,7 +501,96 @@ function spawnBullet(world, actor) {
 function damage(world, target, amount, owner) {
   if (!target.alive) return;
   target.hp = Math.max(0, target.hp - amount); target.hitTimer = 0.16; world.hitEffects.push({ x: target.x, y: target.y - 38, ttl: 0.16 }); world.events.push({ type: 'hit', actor: target.id });
-  if (!target.hp) { target.alive = false; target.deathTimer = world.config.respawnDuration; world.events.push({ type: 'death', actor: target.id }); if (owner) world.score[owner] = (world.score[owner] ?? 0) + 1; }
+  if (!target.hp) {
+    resetCarriedFlag(world, target);
+    target.alive = false; target.deathTimer = world.config.respawnDuration; world.events.push({ type: 'death', actor: target.id });
+    if (owner) awardKill(world, owner);
+  }
+}
+
+function awardTeamScore(world, team) {
+  if (!team || world.match.ended) return;
+  world.match.teamScores[team] = (world.match.teamScores[team] ?? 0) + 1;
+  world.events.push({ type: 'teamScore', team, score: world.match.teamScores[team] });
+  if (world.match.teamScores[team] >= world.match.scoreLimit) {
+    world.match.winnerTeam = team;
+    world.match.ended = true;
+    world.events.push({ type: 'matchEnd', team });
+  }
+}
+
+function awardKill(world, ownerId) {
+  world.score[ownerId] = (world.score[ownerId] ?? 0) + 1;
+  const owner = world.players.find((actor) => actor.id === ownerId);
+  if (world.mode === 'tdm') awardTeamScore(world, owner?.team);
+}
+
+function resetCarriedFlag(world, actor) {
+  if (!actor.carriedFlagId) return;
+  const flag = world.objectives.flags.find((item) => item.id === actor.carriedFlagId);
+  if (flag) flag.carrierId = null;
+  actor.carriedFlagId = null;
+}
+
+function inCtfFlagTrigger(actor, flag) {
+  // Unit.as invokes the CTF trigger against x ±40 and y -70..+25.
+  return actor.x >= flag.x - 40 && actor.x <= flag.x + 40
+    && actor.y >= flag.y - 70 && actor.y <= flag.y + 25;
+}
+
+function updateCtf(world) {
+  for (const actor of world.players) {
+    if (!actor.alive) continue;
+    for (const flag of world.objectives.flags) {
+      if (!inCtfFlagTrigger(actor, flag)) continue;
+      if (flag.team !== actor.team && !flag.carrierId && !actor.carriedFlagId) {
+        flag.carrierId = actor.id;
+        actor.carriedFlagId = flag.id;
+        world.events.push({ type: 'flagTake', actor: actor.id, flag: flag.id });
+      } else if (flag.team === actor.team && actor.carriedFlagId) {
+        const carried = world.objectives.flags.find((item) => item.id === actor.carriedFlagId);
+        if (carried) carried.carrierId = null;
+        actor.carriedFlagId = null;
+        world.events.push({ type: 'flagCapture', actor: actor.id, flag: carried?.id });
+        awardTeamScore(world, actor.team);
+      }
+    }
+  }
+}
+
+function inHoldpointTrigger(actor, point) {
+  // Unit.as supplies NodeHoldpoint with x ±120 and y ±100.
+  return actor.x >= point.x - 120 && actor.x <= point.x + 120
+    && actor.y >= point.y - 100 && actor.y <= point.y + 100;
+}
+
+function updateDomination(world, dt) {
+  for (const point of world.objectives.holdpoints) {
+    const claimant = world.players.find((actor) => actor.alive && actor.team > 0 && actor.team !== point.team && inHoldpointTrigger(actor, point));
+    if (claimant) {
+      point.progress += dt * 30;
+      if (point.progress >= -10) {
+        point.team = claimant.team;
+        point.capturedBy = claimant.id;
+        point.progress = -15;
+        world.events.push({ type: 'holdpointCapture', point: point.letter, team: point.team });
+      }
+      continue;
+    }
+    const defender = world.players.find((actor) => actor.alive && actor.team === point.team && inHoldpointTrigger(actor, point));
+    if (defender) point.progress = Math.max(-65, point.progress - dt * 30);
+  }
+  world.match.objectiveElapsed += dt;
+  while (world.match.objectiveElapsed >= 3) {
+    world.match.objectiveElapsed -= 3;
+    for (const point of world.objectives.holdpoints) awardTeamScore(world, point.team);
+  }
+}
+
+function updateObjectives(world, dt) {
+  if (world.match.ended) return;
+  if (world.mode === 'ctf') updateCtf(world);
+  if (world.mode === 'dom') updateDomination(world, dt);
 }
 function updateActor(world, actor, input, dt) {
   if (!actor.alive) { actor.deathTimer -= dt; if (actor.deathTimer <= 0) { actor.alive = true; actor.hp = actor.maxHp; actor.x = actor.spawnX; actor.y = actor.spawnY; actor.vx = actor.vy = 0; actor.weapon.clip = actor.weapon.clipMax; actor.weapon.spare = 90; } return; }
@@ -749,7 +849,9 @@ function updateBullets(world, dt) {
     bullet.px = bullet.x; bullet.py = bullet.y; bullet.x += bullet.vx * dt; bullet.y += bullet.vy * dt; bullet.ttl -= dt;
     const distance = Math.hypot(bullet.x - bullet.px, bullet.y - bullet.py); const steps = Math.ceil(distance / 8);
     for (let i = 1; i <= steps; i += 1) if (isSolid(world, bullet.px + (bullet.x - bullet.px) * i / steps, bullet.py + (bullet.y - bullet.py) * i / steps)) return false;
-    const target = world.players.find((actor) => actor.id !== bullet.owner && actor.alive && segmentHitsActor(bullet, actor));
+    const owner = world.players.find((actor) => actor.id === bullet.owner);
+    const target = world.players.find((actor) => actor.id !== bullet.owner && actor.alive
+      && (!TEAM_MODES.has(world.mode) || actor.team !== owner?.team) && segmentHitsActor(bullet, actor));
     if (target) { damage(world, target, bullet.damage, bullet.owner); return false; }
     return bullet.ttl > 0 && bullet.x >= 0 && bullet.x <= world.config.width && bullet.y >= 0 && bullet.y <= world.config.height;
   });
@@ -759,5 +861,5 @@ function decayEffects(items, dt) { return items.filter((item) => { item.ttl -= d
 export function step(world, inputs = {}, dt = 1 / 60) {
   const safeDt = Math.min(Math.max(dt, 0), 0.05); world.elapsed += safeDt; world.frame += 1;
   for (const player of world.players) updateActor(world, player, player.isBot ? botInput(world, player, safeDt) : inputs[player.id] ?? {}, safeDt);
-  updateBullets(world, safeDt); world.muzzleFlashes = decayEffects(world.muzzleFlashes, safeDt); world.hitEffects = decayEffects(world.hitEffects, safeDt); return world;
+  updateBullets(world, safeDt); updateObjectives(world, safeDt); world.muzzleFlashes = decayEffects(world.muzzleFlashes, safeDt); world.hitEffects = decayEffects(world.hitEffects, safeDt); return world;
 }

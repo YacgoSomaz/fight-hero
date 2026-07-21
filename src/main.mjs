@@ -15,6 +15,7 @@ import { getDomMapLayerLayout } from './dom-map-layer.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 import { getUnitOverheadHud } from './unit-status.mjs';
+import { decodeFlashWallImage } from './wall-mask.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -58,6 +59,10 @@ async function loadMapVisual(mapId) {
 }
 void loadMapVisual('foundry').catch((error) => { saveStatus.textContent = error.message; });
 function image(source) { const result = new Image(); result.src = source; return result; }
+// Arena.Init() draws this original wallMC into BitmapData then hides it.
+// Keep the decoded alpha mask as the Foundry-only collision authority when
+// available; other decoded maps retain their registered source colliders.
+const foundryWall = image('./assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png');
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
 // Raw DefineSprite 670 export: Unit uses it for both bar_hp and bar_hurt.
@@ -94,7 +99,13 @@ function getObjectiveSprite(mode, team) {
   if (!objectiveSprites.has(visual.source)) objectiveSprites.set(visual.source, image(visual.source));
   return { visual, sprite: objectiveSprites.get(visual.source) };
 }
-let world = createWorld({ foundry: true });
+let foundryWallMask = null;
+function createMapWorld(options = {}) {
+  const next = createWorld(options);
+  if ((next.terrainMapId === 'foundry' || options.foundry) && foundryWallMask) next.wall = foundryWallMask;
+  return next;
+}
+let world = createMapWorld({ foundry: true });
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
 const held = new Set();
@@ -109,6 +120,14 @@ let matchSelection = createMatchSelection();
 let quickSelectionChanged = false;
 let quickStatus = '';
 const selectedMissionIndex = { campaign: 0, challenges: 0 };
+
+foundryWall.addEventListener('load', () => {
+  foundryWallMask = decodeFlashWallImage(foundryWall);
+  if (world.terrainMapId === 'foundry') world.wall = foundryWallMask;
+});
+foundryWall.addEventListener('error', () => {
+  saveStatus.textContent = 'Foundry 像素墙体未加载，当前回退到原始 NodePhysBox';
+});
 
 function addQuickValue(name, text, left, top, width, selected = false) {
   const value = document.createElement('span');
@@ -176,6 +195,17 @@ function showSourceMenu(screen = 'home') {
   if (!audio.muted) audio.startMenu();
 }
 
+foundryWall.addEventListener('load', () => {
+  foundryWallMask = decodeFlashWallImage(foundryWall);
+  // The scene can have started while the image decoded; swap the common
+  // collision source atomically so movement, bullets and AI agree at once.
+  world.wall = foundryWallMask;
+  saveStatus.textContent = `Foundry 像素墙体已加载：${foundryWallMask.width}×${foundryWallMask.height}`;
+});
+foundryWall.addEventListener('error', () => {
+  saveStatus.textContent = 'Foundry 像素墙体未加载，当前回退到蓝色 NodePhysBox';
+});
+
 function saveSettings() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({ muted: audio.muted, difficulty: Number(difficulty.value), score: world.score }));
   saveStatus.textContent = `已保存：P1 ${world.score.p1 ?? 0} 击倒 · AI ${world.score.bot1 ?? 0} 击倒`;
@@ -199,14 +229,14 @@ async function launchSelectedMatch() {
     const room = roomInput.value.trim();
     if (room) {
       online = await joinPrivateRoom(room);
-      world = createWorld({ multiplayer: true, foundry: true });
+      world = createMapWorld({ multiplayer: true, foundry: true });
       await loadMapVisual('foundry');
       applyRoomState(world, online.state);
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
     } else {
       online = null;
       await loadMapVisual(matchSelection.map);
-      world = createWorld({ mapId: matchSelection.map, mode: matchSelection.mode, score: matchSelection.score });
+      world = createMapWorld({ mapId: matchSelection.map, mode: matchSelection.mode, score: matchSelection.score });
       world.matchSettings = { ...matchSelection };
       world.bots.forEach((bot) => { bot.ai.difficulty = matchSelection.difficulty; });
       start.textContent = '战斗中';
@@ -266,7 +296,7 @@ window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFi
 reset.addEventListener('click', async () => {
   online = null;
   await loadMapVisual(matchSelection.map);
-  world = createWorld({ mapId: matchSelection.map, mode: matchSelection.mode, score: matchSelection.score });
+  world = createMapWorld({ mapId: matchSelection.map, mode: matchSelection.mode, score: matchSelection.score });
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;

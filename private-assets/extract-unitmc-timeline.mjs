@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import zlib from 'node:zlib';
+import { applyRemoveTag } from './swf-display-list.mjs';
 
 let bytes = fs.readFileSync('assets/reverse/4399-90433-25.swf');
 if (bytes.subarray(0, 3).toString() === 'CWS') bytes = Buffer.concat([Buffer.from('FWS'), bytes.subarray(3, 8), zlib.inflateSync(bytes.subarray(8))]);
@@ -60,14 +61,7 @@ while (offset < sprite.next) {
     if (flags & 16) cursor += 2;
     if (flags & 32) { const end = bytes.indexOf(0, cursor); next.name = bytes.subarray(cursor, end).toString(); cursor = end + 1; }
     placed.set(depth, next);
-  } else if (tag.code === 28) {
-    // RemoveObject2 is just a depth.  Treating it as PlaceObject2 retains
-    // obsolete limbs in later frames and corrupts the UnitMC composition.
-    placed.delete(bytes.readUInt16LE(tag.body));
-  } else if (tag.code === 5) {
-    // RemoveObject carries character id then depth.
-    placed.delete(bytes.readUInt16LE(tag.body + 2));
-  }
+  } else applyRemoveTag(placed, tag, bytes);
   offset = tag.next;
 }
 fs.writeFileSync('private-assets/unitmc-timeline.json', JSON.stringify({ frameCount: frames.length, frames }, null, 2));

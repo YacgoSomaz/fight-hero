@@ -75,6 +75,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
       navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,
       huntTargetId: null, huntGoalWaypointId: null, huntFrames: 0, routeIds: [],
+      stuckFrames: 0, lastX: null, lastY: null,
       waitFrames: 0, noWaitFrames: 0, crouchFrames: 0, aimX: null, aimY: null,
     } : null,
     hitbox: { ...config.playerHitbox },
@@ -577,12 +578,24 @@ function botInput(world, bot, dt) {
 
   let move = next && !ai.waitFrames ? { left: next.x < bot.x - 30, right: next.x > bot.x + 30 } : {};
   let direction = move.left ? -1 : move.right ? 1 : 0;
+  const hadPreviousPosition = Number.isFinite(ai.lastX) && Number.isFinite(ai.lastY);
+  const displacement = hadPreviousPosition ? Math.hypot(bot.x - ai.lastX, bot.y - ai.lastY) : Infinity;
+  if (direction && hadPreviousPosition && displacement < .25) ai.stuckFrames += frameUnits;
+  else if (displacement >= .25 || !direction) ai.stuckFrames = Math.max(0, ai.stuckFrames - frameUnits * 2);
+  ai.lastX = bot.x;
+  ai.lastY = bot.y;
   let obstacleJump = aiObstacleAhead(world, bot, direction);
   if (obstacleJump) ai.blockedFrames += frameUnits;
   else if (bot.grounded) ai.blockedFrames = Math.max(0, ai.blockedFrames - frameUnits * 2);
-  if (ai.blockedFrames >= 30) {
+  // Collision can block a tall box without satisfying the head-clearance
+  // probe, so obstacleJump stays false. Detect the resulting lack of real
+  // displacement as well, then give the linked navigation graph a chance to
+  // take a different exit instead of holding movement into that box forever.
+  if (ai.blockedFrames >= 30 || ai.stuckFrames >= 18) {
     next = rerouteBlockedWaypoint(world, bot) ?? next;
     ai.blockedFrames = 0;
+    ai.stuckFrames = 0;
+    ai.routeIds = [];
     move = next && !ai.waitFrames ? { left: next.x < bot.x - 30, right: next.x > bot.x + 30 } : {};
     direction = move.left ? -1 : move.right ? 1 : 0;
     obstacleJump = aiObstacleAhead(world, bot, direction);

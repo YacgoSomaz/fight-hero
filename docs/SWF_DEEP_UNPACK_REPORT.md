@@ -267,3 +267,31 @@ FFDec 的变量名在部分时间轴绑定中已有混淆痕迹；本报告只�
 逐帧显示列表还证实开火不是单纯对整只手臂做后移：501 的 78–80 帧独立改变 `arm2low`（266）、`arm2up`（298）、`gun`（375）、`hand2`（385）和未命名的 425 子层的矩阵；第 78 帧 depth 16 放入 433 枪火，第 79 帧替换为 434，第 80 帧移除。668 同期独立改变 `hand1`（385）、`arm1low`（266）和 `arm1up`（298）。换弹 81–115 帧更会重排后臂的 425 子层及双臂关节矩阵。
 
 当前网页仅复用了 77 帧的待机合成臂；它已经可以保证 M4 的静态持握和枪口位置，但**尚未**渲染上述 3/35 帧子时间轴。这是下一轮素材导出和 Canvas 层级渲染必须完成的明确缺口，而不是未知的原版逻辑。
+
+### 13.1 81 条武器到动作族的完整映射
+
+`Stats_Guns` 每条记录给出的 `animation.idle/fire/reload` 是**基础标签**。`Guns.setFrame("fire" | "reload")` 会在后面追加后缀，因此 `rifle` 会使用 `rifle_fire` 和 `rifle_reload`。解析全部 81 条 `addGun` 后得到下表；这同时是 Web 资源管线的真实批处理边界。
+
+| 动作基础标签（idle/fire/reload） | 数量 | 武器 ID |
+| --- | ---: | --- |
+| `pistol/pistol/pistol` | 8 | USP、Beretta、Socom、M1911、P99、Desert Eagle、USP2、Golden Gun |
+| `mpistol/mpistol/mpistol` | 5 | Uzi、Patriot、Glock 18、Raffica、Cyclone |
+| `rifle/rifle/rifle` | 11 | MP5、Skorpion、Vector、UMP、Phantom、AKS、M4、Scar、G36、Dragon、AK 47 |
+| `bullpup/bullpup/bullpup` | 4 | RCP 90、Famas、AUG HBAR、OICW |
+| `magnum/magnum/magnum` | 6 | Needler、Cougar、p357、Colt 45、p44、p500 |
+| `sniper/sniper/sniper` | 2 | Scout、Jackal |
+| `sniper/sniper/rifle` | 3 | Barrett、Dragunov、AWP |
+| `sniper/sniper/rocket` | 1 | Crossbow |
+| `heavy/heavy/heavy` | 5 | Saw、RPD、First Blood、Mini Gun、Saw2 |
+| `rocket/rocket/rocket` | 4 | RPG、Stinger、Javelin、Commando |
+| `launcher/launcher/launcher` | 2 | Thumper、Omar |
+| `launcher/launcher/sniper` | 1 | Lawnchair |
+| `shotgun/shotgun/shotgun` | 3 | M3、SPAS 12、Judgement |
+| `shotgun/shotgun/rifle` | 1 | AA 12 |
+| `rifle/rifle/sniper` | 1 | Striker |
+| `knife/knife/knife` | 4 | Knife、Baton、Machete、Butter Knife |
+| `sword/sword/sword` | 3 | Bat、Nine Iron、Katana |
+| `shield/shield/shield` | 6 | Riot、Police、Blast、Pointy、Meat、Siegius |
+| 无手持动作标签 | 11 | poison、curse、env、env2、env3、heli、airs、bomb、fire、none、mine |
+
+501 的动作族起始帧依次为 `pistol=2`、`mpistol=38`、`rifle=77`、`shotgun=116`、`heavy=167`、`sniper=233`、`rocket=295`、`launcher=355`、`bullpup=404`、`magnum=446`、`shield=495`、`knife=537`、`sword=550`、`shieldCrouch=566`、`grenade=608`；每一族紧跟 `_fire`，随后是可选 `_reload`。668 也包含同名族，但从 `launcher` 起帧号并非总与 501 相同，导出器必须分别存储两条手臂的 frame range，不能只保存一个共享区间。

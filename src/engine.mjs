@@ -691,7 +691,7 @@ function advanceWaypoint(world, bot) {
 }
 function targetCandidate(world, bot, actor) {
   if (actor.id === bot.id || !actor.alive || actor.invisible || actor.spawnProtected) return false;
-  if (bot.team !== undefined && actor.team === bot.team) return false;
+  if (TEAM_MODES.has(world.mode) && actor.team === bot.team) return false;
   const range = Math.min((bot.weapon.range ?? 45) * 10, 450);
   if (Math.hypot(actor.x - bot.x, actor.y - bot.y) >= range) return false;
   return hasLineOfSight(world, { x: bot.x, y: bot.y - (bot.crouching ? 20 : 50) }, { x: actor.x, y: actor.y - (actor.crouching ? 20 : 40) });
@@ -704,7 +704,7 @@ function acquireTarget(world, bot) {
 function acquireHuntTarget(world, bot) {
   return world.players.filter((actor) => (
     actor.id !== bot.id && actor.alive && !actor.invisible && !actor.spawnProtected
-      && !(bot.team !== undefined && actor.team === bot.team)
+      && !(TEAM_MODES.has(world.mode) && actor.team === bot.team)
   )).sort((a, b) => (
     Math.hypot(a.x - bot.x, a.y - bot.y) - Math.hypot(b.x - bot.x, b.y - bot.y)
   ))[0] ?? null;

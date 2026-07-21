@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CAMPAIGN_MISSIONS, CHALLENGE_MISSIONS, ORIGINAL_MAPS, ORIGINAL_MODES, cycleQuickMatchSelection, createMatchSelection, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from '../src/menu-state.mjs';
+import { CAMPAIGN_MISSIONS, CHALLENGE_MISSIONS, ORIGINAL_MAPS, ORIGINAL_MODES, cycleQuickMatchSelection, createMatchSelection, formatQuickMatchSummary, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from '../src/menu-state.mjs';
 
 test('menu exposes the original quick-match modes and source map order', () => {
   assert.deepEqual(ORIGINAL_MODES.map((mode) => mode.id), ['dm', 'jug', 'tdm', 'ctf', 'dom']);
@@ -44,4 +44,9 @@ test('quick-match controls follow the original Menu.as cyclic state changes', ()
   assert.equal(selection.modifier, 'clips');
   selection = cycleQuickMatchSelection(selection, 'map', 1);
   assert.equal(selection.map, 'foundry2');
+});
+
+test('changed quick-match settings report a compact English source-style summary outside the original panel', () => {
+  const selection = createMatchSelection({ map: 'foundry2', mode: 'jug', score: 10, soldiers: 0, skills: true, streaks: true, modifier: 'none', difficulty: 1 });
+  assert.equal(formatQuickMatchSummary(selection), 'Foundry (Night) · Juggernaut · Score 10 · All · Very Easy');
 });

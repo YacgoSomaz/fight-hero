@@ -8,6 +8,7 @@ import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
+import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -518,10 +519,10 @@ function render() {
   }
   ctx.fillStyle = 'rgba(3, 7, 13, .12)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  drawCollisionBoxes();
+  if (SHOW_COLLISION_OVERLAYS) drawCollisionBoxes();
   for (const bullet of world.bullets) drawTracer(bullet);
   for (const player of world.players) drawPlayer(player);
-  for (const player of world.players) drawPlayerCollider(player);
+  if (SHOW_PLAYER_PROBES) for (const player of world.players) drawPlayerCollider(player);
   for (const flash of world.muzzleFlashes) drawMuzzleFlash(flash);
   for (const hit of world.hitEffects) {
     const point = worldToScreen(hit, camera, canvas.width, canvas.height);

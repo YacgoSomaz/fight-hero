@@ -5,6 +5,7 @@ import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, getAimPivot, getMuzzl
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
 import { FOUNDRY_LAYOUT } from '../src/foundry-layout.mjs';
 import { getUnitRigPose } from '../src/unit-rig.mjs';
+import { createFlashWallMask } from '../src/wall-mask.mjs';
 
 test('the web replica starts with a local player and a migrated AI opponent', () => {
   const world = createWorld();
@@ -42,6 +43,36 @@ test('Foundry player collision uses the complete decoded blue rectangles', () =>
   assert.equal(isSolid(world, 485, floor.y), true);
   assert.equal(isSolid(world, crate.x, crate.y), true, 'the crate is a decoded blue collision volume');
   assert.equal(isSolid(world, 1200, 550), false, 'unmarked Foundry artwork cannot create a wall');
+});
+
+test('the Flash wall mask treats only fully opaque pixels as solid', () => {
+  // Movement.hitTest() returns a wall only when getPixel32(...).alpha is 0xff.
+  // Foundry's exported mask intentionally contains semitransparent red art.
+  const mask = createFlashWallMask({
+    width: 3,
+    height: 1,
+    data: new Uint8ClampedArray([
+      255, 0, 0, 0,   // transparent
+      255, 0, 0, 102, // semitransparent: not a Movement wall
+      255, 0, 0, 255, // opaque: a Movement wall
+    ]),
+  });
+
+  assert.equal(mask.isSolid(0, 0), false);
+  assert.equal(mask.isSolid(1, 0), false);
+  assert.equal(mask.isSolid(2, 0), true);
+});
+
+test('the Flash wall mask floors coordinates and rejects out-of-bounds probes', () => {
+  const mask = createFlashWallMask({
+    width: 1,
+    height: 1,
+    data: new Uint8ClampedArray([255, 0, 0, 255]),
+  });
+
+  assert.equal(mask.isSolid(.99, .99), true);
+  assert.equal(mask.isSolid(-.01, 0), false);
+  assert.equal(mask.isSolid(1, 0), false);
 });
 
 test('Foundry rectangles land on their exact top edge and block their side face', () => {

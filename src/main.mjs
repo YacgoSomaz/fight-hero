@@ -6,7 +6,7 @@ import { selectM4Action } from './m4-action-selector.mjs';
 import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
-import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
+import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -78,6 +78,7 @@ function showSourceMenu(screen = 'home') {
   const asset = MENU_SCREEN_ASSETS[screen];
   const copy = MENU_CHINESE_COPY[screen];
   menuSurface.dataset.screen = screen;
+  menuSurface.dataset.presentation = MENU_PRESENTATION_MODE;
   menuImage.src = `./public/assets/${asset.file}`;
   menuImage.alt = `原始 SWF ${screen} 菜单画面`;
   menuSurface.style.setProperty('--menu-translation-top', `${MENU_TRANSLATION_TOP}%`);
@@ -87,12 +88,12 @@ function showSourceMenu(screen = 'home') {
     button.id = area.id;
     button.className = 'menu-hit';
     button.type = 'button';
+    button.setAttribute('aria-label', area.label);
     button.dataset.menuAction = area.action;
     button.style.setProperty('--menu-left', `${area.left}%`);
     button.style.setProperty('--menu-top', `${area.top}%`);
     button.style.setProperty('--menu-width', `${area.width}%`);
     button.style.setProperty('--menu-height', `${area.height}%`);
-    button.textContent = area.label;
     return button;
   }));
   sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / 第 ${asset.frame} 帧 · 中文功能说明已覆盖；未迁移内容不会伪装为可玩。`;

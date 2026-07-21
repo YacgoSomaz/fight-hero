@@ -18,6 +18,7 @@ const MENU_HIT_AREAS = Object.freeze({
 
 export const DEFAULT_MENU_SCREEN = 'home';
 export const MENU_TRANSLATION_TOP = 74;
+export const MENU_PRESENTATION_MODE = 'source-art-only';
 
 export const MENU_CHINESE_COPY = Object.freeze({
   home: Object.freeze({ title: '主菜单', campaign: '战役', challenges: '挑战', quickmatch: '快速对战', availability: '当前已可用：快速对战 → 铸造厂 · 死亡竞赛。' }),

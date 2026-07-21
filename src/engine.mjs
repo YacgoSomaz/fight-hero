@@ -142,6 +142,9 @@ export function createWorld(options = {}) {
     // wall, so player collision can resolve their top/side faces precisely.
     collisionBoxes: foundry ? FOUNDRY_COLLISION_BOXES.map((box) => ({ ...box })) : [],
     wall: options.wall ?? null, random: typeof options.random === 'function' ? options.random : Math.random,
+    // Keep original Arena node coordinates while the retained physical boxes
+    // stay aligned to the existing Foundry art/collision baseline.
+    nodeOffset: foundry ? { x: FOUNDRY_COLLISION_X_OFFSET, y: FOUNDRY_COLLISION_Y_OFFSET } : { x: 0, y: 0 },
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };
 }
@@ -507,6 +510,8 @@ function originalAiAim(world, bot, target) {
 }
 function actionInput(world, bot, next) {
   const ai = bot.ai;
+  const nodeX = bot.x - world.nodeOffset.x;
+  const nodeY = bot.y - world.nodeOffset.y;
   const input = {};
   for (const action of world.actions) {
     if (!action.connections.includes(next.id)) continue;
@@ -517,7 +522,7 @@ function actionInput(world, bot, next) {
     const right = Math.max(action.x, action.x + action.width);
     const top = Math.min(action.y, action.y + action.height);
     const bottom = Math.max(action.y, action.y + action.height);
-    if (!(bot.x > left && bot.x < right && bot.y > top && bot.y < bottom)) continue;
+    if (!(nodeX > left && nodeX < right && nodeY > top && nodeY < bottom)) continue;
     input.clearDown = true;
     if (action.id === 'j') {
       ai.waitFrames = 0;

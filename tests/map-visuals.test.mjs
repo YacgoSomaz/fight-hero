@@ -15,6 +15,12 @@ test('source background sprites use their authored visible bounds rather than tr
   assert.deepEqual(getMapLayerCrop('./private-assets/background-export/DefineSprite_1210_Bg/6.png'), { x: 1336, y: 584, width: 2584, height: 292 });
 });
 
+test('Tutorial terrain uses its authored visible bounds instead of the empty FFDec stage canvas', () => {
+  const visual = getMapVisual('tut');
+  assert.match(visual.terrain, /arena-clean-art-export\/DefineSprite_1413_Arena\/8\.png$/);
+  assert.deepEqual(getMapLayerCrop(visual.terrain), { x: 530, y: 522, width: 2952, height: 1708 });
+});
+
 test('night variants use their original background selection while retaining the matching terrain map', () => {
   assert.deepEqual(getMapVisual('foundry2'), {
     terrainMapId: 'foundry',

@@ -158,6 +158,7 @@ test('Foundry AI abandons an unjumpable blocked waypoint instead of remaining st
     { x: 580, y: 590, width: 40, height: 200 },
   ];
   bot.x = 500; bot.y = 620; bot.grounded = true;
+  bot.ai.difficulty = 15;
   bot.ai.currentWaypointId = 'a';
   bot.ai.nextWaypointId = 'b';
 

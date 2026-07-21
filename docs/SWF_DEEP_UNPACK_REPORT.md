@@ -241,3 +241,29 @@ FFDec 的变量名在部分时间轴绑定中已有混淆痕迹；本报告只�
 逐帧复核发现旧提取器将 SWF tag `28`（`RemoveObject2`）误当成 `PlaceObject2`。这会把已经移除的旧实例保留在后续显示列表中，导致网页端出现“肢体残影、拼错零件或跨帧换人物”的假象。提取器现已按 SWF 格式处理：`PlaceObject2` 为 tag 26、`PlaceObject3` 为 tag 70（含第二个 flags byte）、`RemoveObject2` 为 tag 28、`RemoveObject` 为 tag 5。
 
 修正后的 `DefineSprite 669` 显示列表被压缩导出为运行时数据 `public/assets/unitmc-timeline.json`：449 帧，每帧只保留角色的两臂、两腿、脚、躯干、头以及两个 holder 的原始矩阵。网页使用固定 Medic 的第 51 帧部件图，而不再使用会把不同职业烘焙在一起的整帧贴图；每一帧仍回放其原 SWF 矩阵，头和双臂再遵循 `UnitMC.EnterFrame()` / `Unit.as` 的 holder 与瞄准规则。该数据和图像素材均只应在已授权的私有仓库中使用。
+
+## 13. M4 持枪、开火与换弹时间轴（2026-07-21）
+
+这一部分直接读取原 SWF 的 `DefineSprite` 显示列表，不是根据网页动画猜测。M4 的最小可迁移组合为：
+
+| Symbol ID | 原类名 | 职责 |
+| ---: | --- | --- |
+| 375 | `MBFZ_fla.Guns_290` | 枪械选择器；`M4` 标签在第 20 帧 |
+| 501 | `MBFZ_fla.arm_gun_316` | 后侧持枪手臂、枪、枪口动画、动作完成/换弹回调 |
+| 668 | `MBFZ_fla.arm_front_328` | 前侧托枪手臂；与 501 同步视觉姿势 |
+| 433 | `MBFZ_fla.MuzzleFlash_320` | 8 帧枪口火焰子 Sprite |
+| 434 | 未绑定 AS3 类的 Shape | 开火第 2 帧短暂出现的附加形状 |
+
+501 和 668 的标签边界完全一致：
+
+| 状态 | 起始帧 | 结束帧 | 帧数 | 播放方式 |
+| --- | ---: | ---: | ---: | --- |
+| `rifle` | 77 | 77 | 1 | `gotoAndStop` |
+| `rifle_fire` | 78 | 80 | 3 | `gotoAndPlay` |
+| `rifle_reload` | 81 | 115 | 35 | `gotoAndPlay` |
+
+`Guns.setFrame()` 在 `idle` 时对两臂执行 `gotoAndStop(frameIdle)`；在 `fire` / `reload` 时将 `"_fire"` / `"_reload"` 拼接到枪型标签，随后对两臂执行 `gotoAndPlay()`。对 M4 因而分别是 `rifle`、`rifle_fire`、`rifle_reload`。真正改变状态的回调只在 501：第 80 帧 `doneShoot()`，第 81 帧 `reloadSound()`，第 115 帧 `doneReload()`；668 没有这三个 M4 段回调。网页端不能让两条手臂各自根据计时器“猜”何时结束，必须让后侧臂的帧事件作为权威结束信号。
+
+逐帧显示列表还证实开火不是单纯对整只手臂做后移：501 的 78–80 帧独立改变 `arm2low`（266）、`arm2up`（298）、`gun`（375）、`hand2`（385）和未命名的 425 子层的矩阵；第 78 帧 depth 16 放入 433 枪火，第 79 帧替换为 434，第 80 帧移除。668 同期独立改变 `hand1`（385）、`arm1low`（266）和 `arm1up`（298）。换弹 81–115 帧更会重排后臂的 425 子层及双臂关节矩阵。
+
+当前网页仅复用了 77 帧的待机合成臂；它已经可以保证 M4 的静态持握和枪口位置，但**尚未**渲染上述 3/35 帧子时间轴。这是下一轮素材导出和 Canvas 层级渲染必须完成的明确缺口，而不是未知的原版逻辑。

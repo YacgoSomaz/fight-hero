@@ -685,3 +685,17 @@ test('source domination captures its original zone then scores once per three se
   assert.equal(world.match.teamScores[1], 1);
   assert.equal(world.match.winnerTeam, 1);
 });
+
+test('source Juggernaut chooses one unit, swaps the role to its killer, and ends on the source score limit', () => {
+  const world = createWorld({ mapId: 'foundry', mode: 'jug', score: 1, random: () => .99 });
+  const p1 = world.players[0];
+  const bot = world.bots[0];
+
+  assert.equal(bot.isJug, true);
+  assert.deepEqual({ p1Team: p1.team, botTeam: bot.team, juggernautId: world.match.juggernautId }, { p1Team: 1, botTeam: 2, juggernautId: 'bot1' });
+  bot.x = p1.x + 80; bot.y = p1.y; bot.hp = 1;
+  step(world, { p1: { aimX: bot.x, aimY: bot.y - 40, firePressed: true } }, 1 / 60);
+  for (let frame = 0; frame < 12; frame += 1) step(world, {}, 1 / 60);
+  assert.deepEqual({ p1Jug: p1.isJug, p1Team: p1.team, botJug: bot.isJug, botTeam: bot.team }, { p1Jug: true, p1Team: 2, botJug: false, botTeam: 1 });
+  assert.deepEqual({ score: world.score.p1, winnerId: world.match.winnerId }, { score: 1, winnerId: 'p1' });
+});

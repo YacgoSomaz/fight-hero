@@ -21,7 +21,7 @@ test('every source Arena map can launch the migrated local deathmatch and team d
   assert.equal(isPlayableSelection(createMatchSelection({ map: 'cave2' })), true);
 });
 
-test('quick-match exposes only source rules that have a migrated match runtime', () => {
+test('quick-match exposes every source rule that has a migrated match runtime', () => {
   const selection = updateMatchSelection(createMatchSelection(), { mode: 'ctf' });
   assert.equal(selection.score, 3);
   assert.deepEqual(selection.scoreOptions, [3, 5, 7, 15]);
@@ -30,7 +30,11 @@ test('quick-match exposes only source rules that have a migrated match runtime',
     message: '原场景地图、碰撞、导航与本地夺旗规则已接入。',
   });
   assert.equal(isPlayableSelection(updateMatchSelection(createMatchSelection(), { mode: 'dom' })), true);
-  assert.equal(isPlayableSelection(updateMatchSelection(createMatchSelection(), { mode: 'jug' })), false);
+  assert.equal(isPlayableSelection(updateMatchSelection(createMatchSelection(), { mode: 'jug' })), true);
+  assert.deepEqual(getQuickMatchStatus(updateMatchSelection(createMatchSelection(), { mode: 'jug' })), {
+    canLaunch: true,
+    message: '原场景地图、碰撞、导航与本地Juggernaut规则已接入。',
+  });
 });
 
 test('quick-match controls follow the original Menu.as cyclic state changes', () => {

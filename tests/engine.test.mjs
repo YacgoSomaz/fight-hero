@@ -128,6 +128,21 @@ test('Foundry AI uses its difficulty-based shot probability instead of firing ev
   assert.equal(world.events.some((event) => event.type === 'fire' && event.actor === bot.id), false);
 });
 
+test('Foundry AI jumps when its connected route is blocked by a reachable box', () => {
+  const world = createWorld({ foundry: true, random: () => .5 });
+  const bot = world.bots[0];
+  world.players[0].alive = false;
+  world.navigation = [{ id: 'b', connections: '', x: 700, y: 620 }];
+  world.actions = [];
+  world.collisionBoxes = [{ x: 540, y: 595, width: 60, height: 50 }];
+  bot.ai.nextWaypointId = 'b';
+  bot.x = 493; bot.y = 620; bot.vy = 0; bot.grounded = true;
+
+  step(world, {}, 1 / 60);
+
+  assert.ok(bot.vy < 0, 'the AI turns the reachable obstacle into a jump input');
+});
+
 test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
   const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && y >= 608) };
   const world = createWorld({ bots: false, wall });

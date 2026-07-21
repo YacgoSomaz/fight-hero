@@ -295,3 +295,38 @@ FFDec 的变量名在部分时间轴绑定中已有混淆痕迹；本报告只�
 | 无手持动作标签 | 11 | poison、curse、env、env2、env3、heli、airs、bomb、fire、none、mine |
 
 501 的动作族起始帧依次为 `pistol=2`、`mpistol=38`、`rifle=77`、`shotgun=116`、`heavy=167`、`sniper=233`、`rocket=295`、`launcher=355`、`bullpup=404`、`magnum=446`、`shield=495`、`knife=537`、`sword=550`、`shieldCrouch=566`、`grenade=608`；每一族紧跟 `_fire`，随后是可选 `_reload`。668 也包含同名族，但从 `launcher` 起帧号并非总与 501 相同，导出器必须分别存储两条手臂的 frame range，不能只保存一个共享区间。
+
+## 14. M4 完整矢量显示列表补充（2026-07-21，按需使用）
+
+本节记录在基线运行时之外完成的解包证据。它是后续“只在需要还原 M4 开火/换弹时”才可选接入的资源管线，**不是**对地图碰撞、角色移动、相机或 AI 控制器的修改许可。
+
+### 14.1 可复现的资源关系
+
+从 501（后臂）与 668（前臂）的 `rifle` / `rifle_fire` / `rifle_reload` 根帧递归展开，可达定义共 182 个：8 个 `DefineSprite` 与 174 个终端 Shape（161 个 `DefineShape`、7 个 `DefineShape2`、6 个 `DefineShape3`）。终端 Shape 合计 844 个填充样式，均为实色填充；没有以渐变或描边替代原始轮廓。
+
+递归显示列表保留了每个 depth 的 place/remove 语义、原始 SWF Matrix、颜色 alpha，以及 `gun` 子 Sprite 的 AS3 帧绑定。关键绑定为：375 的 `gun` 在 M4 状态使用第 20 帧；501/668 分别使用自身的动作范围；枪火在 501 的 78/79/80 帧按 433 → 434 → 移除发生。
+
+| 产物/工具 | 作用 | 使用边界 |
+| --- | --- | --- |
+| `private-assets/swf-definition-catalog.mjs` | 从原 SWF 按 ID 读取定义类型 | 解包工具，不在浏览器加载 |
+| `private-assets/swf-symbol-graph.mjs` | 找到动作根到嵌套定义的可达图 | 用于审计，不参与物理 |
+| `private-assets/swf-shape-parser.mjs`、`swf-shape-paths.mjs`、`swf-shape-contours.mjs` | 将 ShapeWithStyle 转为带填充方向的轮廓 | 不可用 PNG 截图替代 |
+| `private-assets/m4-vector-runtime.mjs` | 组装浏览器可读的动作根、Sprite 帧和 Shape 记录 | 仅在需要 M4 动作时导出 |
+| `src/vector-runtime-renderer.mjs`、`src/vector-shape-canvas.mjs` | 在 Canvas 递归应用原显示列表 Matrix 并绘制路径 | 仅为武器视觉层；不得读取或改写 Movement 状态 |
+
+本机可生成但必须保持私有的运行时数据命令：
+
+```powershell
+npm run extract:m4-vector-runtime -- public/assets/m4-vector-runtime.local.json
+```
+
+该 JSON 是原始素材的结构化派生物，已被 `.gitignore` 排除；不要提交到公开仓库，也不要把它当作通用游戏资产。
+
+### 14.2 接入规则（防止再次影响已验证玩法）
+
+1. 先以稳定 GitHub 基线的 `Movement`、`wallMC` 像素碰撞和镜头行为为准；M4 矢量模块只能替换 `drawPlayer()` 的上半身武器绘制。
+2. 接入时只在 `rifle`、`rifle_fire`、`rifle_reload` 的视觉状态间选择根帧；开火和换弹的权威结束点分别跟随 501 的第 80、115 帧事件。
+3. 不得为了对齐枪图移动玩家脚底、调整墙体坐标、修改蓝色 NodePhysBox，或放宽攀爬/坡面探针。
+4. 每次视觉接入需分别比对：静止瞄准、跑动瞄准、跳跃瞄准、开火第 78–80 帧、换弹第 81–115 帧；若出现偏差，优先校正武器局部 Matrix，而非修改世界坐标。
+
+这批证据可在需要 M4 逐帧视觉还原时复用；在没有该需求时，应只保存在报告和私有工具目录中，避免与已验证的玩法代码交叉修改。

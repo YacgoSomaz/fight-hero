@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, getMenuHitAreas } from '../src/menu-ui.mjs';
+import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_TRANSLATION_TOP, getMenuHitAreas } from '../src/menu-ui.mjs';
 
 test('only source-menu actions with a real local outcome receive a hit area', () => {
   assert.deepEqual(getMenuHitAreas('home').map(({ id, action }) => ({ id, action })), [
@@ -26,4 +26,8 @@ test('visible Chinese copy marks preview-only screens instead of promising unpor
 test('the first visible menu is the source home screen with real menu controls', () => {
   assert.equal(DEFAULT_MENU_SCREEN, 'home');
   assert.equal(getMenuHitAreas(DEFAULT_MENU_SCREEN).length, 3);
+});
+
+test('Chinese availability copy stays below the original bottom navigation art', () => {
+  assert.equal(MENU_TRANSLATION_TOP, 74);
 });

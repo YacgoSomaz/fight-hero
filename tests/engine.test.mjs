@@ -143,6 +143,20 @@ test('Foundry AI jumps when its connected route is blocked by a reachable box', 
   assert.ok(bot.vy < 0, 'the AI turns the reachable obstacle into a jump input');
 });
 
+test('Foundry AI executes the decoded j_h action box across the right-hand pit', () => {
+  const world = createWorld({ foundry: true, random: () => .5 });
+  const bot = world.bots[0];
+  world.players[0].alive = false;
+  world.collisionBoxes = [{ x: 1437, y: 800, width: 2874, height: 196 }];
+  bot.x = 2344.7; bot.y = 702; bot.vy = 0; bot.grounded = true;
+  bot.ai.difficulty = 15;
+  bot.ai.nextWaypointId = 'h';
+
+  step(world, {}, 1 / 60);
+
+  assert.ok(bot.vy < 0, 'the original j_h box clears the pit with a jump');
+});
+
 test('Foundry AI abandons an unjumpable blocked waypoint instead of remaining stuck in geometry', () => {
   const world = createWorld({ foundry: true, random: () => 0 });
   const bot = world.bots[0];

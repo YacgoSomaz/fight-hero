@@ -48,8 +48,13 @@ export function updateMatchSelection(selection, changes) {
   const next = { ...selection, ...changes };
   const mode = ORIGINAL_MODES.find((entry) => entry.id === next.mode) ?? ORIGINAL_MODES[0];
   const scoreOptions = [...mode.scores];
-  if (!scoreOptions.includes(next.score)) next.score = mode.startScore;
-  if (Object.hasOwn(changes, 'mode')) next.score = mode.startScore;
+  // Mission data may use a score that is not selectable in the quick-match
+  // arrows (for example Rebellion's authored 20 TDM kills).
+  if (!scoreOptions.includes(next.score) && !Object.hasOwn(changes, 'score')) next.score = mode.startScore;
+  // A source campaign/challenge record changes mode and score together.
+  // Preserve that authored score; only a standalone quick-match mode click
+  // should reset to the mode's regular default.
+  if (Object.hasOwn(changes, 'mode') && !Object.hasOwn(changes, 'score')) next.score = mode.startScore;
   return { ...next, scoreOptions };
 }
 

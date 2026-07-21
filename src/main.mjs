@@ -6,7 +6,7 @@ import { selectM4Action } from './m4-action-selector.mjs';
 import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
-import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
+import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas, getMissionEntries } from './menu-ui.mjs';
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
@@ -99,16 +99,33 @@ let onlineAccumulator = 0;
 let matchSelection = createMatchSelection();
 let quickSelectionChanged = false;
 let quickStatus = '';
+const selectedMissionIndex = { campaign: 0, challenges: 0 };
 
-function addQuickValue(name, text, left, top, width) {
+function addQuickValue(name, text, left, top, width, selected = false) {
   const value = document.createElement('span');
   value.className = 'menu-value';
   value.dataset.value = name;
   value.style.setProperty('--value-left', `${left}%`);
   value.style.setProperty('--value-top', `${top}%`);
   value.style.setProperty('--value-width', `${width}%`);
+  if (selected) value.dataset.selected = 'true';
   value.textContent = text;
   menuOverlay.append(value);
+}
+
+function renderMissionOverlay(screen) {
+  menuOverlay.replaceChildren();
+  const selected = selectedMissionIndex[screen] ?? 0;
+  getMissionEntries(screen).forEach((mission, index) => {
+    addQuickValue(
+      `${screen}-mission-${mission.stage}`,
+      `第 ${mission.stage} 关 · ${mission.title}`,
+      25.6,
+      33.5 + index * 2.42,
+      19.3,
+      index === selected,
+    );
+  });
 }
 
 function renderQuickmatchOverlay() {
@@ -140,8 +157,9 @@ function showSourceMenu(screen = 'home') {
     button.style.setProperty('--menu-height', `${area.height}%`);
     return button;
   }));
-  sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / 第 ${asset.frame} 帧 · 中文功能说明已覆盖；未迁移内容不会伪装为可玩。`;
+  sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / 第 ${asset.frame} 帧 · 仅在可见原图控件上创建点击入口。`;
   if (screen === 'quickmatch') renderQuickmatchOverlay();
+  else if (screen === 'campaign' || screen === 'challenges') renderMissionOverlay(screen);
   else menuOverlay.replaceChildren();
   running = false;
   gameStage.hidden = true;
@@ -160,7 +178,14 @@ music.checked = !audio.muted;
 saveStatus.textContent = saved.score ? `读取存档：P1 ${saved.score.p1 ?? 0} 击倒` : '本地存档尚未创建';
 difficulty.addEventListener('input', () => { difficultyValue.value = difficulty.value; if (world.bots[0]) world.bots[0].ai.difficulty = Number(difficulty.value); saveSettings(); });
 music.addEventListener('change', () => { audio.setMuted(!music.checked); if (music.checked && !running) audio.startMenu(); saveSettings(); });
-start.addEventListener('click', async () => {
+async function launchSelectedMatch() {
+  if (!isPlayableSelection(matchSelection)) {
+    quickSelectionChanged = true;
+    quickStatus = '该原始关卡的地图碰撞尚未迁移，不能伪装为可玩。';
+    if (menuSurface.dataset.screen === 'quickmatch') renderQuickmatchOverlay();
+    else renderMissionOverlay(menuSurface.dataset.screen);
+    return;
+  }
   try {
     const room = roomInput.value.trim();
     if (room) {
@@ -179,13 +204,27 @@ start.addEventListener('click', async () => {
     }
     camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
     running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click'); saveSettings();
-  } catch (error) { saveStatus.textContent = `联机失败：${error.message}`; }
-});
+  } catch (error) { saveStatus.textContent = `启动失败：${error.message}`; }
+}
+start.addEventListener('click', () => { void launchSelectedMatch(); });
+
+function selectMission(kind, index) {
+  const mission = getMissionEntries(kind)[index];
+  if (!mission) return;
+  selectedMissionIndex[kind] = index;
+  matchSelection = updateMatchSelection(matchSelection, mission);
+  quickSelectionChanged = true;
+  quickStatus = isPlayableSelection(matchSelection) ? '' : '该关原始地图仍待迁移。';
+  renderMissionOverlay(kind);
+}
+
 menuButtons.addEventListener('click', (event) => {
   const action = event.target.closest('[data-menu-action]')?.dataset.menuAction;
-  if (action === 'preview:campaign') showSourceMenu('campaign');
-  else if (action === 'preview:challenges') showSourceMenu('challenges');
-  else if (action?.startsWith('show:')) showSourceMenu(action.split(':')[1]);
+  if (action?.startsWith('show:')) showSourceMenu(action.split(':')[1]);
+  else if (action?.startsWith('mission:')) {
+    const [, kind, sourceIndex] = action.split(':');
+    selectMission(kind, Number(sourceIndex));
+  }
   else if (action?.startsWith('quick:mode:')) {
     matchSelection = updateMatchSelection(matchSelection, { mode: action.split(':')[2] });
     quickSelectionChanged = true; quickStatus = isPlayableSelection(matchSelection) ? '' : 'NOT MIGRATED'; renderQuickmatchOverlay();
@@ -193,12 +232,12 @@ menuButtons.addEventListener('click', (event) => {
     const [, control, sourceDirection] = action.split(':');
     matchSelection = cycleQuickMatchSelection(matchSelection, control, Number(sourceDirection));
     quickSelectionChanged = true; quickStatus = isPlayableSelection(matchSelection) ? '' : 'NOT MIGRATED'; renderQuickmatchOverlay();
-  } else if (action === 'start:foundry-deathmatch') {
-    if (!isPlayableSelection(matchSelection)) {
-      quickSelectionChanged = true; quickStatus = 'NOT MIGRATED'; renderQuickmatchOverlay();
-      return;
-    }
-    difficulty.value = String(matchSelection.difficulty); difficultyValue.value = difficulty.value; start.click();
+  } else if (action === 'start:selected-match') {
+    void launchSelectedMatch();
+  } else if (action?.startsWith('start:mission:')) {
+    const kind = action.split(':')[2];
+    selectMission(kind, selectedMissionIndex[kind] ?? 0);
+    void launchSelectedMatch();
   }
 });
 leaveGame.addEventListener('click', () => showSourceMenu('home'));

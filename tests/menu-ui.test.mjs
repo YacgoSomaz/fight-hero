@@ -50,7 +50,7 @@ test('only source-menu actions with a real local outcome receive a hit area', ()
   }
   for (const screen of ['soldiers', 'options', 'medals', 'tips', 'version']) {
     assert.deepEqual(getMenuHitAreas(screen).map(({ id, action }) => ({ id, action })), [
-      { id: 'tab-play', action: 'show:home' },
+      { id: 'tab-play', action: 'show:quickmatch' },
       { id: 'tab-soldiers', action: 'show:soldiers' },
       { id: 'tab-options', action: 'show:options' },
       { id: 'tab-medals', action: 'show:medals' },

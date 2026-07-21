@@ -9,6 +9,7 @@ import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas, getMissionEntries } from './menu-ui.mjs';
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
+import { loadMapLayers } from './map-loader.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 import { getUnitOverheadHud } from './unit-status.mjs';
@@ -34,23 +35,20 @@ const leaveGame = document.querySelector('#leaveGame');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
-const sky = new Image();
-const map = new Image();
-const terrain = new Image();
-function loadImage(target, source) {
-  return new Promise((resolve) => {
-    target.onload = () => resolve(); target.onerror = () => resolve(); target.src = source;
-    if (target.complete) resolve();
-  });
-}
+let sky = new Image();
+let map = new Image();
+let terrain = new Image();
 async function loadMapVisual(mapId) {
   const visual = getMapVisual(mapId);
-  sky.sourceCrop = getMapLayerCrop(visual.sky);
-  map.sourceCrop = getMapLayerCrop(visual.background);
-  terrain.sourceCrop = getMapLayerCrop(visual.terrain);
-  await Promise.all([loadImage(sky, visual.sky), loadImage(map, visual.background), loadImage(terrain, visual.terrain)]);
+  const next = await loadMapLayers(visual);
+  next.sky.sourceCrop = getMapLayerCrop(visual.sky);
+  next.map.sourceCrop = getMapLayerCrop(visual.background);
+  next.terrain.sourceCrop = getMapLayerCrop(visual.terrain);
+  sky = next.sky;
+  map = next.map;
+  terrain = next.terrain;
 }
-void loadMapVisual('foundry');
+void loadMapVisual('foundry').catch((error) => { saveStatus.textContent = error.message; });
 function image(source) { const result = new Image(); result.src = source; return result; }
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');

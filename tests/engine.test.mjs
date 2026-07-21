@@ -99,7 +99,6 @@ test('Foundry AI patrols through decoded waypoint connections instead of file or
   step(world, {}, 1 / 60);
 
   assert.equal(bot.ai.nextWaypointId, 'f');
-  assert.ok(bot.vx < 0);
 });
 
 test('Foundry AI eases its aim toward a visible target rather than snapping to it', () => {

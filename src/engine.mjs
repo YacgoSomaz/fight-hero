@@ -70,8 +70,12 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
     animation: 'idle', animationTime: 0, animationFrame: 1, animationBlend: 0, climb: null,
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
-    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration },
-    color, isBot, ai: isBot ? { scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6, crouchTimer: 0, navIndex: null } : null,
+    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, shootDelay: 0.15 },
+    color, isBot, ai: isBot ? {
+      scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
+      navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0,
+      waitFrames: 0, noWaitFrames: 0, crouchFrames: 0, aimX: null, aimY: null,
+    } : null,
     hitbox: { ...config.playerHitbox },
   };
 }
@@ -135,7 +139,7 @@ export function createWorld(options = {}) {
     // Full source rectangles are retained separately from an optional pixel
     // wall, so player collision can resolve their top/side faces precisely.
     collisionBoxes: foundry ? FOUNDRY_COLLISION_BOXES.map((box) => ({ ...box })) : [],
-    wall: options.wall ?? null,
+    wall: options.wall ?? null, random: typeof options.random === 'function' ? options.random : Math.random,
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };
 }
@@ -403,33 +407,108 @@ function updateActor(world, actor, input, dt) {
   syncAnimationFrame(actor);
 }
 
-function botInput(world, bot) {
-  const ai = bot.ai; const candidates = world.players.filter((actor) => actor.id !== bot.id && actor.alive);
-  if (world.frame % 12 === ai.scanFrame) {
-    ai.targetId = candidates.filter((target) => Math.hypot(target.x - bot.x, target.y - bot.y) < 450 && hasLineOfSight(world, { x: bot.x, y: bot.y - (bot.crouching ? 20 : 50) }, { x: target.x, y: target.y - (target.crouching ? 20 : 40) })).sort((a, b) => Math.hypot(a.x - bot.x, a.y - bot.y) - Math.hypot(b.x - bot.x, b.y - bot.y))[0]?.id ?? null;
+function aiRandom(world) { return Math.min(.999999, Math.max(0, Number(world.random()) || 0)); }
+function aiChance(world, chanceAt30Fps, dt) {
+  const chance = Math.min(1, Math.max(0, chanceAt30Fps));
+  return aiRandom(world) < 1 - (1 - chance) ** (Math.max(0, dt) * 30);
+}
+function waypointById(world, id) { return world.navigation.find((point) => point.id === id) ?? null; }
+function setNextWaypoint(world, ai, id) {
+  const point = waypointById(world, id);
+  if (!point) return null;
+  ai.nextWaypointId = point.id;
+  ai.navIndex = world.navigation.indexOf(point);
+  ai.waypointFrames = 0;
+  return point;
+}
+function getClosestWaypoint(world, bot) {
+  const candidates = world.navigation.filter((point) => Math.abs(point.y - bot.y) < 100);
+  const points = candidates.length ? candidates : world.navigation;
+  if (!points.length) return null;
+  return points.reduce((closest, point) => (
+    Math.abs(point.x - bot.x) < Math.abs(closest.x - bot.x) ? point : closest
+  ));
+}
+function chooseConnectedWaypoint(world, point) {
+  const connected = [...point.connections].map((id) => waypointById(world, id)).filter(Boolean);
+  if (!connected.length) return point;
+  return connected[Math.floor(aiRandom(world) * connected.length)];
+}
+function advanceWaypoint(world, bot) {
+  const ai = bot.ai;
+  const current = waypointById(world, ai.nextWaypointId) ?? getClosestWaypoint(world, bot);
+  ai.currentWaypointId = current.id;
+  return setNextWaypoint(world, ai, chooseConnectedWaypoint(world, current).id);
+}
+function targetCandidate(world, bot, actor) {
+  if (actor.id === bot.id || !actor.alive || actor.invisible || actor.spawnProtected) return false;
+  if (bot.team !== undefined && actor.team === bot.team) return false;
+  const range = Math.min((bot.weapon.range ?? 45) * 10, 450);
+  if (Math.hypot(actor.x - bot.x, actor.y - bot.y) >= range) return false;
+  return hasLineOfSight(world, { x: bot.x, y: bot.y - (bot.crouching ? 20 : 50) }, { x: actor.x, y: actor.y - (actor.crouching ? 20 : 40) });
+}
+function acquireTarget(world, bot) {
+  return world.players.filter((actor) => targetCandidate(world, bot, actor)).sort((a, b) => (
+    Math.hypot(a.x - bot.x, a.y - bot.y) - Math.hypot(b.x - bot.x, b.y - bot.y)
+  ))[0] ?? null;
+}
+function originalAiAim(world, bot, target) {
+  const ai = bot.ai;
+  if (!Number.isFinite(ai.aimX)) ai.aimX = bot.aimX;
+  if (!Number.isFinite(ai.aimY)) ai.aimY = bot.aimY;
+  const focusX = target ? target.x : bot.x + bot.facing * 50 + bot.vx * 10;
+  const focusY = target ? target.y - (target.crouching ? 20 : 40) : bot.y - 40 + bot.vy * 8;
+  const speed = target ? .3 * (Math.min(15, Math.max(0, ai.difficulty)) * .1 + .1) : .4;
+  ai.aimX += (focusX - ai.aimX) * speed;
+  ai.aimY += (focusY - ai.aimY) * (target ? speed : .3);
+  return { aimX: ai.aimX, aimY: ai.aimY };
+}
+function actionInput(world, bot, next) {
+  const ai = bot.ai;
+  const action = world.actions.find((item) => item.connections.includes(next.id) && Math.abs(item.x - bot.x) < 42 && Math.abs(item.y - bot.y) < 70);
+  if (!action) return {};
+  if (action.id === 'j' && bot.grounded) { ai.waitFrames = 0; ai.noWaitFrames = 30; return { jump: true }; }
+  if (action.id === 'c') return { down: true };
+  if (action.id === 'fp' || action.id === 'fc' || action.id === 'fd') {
+    const corrected = action.id[1];
+    if (waypointById(world, corrected)) setNextWaypoint(world, ai, corrected);
   }
-  const target = world.players.find((actor) => actor.id === ai.targetId);
-  if (!target) {
-    // Arena's NodeWaypoint connectors are the original patrol anchors; its
-    // NodeAiAction instances add jump/crouch instructions at those anchors.
-    const nodes = world.navigation;
-    if (nodes.length) {
-      if (ai.navIndex === null) ai.navIndex = nodes.reduce((closest, point, index) => (
-        Math.hypot(point.x - bot.x, point.y - bot.y) < Math.hypot(nodes[closest].x - bot.x, nodes[closest].y - bot.y) ? index : closest
-      ), 0);
-      let node = nodes[ai.navIndex];
-      if (Math.hypot(node.x - bot.x, node.y - bot.y) < 28) {
-        ai.navIndex = (ai.navIndex + 1) % nodes.length;
-        node = nodes[ai.navIndex];
-      }
-      const dx = node.x - bot.x;
-      const action = world.actions.find((item) => item.name.startsWith('j_') && item.connections.includes(node.id) && Math.abs(item.x - bot.x) < 42 && Math.abs(item.y - bot.y) < 70);
-      return { left: dx < -12, right: dx > 12, jump: Boolean(action) && bot.grounded, aimX: node.x, aimY: node.y - 40 };
-    }
-    return { left: Math.sin(world.elapsed * .7 + ai.scanFrame) < 0, right: Math.sin(world.elapsed * .7 + ai.scanFrame) >= 0, aimX: bot.x + bot.facing * 80, aimY: bot.y - 45 };
+  return {};
+}
+function botInput(world, bot, dt) {
+  const ai = bot.ai;
+  const frameUnits = dt * 30;
+  ai.waitFrames = Math.max(0, ai.waitFrames - frameUnits);
+  ai.noWaitFrames = Math.max(0, ai.noWaitFrames - frameUnits);
+  ai.crouchFrames = Math.max(0, ai.crouchFrames - frameUnits);
+  ai.waypointFrames += (!ai.waitFrames && !ai.crouchFrames && bot.grounded ? frameUnits : 0);
+
+  if (world.frame % 12 === ai.scanFrame) ai.targetId = acquireTarget(world, bot)?.id ?? null;
+  const target = world.players.find((actor) => actor.id === ai.targetId && targetCandidate(world, bot, actor)) ?? null;
+  if (!target) ai.targetId = null;
+
+  if (world.navigation.length && (!ai.nextWaypointId || ai.waypointFrames >= 120)) {
+    const closest = getClosestWaypoint(world, bot);
+    if (closest) setNextWaypoint(world, ai, closest.id);
   }
-  const distanceX = target.x - bot.x; const crouch = Math.abs(distanceX) < 160 && Math.floor(world.elapsed * 2) % 5 === 0;
-  return { left: distanceX < -120, right: distanceX > 120, down: crouch, aimX: target.x, aimY: target.y - (target.crouching ? 20 : 40), fire: true, reload: bot.weapon.clip < 4 };
+  let next = waypointById(world, ai.nextWaypointId);
+  if (next && Math.abs(next.x - bot.x) < 30) next = advanceWaypoint(world, bot);
+
+  const difficulty = Math.min(15, Math.max(0, ai.difficulty));
+  const diffReverse = 15 - difficulty;
+  if (!target && !ai.waitFrames && !ai.noWaitFrames && aiChance(world, .01 * diffReverse * .3, dt)) {
+    ai.waitFrames = (2 + Math.floor(aiRandom(world) * 5)) * diffReverse * .1 * 30;
+    ai.noWaitFrames = ai.waitFrames + (2 + Math.floor(aiRandom(world) * 5)) * difficulty * .1 * 30;
+  }
+  if (target && !ai.crouchFrames && aiChance(world, .02 * diffReverse * .3, dt)) ai.crouchFrames = (2 + Math.floor(aiRandom(world) * 3)) * diffReverse * .1 * 30;
+
+  const move = next && !ai.waitFrames ? { left: next.x < bot.x - 30, right: next.x > bot.x + 30 } : {};
+  const action = next ? actionInput(world, bot, next) : {};
+  const aim = originalAiAim(world, bot, target);
+  const shootBase = .05 + (1 - Math.min(bot.weapon.shootDelay ?? world.config.fireCooldown, .9)) * .2;
+  const shotChance = difficulty === 10 ? 1000 : difficulty * .29 + .1;
+  const fire = Boolean(target) && difficulty > 0 && aiChance(world, shootBase * shotChance, dt);
+  return { ...move, ...action, down: Boolean(action.down || ai.crouchFrames), ...aim, fire, reload: bot.weapon.clip < 4 };
 }
 
 function segmentHitsActor(bullet, actor) {
@@ -451,6 +530,6 @@ function decayEffects(items, dt) { return items.filter((item) => { item.ttl -= d
 
 export function step(world, inputs = {}, dt = 1 / 60) {
   const safeDt = Math.min(Math.max(dt, 0), 0.05); world.elapsed += safeDt; world.frame += 1;
-  for (const player of world.players) updateActor(world, player, player.isBot ? botInput(world, player) : inputs[player.id] ?? {}, safeDt);
+  for (const player of world.players) updateActor(world, player, player.isBot ? botInput(world, player, safeDt) : inputs[player.id] ?? {}, safeDt);
   updateBullets(world, safeDt); world.muzzleFlashes = decayEffects(world.muzzleFlashes, safeDt); world.hitEffects = decayEffects(world.hitEffects, safeDt); return world;
 }

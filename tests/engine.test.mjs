@@ -143,6 +143,27 @@ test('Foundry AI jumps when its connected route is blocked by a reachable box', 
   assert.ok(bot.vy < 0, 'the AI turns the reachable obstacle into a jump input');
 });
 
+test('Foundry AI searches toward a remote player through waypoint connections before line of sight', () => {
+  const world = createWorld({ foundry: true, random: () => 0 });
+  const bot = world.bots[0];
+  const target = world.players[0];
+  world.navigation = [
+    { id: 'a', connections: 'bc', x: 100, y: 620 },
+    { id: 'b', connections: 'a', x: 300, y: 620 },
+    { id: 'c', connections: 'a', x: 1200, y: 620 },
+  ];
+  world.actions = [];
+  bot.x = 100; bot.y = 620; bot.grounded = true;
+  target.x = 1200; target.y = 620;
+  bot.ai.scanFrame = -1;
+  bot.ai.nextWaypointId = 'a';
+
+  step(world, {}, 1 / 60);
+
+  assert.equal(bot.ai.huntTargetId, target.id);
+  assert.equal(bot.ai.nextWaypointId, 'c');
+});
+
 test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {
   const wall = { isSolid: (x, y) => y >= 620 || (x >= 510 && y >= 608) };
   const world = createWorld({ bots: false, wall });

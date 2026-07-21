@@ -6,7 +6,8 @@ import { selectM4Action } from './m4-action-selector.mjs';
 import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
-import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
+import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
+import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -21,6 +22,7 @@ const sourceMenu = document.querySelector('#sourceMenu');
 const menuSurface = document.querySelector('#menuSurface');
 const menuImage = document.querySelector('#menuImage');
 const menuButtons = document.querySelector('#menuButtons');
+const menuOverlay = document.querySelector('#menuOverlay');
 const menuTranslation = document.querySelector('#menuTranslation');
 const sourceStatus = document.querySelector('#sourceStatus');
 const gameStage = document.querySelector('#gameStage');
@@ -73,6 +75,27 @@ let mouseFirePressed = false;
 let running = false;
 let online = null;
 let onlineAccumulator = 0;
+let matchSelection = createMatchSelection();
+let quickSelectionChanged = false;
+let quickStatus = '';
+
+function addQuickValue(name, text, left, top, width) {
+  const value = document.createElement('span');
+  value.className = 'menu-value';
+  value.dataset.value = name;
+  value.style.setProperty('--value-left', `${left}%`);
+  value.style.setProperty('--value-top', `${top}%`);
+  value.style.setProperty('--value-width', `${width}%`);
+  value.textContent = text;
+  menuOverlay.append(value);
+}
+
+function renderQuickmatchOverlay() {
+  menuOverlay.replaceChildren();
+  if (!quickSelectionChanged) return;
+  const summary = `${formatQuickMatchSummary(matchSelection)}${quickStatus ? ` · ${quickStatus}` : ''}`;
+  addQuickValue('summary', summary, 25.0, MENU_QUICK_SUMMARY_TOP, 50.0);
+}
 
 function showSourceMenu(screen = 'home') {
   const asset = MENU_SCREEN_ASSETS[screen];
@@ -97,6 +120,8 @@ function showSourceMenu(screen = 'home') {
     return button;
   }));
   sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / 第 ${asset.frame} 帧 · 中文功能说明已覆盖；未迁移内容不会伪装为可玩。`;
+  if (screen === 'quickmatch') renderQuickmatchOverlay();
+  else menuOverlay.replaceChildren();
   running = false;
   gameStage.hidden = true;
   sourceMenu.hidden = false;
@@ -109,6 +134,7 @@ function saveSettings() {
 }
 difficulty.value = saved.difficulty ?? 6;
 difficultyValue.value = difficulty.value;
+matchSelection = createMatchSelection({ difficulty: Number(difficulty.value) });
 music.checked = !audio.muted;
 saveStatus.textContent = saved.score ? `读取存档：P1 ${saved.score.p1 ?? 0} 击倒` : '本地存档尚未创建';
 difficulty.addEventListener('input', () => { difficultyValue.value = difficulty.value; if (world.bots[0]) world.bots[0].ai.difficulty = Number(difficulty.value); saveSettings(); });
@@ -123,7 +149,8 @@ start.addEventListener('click', async () => {
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
     } else {
       online = null;
-      world.bots[0].ai.difficulty = Number(difficulty.value);
+      world.matchSettings = { ...matchSelection };
+      world.bots.forEach((bot) => { bot.ai.difficulty = matchSelection.difficulty; });
       start.textContent = '战斗中';
     }
     running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click'); saveSettings();
@@ -135,7 +162,20 @@ menuButtons.addEventListener('click', (event) => {
   else if (action === 'preview:challenges') showSourceMenu('challenges');
   else if (action === 'show:quickmatch') showSourceMenu('quickmatch');
   else if (action === 'show:home') showSourceMenu('home');
-  else if (action === 'start:foundry-deathmatch') start.click();
+  else if (action?.startsWith('quick:mode:')) {
+    matchSelection = updateMatchSelection(matchSelection, { mode: action.split(':')[2] });
+    quickSelectionChanged = true; quickStatus = isPlayableSelection(matchSelection) ? '' : 'NOT MIGRATED'; renderQuickmatchOverlay();
+  } else if (action?.startsWith('quick:')) {
+    const [, control, sourceDirection] = action.split(':');
+    matchSelection = cycleQuickMatchSelection(matchSelection, control, Number(sourceDirection));
+    quickSelectionChanged = true; quickStatus = isPlayableSelection(matchSelection) ? '' : 'NOT MIGRATED'; renderQuickmatchOverlay();
+  } else if (action === 'start:foundry-deathmatch') {
+    if (!isPlayableSelection(matchSelection)) {
+      quickSelectionChanged = true; quickStatus = 'NOT MIGRATED'; renderQuickmatchOverlay();
+      return;
+    }
+    difficulty.value = String(matchSelection.difficulty); difficultyValue.value = difficulty.value; start.click();
+  }
 });
 leaveGame.addEventListener('click', () => showSourceMenu('home'));
 showSourceMenu(DEFAULT_MENU_SCREEN);

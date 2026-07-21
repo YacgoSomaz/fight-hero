@@ -17,6 +17,8 @@ export const ORIGINAL_MODES = Object.freeze([
 
 export const QUICKMATCH_MODIFIERS = Object.freeze(['none', 'clips']);
 export const QUICKMATCH_DIFFICULTIES = Object.freeze([1, 3, 5, 7, 9]);
+const QUICKMATCH_SOLDIER_NAMES = Object.freeze(['All', 'Medics Only', 'Assault Only', 'Snipers Only', 'Gunners Only']);
+const QUICKMATCH_DIFFICULTY_NAMES = Object.freeze({ 1: 'Very Easy', 3: 'Easy', 5: 'Normal', 7: 'Hard', 9: 'Insane' });
 
 const sourceMissions = [
   ['tdm', 15, 'tut', 1, 'Under Siege'], ['tdm', 20, 'swamp', 2, 'Rebellion'], ['tdm', 25, 'plane', 2, 'Hijacked'],
@@ -73,6 +75,12 @@ export function cycleQuickMatchSelection(selection, control, direction = 1) {
     case 'difficulty': return updateMatchSelection(selection, { difficulty: nextSourceValue(selection.difficulty, QUICKMATCH_DIFFICULTIES, direction) });
     default: return updateMatchSelection(selection, {});
   }
+}
+
+export function formatQuickMatchSummary(selection) {
+  const map = ORIGINAL_MAPS.find(({ id }) => id === selection.map) ?? ORIGINAL_MAPS[0];
+  const mode = ORIGINAL_MODES.find(({ id }) => id === selection.mode) ?? ORIGINAL_MODES[0];
+  return `${map.name} · ${mode.name} · Score ${selection.score} · ${QUICKMATCH_SOLDIER_NAMES[selection.soldiers] ?? QUICKMATCH_SOLDIER_NAMES[0]} · ${QUICKMATCH_DIFFICULTY_NAMES[selection.difficulty] ?? QUICKMATCH_DIFFICULTY_NAMES[1]}`;
 }
 
 // Only this combination has already had its map art, collision, node graph and

@@ -196,6 +196,24 @@ SWF 内含 Mochi 与 Playtomic 类，并在启动阶段调用广告、日志和 
 
 这解释了为什么 AI 必须等墙体掩码、路线节点和武器射程都迁移后再做；只把 AI 设为“朝最近敌人移动并固定频率射击”会与原行为相差很大。
 
+### Bot 档案、随机性与武器
+
+Bot 的“随机”发生在**建局时**，不是每次复活或每帧重新抽选。快速对局的
+`MatchSettings.startQuickmatch()` 会合并对应队伍的 `qmBots*` 档案；`Game.InitGame()`
+对该数组中的每一项建立一个 `AI`。随后 `MatchSettings.setBotStats(bot)` 写入：
+
+- `diff = qmDiff`；
+- `level = max(1, qmDiff * 3 + UT.irand(-3, 4))`；
+- 固定职业为全局选择的 `useSoldiers`，否则在 1–4 职业中随机；
+- 由 `Stats_Guns.getRandPrimary(bot)`、`getRandSecondary(bot)`、`Stats_Skills.getRandSkill(bot)`
+  和 `Stats_Streaks.getRandStreak(bot)` 各抽取一次，并保存到该 Bot 档案。
+
+`Unit.setClass()` 正常使用这份 `primary/secondary` 档案，因此一次对局内的 Bot
+复活不会重新掷武器。唯一明确的全局例外是 `MatchSettings.useMod == "party"`：
+每个 Unit 初始化时都从职业枪械表 1–4 中随机一把主武器、从表 0 中随机一把副武器，
+覆盖档案武器。网页实现若要追求原版，应把“建局档案随机”和“party 覆盖”分成两个
+可复现的随机源，不能在 AI 的每个 update 中随机改枪。
+
 ## 9. 迁移优先级
 
 1. **P0：像素墙体**：导出/转换 `wallMC`，统一 `isSolid`；先让移动、攀爬、子弹命中和 AI 视线使用同一份数据。

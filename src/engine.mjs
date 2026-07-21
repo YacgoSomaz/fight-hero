@@ -353,8 +353,33 @@ function applyPlatformPhysics(world, actor, dt) {
   }
 }
 
-function canStand(world, actor) { return !isSolid(world, actor.x - 17, actor.y - 45) && !isSolid(world, actor.x + 17, actor.y - 45); }
-function updateCrouch(world, actor, requested) { actor.crouching = Boolean(requested) || (actor.crouching && !canStand(world, actor)); }
+function canStandAt(world, actor, x) { return !isSolid(world, x - 17, actor.y - 45) && !isSolid(world, x + 17, actor.y - 45); }
+function canStand(world, actor) { return canStandAt(world, actor, actor.x); }
+function crouchBodyClearAt(world, actor, x) {
+  // Movement.as resolves a crouched body out of a wall with the -20/-25/-35
+  // torso probes before the next crouch check.  Without that resolution, a
+  // single vertical wall can keep the later -45 stand probe permanently hit.
+  return [-20, -25, -35].every((offset) => !isSolid(world, x - 17, actor.y + offset) && !isSolid(world, x + 17, actor.y + offset));
+}
+function resolveSingleWallCrouchLock(world, actor, requested) {
+  if (requested || !actor.crouching) return;
+  const leftBlocked = isSolid(world, actor.x - 17, actor.y - 45);
+  const rightBlocked = isSolid(world, actor.x + 17, actor.y - 45);
+  // Two blocked head probes are a genuine low ceiling: retain the original
+  // crouch state. A single probe is a side-wall overlap which Flash resolves
+  // horizontally while crouched.
+  if (leftBlocked === rightBlocked) return;
+  const away = leftBlocked ? 1 : -1;
+  for (let distance = 1; distance <= actor.hitbox.halfWidth + 1; distance += 1) {
+    const x = actor.x + away * distance;
+    if (x < actor.hitbox.halfWidth || x > world.config.width - actor.hitbox.halfWidth) break;
+    if (crouchBodyClearAt(world, actor, x) && canStandAt(world, actor, x)) { actor.x = x; return; }
+  }
+}
+function updateCrouch(world, actor, requested) {
+  resolveSingleWallCrouchLock(world, actor, Boolean(requested));
+  actor.crouching = Boolean(requested) || (actor.crouching && !canStand(world, actor));
+}
 function reload(world, actor) {
   const gun = actor.weapon;
   if (gun.reloadRemaining || gun.clip === gun.clipMax || !gun.spare) return false;

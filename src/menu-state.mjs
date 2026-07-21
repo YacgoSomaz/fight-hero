@@ -83,11 +83,11 @@ export function formatQuickMatchSummary(selection) {
   return `${map.name} · ${mode.name} · Score ${selection.score} · ${QUICKMATCH_SOLDIER_NAMES[selection.soldiers] ?? QUICKMATCH_SOLDIER_NAMES[0]} · ${QUICKMATCH_DIFFICULTY_NAMES[selection.difficulty] ?? QUICKMATCH_DIFFICULTY_NAMES[1]}`;
 }
 
-// These three rules now consume Arena's decoded spawn/objective nodes in the
-// local runtime.  Juggernaut still needs Unit.as's role-transfer setup, so it
-// stays unavailable instead of being represented by a fake launch button.
-const PLAYABLE_SOURCE_MODES = new Set(['dm', 'tdm', 'ctf', 'dom']);
-const PLAYABLE_MODE_NAMES = Object.freeze({ dm: '死亡竞赛', tdm: '团队死斗', ctf: '夺旗', dom: '据点占领' });
+// These rules now consume Arena's decoded spawn/objective nodes in the local
+// runtime.  Juggernaut additionally applies the original Unit.setJug role
+// transfer, so it is no longer represented by a fake launch button.
+const PLAYABLE_SOURCE_MODES = new Set(['dm', 'jug', 'tdm', 'ctf', 'dom']);
+const PLAYABLE_MODE_NAMES = Object.freeze({ dm: '死亡竞赛', jug: 'Juggernaut', tdm: '团队死斗', ctf: '夺旗', dom: '据点占领' });
 export function isPlayableSelection(selection) {
   return ORIGINAL_MAPS.some(({ id }) => id === selection.map) && PLAYABLE_SOURCE_MODES.has(selection.mode);
 }

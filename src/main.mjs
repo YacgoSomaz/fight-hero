@@ -8,6 +8,7 @@ import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
+import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 
 const canvas = document.querySelector('#game');
@@ -31,12 +32,23 @@ const leaveGame = document.querySelector('#leaveGame');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
+const sky = new Image();
 const map = new Image();
-map.src = './public/assets/maps/foundry.png';
-// Original Foundry foreground art: platforms, forge and lava. The editor-only
-// physics/spawn/pickup nodes are deliberately excluded from this normal view.
-const foundryForeground = new Image();
-foundryForeground.src = './public/assets/maps/foundry-foreground.png';
+const terrain = new Image();
+function loadImage(target, source) {
+  return new Promise((resolve) => {
+    target.onload = () => resolve(); target.onerror = () => resolve(); target.src = source;
+    if (target.complete) resolve();
+  });
+}
+async function loadMapVisual(mapId) {
+  const visual = getMapVisual(mapId);
+  sky.sourceCrop = getMapLayerCrop(visual.sky);
+  map.sourceCrop = getMapLayerCrop(visual.background);
+  terrain.sourceCrop = getMapLayerCrop(visual.terrain);
+  await Promise.all([loadImage(sky, visual.sky), loadImage(map, visual.background), loadImage(terrain, visual.terrain)]);
+}
+void loadMapVisual('foundry');
 function image(source) { const result = new Image(); result.src = source; return result; }
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
@@ -146,14 +158,18 @@ start.addEventListener('click', async () => {
     if (room) {
       online = await joinPrivateRoom(room);
       world = createWorld({ multiplayer: true, foundry: true });
+      await loadMapVisual('foundry');
       applyRoomState(world, online.state);
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
     } else {
       online = null;
+      await loadMapVisual(matchSelection.map);
+      world = createWorld({ mapId: matchSelection.map });
       world.matchSettings = { ...matchSelection };
       world.bots.forEach((bot) => { bot.ai.difficulty = matchSelection.difficulty; });
       start.textContent = '战斗中';
     }
+    camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
     running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click'); saveSettings();
   } catch (error) { saveStatus.textContent = `联机失败：${error.message}`; }
 });
@@ -189,9 +205,10 @@ for (const type of ['keydown', 'keyup']) {
   });
 }
 window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFirePressed = false; });
-reset.addEventListener('click', () => {
+reset.addEventListener('click', async () => {
   online = null;
-  world = createWorld({ foundry: true });
+  await loadMapVisual(matchSelection.map);
+  world = createWorld({ mapId: matchSelection.map });
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;
@@ -243,7 +260,7 @@ function drawHud() {
   ctx.textAlign = 'center';
   ctx.fillStyle = '#e8edf8';
   ctx.font = '600 16px system-ui';
-  ctx.fillText(`Foundry · AI ${difficulty.value} · ${running ? '战斗进行中' : '菜单'}`, canvas.width / 2, 30);
+  ctx.fillText(`${world.mapId} · AI ${difficulty.value} · ${running ? '战斗进行中' : '菜单'}`, canvas.width / 2, 30);
   ctx.textAlign = 'left';
 }
 
@@ -496,27 +513,25 @@ function drawCollisionBoxes() {
 }
 
 function render() {
-  if (map.complete && map.naturalWidth) {
-    const source = getMapSourceRect(camera, canvas.width, canvas.height);
-    // Camera coordinates live in the logical collision world; the exported
-    // Foundry artwork has its own native dimensions, so transform the source
-    // rectangle instead of assuming the old missing lab image's dimensions.
-    const sourceX = source.x / world.config.width * map.naturalWidth;
-    const sourceY = source.y / world.config.height * map.naturalHeight;
-    const sourceWidth = source.width / world.config.width * map.naturalWidth;
-    const sourceHeight = source.height / world.config.height * map.naturalHeight;
-    ctx.drawImage(map, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
-    if (foundryForeground.complete && foundryForeground.naturalWidth) {
-      const foregroundX = source.x / world.config.width * foundryForeground.naturalWidth;
-      const foregroundY = source.y / world.config.height * foundryForeground.naturalHeight;
-      const foregroundWidth = source.width / world.config.width * foundryForeground.naturalWidth;
-      const foregroundHeight = source.height / world.config.height * foundryForeground.naturalHeight;
-      ctx.drawImage(foundryForeground, foregroundX, foregroundY, foregroundWidth, foregroundHeight, 0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#090c12';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const source = getMapSourceRect(camera, canvas.width, canvas.height);
+  const drawMapLayer = (layer, asViewportBackground = false) => {
+    if (!layer.complete || !layer.naturalWidth) return;
+    const crop = layer.sourceCrop;
+    if (asViewportBackground && crop?.width && crop?.height) {
+      ctx.drawImage(layer, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
+      return;
     }
-  } else {
-    ctx.fillStyle = '#19202a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
+    const sourceX = source.x / world.config.width * layer.naturalWidth;
+    const sourceY = source.y / world.config.height * layer.naturalHeight;
+    const sourceWidth = source.width / world.config.width * layer.naturalWidth;
+    const sourceHeight = source.height / world.config.height * layer.naturalHeight;
+    ctx.drawImage(layer, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
+  };
+  drawMapLayer(sky, true);
+  drawMapLayer(map, true);
+  drawMapLayer(terrain);
   ctx.fillStyle = 'rgba(3, 7, 13, .12)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   if (SHOW_COLLISION_OVERLAYS) drawCollisionBoxes();

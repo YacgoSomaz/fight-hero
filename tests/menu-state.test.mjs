@@ -14,10 +14,11 @@ test('menu preserves all extracted campaign and challenge mission entries', () =
   assert.deepEqual(CHALLENGE_MISSIONS[4], { stage: 5, title: 'Prepared', map: 'foundry', mode: 'dm', score: 15, difficulty: 10 });
 });
 
-test('only the migrated Foundry deathmatch selection can currently launch', () => {
+test('every source Arena map can launch the migrated local deathmatch rule', () => {
   assert.equal(isPlayableSelection(createMatchSelection()), true);
   assert.equal(isPlayableSelection(createMatchSelection({ mode: 'ctf' })), false);
-  assert.equal(isPlayableSelection(createMatchSelection({ map: 'train' })), false);
+  assert.equal(isPlayableSelection(createMatchSelection({ map: 'train' })), true);
+  assert.equal(isPlayableSelection(createMatchSelection({ map: 'cave2' })), true);
 });
 
 test('quick-match view keeps score choices sourced from the selected original mode', () => {

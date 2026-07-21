@@ -83,12 +83,13 @@ export function formatQuickMatchSummary(selection) {
   return `${map.name} · ${mode.name} · Score ${selection.score} · ${QUICKMATCH_SOLDIER_NAMES[selection.soldiers] ?? QUICKMATCH_SOLDIER_NAMES[0]} · ${QUICKMATCH_DIFFICULTY_NAMES[selection.difficulty] ?? QUICKMATCH_DIFFICULTY_NAMES[1]}`;
 }
 
-// Only this combination has already had its map art, collision, node graph and
-// match rule migrated. The menu must not present unported source data as playable.
-export function isPlayableSelection(selection) { return selection.map === 'foundry' && selection.mode === 'dm'; }
+// Every source Arena terrain now has its own decoded geometry and local art
+// layers.  Deathmatch is the one shared match rule fully wired to that common
+// map runtime; the other original rules remain visibly unavailable.
+export function isPlayableSelection(selection) { return ORIGINAL_MAPS.some(({ id }) => id === selection.map) && selection.mode === 'dm'; }
 
 export function getQuickMatchStatus(selection) {
   return isPlayableSelection(selection)
-    ? { canLaunch: true, message: 'Foundry · Deathmatch 已完成地图、碰撞、导航及基础对战迁移。' }
+    ? { canLaunch: true, message: '原场景地图、碰撞、导航与本地死亡竞赛已接入。' }
     : { canLaunch: false, message: '该地图或模式尚未完成原版地图、碰撞与规则迁移。' };
 }

@@ -641,3 +641,47 @@ test('Foundry camera samples its extracted bitmap directly without the retired l
   assert.ok(source.x + source.width <= world.config.width);
   assert.ok(source.y + source.height <= world.config.height);
 });
+
+test('source team deathmatch uses team spawns and scores an enemy kill for the killer team', () => {
+  const world = createWorld({ mapId: 'foundry', mode: 'tdm', score: 1, random: () => .99 });
+  const p1 = world.players[0];
+  const bot = world.bots[0];
+
+  assert.equal(p1.team, 1);
+  assert.equal(bot.team, 2);
+  assert.deepEqual({ x: p1.spawnX, y: p1.spawnY }, { x: 96.95, y: 706.45 });
+  assert.deepEqual({ x: bot.spawnX, y: bot.spawnY }, { x: 2572, y: 354.6 });
+  bot.x = p1.x + 80; bot.y = p1.y; bot.hp = 1;
+  step(world, { p1: { aimX: bot.x, aimY: bot.y - 40, firePressed: true } }, 1 / 60);
+  for (let frame = 0; frame < 12; frame += 1) step(world, {}, 1 / 60);
+  assert.equal(world.match.teamScores[1], 1);
+  assert.equal(world.match.winnerTeam, 1);
+});
+
+test('source CTF carries an enemy flag into the home-flag trigger and awards one team point', () => {
+  const world = createWorld({ mapId: 'foundry', mode: 'ctf', score: 1, bots: false, random: () => .99 });
+  const p1 = world.players[0];
+  const [home, enemy] = world.objectives.flags;
+
+  p1.x = enemy.x; p1.y = enemy.y;
+  step(world, {}, 1 / 60);
+  assert.equal(p1.carriedFlagId, enemy.id);
+  p1.x = home.x; p1.y = home.y;
+  step(world, {}, 1 / 60);
+  assert.equal(p1.carriedFlagId, null);
+  assert.equal(world.match.teamScores[1], 1);
+  assert.equal(world.match.winnerTeam, 1);
+});
+
+test('source domination captures its original zone then scores once per three seconds', () => {
+  const world = createWorld({ mapId: 'foundry', mode: 'dom', score: 1, bots: false });
+  const p1 = world.players[0];
+  const point = world.objectives.holdpoints[0];
+
+  p1.x = point.x; p1.y = point.y;
+  for (let frame = 0; frame < 56; frame += 1) step(world, {}, 1 / 30);
+  assert.equal(point.team, 1);
+  for (let frame = 0; frame < 90; frame += 1) step(world, {}, 1 / 30);
+  assert.equal(world.match.teamScores[1], 1);
+  assert.equal(world.match.winnerTeam, 1);
+});

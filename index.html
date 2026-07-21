@@ -8,27 +8,31 @@
   </head>
   <body>
     <main>
-      <section class="intro">
-        <p class="eyebrow">PRIVATE LOCAL EXPERIMENT · ORIGINAL SWF ASSET REFERENCE</p>
-        <h1>战火英雄：Foundry 私人复刻</h1>
-        <p>原 SWF 的人物标签、墙体掩码、AI、音效与本地进度均在此处运行。</p>
-      </section>
-      <canvas id="game" width="1280" height="720" aria-label="单人游戏画面"></canvas>
-      <section id="menu" class="menu" aria-label="游戏菜单">
-        <div>
-          <strong>本地遭遇战</strong>
-          <label>AI 难度 <input id="difficulty" type="range" min="1" max="10" value="6" /><output id="difficultyValue">6</output></label>
-          <label>联机房间 <input id="room" maxlength="32" placeholder="留空=AI 对战" /></label>
-          <label><input id="music" type="checkbox" checked /> 菜单音乐</label>
-          <button id="start" type="button">开始战斗</button>
+      <section id="sourceMenu" class="source-menu" aria-label="原始 SWF 菜单">
+        <div id="menuSurface" class="menu-surface" data-screen="home">
+          <img id="menuImage" src="./public/assets/menu-source/home.png" alt="原始战火英雄菜单画面" draggable="false" />
+          <button class="menu-hit home-campaign" data-menu-target="campaign" type="button" aria-label="Campaign"></button>
+          <button class="menu-hit home-challenges" data-menu-target="challenges" type="button" aria-label="Challenges"></button>
+          <button class="menu-hit home-quickmatch" data-menu-target="quickmatch" type="button" aria-label="Quick Match"></button>
+          <button class="menu-hit screen-back" data-menu-target="home" type="button" aria-label="Back"></button>
+          <button id="sourceStart" class="menu-hit quick-start" type="button" aria-label="Start Game"></button>
         </div>
-        <p id="saveStatus">本地存档尚未创建</p>
+        <p id="sourceStatus" class="source-status">原始 SWF 菜单帧：MBFZ_fla.Timeline_275 / play（第 5 帧）</p>
       </section>
-      <section class="controls">
-        <div><strong>P1</strong><span>A / D 移动 · W 跳跃 · S 蹲伏 · R 换弹 · 鼠标瞄准/左键射击 · F 射击 · M 静音</span></div>
-        <button id="reset" type="button">重新开始</button>
+
+      <section id="gameStage" hidden>
+        <canvas id="game" width="1280" height="720" aria-label="单人游戏画面"></canvas>
+        <section class="controls">
+          <div><strong>P1</strong><span>A / D 移动 · W 跳跃 · S 蹲伏 · R 换弹 · 鼠标瞄准/左键射击 · F 射击 · M 静音</span></div>
+          <div><button id="reset" type="button">重新开始</button><button id="leaveGame" type="button">返回原版菜单</button></div>
+        </section>
       </section>
-      <p class="notice">仅供本地学习与私人体验；请勿分发本原型或其中的原始游戏素材。</p>
+      <label class="visually-hidden">AI 难度 <input id="difficulty" type="range" min="1" max="10" value="1" /><output id="difficultyValue">1</output></label>
+      <input id="room" class="visually-hidden" aria-hidden="true" tabindex="-1" />
+      <input id="music" class="visually-hidden" type="checkbox" checked />
+      <button id="start" class="visually-hidden" type="button" tabindex="-1">开始战斗</button>
+      <p id="saveStatus" class="save-status">本地存档尚未创建</p>
+      <p class="notice">原始菜单画面直接导自本机 SWF；仅供本地学习与私人体验。</p>
     </main>
     <script type="module" src="src/main.mjs"></script>
   </body>

@@ -5,6 +5,7 @@ import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
 import { selectM4Action } from './m4-action-selector.mjs';
 import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
+import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -15,6 +16,13 @@ const difficultyValue = document.querySelector('#difficultyValue');
 const roomInput = document.querySelector('#room');
 const music = document.querySelector('#music');
 const saveStatus = document.querySelector('#saveStatus');
+const sourceMenu = document.querySelector('#sourceMenu');
+const menuSurface = document.querySelector('#menuSurface');
+const menuImage = document.querySelector('#menuImage');
+const sourceStatus = document.querySelector('#sourceStatus');
+const sourceStart = document.querySelector('#sourceStart');
+const gameStage = document.querySelector('#gameStage');
+const leaveGame = document.querySelector('#leaveGame');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
 const audio = new AudioBank({ muted: Boolean(saved.muted) });
@@ -64,6 +72,18 @@ let running = false;
 let online = null;
 let onlineAccumulator = 0;
 
+function showSourceMenu(screen = 'home') {
+  const asset = MENU_SCREEN_ASSETS[screen];
+  menuSurface.dataset.screen = screen;
+  menuImage.src = `./public/assets/${asset.file}`;
+  menuImage.alt = `原始 SWF ${screen} 菜单画面`;
+  sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / ${screen}（第 ${asset.frame} 帧）`;
+  running = false;
+  gameStage.hidden = true;
+  sourceMenu.hidden = false;
+  if (!audio.muted) audio.startMenu();
+}
+
 function saveSettings() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({ muted: audio.muted, difficulty: Number(difficulty.value), score: world.score }));
   saveStatus.textContent = `已保存：P1 ${world.score.p1 ?? 0} 击倒 · AI ${world.score.bot1 ?? 0} 击倒`;
@@ -87,9 +107,12 @@ start.addEventListener('click', async () => {
       world.bots[0].ai.difficulty = Number(difficulty.value);
       start.textContent = '战斗中';
     }
-    running = true; audio.stopMenu(); audio.play('click'); saveSettings();
+    running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click'); saveSettings();
   } catch (error) { saveStatus.textContent = `联机失败：${error.message}`; }
 });
+document.querySelectorAll('[data-menu-target]').forEach((button) => button.addEventListener('click', () => showSourceMenu(button.dataset.menuTarget)));
+sourceStart.addEventListener('click', () => start.click());
+leaveGame.addEventListener('click', () => showSourceMenu('home'));
 audio.startMenu();
 
 for (const type of ['keydown', 'keyup']) {

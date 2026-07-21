@@ -157,7 +157,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG, te
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
     fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, shootDelay: 0.15 },
-    color, team, carriedFlagId: null, isBot, ai: isBot ? {
+    color, team, carriedFlagId: null, isJug: false, isBot, ai: isBot ? {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
       navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,
       huntTargetId: null, huntGoalWaypointId: null, huntFrames: 0, routeIds: [],
@@ -216,6 +216,7 @@ export function createWorld(options = {}) {
   const terrainMapId = TERRAIN_MAP_BY_ID[mapId] ?? mapId;
   const map = decodedMap(terrainMapId);
   const mode = options.mode ?? 'dm';
+  const random = typeof options.random === 'function' ? options.random : Math.random;
   const usesTeams = TEAM_MODES.has(mode);
   const baseConfig = map?.config ?? CONFIG;
   const soloP1Spawn = map?.spawns.find((spawn) => spawn.name === 'b_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_0')) ?? { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
@@ -225,7 +226,7 @@ export function createWorld(options = {}) {
   const p1 = makeActor('p1', p1Spawn.x, p1Spawn.y, '#48b7ff', false, baseConfig, usesTeams ? 1 : 0);
   const humans = options.multiplayer ? [makeActor('p2', p2Spawn.x, p2Spawn.y, '#f4a35f', false, baseConfig, usesTeams ? 2 : 0)] : [];
   const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig, usesTeams ? 2 : 0)];
-  return {
+  const world = {
     mapId,
     terrainMapId,
     mode,
@@ -233,11 +234,11 @@ export function createWorld(options = {}) {
     navigation: map ? map.navigation.map((point) => ({ ...point })) : [],
     actions: map ? map.actions.map((point) => ({ ...point })) : [],
     pickups: map ? map.pickups.map((point) => ({ ...point })) : [],
-    objectives: decodedObjectives(map, mode, options.random ?? Math.random),
+    objectives: decodedObjectives(map, mode, random),
     // Full source rectangles are retained separately from an optional pixel
     // wall, so player collision can resolve their top/side faces precisely.
     collisionBoxes: map ? map.collisionBoxes.map((box) => ({ ...box })) : [],
-    wall: options.wall ?? null, random: typeof options.random === 'function' ? options.random : Math.random,
+    wall: options.wall ?? null, random,
     // Keep original Arena node coordinates while the retained physical boxes
     // stay aligned to the existing Foundry art/collision baseline.
     nodeOffset: map?.nodeOffset ?? { x: 0, y: 0 },
@@ -245,6 +246,8 @@ export function createWorld(options = {}) {
     match: { scoreLimit: Number(options.score) || (MODE_SCORE_DEFAULTS[mode] ?? 10), teamScores: { 1: 0, 2: 0 }, winnerTeam: null, winnerId: null, ended: false, objectiveElapsed: 0 },
     elapsed: 0, frame: 0,
   };
+  if (mode === 'jug' && world.players.length) setJuggernaut(world, world.players[Math.floor(random() * world.players.length)]);
+  return world;
 }
 
 function actorHeight(actor) { return actor.crouching ? actor.hitbox.crouchHeight : actor.hitbox.height; }
@@ -504,6 +507,11 @@ function damage(world, target, amount, owner) {
   if (!target.hp) {
     resetCarriedFlag(world, target);
     target.alive = false; target.deathTimer = world.config.respawnDuration; world.events.push({ type: 'death', actor: target.id });
+    if (target.isJug) {
+      const killer = world.players.find((actor) => actor.id === owner && actor.id !== target.id);
+      const replacement = killer ?? world.players.find((actor) => actor.id !== target.id && actor.alive);
+      if (replacement) setJuggernaut(world, replacement);
+    }
     if (owner) awardKill(world, owner);
   }
 }
@@ -523,6 +531,26 @@ function awardKill(world, ownerId) {
   world.score[ownerId] = (world.score[ownerId] ?? 0) + 1;
   const owner = world.players.find((actor) => actor.id === ownerId);
   if (world.mode === 'tdm') awardTeamScore(world, owner?.team);
+  if (world.mode === 'jug' && owner && !world.match.ended && world.score[ownerId] >= world.match.scoreLimit) {
+    world.match.winnerId = ownerId;
+    world.match.ended = true;
+    world.events.push({ type: 'matchEnd', actor: ownerId });
+  }
+}
+
+function setJuggernaut(world, juggernaut) {
+  // Game.as selects a unit at random, then Unit.setJug() clears every unit to
+  // team 1/frame 1 before putting the selected unit on team 2, healing it and
+  // switching it to its Juggernaut timeline.
+  for (const actor of world.players) {
+    actor.team = 1;
+    actor.isJug = false;
+  }
+  juggernaut.team = 2;
+  juggernaut.isJug = true;
+  juggernaut.hp = juggernaut.maxHp;
+  world.match.juggernautId = juggernaut.id;
+  world.events.push({ type: 'juggernaut', actor: juggernaut.id });
 }
 
 function resetCarriedFlag(world, actor) {

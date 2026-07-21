@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CAMPAIGN_MISSIONS, CHALLENGE_MISSIONS, ORIGINAL_MAPS, ORIGINAL_MODES, createMatchSelection, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from '../src/menu-state.mjs';
+import { CAMPAIGN_MISSIONS, CHALLENGE_MISSIONS, ORIGINAL_MAPS, ORIGINAL_MODES, cycleQuickMatchSelection, createMatchSelection, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from '../src/menu-state.mjs';
 
 test('menu exposes the original quick-match modes and source map order', () => {
   assert.deepEqual(ORIGINAL_MODES.map((mode) => mode.id), ['dm', 'jug', 'tdm', 'ctf', 'dom']);
@@ -28,4 +28,20 @@ test('quick-match view keeps score choices sourced from the selected original mo
     canLaunch: false,
     message: '该地图或模式尚未完成原版地图、碰撞与规则迁移。',
   });
+});
+
+test('quick-match controls follow the original Menu.as cyclic state changes', () => {
+  let selection = createMatchSelection({ soldiers: 0 });
+  selection = cycleQuickMatchSelection(selection, 'mode', 1);
+  assert.deepEqual({ mode: selection.mode, score: selection.score }, { mode: 'jug', score: 5 });
+  selection = cycleQuickMatchSelection(selection, 'soldiers', -1);
+  assert.equal(selection.soldiers, 4);
+  selection = cycleQuickMatchSelection(selection, 'skills');
+  assert.equal(selection.skills, false);
+  selection = cycleQuickMatchSelection(selection, 'difficulty', -1);
+  assert.equal(selection.difficulty, 9);
+  selection = cycleQuickMatchSelection(selection, 'modifier', 1);
+  assert.equal(selection.modifier, 'clips');
+  selection = cycleQuickMatchSelection(selection, 'map', 1);
+  assert.equal(selection.map, 'foundry2');
 });

@@ -7,6 +7,10 @@ const CROP = Object.freeze({
   [`${BG}/15.png`]: [1340, 272, 2032, 608], [`${BG}/18.png`]: [1312, 556, 2192, 464], [`${BG}/19.png`]: [1312, 184, 2200, 848],
   [`${SKY}/1.png`]: [796, 0, 800, 600], [`${SKY}/2.png`]: [796, 0, 1600, 812], [`${SKY}/3.png`]: [796, 0, 1600, 812],
   [`${SKY}/4.png`]: [796, 0, 1164, 812], [`${SKY}/5.png`]: [796, 0, 1164, 812], [`${SKY}/6.png`]: [796, 0, 1164, 812], [`${SKY}/7.png`]: [796, 0, 1600, 812],
+  // Arena frame 8 is the tutorial/facility foreground.  FFDec preserves a
+  // large transparent stage border around it; drawing that full bitmap makes
+  // the world and its decoded physics appear in different places.
+  [`${ARENA}/8.png`]: [530, 522, 2952, 1708],
 });
 
 // The labels and frame pairing come directly from Stats_Maps.as, Bg and

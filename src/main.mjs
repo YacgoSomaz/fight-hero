@@ -11,6 +11,7 @@ import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
+import { getUnitOverheadHud } from './unit-status.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -485,10 +486,17 @@ function drawPlayer(player) {
     ctx.beginPath(); ctx.arc(screen.x, screen.y - 42, 29, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
-  ctx.fillStyle = player.isBot ? '#ffb7a8' : '#eaf0d5';
+  const status = getUnitOverheadHud(player, screen, height);
+  ctx.save();
   ctx.font = '700 11px system-ui';
   ctx.textAlign = 'center';
-  ctx.fillText(player.isBot ? 'AI' : 'P1', screen.x, screen.y - height - 8);
+  ctx.fillStyle = player.isBot ? '#ffb7a8' : '#eaf0d5';
+  ctx.fillText(status.label, status.labelX, status.labelY);
+  ctx.fillStyle = 'rgba(6, 10, 11, .92)';
+  ctx.fillRect(status.outline.x, status.outline.y, status.outline.width, status.outline.height);
+  ctx.fillStyle = status.fill.color;
+  ctx.fillRect(status.fill.x, status.fill.y, status.fill.width, status.fill.height);
+  ctx.restore();
   ctx.textAlign = 'left';
 }
 
@@ -590,10 +598,17 @@ function render() {
       ctx.drawImage(layer, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
       return;
     }
-    const sourceX = source.x / world.config.width * layer.naturalWidth;
-    const sourceY = source.y / world.config.height * layer.naturalHeight;
-    const sourceWidth = source.width / world.config.width * layer.naturalWidth;
-    const sourceHeight = source.height / world.config.height * layer.naturalHeight;
+    // Keep every foreground layer in the same authored coordinate space as
+    // the decoded collision/spawn nodes.  Some FFDec PNGs retain empty stage
+    // padding; their crop is the actual map rect, not a viewport background.
+    const layerX = crop?.width ? crop.x : 0;
+    const layerY = crop?.height ? crop.y : 0;
+    const layerWidth = crop?.width || layer.naturalWidth;
+    const layerHeight = crop?.height || layer.naturalHeight;
+    const sourceX = layerX + source.x / world.config.width * layerWidth;
+    const sourceY = layerY + source.y / world.config.height * layerHeight;
+    const sourceWidth = source.width / world.config.width * layerWidth;
+    const sourceHeight = source.height / world.config.height * layerHeight;
     ctx.drawImage(layer, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
   };
   drawMapLayer(sky, true);

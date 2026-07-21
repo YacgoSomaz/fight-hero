@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_TRANSLATION_TOP, getMenuHitAreas } from '../src/menu-ui.mjs';
+import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from '../src/menu-ui.mjs';
 
 test('only source-menu actions with a real local outcome receive a hit area', () => {
   assert.deepEqual(getMenuHitAreas('home').map(({ id, action }) => ({ id, action })), [
@@ -54,4 +54,8 @@ test('Chinese availability copy stays below the original bottom navigation art',
 test('the source art stays visually unmodified while Chinese remains available to assistive controls', () => {
   assert.equal(MENU_PRESENTATION_MODE, 'source-art-only');
   assert.equal(getMenuHitAreas('home')[2].label, '快速对战');
+});
+
+test('quick-match feedback sits in the source frame black margin, below its navigation strip', () => {
+  assert.equal(MENU_QUICK_SUMMARY_TOP, 80);
 });

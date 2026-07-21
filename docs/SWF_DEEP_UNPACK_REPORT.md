@@ -104,6 +104,68 @@ Game
 
 SWF 内含 Mochi 与 Playtomic 类，并在启动阶段调用广告、日志和 `GameVars.Load`。这些属于原版外部服务耦合；迁移时应替换为本地存档/受控后端，不能依赖这些已过时的远端接口。
 
+### 4.1 真实对象所有权与初始化顺序
+
+下面不是概念图，而是 `Arena.Init()`、`Game.InitGame()`、`Unit.setClass()`
+和 `Guns.setGuns()` 的实际依赖顺序：
+
+```text
+MatchSettings（本局 map / mode / player / bot profiles）
+  └─ Arena.Init()
+      ├─ wallMC → BitmapData wall，并隐藏 wallMC
+      ├─ 收集 Spawn / Waypoint / AiAction / PhysBox / Pickup / Flag
+      ├─ Waypoint 名称连接 → 连接图；AiAction 名称 → 挂到 Waypoint
+      ├─ Spawn 名称 → 关联 Waypoint
+      ├─ NodePhysBox → PhysWorld.generateWorld()（Box2D 静态体）
+      └─ Game.InitGame(arena)
+          ├─ Player(profile) + N × AI(bot profile)
+          └─ Unit.setClass()
+              ├─ Stats_Classes：职业、等级 → HP / aim / crit / ammo 系数 / 皮肤帧
+              ├─ Stats_Skills / Stats_Streaks：档案 ID → 状态对象
+              └─ Guns.setGuns(primary, secondary)
+                  ├─ Stats_Guns：枪械定义、子弹类、时间轴标签
+                  └─ 由 clipSize × (clipSpare + 1) × ammo 系数生成两把枪的弹药状态
+```
+
+因此“角色”“枪”“动画”“弹药”不是四套可任意替换的数据：角色档案决定职业
+系数和皮肤帧，枪械初始化使用该系数计算弹药，随后枪械标签再驱动 `UnitMC` 的
+手臂时间轴。网页侧如果只替换枪 PNG 而没有重算弹药、标签和枪口来源，运行时必然
+与原版脱节。
+
+### 4.2 一帧的确定性执行顺序（30 FPS）
+
+`Game.EnterFrame()` 在未暂停时的顺序已核验如下。该顺序是迁移为固定
+步长模拟器时必须保留的因果关系：
+
+```text
+Game frame counter / 模式脚本 / 地图特效
+  → Arena.EnterFrame()
+  → PhysWorld.Step(1/30)             # 先推进尸体 Box2D
+  → 清空本帧弹道线
+  → BitScreen / killstreak / Hud
+  → units[0..N].EnterFrame()
+  → pickups.EnterFrame()
+  → bullets.EnterFrame() → 删除 remove 的 bullets
+  → effects.EnterFrame() → 删除 remove 的 effects
+  → MatchSettings / Radar / Water
+```
+
+单位在同一帧中也有严格子顺序。Player 先平滑鼠标瞄准并尝试开火；AI 先产出
+左右/下蹲/跳跃/瞄准/开火意图；二者最后都调用 `UnitEnterFrame()`：
+
+```text
+Status.EnterFrame → Guns.EnterFrame → UnitMC.EnterFrame → Movement.EnterFrame
+  → 拾取 / DOM / CTF 判定
+  → resetMods()
+  → 读取 wall 像素颜色并写入下一帧的移动修正
+  → UnitMC.goto(nextAnim) / 翻转 / arm-holder 瞄准旋转
+```
+
+这里的“下一帧”尤为重要：`Movement` 已经消费本帧开始时的 `modSpeed`、
+`modJump`、`modGrav` 等；`UnitEnterFrame` 在移动之后才采样脚下颜色并重置/
+重写这些值。例如泥地、冰、低重力、传送带、火焰和致死区都不是简单地图装饰。
+若浏览器在移动前即时读取并应用颜色，会比原版提前一帧生效。
+
 ## 5. 角色 `UnitMC`：449 帧时间轴，不是精灵表
 
 `DefineSprite` ID 669 的声明帧数和实际 `ShowFrame` 数均为 **449**。直接扫描该 Sprite 内的 `FrameLabel` 得到下表：
@@ -167,6 +229,18 @@ SWF 内含 Mochi 与 Playtomic 类，并在启动阶段调用广告、日志和 
 
 这是迁移工程中优先级最高的事实。应将 ID 1261 的 alpha/颜色掩码转换为浏览器 `ImageData` 或 bitset，集中提供 `isSolid(x, y)`；角色、子弹和 AI 视线共用它。
 
+还需要区分两个原版物理系统：
+
+```text
+wall BitmapData（Alpha = ff） → Movement、Bullet、AI 视线、地面颜色效果
+NodePhysBox → Arena.physboxes → PhysWorld 的 Box2D 静态刚体 → 尸体 PhysActor
+```
+
+活着的 Unit 并不通过 Box2D 行走；`Movement.hitTest()` 只读取 `wall` 像素。
+这解释了为什么把蓝色 `NodePhysBox` 直接当活人 AABB 主碰撞会在边缘、坡面、
+攀爬和地图实体上产生错误。网页运行时应继续以 `wallMC` 为主；蓝框可用于
+解包校验、尸体物理的后续迁移以及墙图加载失败的诊断回退。
+
 ## 7. 地图节点、模式和出生点
 
 `Arena.as` 不把地图辅助物作为装饰忽略。它遍历自身子节点，将 `NodeSpawn`、`NodeWaypoint`、`NodeAiAction`、`NodePhysBox`、`NodePickup`、`NodeHoldpoint`、`NodeCtfFlag` 分别收集到数组；非当前模式的旗帜和占点会被隐藏。随后建立 waypoint ID → 对象的映射、连接 waypoint，并把动作框挂到相应路径点。
@@ -179,9 +253,51 @@ SWF 内含 Mochi 与 Playtomic 类，并在启动阶段调用广告、日志和 
 
 ### 武器与音频
 
-`Stats_Guns.as` 是数据驱动的枪械表，至少写入弹匣、备用弹、射程、后坐、自动/半自动、空闲/开火/换弹帧标签、子弹类与额外属性。`Guns.as` 管理射击延迟、换弹、后坐、武器帧以及弹药 HUD；`UnitMC` 在对应时间轴帧调用不同枪种的换弹声。
+`Stats_Guns.as` 的 `Init()` 已由可测试解析器完整读取为 **81** 条 `addGun` 定义：
+53 条 `Bullet_Line_Basic`、4 条 `Bullet_Proj_Basic`、4 条 `Bullet_Line_Sniper`、
+7 条近战、2 条反弹投射物、2 条追踪投射物、1 条地雷，余下为环境/溅射类。
+每条定义直接关联弹匣、备用弹倍率、射程、后坐、自动/半自动、枪口/命中/弹壳/HUD
+效果、idle/fire/reload 手臂标签、声音符号、子弹类、参数数组和 `extra` 修正。
+
+M4 的原始定义可作为迁移对照基线：职业表 1、等级需求 1、伤害 10、30 发弹匣、
+3 倍备用弹、60 射程、后坐 4、自动开火、射击延迟 0.15 秒、枪口偏移
+`(10,-1)`、`rifle` idle/fire/reload 标签、`Bullet_Line_Basic` 子弹类。
+这不是网页当前手调 M4 参数的替代说明，而是应当用来校准它的源数据。
+`Guns.as` 管理射击延迟、换弹、后坐、武器帧以及弹药 HUD；`UnitMC` 在对应
+时间轴帧调用不同枪种的换弹声。
 
 音频不是后加的网页资源：SWF 有 173 个 `DefineSound`，解包得到 173 个 MP3 与 1 个流式 WAV。音乐类包括 `M_Menu`、`M_Theme`、`M_Boss`、`M_Train`、`M_Rocket`、`M_Plane`、`M_Slow`；枪械、命中、角色语音和 UI 点击声均有独立符号。
+
+### 射击、弹道、伤害不是一个函数
+
+原版将一次开火拆为三段状态，并且不同子弹类的命中时刻不同：
+
+```text
+Guns.shoot()
+  ├─ gate：shootDelay / shotPressed / reloading / clip / noShoot
+  ├─ arm1/arm2 跳入 <weapon>_fire 时间轴；播放枪声、壳、闪光
+  ├─ shootDelay = gun.shootDelay × 30
+  ├─ clipCur--（特殊 Machine Gun clip 技能改减 spareCur）
+  ├─ dynRecoil 上升；下一帧 Guns.EnterFrame 再按姿态计算 dynRecoilMod
+  └─ makeBullet()
+      └─ new gun.cls(... aimRotation + random(-dynRecoil, dynRecoilMod) ...)
+```
+
+`Bullet_Line_Basic` 是即时命中扫描：构造时按 10 像素步长走到射程终点或碰撞点，
+画出线后立即标记移除；它不是会飞一段时间的 tracer。投射物类则在随后
+`Game.bullets.EnterFrame()` 中推进，可受重力、步数、距离和边界限制。两类弹道
+都先检查 `wall` 的 Alpha=ff，再检查敌对活体，最后才检查 Box2D 尸体。
+
+活体命中框同样是原版专用规则：站立时宽 26、高 66；其中下方 44 像素视作身体、
+上方 22 像素视作头部；蹲伏时高度缩为 44，身体为下方 28。头部命中会写
+`headMult = 1.5`，背后命中可额外写 assassin 修正。不能用网页角色贴图的外接矩形
+替代这些判定。
+
+`Status.damage()` 的顺序是：出生保护/反射阻断 → 人机或 Bot/Bot 难度缩放 →
+Jug、技能、队伤与暴击/爆头/溅射/盾牌修正 → 护盾吸收 → HP → 死亡或濒死技能。
+死亡才创建 `PhysActor` 尸体，随后由下一轮 `PhysWorld.Step(1/30)` 推进。因而
+“命中、扣血、死亡、尸体被子弹再次击中”在原版中是不同对象、不同帧阶段，不能
+合并成一次普通的 HP 减法。
 
 ### AI
 
@@ -193,6 +309,11 @@ SWF 内含 Mochi 与 Playtomic 类，并在启动阶段调用广告、日志和 
 - 无目标时瞄准点缓动系数为 X 0.4 / Y 0.3；有目标时使用 `aimSpeed = 0.3 * (difficulty * 0.1 + 0.1)`；
 - 用 waypoint 和动作框控制左右移动、跳跃、蹲伏、等待；卡住 4 秒会重找最近路径点；
 - 开火概率由枪械射击延迟、难度和 `shotChance` 共同计算，而不是每帧无条件开火。
+
+动作节点不是抽象提示，而是直接改输入：`j` 调 `Movement.doJump()`，`c`
+设置 DOWN，`fp/fc/fd` 则把路径强制纠正到 p/c/d 路点。路点名称的下划线后
+字符串就是连接图；动作节点同样以名称后缀列出其附着的路点。迁移 AI 时必须保留
+这层“路径图 → 动作输入”的转换，不能只把路线点连成直线。
 
 这解释了为什么 AI 必须等墙体掩码、路线节点和武器射程都迁移后再做；只把 AI 设为“朝最近敌人移动并固定频率射击”会与原行为相差很大。
 
@@ -207,6 +328,11 @@ Bot 的“随机”发生在**建局时**，不是每次复活或每帧重新抽
 - 固定职业为全局选择的 `useSoldiers`，否则在 1–4 职业中随机；
 - 由 `Stats_Guns.getRandPrimary(bot)`、`getRandSecondary(bot)`、`Stats_Skills.getRandSkill(bot)`
   和 `Stats_Streaks.getRandStreak(bot)` 各抽取一次，并保存到该 Bot 档案。
+
+主/副武器也不是等概率从全表抽取：两者先用 Bot 等级乘以随机系数、再加
+`UT.irand(-8,4)` 得到门槛，随后沿该职业（主武器）或表 0（副武器）的等级序列
+向上取可用项。网页如果要复刻 Bot 难度，必须迁移这条“等级门槛 → 顺序枪表”的
+关系，而不是在所有枪中均匀随机。
 
 `Unit.setClass()` 正常使用这份 `primary/secondary` 档案，因此一次对局内的 Bot
 复活不会重新掷武器。唯一明确的全局例外是 `MatchSettings.useMod == "party"`：

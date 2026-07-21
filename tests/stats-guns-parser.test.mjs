@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { extractGunDefinitions } from '../private-assets/parse-stats-guns.mjs';
 
 test('extracts a complete addGun definition without confusing nested arrays or objects', () => {
@@ -54,4 +55,26 @@ test('ignores the addGun function declaration and retains quoted apostrophes', (
   assert.equal(iron.bulletClass, 'Bullet_Melee_Basic');
   assert.deepEqual(iron.extra, { noAmmo: true });
   assert.equal(iron.description, "Knock 'em out of the park!");
+});
+
+test('extracts the complete original weapon table and its M4 relationship data', () => {
+  const source = fs.readFileSync(new URL('../assets/reverse/ffdec-deep-20260720/scripts/Stats_Guns.as', import.meta.url), 'utf8');
+  const guns = extractGunDefinitions(source);
+  const m4 = guns.find((gun) => gun.id === 'M4');
+
+  assert.equal(guns.length, 81);
+  assert.deepEqual(
+    {
+      bulletClass: m4.bulletClass,
+      clipSize: m4.clipSize,
+      range: m4.range,
+      animation: m4.animation,
+    },
+    {
+      bulletClass: 'Bullet_Line_Basic',
+      clipSize: 30,
+      range: 60,
+      animation: { idle: 'rifle', fire: 'rifle', reload: 'rifle' },
+    },
+  );
 });

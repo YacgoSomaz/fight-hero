@@ -10,7 +10,7 @@ npm test
 npm start
 ```
 
-- 当前测试基线：**48/48**。
+- 当前测试基线：**51/51**。
 - 本地地址：`http://127.0.0.1:4173`。
 - 运行时资源来自受版本控制的 `public/assets/`，以及当前 Foundry 主碰撞所需的 `assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png`。其余 `assets/reverse/ffdec-deep-20260720/` 和 `private-assets/` 是解包证据；`private-assets/extracted/` 的完整逐帧导出继续保持本地忽略。
 - 仓库和原始资产按授权要求保持私有。不要把素材、完整 SWF 或解包目录复制到公共位置。

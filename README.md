@@ -4,6 +4,8 @@
 
 ## 当前状态（2026-07-21）
 
+最新实际验收、地图空白修复、远端解包关系合并和下一位 AI 的接手顺序见 [当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)。
+
 Foundry 场景已可运行，并包含：
 
 - A/D 移动、W 跳跃、S 蹲伏、R 换弹、鼠标瞄准、左键/F 射击；
@@ -12,9 +14,9 @@ Foundry 场景已可运行，并包含：
 - 原 `UnitMC` 449 帧显示列表矩阵的离散回放，包含跑、跳、坠落、蹲伏、起身、攀爬和硬着陆标签；
 - 从 SWF 标签组合的 Medic + M4 待机手臂组件，枪口、枪火与弹道共用同一坐标计算；
 - 弹药、换弹、命中、复活、计分、AI、菜单音乐/本地存档和私有房间原型；
-- `npm test` 当前为 **53/53 通过**。
+- `npm test` 当前为 **105/105 通过**（合并后基线）。
 
-它仍是迁移验证，不是像素级完整复刻。下一位接手者必须先阅读 [AI 交接报告](docs/AI_HANDOFF.md)、[运行时关系总表](docs/SWF_RUNTIME_RELATION_INDEX.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
+它仍是迁移验证，不是像素级完整复刻。下一位接手者必须先阅读 [当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)、[AI 交接报告](docs/AI_HANDOFF.md)、[运行时关系总表](docs/SWF_RUNTIME_RELATION_INDEX.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
 
 ## 运行
 

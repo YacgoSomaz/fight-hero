@@ -11,6 +11,7 @@ import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { commitStartedGameFrame } from './game-start-render.mjs';
+import { getDomMapLayerLayout } from './dom-map-layer.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 import { getUnitOverheadHud } from './unit-status.mjs';
@@ -32,6 +33,7 @@ const menuOverlay = document.querySelector('#menuOverlay');
 const menuTranslation = document.querySelector('#menuTranslation');
 const sourceStatus = document.querySelector('#sourceStatus');
 const gameStage = document.querySelector('#gameStage');
+const mapBackdrop = document.querySelector('#mapBackdrop');
 const leaveGame = document.querySelector('#leaveGame');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
@@ -48,6 +50,11 @@ async function loadMapVisual(mapId) {
   sky = next.sky;
   map = next.map;
   terrain = next.terrain;
+  for (const [role, layer] of [['sky', sky], ['background', map], ['terrain', terrain]]) {
+    layer.className = 'map-layer';
+    layer.dataset.mapLayer = role;
+  }
+  mapBackdrop.replaceChildren(sky, map, terrain);
 }
 void loadMapVisual('foundry').catch((error) => { saveStatus.textContent = error.message; });
 function image(source) { const result = new Image(); result.src = source; return result; }
@@ -597,35 +604,27 @@ function drawCollisionBoxes() {
   ctx.restore();
 }
 
-function render() {
-  ctx.fillStyle = '#090c12';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const source = getMapSourceRect(camera, canvas.width, canvas.height);
-  const drawMapLayer = (layer, asViewportBackground = false) => {
-    if (!layer.complete || !layer.naturalWidth) return;
+function renderOriginalMapBackdrop(source) {
+  const viewport = { width: canvas.clientWidth, height: canvas.clientHeight };
+  if (!viewport.width || !viewport.height) return;
+  for (const [layer, followsCamera] of [[sky, false], [map, false], [terrain, true]]) {
     const crop = layer.sourceCrop;
-    if (asViewportBackground && crop?.width && crop?.height) {
-      ctx.drawImage(layer, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
-      return;
-    }
-    // Keep every foreground layer in the same authored coordinate space as
-    // the decoded collision/spawn nodes.  Some FFDec PNGs retain empty stage
-    // padding; their crop is the actual map rect, not a viewport background.
-    const layerX = crop?.width ? crop.x : 0;
-    const layerY = crop?.height ? crop.y : 0;
-    const layerWidth = crop?.width || layer.naturalWidth;
-    const layerHeight = crop?.height || layer.naturalHeight;
-    const sourceX = layerX + source.x / world.config.width * layerWidth;
-    const sourceY = layerY + source.y / world.config.height * layerHeight;
-    const sourceWidth = source.width / world.config.width * layerWidth;
-    const sourceHeight = source.height / world.config.height * layerHeight;
-    ctx.drawImage(layer, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, canvas.width, canvas.height);
-  };
-  drawMapLayer(sky, true);
-  drawMapLayer(map, true);
-  drawMapLayer(terrain);
-  ctx.fillStyle = 'rgba(3, 7, 13, .12)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (!layer.naturalWidth || !crop?.width || !crop?.height) continue;
+    const layout = getDomMapLayerLayout({
+      naturalWidth: layer.naturalWidth, naturalHeight: layer.naturalHeight, crop, source,
+      world: world.config, viewport, followsCamera,
+    });
+    Object.assign(layer.style, {
+      width: `${layout.width}px`, height: `${layout.height}px`,
+      left: `${layout.left}px`, top: `${layout.top}px`,
+    });
+  }
+}
+
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const source = getMapSourceRect(camera, canvas.width, canvas.height);
+  renderOriginalMapBackdrop(source);
   drawObjectives();
   if (SHOW_COLLISION_OVERLAYS) drawCollisionBoxes();
   for (const bullet of world.bullets) drawTracer(bullet);

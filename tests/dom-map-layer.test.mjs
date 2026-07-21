@@ -27,5 +27,5 @@ test('a source background uses its authored crop as one fixed viewport image', (
     followsCamera: false,
   });
 
-  assert.deepEqual(layout, { width: 1000, height: 500, left: -83.33333333333333, top: -41.666666666666664 });
+  assert.deepEqual(layout, { width: 1000, height: 500, left: -83.33333333333334, top: -41.66666666666667 });
 });

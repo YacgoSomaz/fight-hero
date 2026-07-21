@@ -17,7 +17,9 @@ test('source background sprites use their authored visible bounds rather than tr
 
 test('Tutorial terrain uses its authored visible bounds instead of the empty FFDec stage canvas', () => {
   const visual = getMapVisual('tut');
-  assert.match(visual.terrain, /arena-clean-art-export\/DefineSprite_1413_Arena\/8\.png$/);
+  assert.match(visual.sky, /public\/assets\/maps\/tut\/sky\.png$/);
+  assert.match(visual.background, /public\/assets\/maps\/tut\/background\.png$/);
+  assert.match(visual.terrain, /public\/assets\/maps\/tut\/foreground\.png$/);
   assert.deepEqual(getMapLayerCrop(visual.terrain), { x: 526, y: 509, width: 2961, height: 1730 });
 });
 

@@ -8,12 +8,15 @@ export const ORIGINAL_MAPS = Object.freeze([
 ].map(([id, name]) => Object.freeze({ id, name })));
 
 export const ORIGINAL_MODES = Object.freeze([
-  ['dm', 'Deathmatch', 'Kills to win', [5, 10, 15, 25, 50], 1],
-  ['jug', 'Juggernaut', 'Kills to win', [5, 10, 25, 50, 100], 1],
-  ['tdm', 'Team Deathmatch', 'Kills to win', [10, 15, 25, 50, 100], 2],
-  ['ctf', 'Capture the Flag', 'Flags to win', [3, 5, 7, 15], 2],
-  ['dom', 'Domination', 'Points to win', [50, 75, 100, 150, 200], 2],
-].map(([id, name, scoreType, scores, teams]) => Object.freeze({ id, name, scoreType, scores, teams })));
+  ['dm', 'Deathmatch', 'Kills to win', [5, 10, 15, 25, 50], 1, 10],
+  ['jug', 'Juggernaut', 'Kills to win', [5, 10, 25, 50, 100], 1, 10],
+  ['tdm', 'Team Deathmatch', 'Kills to win', [10, 15, 25, 50, 100], 2, 25],
+  ['ctf', 'Capture the Flag', 'Flags to win', [3, 5, 7, 15], 2, 3],
+  ['dom', 'Domination', 'Points to win', [50, 75, 100, 150, 200], 2, 50],
+].map(([id, name, scoreType, scores, teams, startScore]) => Object.freeze({ id, name, scoreType, scores, teams, startScore })));
+
+export const QUICKMATCH_MODIFIERS = Object.freeze(['none', 'clips']);
+export const QUICKMATCH_DIFFICULTIES = Object.freeze([1, 3, 5, 7, 9]);
 
 const sourceMissions = [
   ['tdm', 15, 'tut', 1, 'Under Siege'], ['tdm', 20, 'swamp', 2, 'Rebellion'], ['tdm', 25, 'plane', 2, 'Hijacked'],
@@ -36,15 +39,40 @@ export const CAMPAIGN_MISSIONS = toMissions(sourceMissions);
 export const CHALLENGE_MISSIONS = toMissions(sourceChallenges);
 
 export function createMatchSelection(overrides = {}) {
-  return { map: 'foundry', mode: 'dm', score: 10, difficulty: 1, bots: 1, skills: true, streaks: true, modifier: 'none', ...overrides };
+  return { map: 'foundry', mode: 'dm', score: 10, difficulty: 1, bots: 1, soldiers: 0, skills: true, streaks: true, modifier: 'none', ...overrides };
 }
 
 export function updateMatchSelection(selection, changes) {
   const next = { ...selection, ...changes };
   const mode = ORIGINAL_MODES.find((entry) => entry.id === next.mode) ?? ORIGINAL_MODES[0];
   const scoreOptions = [...mode.scores];
-  if (!scoreOptions.includes(next.score) || Object.hasOwn(changes, 'mode')) next.score = scoreOptions[0];
+  if (!scoreOptions.includes(next.score)) next.score = mode.startScore;
+  if (Object.hasOwn(changes, 'mode')) next.score = mode.startScore;
   return { ...next, scoreOptions };
+}
+
+function nextSourceValue(current, values, direction) {
+  const index = values.indexOf(current);
+  return values[(index + (direction < 0 ? -1 : 1) + values.length) % values.length];
+}
+
+// Mirrors the quick-match click cases in Menu.as: score, soldier restriction,
+// skills, streaks, modifier, difficulty, map arrows and mode icons.
+export function cycleQuickMatchSelection(selection, control, direction = 1) {
+  switch (control) {
+    case 'mode': return updateMatchSelection(selection, { mode: nextSourceValue(selection.mode, ORIGINAL_MODES.map(({ id }) => id), direction) });
+    case 'map': return updateMatchSelection(selection, { map: nextSourceValue(selection.map, ORIGINAL_MAPS.map(({ id }) => id), direction) });
+    case 'score': {
+      const mode = ORIGINAL_MODES.find(({ id }) => id === selection.mode) ?? ORIGINAL_MODES[0];
+      return updateMatchSelection(selection, { score: nextSourceValue(selection.score, mode.scores, direction) });
+    }
+    case 'soldiers': return updateMatchSelection(selection, { soldiers: nextSourceValue(selection.soldiers, [0, 1, 2, 3, 4], direction) });
+    case 'skills': return updateMatchSelection(selection, { skills: !selection.skills });
+    case 'streaks': return updateMatchSelection(selection, { streaks: !selection.streaks });
+    case 'modifier': return updateMatchSelection(selection, { modifier: nextSourceValue(selection.modifier, QUICKMATCH_MODIFIERS, direction) });
+    case 'difficulty': return updateMatchSelection(selection, { difficulty: nextSourceValue(selection.difficulty, QUICKMATCH_DIFFICULTIES, direction) });
+    default: return updateMatchSelection(selection, {});
+  }
 }
 
 // Only this combination has already had its map art, collision, node graph and

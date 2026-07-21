@@ -33,7 +33,7 @@ test('quick-match view keeps score choices sourced from the selected original mo
 test('quick-match controls follow the original Menu.as cyclic state changes', () => {
   let selection = createMatchSelection({ soldiers: 0 });
   selection = cycleQuickMatchSelection(selection, 'mode', 1);
-  assert.deepEqual({ mode: selection.mode, score: selection.score }, { mode: 'jug', score: 5 });
+  assert.deepEqual({ mode: selection.mode, score: selection.score }, { mode: 'jug', score: 10 });
   selection = cycleQuickMatchSelection(selection, 'soldiers', -1);
   assert.equal(selection.soldiers, 4);
   selection = cycleQuickMatchSelection(selection, 'skills');

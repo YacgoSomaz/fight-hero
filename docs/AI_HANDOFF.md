@@ -110,7 +110,7 @@ muzzle = pivot + aimDirection * distance
 5. 正常地图图层、蓝色物理盒、出生/AI/补给节点和 wall mask 是不同层。视觉上重合不代表可互换。
 6. 先做可复现数值/单测，再做视觉微调。对于裁切图，记录「图内像素 → 局部注册点 → 世界枪口」三段关系，避免只靠肉眼平移。
 
-更多二进制证据、符号 ID、FrameLabel 和 AS3 片段在 [SWF_DEEP_UNPACK_REPORT.md](SWF_DEEP_UNPACK_REPORT.md)。
+更多二进制证据、符号 ID、FrameLabel 和 AS3 片段在 [SWF_DEEP_UNPACK_REPORT.md](SWF_DEEP_UNPACK_REPORT.md)；对局所有核心类的入口、数据工厂和消费关系见 [SWF_RUNTIME_RELATION_INDEX.md](SWF_RUNTIME_RELATION_INDEX.md)。
 
 ## 5. 下一步建议（按优先级）
 

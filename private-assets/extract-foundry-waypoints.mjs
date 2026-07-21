@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import zlib from 'node:zlib';
+import { applyRemoveTag } from './swf-display-list.mjs';
 
 let bytes = fs.readFileSync('assets/reverse/4399-90433-25.swf');
 if (bytes.subarray(0, 3).toString() === 'CWS') {
@@ -80,23 +81,11 @@ while (offset < arena.next) {
     if (flags & 16) cursor += 2;
     if (flags & 32) { const end = bytes.indexOf(0, cursor); next.name = bytes.subarray(cursor, end).toString(); cursor = end + 1; }
     placed.set(depth, next);
-  } else if (tag.code === 28) {
-    let cursor = tag.body;
-    const flags = bytes[cursor++];
-    const depth = bytes.readUInt16LE(cursor); cursor += 2;
-    const existing = placed.get(depth) ?? { depth };
-    const next = { ...existing, depth };
-    if (flags & 2) { next.character = bytes.readUInt16LE(cursor); cursor += 2; }
-    if (flags & 4) { const matrix = readMatrix(cursor); Object.assign(next, matrix); cursor = matrix.next; delete next.next; }
-    if (flags & 8) cursor = skipColorTransform(cursor);
-    if (flags & 16) cursor += 2;
-    if (flags & 32) { const end = bytes.indexOf(0, cursor); next.name = bytes.subarray(cursor, end).toString(); cursor = end + 1; }
-    placed.set(depth, next);
-  }
+  } else applyRemoveTag(placed, tag, bytes);
   offset = tag.next;
 }
-// Frame 2 is Arena's Foundry labelled frame.  1268 is NodeWaypoint and 1273
-// is NodeJump; 1276 is the internal connection marker and is not navigable.
+// Frame 2 is Arena's Foundry labelled frame.  1263 is NodePhysBox, 1268 is
+// NodeAiAction, 1273 is NodeWaypoint, 1276 is NodeSpawn, and 1280 is pickup.
 console.error(frames.map((frame, index) => `${index + 1}:${frame.label ?? ''}`).join(', '));
 const foundryFrame = frames.find((frame) => frame.label === 'foundry');
 const foundry = foundryFrame.items.filter((item) => [1242, 1252, 1258, 1261, 1263, 1268, 1273, 1276, 1280].includes(item.character))

@@ -105,9 +105,10 @@ muzzle = pivot + aimDirection * distance
 
 1. SWF 是 AS3 运行时，不是一个静态贴图包。SymbolClass、FrameLabel、PlaceObject2/3、RemoveObject2 都必须解析。
 2. 解析显示列表时：PlaceObject2=26、PlaceObject3=70、RemoveObject2=28、RemoveObject=5。曾把 tag 28 误当放置标签，直接造成残影、错肢体和“换角色”。
-3. 任何“第 N 帧”必须说明是哪个 Sprite 的哪条时间轴；皮肤帧与武器动作帧不是同一个概念。
-4. 正常地图图层、蓝色物理盒、出生/AI/补给节点和 wall mask 是不同层。视觉上重合不代表可互换。
-5. 先做可复现数值/单测，再做视觉微调。对于裁切图，记录「图内像素 → 局部注册点 → 世界枪口」三段关系，避免只靠肉眼平移。
+3. 两个时间轴导出器现在共用 `private-assets/swf-display-list.mjs` 的移除标签处理；任何后续导出器都应复用它，而不是再次手写 tag 28 分支。
+4. 任何“第 N 帧”必须说明是哪个 Sprite 的哪条时间轴；皮肤帧与武器动作帧不是同一个概念。
+5. 正常地图图层、蓝色物理盒、出生/AI/补给节点和 wall mask 是不同层。视觉上重合不代表可互换。
+6. 先做可复现数值/单测，再做视觉微调。对于裁切图，记录「图内像素 → 局部注册点 → 世界枪口」三段关系，避免只靠肉眼平移。
 
 更多二进制证据、符号 ID、FrameLabel 和 AS3 片段在 [SWF_DEEP_UNPACK_REPORT.md](SWF_DEEP_UNPACK_REPORT.md)。
 

@@ -547,6 +547,20 @@ test('a crouched unit remains crouched if the original two head-clearance sample
   assert.equal(p1.animation, 'duck');
 });
 
+test('releasing crouch against one wall clears the side probe so the same jump input can launch', () => {
+  const world = createWorld({ bots: false, wall: { isSolid: (x, y) => y >= 620 || (x >= 872 && y < 620) } });
+  const p1 = world.players[0];
+  p1.x = 855;
+  p1.y = 620;
+
+  step(world, { p1: { down: true } }, 1 / 60);
+  step(world, { p1: { jump: true } }, 1 / 60);
+
+  assert.ok(p1.x < 855, 'controller should resolve away from the single blocking wall');
+  assert.equal(p1.crouching, false);
+  assert.ok(p1.vy < 0, 'released crouch must not consume the jump');
+});
+
 test('the extracted wall mask is used for exact collision, bullets, and AI line of sight', () => {
   const wall = { isSolid: (x) => x >= 500 && x <= 520 };
   const world = createWorld({ bots: false, wall });

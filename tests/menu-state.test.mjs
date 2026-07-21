@@ -14,21 +14,23 @@ test('menu preserves all extracted campaign and challenge mission entries', () =
   assert.deepEqual(CHALLENGE_MISSIONS[4], { stage: 5, title: 'Prepared', map: 'foundry', mode: 'dm', score: 15, difficulty: 10 });
 });
 
-test('every source Arena map can launch the migrated local deathmatch rule', () => {
+test('every source Arena map can launch the migrated local deathmatch and team deathmatch rules', () => {
   assert.equal(isPlayableSelection(createMatchSelection()), true);
-  assert.equal(isPlayableSelection(createMatchSelection({ mode: 'ctf' })), false);
+  assert.equal(isPlayableSelection(createMatchSelection({ mode: 'tdm' })), true);
   assert.equal(isPlayableSelection(createMatchSelection({ map: 'train' })), true);
   assert.equal(isPlayableSelection(createMatchSelection({ map: 'cave2' })), true);
 });
 
-test('quick-match view keeps score choices sourced from the selected original mode', () => {
+test('quick-match exposes only source rules that have a migrated match runtime', () => {
   const selection = updateMatchSelection(createMatchSelection(), { mode: 'ctf' });
   assert.equal(selection.score, 3);
   assert.deepEqual(selection.scoreOptions, [3, 5, 7, 15]);
   assert.deepEqual(getQuickMatchStatus(selection), {
-    canLaunch: false,
-    message: '该地图或模式尚未完成原版地图、碰撞与规则迁移。',
+    canLaunch: true,
+    message: '原场景地图、碰撞、导航与本地夺旗规则已接入。',
   });
+  assert.equal(isPlayableSelection(updateMatchSelection(createMatchSelection(), { mode: 'dom' })), true);
+  assert.equal(isPlayableSelection(updateMatchSelection(createMatchSelection(), { mode: 'jug' })), false);
 });
 
 test('quick-match controls follow the original Menu.as cyclic state changes', () => {

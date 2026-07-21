@@ -9,6 +9,7 @@ import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
+import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 
 const canvas = document.querySelector('#game');
@@ -77,6 +78,13 @@ const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
+const objectiveSprites = new Map();
+function getObjectiveSprite(mode, team) {
+  const visual = getObjectiveVisual(mode, team);
+  if (!visual) return null;
+  if (!objectiveSprites.has(visual.source)) objectiveSprites.set(visual.source, image(visual.source));
+  return { visual, sprite: objectiveSprites.get(visual.source) };
+}
 let world = createWorld({ foundry: true });
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
@@ -492,6 +500,26 @@ function drawMuzzleFlash(flash) {
   ctx.restore();
 }
 
+function drawObjectives() {
+  if (world.mode === 'ctf') {
+    for (const flag of world.objectives.flags) {
+      if (flag.carrierId) continue;
+      const asset = getObjectiveSprite('ctf', flag.team);
+      if (!asset?.sprite.complete || !asset.sprite.naturalWidth) continue;
+      const screen = worldToScreen(flag, camera, canvas.width, canvas.height);
+      ctx.drawImage(asset.sprite, screen.x - asset.visual.width / 2, screen.y - asset.visual.height, asset.visual.width, asset.visual.height);
+    }
+  }
+  if (world.mode === 'dom') {
+    for (const point of world.objectives.holdpoints) {
+      const asset = getObjectiveSprite('dom', point.team);
+      if (!asset?.sprite.complete || !asset.sprite.naturalWidth) continue;
+      const screen = worldToScreen(point, camera, canvas.width, canvas.height);
+      ctx.drawImage(asset.sprite, screen.x - asset.visual.width / 2, screen.y - asset.visual.height, asset.visual.width, asset.visual.height);
+    }
+  }
+}
+
 // The translucent cyan boxes are the exact NodePhysBox placements decoded
 // from the Foundry SWF.  They deliberately use the same world rectangles as
 // engine.mjs, so visual inspection and live collision cannot drift apart.
@@ -534,6 +562,7 @@ function render() {
   drawMapLayer(terrain);
   ctx.fillStyle = 'rgba(3, 7, 13, .12)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawObjectives();
   if (SHOW_COLLISION_OVERLAYS) drawCollisionBoxes();
   for (const bullet of world.bullets) drawTracer(bullet);
   for (const player of world.players) drawPlayer(player);

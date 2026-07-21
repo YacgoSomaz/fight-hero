@@ -2,6 +2,7 @@ import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, step } from './engine
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
+import { decodeFlashWallImage } from './wall-mask.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -21,6 +22,11 @@ map.src = './public/assets/maps/foundry.png';
 // physics/spawn/pickup nodes are deliberately excluded from this normal view.
 const foundryForeground = new Image();
 foundryForeground.src = './public/assets/maps/foundry-foreground.png';
+// Arena.Init() draws `wallMC` into BitmapData and hides that MovieClip.  This
+// exported symbol 1261 is the same Foundry wall layer; physics accepts only
+// its fully opaque alpha pixels, matching Movement.hitTest().
+const foundryWall = new Image();
+foundryWall.src = './assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png';
 function image(source) { const result = new Image(); result.src = source; return result; }
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
@@ -44,7 +50,13 @@ const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
-let world = createWorld({ foundry: true });
+let foundryWallMask = null;
+function createFoundryWorld(options = {}) {
+  const next = createWorld({ ...options, foundry: true });
+  if (foundryWallMask) next.wall = foundryWallMask;
+  return next;
+}
+let world = createFoundryWorld();
 let camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
 let last = performance.now();
 const held = new Set();
@@ -55,6 +67,17 @@ let mouseFirePressed = false;
 let running = false;
 let online = null;
 let onlineAccumulator = 0;
+
+foundryWall.addEventListener('load', () => {
+  foundryWallMask = decodeFlashWallImage(foundryWall);
+  // The scene can have started while the image decoded; swap the common
+  // collision source atomically so movement, bullets and AI agree at once.
+  world.wall = foundryWallMask;
+  saveStatus.textContent = `Foundry 像素墙体已加载：${foundryWallMask.width}×${foundryWallMask.height}`;
+});
+foundryWall.addEventListener('error', () => {
+  saveStatus.textContent = 'Foundry 像素墙体未加载，当前回退到蓝色 NodePhysBox';
+});
 
 function saveSettings() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({ muted: audio.muted, difficulty: Number(difficulty.value), score: world.score }));
@@ -71,7 +94,7 @@ start.addEventListener('click', async () => {
     const room = roomInput.value.trim();
     if (room) {
       online = await joinPrivateRoom(room);
-      world = createWorld({ multiplayer: true, foundry: true });
+      world = createFoundryWorld({ multiplayer: true });
       applyRoomState(world, online.state);
       start.textContent = `房间 ${room} · ${online.slot.toUpperCase()}`;
     } else {
@@ -95,7 +118,7 @@ for (const type of ['keydown', 'keyup']) {
 window.addEventListener('blur', () => { held.clear(); mouseFire = false; mouseFirePressed = false; });
 reset.addEventListener('click', () => {
   online = null;
-  world = createWorld({ foundry: true });
+  world = createFoundryWorld();
   world.bots[0].ai.difficulty = Number(difficulty.value);
   camera = getFollowCamera(world.players[0], world.config, canvas.width, canvas.height);
   running = true;

@@ -10,17 +10,17 @@ npm test
 npm start
 ```
 
-- 当前测试基线：**44/44**。
+- 当前测试基线：**46/46**。
 - 本地地址：`http://127.0.0.1:4173`。
-- 运行时必须只依赖受版本控制的 `public/assets/`。`assets/reverse/ffdec-deep-20260720/` 是已版本化的私有解包证据包；`private-assets/` 根目录的小型研究包也已版本化，但 `private-assets/extracted/` 的完整逐帧导出继续保持本地忽略，二者均不能当成生产运行时依赖。
+- 运行时资源来自受版本控制的 `public/assets/`，以及当前 Foundry 主碰撞所需的 `assets/reverse/foundry-wall/DefineSprite_1261_MBFZ_fla.foundry_wall_209/1.png`。其余 `assets/reverse/ffdec-deep-20260720/` 和 `private-assets/` 是解包证据；`private-assets/extracted/` 的完整逐帧导出继续保持本地忽略。
 - 仓库和原始资产按授权要求保持私有。不要把素材、完整 SWF 或解包目录复制到公共位置。
 
 ## 1. 今天完成了什么
 
 ### Foundry 碰撞与攀爬
 
-1. 确认可玩碰撞来自 Arena 中的蓝色 `NodePhysBox`，而非背景图轮廓。
-2. 解出 33 个盒子，统一在 `src/engine.mjs` 中应用 `X +18`、`Y +24` 的视觉校准；`main.mjs` 绘制的青色框就是同一份物理数据。
+1. `Arena.Init()` 会将隐藏的 `wallMC`（符号 1261）绘入 BitmapData；`Movement.hitTest()` 只把颜色值 Alpha 为 `ff` 的像素视为实墙。浏览器现解码同一张导出 PNG，并以完全不透明像素作为 Foundry 的主碰撞、子弹和 AI 视线来源。
+2. 33 个 `NodePhysBox` 仍已解出，统一在 `src/engine.mjs` 中应用 `X +18`、`Y +24` 的视觉校准。它们用于对照墙体、攀爬回归和 wall PNG 无法加载时的回退；`main.mjs` 的青色框是校验可视化，不是正常物理的主来源。
 3. 保留原控制器的躯干探针语义：非蹲伏为 `-20/-25/-35/-45px`，脚底不拿来当侧面阻挡。
 4. 允许小台阶（不超过 28px）脚底平滑抬升，避免熔炉坡面卡脚；**没有改蓝色盒几何**。
 5. 修复一个遗漏：`NodePhysBox` 之前会阻挡水平移动却被 `beginLedgeClimb()` 排除。现在跳起后下落碰到 20–56px 可达盒沿，会播放 `climbsmall` 或 `climbbig` 并落在盒顶。
@@ -54,7 +54,8 @@ npm start
 
 | 文件 | 责任 | 改动时的注意事项 |
 | --- | --- | --- |
-| `src/engine.mjs` | 输入、物理、蓝盒、攀爬、射击、AI、伤害 | `x/y` 是脚底中心；改物理前先写测试。 |
+| `src/engine.mjs` | 输入、物理、墙体/蓝盒回退、攀爬、射击、AI、伤害 | `x/y` 是脚底中心；改物理前先写测试。 |
+| `src/wall-mask.mjs` | `wallMC` PNG → 原版 Alpha 语义的 `isSolid(x,y)` | 不可把判定放宽成 Alpha > 0；原版仅阻挡 Alpha = 255。 |
 | `src/foundry-layout.mjs` | Arena 解出的原始节点/盒子 | 不要手工改数值以对齐图片；公共视觉校准只在 `engine.mjs`。 |
 | `src/main.mjs` | Canvas、部件绘制、输入、HUD、调试盒 | Flash Matrix 到 Canvas 顺序不可交换。 |
 | `public/assets/unitmc-timeline.json` | 449 帧的命名实例矩阵 | 重新解包时用 Place/Remove tag 解析，不是逐图猜测。 |
@@ -96,7 +97,8 @@ muzzle = pivot + aimDirection * distance
 ### 3.3 碰撞
 
 - 玩家 AABB：半宽 17、高 55；黄色调试框反映同一 AABB。
-- Foundry 蓝盒：`FOUNDRY_LAYOUT.collisionBoxes` 是原始中心/宽高，运行时在 `FOUNDRY_COLLISION_BOXES` 统一加 `(18,24)`。
+- Foundry 墙体：运行时 `world.wall` 来自符号 1261 导出图；坐标与地图同为 `2874×863`，无需缩放。只要透明度不是 255（例如导出图的 102/153 软边），就不能阻挡。
+- Foundry 蓝盒：`FOUNDRY_LAYOUT.collisionBoxes` 是原始中心/宽高，运行时在 `FOUNDRY_COLLISION_BOXES` 统一加 `(18,24)`；仅当 wall PNG 不可用时才成为碰撞回退。
 - 小坡/台阶：只允许中心脚落点上移，不把侧脚作为地面；侧面阻挡由躯干探针决定。
 
 ## 4. 解包经验与证据

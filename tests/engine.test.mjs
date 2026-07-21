@@ -147,8 +147,10 @@ test('Foundry AI executes the decoded j_h action box across the right-hand pit',
   const world = createWorld({ foundry: true, random: () => .5 });
   const bot = world.bots[0];
   world.players[0].alive = false; world.players[0].deathTimer = 999;
-  world.collisionBoxes = [{ x: 1437, y: 800, width: 2874, height: 196 }];
-  bot.x = 2350; bot.y = 702; bot.vy = 0; bot.grounded = true;
+  // The retained Foundry physics layer is shifted (+18,+24) from the SWF
+  // editor coordinates, so this is the physical floor position of j_h.
+  world.collisionBoxes = [{ x: 1437, y: 825, width: 2874, height: 196 }];
+  bot.x = 2370; bot.y = 727; bot.vy = 0; bot.grounded = true;
   bot.ai.difficulty = 15;
   bot.ai.nextWaypointId = 'h';
 

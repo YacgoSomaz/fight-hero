@@ -97,6 +97,7 @@ function decodedMap(mapId) {
       navigation: FOUNDRY_LAYOUT.navigation,
       actions: FOUNDRY_LAYOUT.actions,
       pickups: FOUNDRY_LAYOUT.pickups,
+      sourceNodes: ARENA_SOURCE_LAYOUTS.foundry.nodes,
       spawns: FOUNDRY_LAYOUT.spawns,
       nodeOffset: { x: FOUNDRY_COLLISION_X_OFFSET, y: FOUNDRY_COLLISION_Y_OFFSET },
     };
@@ -110,9 +111,36 @@ function decodedMap(mapId) {
     navigation: nodes.filter((item) => item.type === 'waypoint').map(sourcePoint),
     actions: nodes.filter((item) => item.type === 'action').map(sourcePoint),
     pickups: nodes.filter((item) => item.type === 'pickup').map(sourcePoint),
+    sourceNodes: nodes,
     spawns: nodes.filter((item) => item.type === 'spawn').map(sourcePoint),
     nodeOffset: { x: 0, y: 0 },
   };
+}
+
+function decodedObjectives(map, mode, random) {
+  const nodes = map?.sourceNodes ?? [];
+  if (mode === 'ctf') {
+    // Arena.Init() flips the two teams with a 50% chance, then preserves the
+    // authored flag ids/locations.  This keeps the exact original `a__1`
+    // convention while allowing either side to spawn as team 1.
+    const [teamForSourceOne, teamForSourceTwo] = random() < .5 ? [2, 1] : [1, 2];
+    return {
+      flags: nodes.filter((item) => item.type === 'ctfFlag').map((item) => {
+        const [id, sourceTeam] = item.name.split('__');
+        return { id, x: item.x, y: item.y, team: Number(sourceTeam) === 1 ? teamForSourceOne : teamForSourceTwo, sourceTeam: Number(sourceTeam), carrierId: null };
+      }),
+      holdpoints: [],
+    };
+  }
+  if (mode === 'dom') {
+    return {
+      flags: [],
+      holdpoints: nodes.filter((item) => item.type === 'holdpoint').sort((a, b) => a.x - b.x).map((item, index) => ({
+        letter: 'ABCDE'[index] ?? 'X', x: item.x, y: item.y, team: 0, progress: -65, capturedBy: null,
+      })),
+    };
+  }
+  return { flags: [], holdpoints: [] };
 }
 
 function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
@@ -181,6 +209,7 @@ export function createWorld(options = {}) {
   const mapId = options.mapId ?? (options.foundry ? 'foundry' : 'prototype');
   const terrainMapId = TERRAIN_MAP_BY_ID[mapId] ?? mapId;
   const map = decodedMap(terrainMapId);
+  const mode = options.mode ?? 'dm';
   const baseConfig = map?.config ?? CONFIG;
   const p1Spawn = map?.spawns.find((spawn) => spawn.name === 'b_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_0')) ?? { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
   const p2Spawn = map?.spawns.find((spawn) => spawn.name === 'g_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_2')) ?? { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
@@ -190,10 +219,12 @@ export function createWorld(options = {}) {
   return {
     mapId,
     terrainMapId,
+    mode,
     config: { ...baseConfig, playerHitbox: { ...baseConfig.playerHitbox }, platforms: baseConfig.platforms.map((platform) => ({ ...platform })) },
     navigation: map ? map.navigation.map((point) => ({ ...point })) : [],
     actions: map ? map.actions.map((point) => ({ ...point })) : [],
     pickups: map ? map.pickups.map((point) => ({ ...point })) : [],
+    objectives: decodedObjectives(map, mode, options.random ?? Math.random),
     // Full source rectangles are retained separately from an optional pixel
     // wall, so player collision can resolve their top/side faces precisely.
     collisionBoxes: map ? map.collisionBoxes.map((box) => ({ ...box })) : [],

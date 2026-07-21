@@ -1,9 +1,13 @@
 // Decoded from Arena (symbol 1413), labelled frame 2 "foundry".  Values are
 // SWF twips converted to pixels; names retain Arena's original id_connector
 // convention so spawn nodes and AI action nodes can refer to waypoints.
-const makePoints = (items, kind) => Object.freeze(items.map(([name, x, y]) => {
+const makePoints = (items, kind) => Object.freeze(items.map(([name, x, y, width, height]) => {
   const [id, connections = ''] = name.split('_');
-  return Object.freeze({ kind, name, id, connections, x, y });
+  const point = { kind, name, id, connections, x, y };
+  // NodeAiAction has a scaled rectangular hit area. Arena/AI use the
+  // DisplayObject's original x/y/width/height, not a radius around its centre.
+  if (kind === 'action') { point.width = width; point.height = height; }
+  return Object.freeze(point);
 }));
 const makePhysBoxes = (items) => Object.freeze(items.map(([x, y, scaleX, scaleY]) => Object.freeze({
   // NodePhysBox (symbol 1263) is an 85×85 Sprite whose timeline placement
@@ -45,11 +49,11 @@ export const FOUNDRY_LAYOUT = Object.freeze({
   ], 'waypoint'),
   // symbol 1268: NodeAiAction. j=jump, c=crouch, fp/fc/fd=AI correction actions.
   actions: makePoints([
-    ['c_a', 276.8, 216.8], ['j_n', 305.8, 590.75], ['j_m', 517.8, 424.75], ['j_n', 619.75, 545.75],
-    ['j_p', 549.75, 630.75], ['j_l', 1131.7, 383.75], ['j_m', 1408.7, 387.75], ['j_d', 1149.7, 615.7],
-    ['j_c', 1389.7, 618.7], ['j_k', 1726.7, 604.7], ['j_ki', 2447.65, 520.75], ['j_h', 2190.7, 488.75],
-    ['j_l', 2008.7, 484.75], ['j_j', 1928.7, 352.75], ['j_j', 2653.65, 433.75], ['j_h', 2344.7, 625.75],
-    ['j_l', 2206.7, 293.75], ['j_o', 636.8, 336.75], ['fp_hkgjeil', 547.95, 666.9], ['fc_bapqn', 1440.4, 635.4], ['fd_hkgjeil', 1110.9, 630.9],
+    ['c_a', 276.8, 216.8, 91.657470703125, 85.47088623046875], ['j_n', 305.8, 590.75, 77.29440307617188, 85.47088623046875], ['j_m', 517.8, 424.75, 77.29440307617188, 85.47088623046875], ['j_n', 619.75, 545.75, 77.29440307617188, 85.47088623046875],
+    ['j_p', 549.75, 630.75, 138.04421997070312, 105.05296325683594], ['j_l', 1131.7, 383.75, 77.29440307617188, 85.47088623046875], ['j_m', 1408.7, 387.75, 77.29440307617188, 85.47088623046875], ['j_d', 1149.7, 615.7, 84.50436401367188, 105.05296325683594],
+    ['j_c', 1389.7, 618.7, 77.29440307617188, 104.9739990234375], ['j_k', 1726.7, 604.7, 77.29440307617188, 85.47088623046875], ['j_ki', 2447.65, 520.75, 96.84910583496094, 85.47088623046875], ['j_h', 2190.7, 488.75, 77.29440307617188, 85.47088623046875],
+    ['j_l', 2008.7, 484.75, 77.29440307617188, 85.47088623046875], ['j_j', 1928.7, 352.75, 77.29440307617188, 85.47088623046875], ['j_j', 2653.65, 433.75, 48.45245361328125, 85.47088623046875], ['j_h', 2344.7, 625.75, 122.66619873046875, 85.47088623046875],
+    ['j_l', 2206.7, 293.75, 77.29440307617188, 85.47088623046875], ['j_o', 636.8, 336.75, 77.29440307617188, 85.47088623046875], ['fp_hkgjeil', 547.95, 666.9, 141.13330078125, 69.0421142578125], ['fc_bapqn', 1440.4, 635.4, 80.36137390136719, 80.37821960449219], ['fd_hkgjeil', 1110.9, 630.9, 76.25418090820312, 69.0421142578125],
   ], 'action'),
   // symbol 1276: NodeSpawn. The suffix is the team id; id points to its waypoint.
   spawns: makePoints([

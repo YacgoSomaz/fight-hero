@@ -507,15 +507,29 @@ function originalAiAim(world, bot, target) {
 }
 function actionInput(world, bot, next) {
   const ai = bot.ai;
-  const action = world.actions.find((item) => item.connections.includes(next.id) && Math.abs(item.x - bot.x) < 42 && Math.abs(item.y - bot.y) < 70);
-  if (!action) return {};
-  if (action.id === 'j' && bot.grounded) { ai.waitFrames = 0; ai.noWaitFrames = 30; return { jump: true }; }
-  if (action.id === 'c') return { down: true };
-  if (action.id === 'fp' || action.id === 'fc' || action.id === 'fd') {
-    const corrected = action.id[1];
-    if (waypointById(world, corrected)) setNextWaypoint(world, ai, corrected);
+  const input = {};
+  for (const action of world.actions) {
+    if (!action.connections.includes(next.id)) continue;
+    // This is UT.inBox from the SWF: x/y are the action Sprite's own origin,
+    // and width/height are its transformed bounds. The old radius check lost
+    // the bottom of j_h, which is the authored escape trigger for this pit.
+    const left = Math.min(action.x, action.x + action.width);
+    const right = Math.max(action.x, action.x + action.width);
+    const top = Math.min(action.y, action.y + action.height);
+    const bottom = Math.max(action.y, action.y + action.height);
+    if (!(bot.x > left && bot.x < right && bot.y > top && bot.y < bottom)) continue;
+    input.clearDown = true;
+    if (action.id === 'j') {
+      ai.waitFrames = 0;
+      ai.noWaitFrames = 30;
+      if (!bot.climb) input.jump = true;
+    } else if (action.id === 'c') input.down = true;
+    else if (action.id === 'fp' || action.id === 'fc' || action.id === 'fd') {
+      const corrected = action.id[1];
+      if (waypointById(world, corrected)) setNextWaypoint(world, ai, corrected);
+    }
   }
-  return {};
+  return input;
 }
 function aiObstacleAhead(world, bot, direction) {
   if (!direction || !bot.grounded) return false;
@@ -605,7 +619,7 @@ function botInput(world, bot, dt) {
   const shootBase = .05 + (1 - Math.min(bot.weapon.shootDelay ?? world.config.fireCooldown, .9)) * .2;
   const shotChance = difficulty === 10 ? 1000 : difficulty * .29 + .1;
   const fire = Boolean(target) && difficulty > 0 && aiChance(world, shootBase * shotChance, dt);
-  return { ...move, ...action, jump: Boolean(action.jump || obstacleJump), down: Boolean(action.down || ai.crouchFrames), ...aim, fire, reload: bot.weapon.clip < 4 };
+  return { ...move, ...action, jump: Boolean(action.jump || obstacleJump), down: action.clearDown ? Boolean(action.down) : Boolean(action.down || ai.crouchFrames), ...aim, fire, reload: bot.weapon.clip < 4 };
 }
 
 function segmentHitsActor(bullet, actor) {

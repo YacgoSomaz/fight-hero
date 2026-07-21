@@ -91,15 +91,42 @@ test('the adjacent Foundry furnace-ramp blue boxes remain directly walkable', ()
   assert.equal(p1.grounded, true);
 });
 
-test('Foundry AI patrols through decoded Arena nodes when it has no target', () => {
-  const world = createWorld({ foundry: true });
+test('Foundry AI patrols through decoded waypoint connections instead of file order', () => {
+  const world = createWorld({ foundry: true, random: () => 0 });
   const bot = world.bots[0];
   bot.ai.scanFrame = -1;
 
   step(world, {}, 1 / 60);
 
-  assert.equal(bot.ai.navIndex, 7);
-  assert.ok(bot.vx > 0);
+  assert.equal(bot.ai.nextWaypointId, 'f');
+  assert.ok(bot.vx < 0);
+});
+
+test('Foundry AI eases its aim toward a visible target rather than snapping to it', () => {
+  const world = createWorld({ foundry: true, random: () => .99 });
+  const bot = world.bots[0];
+  const target = world.players[0];
+  bot.ai.scanFrame = 1;
+  bot.aimX = bot.x + 240;
+  target.x = bot.x - 120; target.y = bot.y;
+  const before = bot.aimX;
+
+  step(world, {}, 1 / 60);
+
+  assert.ok(bot.aimX < before && bot.aimX > target.x);
+});
+
+test('Foundry AI uses its difficulty-based shot probability instead of firing every update', () => {
+  const world = createWorld({ foundry: true, random: () => .999 });
+  const bot = world.bots[0];
+  const target = world.players[0];
+  bot.ai.scanFrame = 1;
+  bot.ai.difficulty = 1;
+  target.x = bot.x - 120; target.y = bot.y;
+
+  step(world, {}, 1 / 30);
+
+  assert.equal(world.events.some((event) => event.type === 'fire' && event.actor === bot.id), false);
 });
 
 test('the alpha wall lets a player step smoothly onto a shallow ledge', () => {

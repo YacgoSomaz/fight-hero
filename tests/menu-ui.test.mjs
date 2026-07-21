@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas } from '../src/menu-ui.mjs';
 
 test('only source-menu actions with a real local outcome receive a hit area', () => {
@@ -74,4 +75,9 @@ test('the source art stays visually unmodified while Chinese remains available t
 
 test('quick-match feedback sits in the source frame black margin, below its navigation strip', () => {
   assert.equal(MENU_QUICK_SUMMARY_TOP, 80);
+});
+
+test('starting a match hides the source menu instead of leaving it painted above the canvas', () => {
+  const stylesheet = readFileSync(new URL('../style.css', import.meta.url), 'utf8');
+  assert.match(stylesheet, /#sourceMenu\[hidden\]\s*\{\s*display\s*:\s*none\s*;?\s*\}/);
 });

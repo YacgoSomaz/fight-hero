@@ -7,10 +7,18 @@ const CROP = Object.freeze({
   [`${BG}/15.png`]: [1340, 272, 2032, 608], [`${BG}/18.png`]: [1312, 556, 2192, 464], [`${BG}/19.png`]: [1312, 184, 2200, 848],
   [`${SKY}/1.png`]: [796, 0, 800, 600], [`${SKY}/2.png`]: [796, 0, 1600, 812], [`${SKY}/3.png`]: [796, 0, 1600, 812],
   [`${SKY}/4.png`]: [796, 0, 1164, 812], [`${SKY}/5.png`]: [796, 0, 1164, 812], [`${SKY}/6.png`]: [796, 0, 1164, 812], [`${SKY}/7.png`]: [796, 0, 1600, 812],
-  // Arena frame 8 is the tutorial/facility foreground.  FFDec preserves a
-  // large transparent stage border around it; drawing that full bitmap makes
-  // the world and its decoded physics appear in different places.
-  [`${ARENA}/8.png`]: [530, 522, 2952, 1708],
+  // FFDec preserves the authoring-stage border around each Arena frame.
+  // These are the alpha bounds of the original exported foregrounds, so
+  // camera sampling shares the coordinate range used by decoded physics.
+  [`${ARENA}/2.png`]: [426, 496, 3102, 1000],
+  [`${ARENA}/3.png`]: [520, 1708, 3172, 874],
+  [`${ARENA}/4.png`]: [520, 1708, 3172, 874],
+  [`${ARENA}/5.png`]: [724, 929, 2532, 935],
+  [`${ARENA}/6.png`]: [437, 598, 3030, 1378],
+  [`${ARENA}/7.png`]: [422, 535, 3105, 1415],
+  [`${ARENA}/8.png`]: [526, 509, 2961, 1730],
+  [`${ARENA}/9.png`]: [1766, 1701, 521, 279],
+  [`${ARENA}/10.png`]: [1133, 929, 1637, 1093],
 });
 
 // The labels and frame pairing come directly from Stats_Maps.as, Bg and

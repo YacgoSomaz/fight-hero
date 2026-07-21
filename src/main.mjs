@@ -54,6 +54,8 @@ void loadMapVisual('foundry');
 function image(source) { const result = new Image(); result.src = source; return result; }
 // Fallback while the decoded UnitMC matrix data is loading.
 const unitSkin = image('./public/assets/unit-parts/unit-idle.png');
+// Raw DefineSprite 670 export: Unit uses it for both bar_hp and bar_hurt.
+const unitHealthBarSprite = image('./public/assets/original-swf/unit-bar-670.png');
 const unitParts = {
   // Complete UnitMC rifle-idle arm assemblies: rifle label frame 77, M4 gun
   // child frame 20, and the selected Medic skin subparts.
@@ -492,11 +494,17 @@ function drawPlayer(player) {
   ctx.textAlign = 'center';
   ctx.fillStyle = player.isBot ? '#ffb7a8' : '#eaf0d5';
   ctx.fillText(status.label, status.labelX, status.labelY);
-  ctx.fillStyle = 'rgba(6, 10, 11, .92)';
-  ctx.fillRect(status.outline.x, status.outline.y, status.outline.width, status.outline.height);
-  ctx.fillStyle = status.fill.color;
-  ctx.fillRect(status.fill.x, status.fill.y, status.fill.width, status.fill.height);
   ctx.restore();
+  if (unitHealthBarSprite.complete && unitHealthBarSprite.naturalWidth) {
+    // Retain the alpha/anti-aliased silhouette from the SWF export and apply
+    // Unit.setBarColour's runtime transform rather than drawing a substitute.
+    ctx.save();
+    ctx.drawImage(unitHealthBarSprite, 0, 0, status.bar.sourceWidth, status.bar.sourceHeight, status.bar.x, status.bar.y, status.bar.width, status.bar.sourceHeight);
+    ctx.globalCompositeOperation = 'source-in';
+    ctx.fillStyle = status.bar.colour;
+    ctx.fillRect(status.bar.x, status.bar.y, status.bar.width, status.bar.sourceHeight);
+    ctx.restore();
+  }
   ctx.textAlign = 'left';
 }
 

@@ -5,7 +5,7 @@ import { getUnitOverheadHud } from '../src/unit-status.mjs';
 test('each living unit uses the decoded SWF Unit.bar_hp source sprite, not a drawn rectangle', () => {
   const hud = getUnitOverheadHud({ isBot: true, hp: 3, maxHp: 5 }, { x: 400, y: 300 }, 76);
   assert.deepEqual(hud.bar, {
-    assetSrc: '/assets/original-swf/unit-bar-670.png',
+    assetSrc: './public/assets/original-swf/unit-bar-670.png',
     sourceWidth: 47,
     sourceHeight: 5,
     x: 379.5,

@@ -35,7 +35,9 @@ test('indexes the original combat runtime into its direct source relationships',
   assert.equal(index.classes.Game.extends, 'Sprite');
   assert.ok(index.classes.Game.constructs.includes('Arena'));
   assert.ok(index.classes.Unit.typedFields.includes('Guns'));
-  assert.ok(index.classes.Guns.constructs.includes('Bullet'));
+  // Guns uses `new curGun.cls(...)`, so the weapon-to-bullet edge is data
+  // driven by Stats_Guns rather than a false direct `new Bullet(...)` edge.
+  assert.ok(index.classes.Guns.typedFields.includes('Stats_Guns'));
   assert.ok(index.classes.PhysWorld.constructs.includes('PhysActor'));
   assert.ok(index.edges.some(edge => edge.from === 'Game' && edge.to === 'Arena' && edge.kind === 'constructs'));
 });

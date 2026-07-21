@@ -14,6 +14,14 @@ test('menu preserves all extracted campaign and challenge mission entries', () =
   assert.deepEqual(CHALLENGE_MISSIONS[4], { stage: 5, title: 'Prepared', map: 'foundry', mode: 'dm', score: 15, difficulty: 10 });
 });
 
+test('selecting an extracted mission keeps its authored score instead of replacing it with quick-match defaults', () => {
+  const selected = updateMatchSelection(createMatchSelection(), CAMPAIGN_MISSIONS[1]);
+  assert.deepEqual(
+    { map: selected.map, mode: selected.mode, score: selected.score, difficulty: selected.difficulty },
+    { map: 'swamp', mode: 'tdm', score: 20, difficulty: 2 },
+  );
+});
+
 test('every source Arena map can launch the migrated local deathmatch and team deathmatch rules', () => {
   assert.equal(isPlayableSelection(createMatchSelection()), true);
   assert.equal(isPlayableSelection(createMatchSelection({ mode: 'tdm' })), true);

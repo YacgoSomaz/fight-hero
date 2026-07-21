@@ -3,31 +3,74 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>战火英雄：Foundry 私人复刻</title>
+    <title>战火英雄：私人本地复刻</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <main>
-      <section class="intro">
-        <p class="eyebrow">PRIVATE LOCAL EXPERIMENT · ORIGINAL SWF ASSET REFERENCE</p>
-        <h1>战火英雄：Foundry 私人复刻</h1>
-        <p>原 SWF 的人物标签、墙体掩码、AI、音效与本地进度均在此处运行。</p>
+  <body data-screen="menu">
+    <main class="app-shell">
+      <header class="topline">
+        <a class="wordmark" href="#home" data-view-link="home" aria-label="返回主菜单">BATTLE HEROES <small>PRIVATE LOCAL BUILD</small></a>
+        <div class="top-meta"><span>SWF SOURCE-LED REBUILD</span><label><input id="music" type="checkbox" checked /> 音乐</label></div>
+      </header>
+
+      <section id="frontMenu" class="front-menu" aria-label="游戏主菜单">
+        <nav class="menu-rail" aria-label="模式选择">
+          <button type="button" class="rail-item active" data-view="home">主菜单</button>
+          <button type="button" class="rail-item" data-view="campaign">战役</button>
+          <button type="button" class="rail-item" data-view="challenges">挑战</button>
+          <button type="button" class="rail-item" data-view="quick">快速对战</button>
+        </nav>
+
+        <section class="view active" data-view-panel="home">
+          <p class="kicker">PRIVATE REFERENCE BUILD · 仅本机学习体验</p>
+          <h1>选择行动</h1>
+          <p class="lede">入口、模式、地图顺序和任务目录均来自本机解包的原始 SWF。未完成迁移的内容会保留其原始记录，但不能假装已经可玩。</p>
+          <div class="home-actions">
+            <button type="button" class="action-button" data-view="campaign"><b>战役</b><span>15 个原始任务</span></button>
+            <button type="button" class="action-button" data-view="challenges"><b>挑战</b><span>15 个原始任务</span></button>
+            <button type="button" class="action-button primary" data-view="quick"><b>快速对战</b><span>选择地图和模式</span></button>
+          </div>
+          <p class="source-note">当前可运行：Foundry · Deathmatch。其余条目正在以关卡、碰撞、节点和规则为单位迁入。</p>
+        </section>
+
+        <section class="view" data-view-panel="quick" hidden>
+          <p class="kicker">MATCH SETTINGS · 来自 MatchSettings.as / Stats_Misc.as</p>
+          <h1>快速对战</h1>
+          <div class="match-grid">
+            <label>地图<select id="mapSelect"></select></label>
+            <label>模式<select id="modeSelect"></select></label>
+            <label>胜利条件<select id="scoreSelect"></select></label>
+            <label>AI 难度 <span class="range-line"><input id="difficulty" type="range" min="1" max="10" value="1" /><output id="difficultyValue">1</output></span></label>
+            <label class="toggle"><input id="skills" type="checkbox" checked /> 技能</label>
+            <label class="toggle"><input id="streaks" type="checkbox" checked /> 连杀奖励</label>
+          </div>
+          <p id="quickStatus" class="status-line" role="status"></p>
+          <div class="row-actions"><button id="start" class="launch" type="button">开始战斗</button><button class="text-button" type="button" data-view="home">返回</button></div>
+        </section>
+
+        <section class="view mission-view" data-view-panel="campaign" hidden>
+          <p class="kicker">CAMPAIGN · Stats_Campaign.as</p>
+          <h1>战役</h1><p class="lede">原版有 15 个战役任务。解包已还原其地图、模式、目标分数与难度；逐关规则和其它地图仍待迁入。</p>
+          <ol id="campaignList" class="mission-list"></ol>
+          <button class="text-button" type="button" data-view="home">返回</button>
+        </section>
+
+        <section class="view mission-view" data-view-panel="challenges" hidden>
+          <p class="kicker">CHALLENGES · Stats_Campaign.as</p>
+          <h1>挑战</h1><p class="lede">原版有 15 个挑战任务。这里只展示解出的真实目录，不把尚未迁移的特殊规则伪装成可启动关卡。</p>
+          <ol id="challengeList" class="mission-list"></ol>
+          <button class="text-button" type="button" data-view="home">返回</button>
+        </section>
       </section>
-      <canvas id="game" width="1280" height="720" aria-label="单人游戏画面"></canvas>
-      <section id="menu" class="menu" aria-label="游戏菜单">
-        <div>
-          <strong>本地遭遇战</strong>
-          <label>AI 难度 <input id="difficulty" type="range" min="1" max="10" value="6" /><output id="difficultyValue">6</output></label>
-          <label>联机房间 <input id="room" maxlength="32" placeholder="留空=AI 对战" /></label>
-          <label><input id="music" type="checkbox" checked /> 菜单音乐</label>
-          <button id="start" type="button">开始战斗</button>
-        </div>
-        <p id="saveStatus">本地存档尚未创建</p>
+
+      <section id="gameStage" class="game-stage" hidden>
+        <canvas id="game" width="1280" height="720" aria-label="单人游戏画面"></canvas>
+        <section class="controls">
+          <div><strong>P1</strong><span>A / D 移动 · W 跳跃 · S 蹲伏 · R 换弹 · 鼠标瞄准/左键射击 · F 射击 · M 静音</span></div>
+          <div><button id="reset" type="button">重新开始</button><button id="leaveMatch" type="button">退出到菜单</button></div>
+        </section>
       </section>
-      <section class="controls">
-        <div><strong>P1</strong><span>A / D 移动 · W 跳跃 · S 蹲伏 · R 换弹 · 鼠标瞄准/左键射击 · F 射击 · M 静音</span></div>
-        <button id="reset" type="button">重新开始</button>
-      </section>
+      <p id="saveStatus" class="save-status" role="status">本地存档尚未创建</p>
       <p class="notice">仅供本地学习与私人体验；请勿分发本原型或其中的原始游戏素材。</p>
     </main>
     <script type="module" src="src/main.mjs"></script>

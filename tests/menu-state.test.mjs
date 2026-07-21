@@ -22,6 +22,12 @@ test('selecting an extracted mission keeps its authored score instead of replaci
   );
 });
 
+test('every extracted campaign and challenge mission has a launchable local source-map runtime', () => {
+  for (const mission of [...CAMPAIGN_MISSIONS, ...CHALLENGE_MISSIONS]) {
+    assert.equal(isPlayableSelection(createMatchSelection(mission)), true, `${mission.title} should be launchable`);
+  }
+});
+
 test('every source Arena map can launch the migrated local deathmatch and team deathmatch rules', () => {
   assert.equal(isPlayableSelection(createMatchSelection()), true);
   assert.equal(isPlayableSelection(createMatchSelection({ mode: 'tdm' })), true);

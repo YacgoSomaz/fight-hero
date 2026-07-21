@@ -143,6 +143,29 @@ test('Foundry AI jumps when its connected route is blocked by a reachable box', 
   assert.ok(bot.vy < 0, 'the AI turns the reachable obstacle into a jump input');
 });
 
+test('Foundry AI abandons an unjumpable blocked waypoint instead of remaining stuck in geometry', () => {
+  const world = createWorld({ foundry: true, random: () => 0 });
+  const bot = world.bots[0];
+  world.players[0].alive = false;
+  world.navigation = [
+    { id: 'a', connections: 'bc', x: 500, y: 620 },
+    { id: 'b', connections: 'a', x: 800, y: 620 },
+    { id: 'c', connections: 'a', x: 50, y: 620 },
+  ];
+  world.actions = [];
+  world.collisionBoxes = [
+    { x: 1000, y: 700, width: 2000, height: 160 },
+    { x: 580, y: 590, width: 40, height: 200 },
+  ];
+  bot.x = 500; bot.y = 620; bot.grounded = true;
+  bot.ai.currentWaypointId = 'a';
+  bot.ai.nextWaypointId = 'b';
+
+  for (let frame = 0; frame < 55; frame += 1) step(world, {}, 1 / 60);
+
+  assert.equal(bot.ai.nextWaypointId, 'c');
+});
+
 test('Foundry AI searches toward a remote player through waypoint connections before line of sight', () => {
   const world = createWorld({ foundry: true, random: () => 0 });
   const bot = world.bots[0];

@@ -2,6 +2,9 @@ import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, step } from './engine
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
+import { selectM4Action } from './m4-action-selector.mjs';
+import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
+import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -36,10 +39,15 @@ const unitParts = {
   legUpper: image('./public/assets/unit-parts/tight/leg_upper.png'),
 };
 let unitTimeline = null;
+let m4VectorRuntime = null;
 fetch('./public/assets/unitmc-timeline.json').then((response) => {
   if (!response.ok) throw new Error(`UnitMC timeline ${response.status}`);
   return response.json();
 }).then((data) => { unitTimeline = data; }).catch(() => { unitTimeline = null; });
+fetch('./public/assets/m4-vector-runtime.local.json').then((response) => {
+  if (!response.ok) throw new Error(`Local M4 vector runtime ${response.status}`);
+  return response.json();
+}).then((data) => { m4VectorRuntime = data; saveStatus.textContent = '原 M4 矢量动作已加载（仅本机）'; }).catch(() => { m4VectorRuntime = null; });
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 const aimerCircleSprite = { complete: false, naturalWidth: 0 };
 const aimerCenterSprite = { complete: false, naturalWidth: 0 };
@@ -281,6 +289,15 @@ function drawPlayer(player) {
         const armCorrection = name === 'arm1' || name === 'arm2' ? -RIFLE_ARM_BASE_ANGLE : 0;
         ctx.rotate(localAim * aimFactor + armCorrection);
         if (name === 'arm1') ctx.translate(-player.recoil * 2, 0);
+      }
+      if (m4VectorRuntime && (name === 'arm1' || name === 'arm2')) {
+        const action = selectM4Action(player, world.muzzleFlashes.some(({ owner }) => owner === player.id));
+        const side = name === 'arm1' ? 'rear' : 'front';
+        const frames = m4VectorRuntime.actions[action.label][side];
+        const actionFrame = frames[Math.min(action.frame - 1, frames.length - 1)];
+        drawVectorRuntimeFrame(ctx, m4VectorRuntime, actionFrame.items, drawRuntimeShape, { childFrames: m4VectorRuntime.childFrames });
+        ctx.restore();
+        return;
       }
       ctx.drawImage(sprite, offsetX, offsetY);
       ctx.restore();

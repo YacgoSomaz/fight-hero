@@ -6,6 +6,7 @@ import { selectM4Action } from './m4-action-selector.mjs';
 import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
+import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_TRANSLATION_TOP, getMenuHitAreas } from './menu-ui.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -19,8 +20,9 @@ const saveStatus = document.querySelector('#saveStatus');
 const sourceMenu = document.querySelector('#sourceMenu');
 const menuSurface = document.querySelector('#menuSurface');
 const menuImage = document.querySelector('#menuImage');
+const menuButtons = document.querySelector('#menuButtons');
+const menuTranslation = document.querySelector('#menuTranslation');
 const sourceStatus = document.querySelector('#sourceStatus');
-const sourceStart = document.querySelector('#sourceStart');
 const gameStage = document.querySelector('#gameStage');
 const leaveGame = document.querySelector('#leaveGame');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
@@ -74,10 +76,26 @@ let onlineAccumulator = 0;
 
 function showSourceMenu(screen = 'home') {
   const asset = MENU_SCREEN_ASSETS[screen];
+  const copy = MENU_CHINESE_COPY[screen];
   menuSurface.dataset.screen = screen;
   menuImage.src = `./public/assets/${asset.file}`;
   menuImage.alt = `原始 SWF ${screen} 菜单画面`;
-  sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / ${screen}（第 ${asset.frame} 帧）`;
+  menuSurface.style.setProperty('--menu-translation-top', `${MENU_TRANSLATION_TOP}%`);
+  menuTranslation.textContent = `${copy.title} · ${copy.availability}`;
+  menuButtons.replaceChildren(...getMenuHitAreas(screen).map((area) => {
+    const button = document.createElement('button');
+    button.id = area.id;
+    button.className = 'menu-hit';
+    button.type = 'button';
+    button.dataset.menuAction = area.action;
+    button.style.setProperty('--menu-left', `${area.left}%`);
+    button.style.setProperty('--menu-top', `${area.top}%`);
+    button.style.setProperty('--menu-width', `${area.width}%`);
+    button.style.setProperty('--menu-height', `${area.height}%`);
+    button.textContent = area.label;
+    return button;
+  }));
+  sourceStatus.textContent = `原始 SWF 菜单帧：${asset.symbol} / 第 ${asset.frame} 帧 · 中文功能说明已覆盖；未迁移内容不会伪装为可玩。`;
   running = false;
   gameStage.hidden = true;
   sourceMenu.hidden = false;
@@ -110,10 +128,16 @@ start.addEventListener('click', async () => {
     running = true; sourceMenu.hidden = true; gameStage.hidden = false; audio.stopMenu(); audio.play('click'); saveSettings();
   } catch (error) { saveStatus.textContent = `联机失败：${error.message}`; }
 });
-document.querySelectorAll('[data-menu-target]').forEach((button) => button.addEventListener('click', () => showSourceMenu(button.dataset.menuTarget)));
-sourceStart.addEventListener('click', () => start.click());
+menuButtons.addEventListener('click', (event) => {
+  const action = event.target.closest('[data-menu-action]')?.dataset.menuAction;
+  if (action === 'preview:campaign') showSourceMenu('campaign');
+  else if (action === 'preview:challenges') showSourceMenu('challenges');
+  else if (action === 'show:quickmatch') showSourceMenu('quickmatch');
+  else if (action === 'show:home') showSourceMenu('home');
+  else if (action === 'start:foundry-deathmatch') start.click();
+});
 leaveGame.addEventListener('click', () => showSourceMenu('home'));
-audio.startMenu();
+showSourceMenu(DEFAULT_MENU_SCREEN);
 
 for (const type of ['keydown', 'keyup']) {
   window.addEventListener(type, (event) => {

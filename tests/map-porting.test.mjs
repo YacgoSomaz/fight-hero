@@ -34,3 +34,16 @@ test('source day/night map variants retain their requested id while sharing the 
   assert.equal(dawnPlane.terrainMapId, 'plane');
   assert.equal(duskCave.terrainMapId, 'cave');
 });
+
+test('Foundry exposes its original CTF flags and domination points from Arena nodes', () => {
+  const ctf = createWorld({ mapId: 'foundry', mode: 'ctf', bots: false, random: () => .99 });
+  const dom = createWorld({ mapId: 'foundry', mode: 'dom', bots: false });
+
+  assert.equal(ctf.mode, 'ctf');
+  assert.deepEqual(ctf.objectives.flags.map(({ id, team, x, y }) => ({ id, team, x, y })), [
+    { id: 'a', team: 1, x: 128.5, y: 712.7 }, { id: 'j', team: 2, x: 2687.1, y: 508.15 },
+  ]);
+  assert.deepEqual(dom.objectives.holdpoints.map(({ letter, x, y }) => ({ letter, x, y })), [
+    { letter: 'A', x: 494.8, y: 499.9 }, { letter: 'B', x: 1653.2, y: 414.95 }, { letter: 'C', x: 2214.15, y: 702.9 },
+  ]);
+});

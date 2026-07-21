@@ -1,4 +1,5 @@
 import { FOUNDRY_LAYOUT } from './foundry-layout.mjs';
+import { ARENA_SOURCE_LAYOUTS } from './arena-source-layouts.mjs';
 
 const MAP_SCALE = 2591 / 1280;
 
@@ -63,6 +64,50 @@ const FOUNDRY_CONFIG = Object.freeze({
   platforms: [],
 });
 
+function sourcePoint(item) {
+  const [id, connections = ''] = item.name.split('_');
+  const point = { name: item.name, id, connections, x: item.x, y: item.y };
+  if (item.type === 'action') { point.width = 85 * item.scaleX; point.height = 85 * item.scaleY; }
+  return point;
+}
+function sourceCollision(item) {
+  return { x: item.x, y: item.y, width: 85 * item.scaleX, height: 85 * item.scaleY };
+}
+function sourceMapConfig(layout) {
+  const boxes = layout.nodes.filter((item) => item.type === 'collisionBox').map(sourceCollision);
+  const right = Math.max(...boxes.map((box) => box.x + box.width / 2));
+  const bottom = Math.max(...boxes.map((box) => box.y + box.height / 2));
+  // Arena's outer NodePhysBox rectangles deliberately extend a little beyond
+  // its visible edges.  Keep that authored buffer but do not fabricate a
+  // generic floor or platform list for source maps.
+  return { ...FOUNDRY_CONFIG, width: Math.ceil(right + 40), height: Math.ceil(bottom + 40), floorY: Math.floor(bottom - 42) };
+}
+function decodedMap(mapId) {
+  if (mapId === 'foundry') {
+    return {
+      config: FOUNDRY_CONFIG,
+      collisionBoxes: FOUNDRY_COLLISION_BOXES,
+      navigation: FOUNDRY_LAYOUT.navigation,
+      actions: FOUNDRY_LAYOUT.actions,
+      pickups: FOUNDRY_LAYOUT.pickups,
+      spawns: FOUNDRY_LAYOUT.spawns,
+      nodeOffset: { x: FOUNDRY_COLLISION_X_OFFSET, y: FOUNDRY_COLLISION_Y_OFFSET },
+    };
+  }
+  const source = ARENA_SOURCE_LAYOUTS[mapId];
+  if (!source) return null;
+  const nodes = source.nodes;
+  return {
+    config: sourceMapConfig(source),
+    collisionBoxes: nodes.filter((item) => item.type === 'collisionBox').map(sourceCollision),
+    navigation: nodes.filter((item) => item.type === 'waypoint').map(sourcePoint),
+    actions: nodes.filter((item) => item.type === 'action').map(sourcePoint),
+    pickups: nodes.filter((item) => item.type === 'pickup').map(sourcePoint),
+    spawns: nodes.filter((item) => item.type === 'spawn').map(sourcePoint),
+    nodeOffset: { x: 0, y: 0 },
+  };
+}
+
 function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
   return {
     id, spawnX, spawnY, x: spawnX, y: spawnY, vx: 0, vy: 0, facing: 1,
@@ -126,25 +171,27 @@ function boxSolid(boxes, x, y) {
 }
 
 export function createWorld(options = {}) {
-  const foundry = Boolean(options.foundry);
-  const baseConfig = foundry ? FOUNDRY_CONFIG : CONFIG;
-  const p1Spawn = foundry ? FOUNDRY_LAYOUT.spawns.find((spawn) => spawn.name === 'b_0') : { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
-  const p2Spawn = foundry ? FOUNDRY_LAYOUT.spawns.find((spawn) => spawn.name === 'g_0') : { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
+  const mapId = options.mapId ?? (options.foundry ? 'foundry' : 'prototype');
+  const map = decodedMap(mapId);
+  const baseConfig = map?.config ?? CONFIG;
+  const p1Spawn = map?.spawns.find((spawn) => spawn.name === 'b_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_0')) ?? { x: 430 * MAP_SCALE, y: 551 * MAP_SCALE };
+  const p2Spawn = map?.spawns.find((spawn) => spawn.name === 'g_0') ?? map?.spawns.find((spawn) => spawn.name.endsWith('_2')) ?? { x: 1040 * MAP_SCALE, y: 525 * MAP_SCALE };
   const p1 = makeActor('p1', p1Spawn.x, p1Spawn.y, '#48b7ff', false, baseConfig);
   const humans = options.multiplayer ? [makeActor('p2', p2Spawn.x, p2Spawn.y, '#f4a35f', false, baseConfig)] : [];
   const bots = options.bots === false || options.multiplayer ? [] : [makeActor('bot1', p2Spawn.x, p2Spawn.y, '#ef806d', true, baseConfig)];
   return {
+    mapId,
     config: { ...baseConfig, playerHitbox: { ...baseConfig.playerHitbox }, platforms: baseConfig.platforms.map((platform) => ({ ...platform })) },
-    navigation: foundry ? FOUNDRY_LAYOUT.navigation.map((point) => ({ ...point })) : [],
-    actions: foundry ? FOUNDRY_LAYOUT.actions.map((point) => ({ ...point })) : [],
-    pickups: foundry ? FOUNDRY_LAYOUT.pickups.map((point) => ({ ...point })) : [],
+    navigation: map ? map.navigation.map((point) => ({ ...point })) : [],
+    actions: map ? map.actions.map((point) => ({ ...point })) : [],
+    pickups: map ? map.pickups.map((point) => ({ ...point })) : [],
     // Full source rectangles are retained separately from an optional pixel
     // wall, so player collision can resolve their top/side faces precisely.
-    collisionBoxes: foundry ? FOUNDRY_COLLISION_BOXES.map((box) => ({ ...box })) : [],
+    collisionBoxes: map ? map.collisionBoxes.map((box) => ({ ...box })) : [],
     wall: options.wall ?? null, random: typeof options.random === 'function' ? options.random : Math.random,
     // Keep original Arena node coordinates while the retained physical boxes
     // stay aligned to the existing Foundry art/collision baseline.
-    nodeOffset: foundry ? { x: FOUNDRY_COLLISION_X_OFFSET, y: FOUNDRY_COLLISION_Y_OFFSET } : { x: 0, y: 0 },
+    nodeOffset: map?.nodeOffset ?? { x: 0, y: 0 },
     players: [p1, ...humans, ...bots], bots, bullets: [], muzzleFlashes: [], hitEffects: [], events: [], score: { p1: 0, p2: 0, bot1: 0 }, elapsed: 0, frame: 0,
   };
 }

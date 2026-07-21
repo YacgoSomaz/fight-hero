@@ -12,7 +12,9 @@ test('a foreground source crop follows the same camera window as the canvas terr
     followsCamera: true,
   });
 
-  assert.deepEqual(layout, { width: 1000, height: 500, left: -175, top: -87.5 });
+  // The raw PNG includes stage padding outside the 1000×500 authored crop;
+  // its DOM size therefore retains the full 2000×1000 source bitmap.
+  assert.deepEqual(layout, { width: 2000, height: 1000, left: -350, top: -175 });
 });
 
 test('a source background uses its authored crop as one fixed viewport image', () => {

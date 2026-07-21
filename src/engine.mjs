@@ -74,6 +74,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG) {
     color, isBot, ai: isBot ? {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
       navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,
+      huntTargetId: null, huntGoalWaypointId: null, huntFrames: 0, routeIds: [],
       waitFrames: 0, noWaitFrames: 0, crouchFrames: 0, aimX: null, aimY: null,
     } : null,
     hitbox: { ...config.playerHitbox },
@@ -421,12 +422,12 @@ function setNextWaypoint(world, ai, id) {
   ai.waypointFrames = 0;
   return point;
 }
-function getClosestWaypoint(world, bot) {
-  const candidates = world.navigation.filter((point) => Math.abs(point.y - bot.y) < 100);
+function getClosestWaypoint(world, actor) {
+  const candidates = world.navigation.filter((point) => Math.abs(point.y - actor.y) < 100);
   const points = candidates.length ? candidates : world.navigation;
   if (!points.length) return null;
   return points.reduce((closest, point) => (
-    Math.abs(point.x - bot.x) < Math.abs(closest.x - bot.x) ? point : closest
+    Math.abs(point.x - actor.x) < Math.abs(closest.x - actor.x) ? point : closest
   ));
 }
 function chooseConnectedWaypoint(world, point) {
@@ -434,10 +435,42 @@ function chooseConnectedWaypoint(world, point) {
   if (!connected.length) return point;
   return connected[Math.floor(aiRandom(world) * connected.length)];
 }
+function routeBetweenWaypoints(world, startId, goalId) {
+  if (!startId || !goalId) return [];
+  const queue = [[startId]];
+  const visited = new Set([startId]);
+  while (queue.length) {
+    const route = queue.shift();
+    const currentId = route.at(-1);
+    if (currentId === goalId) return route;
+    const current = waypointById(world, currentId);
+    if (!current) continue;
+    for (const nextId of current.connections) {
+      if (!visited.has(nextId) && waypointById(world, nextId)) {
+        visited.add(nextId);
+        queue.push([...route, nextId]);
+      }
+    }
+  }
+  return [];
+}
+function planHuntRoute(world, bot, target) {
+  const ai = bot.ai;
+  const start = waypointById(world, ai.currentWaypointId) ?? waypointById(world, ai.nextWaypointId) ?? getClosestWaypoint(world, bot);
+  const goal = getClosestWaypoint(world, target);
+  ai.huntTargetId = target?.id ?? null;
+  ai.huntGoalWaypointId = goal?.id ?? null;
+  ai.huntFrames = 0;
+  ai.routeIds = start && goal ? routeBetweenWaypoints(world, start.id, goal.id).slice(1) : [];
+  const nextId = ai.routeIds.shift();
+  return nextId ? setNextWaypoint(world, ai, nextId) : null;
+}
 function advanceWaypoint(world, bot) {
   const ai = bot.ai;
   const current = waypointById(world, ai.nextWaypointId) ?? getClosestWaypoint(world, bot);
   ai.currentWaypointId = current.id;
+  const plannedId = ai.routeIds.shift();
+  if (plannedId) return setNextWaypoint(world, ai, plannedId);
   return setNextWaypoint(world, ai, chooseConnectedWaypoint(world, current).id);
 }
 function targetCandidate(world, bot, actor) {
@@ -449,6 +482,14 @@ function targetCandidate(world, bot, actor) {
 }
 function acquireTarget(world, bot) {
   return world.players.filter((actor) => targetCandidate(world, bot, actor)).sort((a, b) => (
+    Math.hypot(a.x - bot.x, a.y - bot.y) - Math.hypot(b.x - bot.x, b.y - bot.y)
+  ))[0] ?? null;
+}
+function acquireHuntTarget(world, bot) {
+  return world.players.filter((actor) => (
+    actor.id !== bot.id && actor.alive && !actor.invisible && !actor.spawnProtected
+      && !(bot.team !== undefined && actor.team === bot.team)
+  )).sort((a, b) => (
     Math.hypot(a.x - bot.x, a.y - bot.y) - Math.hypot(b.x - bot.x, b.y - bot.y)
   ))[0] ?? null;
 }
@@ -503,6 +544,21 @@ function botInput(world, bot, dt) {
   if (world.frame % 12 === ai.scanFrame) ai.targetId = acquireTarget(world, bot)?.id ?? null;
   const target = world.players.find((actor) => actor.id === ai.targetId && targetCandidate(world, bot, actor)) ?? null;
   if (!target) ai.targetId = null;
+
+  const huntTarget = target ? null : acquireHuntTarget(world, bot);
+  ai.huntFrames += frameUnits;
+  if (huntTarget && world.navigation.length) {
+    const huntGoal = getClosestWaypoint(world, huntTarget);
+    const needsPlan = ai.huntTargetId !== huntTarget.id
+      || ai.huntGoalWaypointId !== huntGoal?.id
+      || ai.huntFrames >= 90
+      || (!ai.nextWaypointId && !ai.routeIds.length);
+    if (needsPlan) planHuntRoute(world, bot, huntTarget);
+  } else {
+    ai.huntTargetId = null;
+    ai.huntGoalWaypointId = null;
+    ai.routeIds = [];
+  }
 
   if (world.navigation.length && (!ai.nextWaypointId || ai.waypointFrames >= 120)) {
     const closest = getClosestWaypoint(world, bot);

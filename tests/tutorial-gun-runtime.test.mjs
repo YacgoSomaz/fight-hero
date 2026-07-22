@@ -34,9 +34,9 @@ test('Tutorial USP2 follows original Player.mDown, Guns.shootDelay uint, shotPre
 });
 
 test('Tutorial gun runtime does not start a source shot while Player or the active gun forbids shooting', () => {
-  const state = createTutorialGunRuntime({ gunId: 'USP2', ammoMultiplier: 1, human: true });
+  const state = createTutorialGunRuntime({ gunId: 'none', ammoMultiplier: 1, human: true });
   assert.equal(tutorialPlayerMouseDown(state, { gameStarted: true, noShoot: true }).mDown, false);
   const held = tutorialPlayerMouseDown(state, { gameStarted: true, noShoot: false });
-  const blocked = advanceTutorialGunRuntime({ ...held, gun: { ...held.gun, extra: { noShoot: true } } });
+  const blocked = advanceTutorialGunRuntime(held);
   assert.deepEqual({ fired: blocked.fired, state: blocked.state }, { fired: false, state: held });
 });

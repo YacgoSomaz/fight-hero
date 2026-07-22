@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   TUTORIAL_MOVEMENT_KEYS,
+  beginTutorialMovementJump,
   createTutorialMovementState,
   stepTutorialMovement,
 } from '../src/tutorial-movement.mjs';
@@ -76,7 +77,7 @@ test('source Movement begins the small right-hand climb only at the original ter
     state,
     actor: actor({ position: { x: 100, y: 100 } }),
     wall: wallAt([
-      [117, 99], // after y += 19.8: right small-climb contact (17,-20)
+      [118, 99], // after original right acceleration and y += 19.8: (17,-20)
     ]),
     keys: TUTORIAL_MOVEMENT_KEYS.RIGHT,
   });
@@ -85,4 +86,16 @@ test('source Movement begins the small right-hand climb only at the original ter
   assert.equal(result.state.climbSize, 1);
   assert.equal(result.state.yVel, -7);
   assert.equal(result.nextAnim, 'climbsmall');
+});
+
+test('source Movement manual jump applies its authored boost and velocity only from a standing state', () => {
+  const result = beginTutorialMovementJump({
+    state: createTutorialMovementState(),
+    actor: actor(),
+  });
+
+  assert.deepEqual(result.actor.position, { x: 100, y: 94 });
+  assert.equal(result.state.yVel, -13);
+  assert.equal(result.state.jumping, true);
+  assert.equal(result.nextAnim, 'jump');
 });

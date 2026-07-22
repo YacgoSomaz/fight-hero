@@ -61,6 +61,8 @@ export function createTutorialUnitProfile({ soldier, level, skin, skill, primary
     level,
     number: classProfile.number,
     id: classProfile.id,
+    // Stats_Classes.getClass() assigns `id = icon` in every playable class.
+    icon: classProfile.id,
     name: classProfile.name,
     startFrame: classProfile.startFrame,
     runType: classProfile.runType,

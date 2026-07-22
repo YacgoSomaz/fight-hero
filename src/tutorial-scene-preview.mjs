@@ -14,6 +14,7 @@ import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
 import { getTutorialUnitOverheadHud } from './tutorial-unit-overhead-hud.mjs';
+import { getTutorialUnitOverheadIcon } from './tutorial-unit-overhead-icon.mjs';
 import { getTutorialUnitOverheadLabels, TUTORIAL_UNIT_OVERHEAD_FONT } from './tutorial-unit-overhead-labels.mjs';
 import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
@@ -73,7 +74,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, assets, tutorialWorld, unitBarImage] = await Promise.all([
+  const [layers, unitTimeline, assets, tutorialWorld, unitBarImage, unitIconImages] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
@@ -82,8 +83,15 @@ try {
     loadTutorialUnitPoseAssets({ loadImage }),
     loadTutorialWorld(),
     loadImage('./public/assets/original-swf/unit-bar-670.png'),
+    Promise.all([
+      './public/assets/original-swf/unit-icon-682-sniper-frame1.png',
+      './public/assets/original-swf/unit-icon-682-medic-frame2.png',
+      './public/assets/original-swf/unit-icon-682-soldier-frame3.png',
+      './public/assets/original-swf/unit-icon-682-tank-frame4.png',
+    ].map(async (source) => [source, await loadImage(source)])),
     loadOriginalUnitOverheadFont(),
   ]);
+  const unitIcons = new Map(unitIconImages);
   const skyCrop = getMapLayerCrop(visual.sky);
   const backgroundCrop = getMapLayerCrop(visual.background);
   const terrainCrop = getMapLayerCrop(visual.terrain);
@@ -215,19 +223,40 @@ try {
   // Unit symbol 687 owns this display child independently of UnitMC. Its
   // decoded matrix and Status.setBars() width are consumed by the source HUD
   // plan; Canvas only reproduces Flash's ColorTransform with source-in.
+  function drawTutorialUnitOverheadBar(bar) {
+    if (bar.width <= 0) return;
+    context.save();
+    context.drawImage(unitBarImage, 0, 0, bar.sourceWidth, bar.sourceHeight, bar.x, bar.y, bar.width, bar.height);
+    context.globalCompositeOperation = 'source-in';
+    context.globalAlpha = bar.alpha ?? 1;
+    context.fillStyle = bar.colour;
+    context.fillRect(bar.x, bar.y, bar.width, bar.height);
+    context.restore();
+  }
+
+  function drawTutorialUnitOverheadIcon(icon) {
+    const image = unitIcons.get(icon.assetSrc);
+    if (!image) throw new Error(`original Unit icon image is unavailable for frame ${icon.frame}`);
+    context.save();
+    context.drawImage(image, 0, 0, icon.sourceWidth, icon.sourceHeight, icon.x, icon.y, icon.width, icon.height);
+    context.globalCompositeOperation = 'source-in';
+    context.globalAlpha = icon.alpha;
+    context.fillStyle = icon.colour;
+    context.fillRect(icon.x, icon.y, icon.width, icon.height);
+    context.restore();
+  }
+
   function renderTutorialUnitOverheadBar(unit) {
     if (!unit.status || !unit.position) return;
-    const hud = getTutorialUnitOverheadHud(unit, worldToTutorialScreen(unit.position, arenaPosition));
-    for (const bar of [hud.hp, hud.hurt]) {
-      if (bar.width <= 0) continue;
-      context.save();
-      context.drawImage(unitBarImage, 0, 0, bar.sourceWidth, bar.sourceHeight, bar.x, bar.y, bar.width, bar.height);
-      context.globalCompositeOperation = 'source-in';
-      context.globalAlpha = bar.alpha ?? 1;
-      context.fillStyle = bar.colour;
-      context.fillRect(bar.x, bar.y, bar.width, bar.height);
-      context.restore();
-    }
+    const screen = worldToTutorialScreen(unit.position, arenaPosition);
+    const hud = getTutorialUnitOverheadHud(unit, screen);
+    // The Unit 687 Display List order is hp depth 1 → icon depth 3 → hurt
+    // depth 6 → text depths 8/9, so damage tint cannot accidentally cover the
+    // original class icon.
+    drawTutorialUnitOverheadBar(hud.hp);
+    drawTutorialUnitOverheadIcon(getTutorialUnitOverheadIcon(unit, screen));
+    drawTutorialUnitOverheadBar(hud.hurt);
+    renderTutorialUnitOverheadLabels(unit);
   }
 
   function renderTutorialUnitOverheadLabels(unit) {
@@ -264,7 +293,6 @@ try {
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
     if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) {
       renderTutorialUnitOverheadBar(sourcePlayer);
-      renderTutorialUnitOverheadLabels(sourcePlayer);
     }
     // Game.units owns this authored order. Only live, visible source Units
     // receive an original UnitMC pose; a dead Unit is intentionally absent
@@ -280,7 +308,6 @@ try {
       drawTutorialUnitPose(context, actorSample.pose, assets);
       context.restore();
       renderTutorialUnitOverheadBar(sourceActor);
-      renderTutorialUnitOverheadLabels(sourceActor);
     }
     // Game creates lineCont after unitCont within Arena.midCont, then clears
     // it once per source frame. Draw the same source trace above this frame's

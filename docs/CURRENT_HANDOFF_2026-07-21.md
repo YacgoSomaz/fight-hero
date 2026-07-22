@@ -339,6 +339,13 @@ npm start
 - TDD：`3d61f5d` 是浏览器预览来源缺失的 RED；`e10a7be` 是页面/来源表 GREEN。可视修复的 RED 是 `da61333`，GREEN 是 `ab5ea65`；回归锁定 headhold 和 arm1hold 的精确 root x/y，并同步锁定 Canvas transform。完整 `npm test`/`npm run test:coverage` 为 **203/203 通过**，99.22% 行、85.11% 分支、96.17% 函数。
 - 严格边界：浏览器预览只能证明来源资源成功渲染与 holder 关系不再断裂；没有原 SWF 同帧截图、输入回放或像素差分，也没有游戏世界。因此它不能作为任何地图、人物完整动作或 1:1 完成的证据。
 
+## 2026-07-22：Campaign 1 Tutorial 原场景承载（仍不可启动）
+
+- 原始证据：`Arena.as:EnterFrame()` 对 focus 做 `x += (targetX-x)*.7`、`y += (targetY-y)*.7` 后以 `wallMC.width/height` 边界钳制；背景位置则使用 `(Main.WIDTH - usebox.width) * (arena.x / (Main.WIDTH - wall.width))`（y 同理）。Campaign 1 player 的来源出生点为 `{285,705}`，`Wall_tut` 是 2757×1541。
+- 承载：`tutorial-arena-camera.mjs` 直接保留上式的 Arena display-object x/y，非通用 camera centre。`tutorial-scene-preview.html` 用 `tut` 原 Sky/Background/Arena 导出、原 crop origin 及上式绘制三层；`unit0` 以 session 原出生点与 Arena 同坐标系绘制。没有用 Foundry、`engine.mjs`、`createWorld()` 或旧 quick-match actor。
+- TDD：`e55d862` 为模块/页面缺失的 RED；`b202bc9` 为 GREEN。回归锁定首个 30fps camera tick `{x:0,y:-269.5}`、wall dimensions 下的背景视差/裁切以及 player screen 坐标。浏览器实测页面加载原三层、角色且 console 无错误。完整 `npm test`/`npm run test:coverage` 为 **207/207 通过**，99.21% 行、84.97% 分支、96.20% 函数。
+- 严格边界：画布尚未把 16 帧 Wall_tut 碰撞 surface 接进人物 Movement、鼠标/左键、Guns、弹药/弹道、AI、HUD、过场或战役触发。所以它是源场景承载，不是第一关、不是可玩战役、更不是 1:1 完成。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

@@ -428,6 +428,13 @@ npm start
 - TDD：`2bc88a6`→`fa54799`（PhysActor 状态）；`37e61f8`→`e5ecb65`（Campaign Unit.die 生命周期）；`86611a5`→`b8096f0`（网页 Bullet→death→corpse 接线）。完整 `npm test`/`npm run test:coverage` 为 **272/272 通过**，98.97% 行、82.78% 分支、96.39% 函数；本地 `tutorial-scene-preview.html` 健康检查为 800×600、`data-ready=true`、error 为空。
 - 严格边界：尸体目前只是可审计的 source runtime 记录，**没有** Box2D fixture/joint 求解、PhysBody/Head 可视 Shape、尸体命中 `PhysWorld.hitCorpse()`、角色死亡动画、AI/敌方 UnitMC、复活、得分/经验/击杀条、音效、粒子或 SWF 同输入逐帧对照。不要把此记录称为“尸体物理已完成”“可见战斗完成”“第一关完成”或“游戏 1:1 完成”。
 
+## 2026-07-22：Campaign 1 NPC 原枪姿态、尸体命中与场景承载（仍无 AI）
+
+- 原始证据：`Guns.setFrame()` 对 idle 直接使用 `curGun.frameIdle`，对 fire/reload 使用 `frameFire + "_fire"` / `frameReload + "_reload"`；随后 `MC.arm1.gun.gotoAndStop(curGun.sprite)`。Gun Sprite 375 的原帧标签将 `USP/Beretta/Socom` 分别映射到 frame **2/3/4**。`Bullet.doHitEffect()` 的 `hitType=="corpse"` 分支最终调用 `physWorld.hitCorpse(hitObject,unit,stats,extra)`；该函数对全部部件施加 `UT.rand(-.5,.5)`、再按 force/sky9/splash 施加 body 冲量。页面的 `Game.units` 只应绘制来源已 spawn、visible、未 dead 的 Unit。
+- 承载：`tutorial-gun-action-frame.mjs` 从完整生成的 `Stats_Guns` 读取真实 sprite/arm label，再从 runtime 375 标签取枪帧；Campaign 1 的 Beretta/Socom/USP NPC 可以输出原 pistol pose。`tutorial-corpse-runtime.mjs`/`tutorial-bullet-hit-effects.mjs` 记录并消费 `hitCorpse` 冲量。`tutorial-scene-preview.mjs` 为每个已 spawn NPC 保留独立 UnitMC playback，按 session actor 的 source position/flip/visible/dead 渲染原 Shape/arm/gun pose；死亡 actor 不画，直到 PhysActor 可视层存在。
+- TDD：`debc284`→`8550a91`（`hitCorpse`）；`f130f83`→`bf7fec2`（Bullet corpse effect）；`bcf68d6`→`43c98da`（NPC 原枪姿态）；`617b915`→`c3ab739`（场景 NPC 承载）。完整 `npm test`/`npm run test:coverage` 为 **276/276 通过**，98.97% 行、83.11% 分支、96.43% 函数；浏览器页面检查为 800×600、`data-ready=true`、error 为空。
+- 严格边界：NPC 当前只按原 idle/root 时间轴更新；**未**迁移 `AI.EnterFrame` 的目标选择、瞄准、路径、跳跃、射击、重生或枪械事件，也没有原版 NPC 输入/状态截图对照。尸体没有 Box2D 或可视 Phys* 层，页面的浏览器检查未证明敌人移动到相机范围后的像素一致性。它不是“敌方 AI 已完成”、不是可玩战斗、更不是 1:1 完成。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

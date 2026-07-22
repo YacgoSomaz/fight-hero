@@ -304,6 +304,13 @@ npm start
 - TDD：`3f5d9d5` 是浏览器来源表不存在时的 RED；`a766fe8` 是 SWF 机械提取与浏览器来源表 GREEN。完整 `npm test`/`npm run test:coverage` 为 **190/190 通过**，99.25% 行、86.30% 分支、95.99% 函数。
 - 严格边界：当前只是精确帧边界，尚未实现 `UnitMC.goto()` 对当前动画的拒绝/重定向规则，也未把根帧与 M4 action、皮肤、碰撞/输入合成为 Tutorial actor。不能以“根帧表存在”声称人物动作已迁移。
 
+## 2026-07-22：UnitMC 原转场保护与改写（仍不可启动）
+
+- 原始证据：`UnitMC.as:goto(param1,param2)` 在非 force 路径拒绝中断 `climbsmall/climbbig`、`landhard`、jump/tuck→fall、land→idle 以及若干落地过渡；它还会将 duck→idle 改为 `getup`、run→duckrun 改为 `slide`、duckrun→run 改为 `getup`，并保留按 runType 的 run1/run2 分支。
+- 承载：`tutorial-unitmc-transition.mjs` 是该函数的直接语义端口，仅返回原标签的“保持/改写/切换”结果。它不生成关键帧、不插值、不将滑铲伪装成跑步，也不通过通用 `engine.mjs` 的 animation 名称绕过原规则。
+- TDD：`3d3b157` 是转场模块缺失时的 RED；`3f41d91` 是 GREEN。回归覆盖了攀爬/硬着陆/跳跃防打断、duck/getup/slide 改写及强制跳转；完整 `npm test`/`npm run test:coverage` 为 **193/193 通过**，99.25% 行、85.75% 分支、96.00% 函数。
+- 严格边界：尚未把这些结果驱动到具体的 30fps `FrameLabel` 计数器，也未与 Tutorial wall、原皮肤/arm Display List、鼠标/键盘输入、弹药和相机一起运行。它仍不是可视或可玩角色。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

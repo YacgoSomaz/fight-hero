@@ -1,4 +1,5 @@
 import { SOURCE_GUNS } from './gun-source.mjs';
+import { hitTestTutorialBullet } from './tutorial-bullet-hit-test.mjs';
 
 const GUN_BY_ID = new Map(SOURCE_GUNS.map((gun) => [gun.id, gun]));
 
@@ -37,16 +38,19 @@ function requireInputs(shooter, wall) {
   }
 }
 
-function wallHit(wall, x, y) {
-  if (!wall.isSolid(x, y)) return null;
-  return { type: 'wall', color: String(wall.colorAt(x, y)) };
+function sourceHit({ shooter, wall, units, corpses, x, y }) {
+  const hit = hitTestTutorialBullet({ point: { x, y }, shooter, wall, units, corpses });
+  if (!hit.type) return null;
+  if (hit.type === 'wall') return { type: 'wall', color: hit.color };
+  if (hit.type === 'unit') return { type: 'unit', target: hit.target, extra: hit.extra };
+  return { type: 'corpse', target: hit.target };
 }
 
 // Direct narrow port of Guns.makeBullet → Bullet constructor →
 // Bullet_Line_Basic constructor for the source's wall-only path. Unit/corpse
 // hit branches deliberately remain outside this module until their original
 // status/physics records are brought into the Tutorial session.
-export function traceTutorialLineBullet({ gunId, shooter, wall, random = Math.random } = {}) {
+export function traceTutorialLineBullet({ gunId, shooter, wall, units = [], corpses = [], random = Math.random } = {}) {
   const gun = sourceGun(gunId);
   requireInputs(shooter, wall);
   if (typeof random !== 'function') throw new TypeError('Tutorial Bullet_Line_Basic requires an original random source');
@@ -63,7 +67,7 @@ export function traceTutorialLineBullet({ gunId, shooter, wall, random = Math.ra
   for (let offset = 0; offset <= gun.xOffset; offset += 1) {
     x += xVelocity * 0.5;
     y += yVelocity * 0.5;
-    hit = wallHit(wall, x, y);
+    hit = sourceHit({ shooter, wall, units, corpses, x, y });
     if (hit) break;
   }
   const origin = { x, y };
@@ -74,7 +78,7 @@ export function traceTutorialLineBullet({ gunId, shooter, wall, random = Math.ra
   for (let step = 0; step < Math.trunc(maxDistance / 10); step += 1) {
     x += xVelocity;
     y += yVelocity;
-    hit = wallHit(wall, x, y);
+    hit = sourceHit({ shooter, wall, units, corpses, x, y });
     if (hit) break;
   }
   const impact = { x, y };

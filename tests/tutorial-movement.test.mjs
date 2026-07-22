@@ -76,8 +76,7 @@ test('source Movement begins the small right-hand climb only at the original ter
     state,
     actor: actor({ position: { x: 100, y: 100 } }),
     wall: wallAt([
-      [117, 80], // right small-climb contact (17,-20)
-      [100, 120], // no ground, so falling continues to the terminal branch
+      [117, 99], // after y += 19.8: right small-climb contact (17,-20)
     ]),
     keys: TUTORIAL_MOVEMENT_KEYS.RIGHT,
   });

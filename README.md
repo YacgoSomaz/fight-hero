@@ -1,14 +1,16 @@
-# 战火英雄：Foundry 私有网页迁移验证
+# 战火英雄：原 SWF 证据驱动的网页 1:1 复刻工程
 
 > 私有、已授权的 Canvas/Node 迁移研究项目。原始游戏素材仅可在本私有仓库和授权范围内使用，不得公开发布、出售或再分发。
 
 ## 当前状态（2026-07-22）
 
+最终完成标准、实施顺序和不可用“能运行”替代的边界见 [1:1 复刻总计划](docs/ONE_TO_ONE_MASTER_PLAN.md)。每项原始证据、网页模块、测试、人工对照和明确缺口见 [1:1 证据台账](docs/ONE_TO_ONE_EVIDENCE_LEDGER.md)。
+
 最新实际验收、地图空白修复、远端解包关系合并和下一位 AI 的接手顺序见 [当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)。
 
 所有运行时地图资源及其逐层裁切关系见[地图运行时资源审计](docs/MAP_RUNTIME_ASSET_AUDIT.md)。
 
-Foundry 场景已可运行，并包含：
+当前工程可用于验证 Foundry 等原始资料的网页承载，已具备以下**局部能力**：
 
 - A/D 移动、W 跳跃、S 蹲伏、R 换弹、鼠标瞄准、左键/F 射击；
 - Foundry 背景/前景，以及从 `Arena` 解出的蓝色 `NodePhysBox` 碰撞盒、出生点、路径点、AI 动作点和补给点；
@@ -17,9 +19,9 @@ Foundry 场景已可运行，并包含：
 - 从 SWF 标签组合的 Medic + M4 待机手臂组件，枪口、枪火与弹道共用同一坐标计算；
 - 弹药、换弹、命中、复活、计分、AI、菜单音乐/本地存档和私有房间原型；
 - 14 个可启动地图的原始三层资源已随仓库交付；每张地图的文件存在性与裁切边界均有自动回归校验；
-- `npm test` 当前为 **107/107 通过**。
+- `npm run test:coverage` 当前为 **111/111 通过**（覆盖率门槛在脚本中强制）。
 
-它仍是迁移验证，不是像素级完整复刻。下一位接手者必须先阅读 [当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)、[AI 交接报告](docs/AI_HANDOFF.md)、[运行时关系总表](docs/SWF_RUNTIME_RELATION_INDEX.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
+它仍是迁移验证，**不是**像素级完整复刻。上述清单中凡未在证据台账标作“完成”的内容，一律不得对外称为已 1:1。下一位接手者必须先阅读 [1:1 复刻总计划](docs/ONE_TO_ONE_MASTER_PLAN.md)、[1:1 证据台账](docs/ONE_TO_ONE_EVIDENCE_LEDGER.md)、[当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)、[AI 交接报告](docs/AI_HANDOFF.md)、[运行时关系总表](docs/SWF_RUNTIME_RELATION_INDEX.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
 
 ## 运行
 
@@ -48,6 +50,8 @@ public/assets/
   maps/                Foundry 背景与前景
 tests/engine.test.mjs 行为回归测试；另有 SWF 显示列表、枪械表和 AS3 关系索引测试
 docs/
+  ONE_TO_ONE_MASTER_PLAN.md    最终目标、阶段、验收门槛与依赖顺序
+  ONE_TO_ONE_EVIDENCE_LEDGER.md 每个功能的原始证据→网页→测试→人工验收台账
   AI_HANDOFF.md        当前交接报告、解包结论、坐标计算和下一步
   MIGRATION_STATUS.md  已迁移/未迁移范围
   SWF_DEEP_UNPACK_REPORT.md 证据与二进制解包报告

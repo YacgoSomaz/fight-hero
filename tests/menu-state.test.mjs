@@ -11,8 +11,14 @@ test('menu exposes the original quick-match modes and source map order', () => {
 test('menu preserves all extracted campaign and challenge mission entries', () => {
   assert.equal(CAMPAIGN_MISSIONS.length, 15);
   assert.equal(CHALLENGE_MISSIONS.length, 15);
-  assert.deepEqual(CAMPAIGN_MISSIONS[6], { stage: 7, title: 'Intelligence', map: 'foundry', mode: 'ctf', score: 3, difficulty: 4 });
-  assert.deepEqual(CHALLENGE_MISSIONS[4], { stage: 5, title: 'Prepared', map: 'foundry', mode: 'dm', score: 15, difficulty: 10 });
+  assert.deepEqual(
+    (({ stage, title, map, mode, score, difficulty }) => ({ stage, title, map, mode, score, difficulty }))(CAMPAIGN_MISSIONS[6]),
+    { stage: 7, title: 'Intelligence', map: 'foundry', mode: 'ctf', score: 3, difficulty: 4 },
+  );
+  assert.deepEqual(
+    (({ stage, title, map, mode, score, difficulty }) => ({ stage, title, map, mode, score, difficulty }))(CHALLENGE_MISSIONS[4]),
+    { stage: 5, title: 'Prepared', map: 'foundry', mode: 'dm', score: 15, difficulty: 10 },
+  );
 });
 
 test('each browser mission retains its complete directly extracted source definition', () => {

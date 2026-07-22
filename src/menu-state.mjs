@@ -1,5 +1,6 @@
 // Source: Stats_Maps.as, Stats_Misc.as, MatchSettings.as and Stats_Campaign.as
 // from the locally decoded SWF. These are data records, not newly invented modes.
+import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 export const ORIGINAL_MAPS = Object.freeze([
   ['tut', 'Facility'], ['foundry', 'Foundry'], ['foundry2', 'Foundry (Night)'],
   ['train', 'Speeding Train'], ['train2', 'Dormant Train'], ['plane', 'Hijack'],
@@ -20,25 +21,17 @@ export const QUICKMATCH_DIFFICULTIES = Object.freeze([1, 3, 5, 7, 9]);
 const QUICKMATCH_SOLDIER_NAMES = Object.freeze(['All', 'Medics Only', 'Assault Only', 'Snipers Only', 'Gunners Only']);
 const QUICKMATCH_DIFFICULTY_NAMES = Object.freeze({ 1: 'Very Easy', 3: 'Easy', 5: 'Normal', 7: 'Hard', 9: 'Insane' });
 
-const sourceMissions = [
-  ['tdm', 15, 'tut', 1, 'Under Siege'], ['tdm', 20, 'swamp', 2, 'Rebellion'], ['tdm', 25, 'plane', 2, 'Hijacked'],
-  ['dm', 15, 'cave', 3, 'Infection'], ['tdm', 15, 'tut', 3, 'Siege Under'], ['dom', 100, 'swamp2', 4, 'The Cure'],
-  ['ctf', 3, 'foundry', 4, 'Intelligence'], ['tdm', 20, 'cave2', 5, 'Tropic Thunder'], ['dom', 100, 'tut', 5, 'Hide and Seek'],
-  ['tdm', 30, 'foundry2', 6, 'The Return'], ['tdm', 20, 'train2', 6, 'Plan B'], ['dom', 100, 'train', 7, 'On Rails'],
-  ['tdm', 15, 'dropship', 7, 'Boarding Action'], ['dom', 100, 'missile', 8, 'One Final Effort'], ['tdm', 15, 'missile2', 8, 'The Final Showdown'],
-];
-const sourceChallenges = [
-  ['tdm', 15, 'cave', 8, 'Double Agent'], ['dm', 30, 'plane', 8, 'Kevlar'], ['tdm', 25, 'tut', 9, 'Man with the Golden Gun'],
-  ['dm', 20, 'train', 9, 'Rocket Race'], ['dm', 15, 'foundry', 10, 'Prepared'], ['tdm', 25, 'swamp', 10, 'Norris, Chuck'],
-  ['tdm', 20, 'dropship', 11, 'Golf Season'], ['tdm', 25, 'plane2', 11, 'Ninja Assault'], ['jug', 20, 'cave2', 12, 'Poison'],
-  ['tdm', 12, 'train', 12, 'Big Brother'], ['ctf', 7, 'tut', 13, 'Self Experiments'], ['tdm', 20, 'swamp', 13, 'Knife to a Gunfight'],
-  ['tdm', 15, 'swamp2', 14, 'Hide and Seek'], ['dm', 20, 'swamp', 14, 'Vampire'], ['tdm', 15, 'tut', 15, 'Meet Your Makers'],
-];
-const toMissions = (items) => Object.freeze(items.map(([mode, score, map, difficulty, title], index) => Object.freeze({
-  stage: index + 1, title, map, mode, score, difficulty,
+const toMissions = (items) => Object.freeze(items.map((definition) => Object.freeze({
+  stage: definition.stage,
+  title: definition.title,
+  map: definition.map,
+  mode: definition.mode,
+  score: definition.score,
+  difficulty: definition.difficulty,
+  definition,
 })));
-export const CAMPAIGN_MISSIONS = toMissions(sourceMissions);
-export const CHALLENGE_MISSIONS = toMissions(sourceChallenges);
+export const CAMPAIGN_MISSIONS = toMissions(SOURCE_CAMPAIGN_CATALOG.campaign);
+export const CHALLENGE_MISSIONS = toMissions(SOURCE_CAMPAIGN_CATALOG.challenges);
 
 export function createMatchSelection(overrides = {}) {
   return { map: 'foundry', mode: 'dm', score: 10, difficulty: 1, bots: 1, soldiers: 0, skills: true, streaks: true, modifier: 'none', ...overrides };

@@ -28,8 +28,10 @@ try {
   context.save(); context.translate(400, 340);
   drawTutorialUnitPose(context, pose, assets);
   context.restore();
+  canvas.dataset.ready = 'true';
   window.tutorialPoseReady = true;
 } catch (reason) {
   error.textContent = reason.message;
+  canvas.dataset.ready = 'false';
   window.tutorialPoseReady = false;
 }

@@ -15,6 +15,7 @@ import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
 import { getTutorialUnitOverheadHud } from './tutorial-unit-overhead-hud.mjs';
 import { getTutorialUnitOverheadIcon } from './tutorial-unit-overhead-icon.mjs';
+import { getTutorialUnitJugMarker } from './tutorial-unit-jug-marker.mjs';
 import { getTutorialUnitOverheadLabels, TUTORIAL_UNIT_OVERHEAD_FONT } from './tutorial-unit-overhead-labels.mjs';
 import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
@@ -74,7 +75,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, assets, tutorialWorld, unitBarImage, unitIconImages] = await Promise.all([
+  const [layers, unitTimeline, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
@@ -89,6 +90,7 @@ try {
       './public/assets/original-swf/unit-icon-682-soldier-frame3.png',
       './public/assets/original-swf/unit-icon-682-tank-frame4.png',
     ].map(async (source) => [source, await loadImage(source)])),
+    loadImage('./public/assets/original-swf/unit-jug-marker-686.png'),
     loadOriginalUnitOverheadFont(),
   ]);
   const unitIcons = new Map(unitIconImages);
@@ -246,6 +248,11 @@ try {
     context.restore();
   }
 
+  function drawTutorialUnitJugMarker(marker) {
+    if (!marker) return;
+    context.drawImage(unitJugMarkerImage, 0, 0, 39, 13, marker.x, marker.y, marker.width, marker.height);
+  }
+
   function renderTutorialUnitOverheadBar(unit) {
     if (!unit.status || !unit.position) return;
     const screen = worldToTutorialScreen(unit.position, arenaPosition);
@@ -257,6 +264,7 @@ try {
     drawTutorialUnitOverheadIcon(getTutorialUnitOverheadIcon(unit, screen));
     drawTutorialUnitOverheadBar(hud.hurt);
     renderTutorialUnitOverheadLabels(unit);
+    drawTutorialUnitJugMarker(getTutorialUnitJugMarker(unit, screen));
   }
 
   function renderTutorialUnitOverheadLabels(unit) {

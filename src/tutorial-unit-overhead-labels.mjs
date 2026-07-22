@@ -9,8 +9,8 @@ export const TUTORIAL_UNIT_OVERHEAD_FONT = Object.freeze({
 });
 
 const SOURCE_TEXT_FIELDS = Object.freeze([
-  Object.freeze({ symbolId: 684, property: 'name', localX: -9, localY: -88, width: 100.75, height: 13.6 }),
-  Object.freeze({ symbolId: 685, property: 'level', localX: -28, localY: -88, width: 19.6, height: 13.6 }),
+  Object.freeze({ symbolId: 684, property: 'name', localX: -9, localY: -88, jugLocalX: -8.75, jugLocalY: -87.5, width: 100.75, height: 13.6 }),
+  Object.freeze({ symbolId: 685, property: 'level', localX: -28, localY: -88, jugLocalX: -27.55, jugLocalY: -87.5, width: 19.6, height: 13.6 }),
 ]);
 
 // Unit.setTeam() colours txt_name and txt_level using greenBar, blueBar, and
@@ -32,8 +32,8 @@ export function getTutorialUnitOverheadLabels(unit, screen) {
     fontSize: TUTORIAL_UNIT_OVERHEAD_FONT.fontSize,
     symbolId: field.symbolId,
     text: String(unit.unitInfo[field.property]),
-    x: screen.x + field.localX,
-    y: screen.y + field.localY,
+    x: screen.x + (unit.isJug ? field.jugLocalX : field.localX),
+    y: screen.y + (unit.isJug ? field.jugLocalY : field.localY),
     width: field.width,
     height: field.height,
     colour,

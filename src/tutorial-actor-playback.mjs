@@ -1,6 +1,8 @@
 import { createTutorialActorRenderPlan } from './tutorial-actor-render-plan.mjs';
 import { tutorialM4ActionTick } from './tutorial-m4-action-playback.mjs';
 import { advanceTutorialUnitRootFrame } from './tutorial-unitmc-root-playback.mjs';
+import { TUTORIAL_UNITMC_ROOT_TIMELINE } from './tutorial-unitmc-root-timeline-source.mjs';
+import { transitionTutorialUnitMC } from './tutorial-unitmc-transition.mjs';
 
 const GUN_ACTIONS = Object.freeze({ idle: 'rifle', fire: 'rifle_fire', reload: 'rifle_reload' });
 
@@ -16,6 +18,12 @@ function requiredState(state) {
   }
   requiredActor(state.actor);
   return state;
+}
+
+function originalRootLabelFrame(label) {
+  const entry = TUTORIAL_UNITMC_ROOT_TIMELINE.labels.find(([, sourceLabel]) => sourceLabel === label);
+  if (!entry) throw new Error(`original UnitMC motion label is unavailable: ${label}`);
+  return entry[0];
 }
 
 // Starts only from a Campaign-owned actor. The initial values mirror UnitMC's
@@ -36,6 +44,22 @@ export function beginTutorialActorGunAction(state, command) {
   const label = GUN_ACTIONS[command];
   if (!label) throw new Error(`original Guns.setFrame command is unavailable: ${command}`);
   return { ...state, actionState: { label, index: 0 }, events: [] };
+}
+
+// The Movement.as nextAnim string is fed through UnitMC.goto(), not directly
+// assigned to a sprite.  Keeping this boundary here preserves the original
+// uninterruptible climb/landing and duck/getup transition guards.
+export function requestTutorialActorMotion(state, requested) {
+  requiredState(state);
+  const current = state.rootState.animation;
+  const runType = state.actor.runType;
+  const transition = transitionTutorialUnitMC({ current, requested, runType });
+  if (!transition.changed) return { ...state, events: [] };
+  return {
+    ...state,
+    rootState: { frame: originalRootLabelFrame(transition.animation), animation: transition.animation, stopped: false },
+    events: [],
+  };
 }
 
 export function sampleTutorialActorPlayback(state, source) {

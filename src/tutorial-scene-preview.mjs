@@ -1,5 +1,5 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
-import { advanceTutorialActorPlayback, createTutorialActorPlayback, sampleTutorialActorPlayback } from './tutorial-actor-playback.mjs';
+import { advanceTutorialActorPlayback, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback } from './tutorial-actor-playback.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -8,12 +8,23 @@ import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
+import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
 
 const canvas = document.querySelector('#tutorialScene');
 const context = canvas.getContext('2d');
 const error = document.querySelector('#error');
 const STAGE = { width: canvas.width, height: canvas.height };
 const TICK_MS = 1000 / 30;
+const KEY_BITS = Object.freeze({
+  KeyW: TUTORIAL_MOVEMENT_KEYS.UP,
+  ArrowUp: TUTORIAL_MOVEMENT_KEYS.UP,
+  KeyS: TUTORIAL_MOVEMENT_KEYS.DOWN,
+  ArrowDown: TUTORIAL_MOVEMENT_KEYS.DOWN,
+  KeyA: TUTORIAL_MOVEMENT_KEYS.LEFT,
+  ArrowLeft: TUTORIAL_MOVEMENT_KEYS.LEFT,
+  KeyD: TUTORIAL_MOVEMENT_KEYS.RIGHT,
+  ArrowRight: TUTORIAL_MOVEMENT_KEYS.RIGHT,
+});
 
 function loadImage(source) {
   return new Promise((resolve, reject) => {
@@ -49,9 +60,11 @@ try {
   const terrainCrop = getMapLayerCrop(visual.terrain);
   const session = tutorialWorld.session;
   const wall = { width: tutorialWorld.wall.width, height: tutorialWorld.wall.height };
-  const [player] = createTutorialActorBindings(session).actors;
+  let [player] = createTutorialActorBindings(session).actors;
   const source = { unitTimeline, rootFrameActions: TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS, m4Runtime: assets.runtime, armCallbacks: TUTORIAL_M4_ARM_CALLBACKS };
   let actorState = createTutorialActorPlayback(player);
+  let movementState = createTutorialMovementState({ noJump: player.noJump });
+  let movementKeys = 0;
   let arenaPosition = { x: 0, y: 0 };
   let previous = performance.now();
   let accumulated = 0;
@@ -73,6 +86,16 @@ try {
     accumulated += Math.min(now - previous, 250);
     previous = now;
     while (accumulated >= TICK_MS) {
+      const movement = stepTutorialMovement({
+        state: movementState,
+        actor: player,
+        wall: tutorialWorld.wall,
+        keys: movementKeys,
+      });
+      player = movement.actor;
+      movementState = movement.state;
+      actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
+      if (movement.aim) player.aim = movement.aim;
       arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);
       actorState = advanceTutorialActorPlayback(actorState, source);
       accumulated -= TICK_MS;
@@ -82,6 +105,25 @@ try {
   }
 
   render();
+  window.addEventListener('keydown', (event) => {
+    const bit = KEY_BITS[event.code];
+    if (!bit) return;
+    event.preventDefault();
+    if (bit === TUTORIAL_MOVEMENT_KEYS.UP && !event.repeat) {
+      const jump = beginTutorialMovementJump({ state: movementState, actor: player });
+      player = jump.actor;
+      movementState = jump.state;
+      if (jump.nextAnim) actorState = requestTutorialActorMotion(actorState, jump.nextAnim);
+      return;
+    }
+    movementKeys |= bit;
+  });
+  window.addEventListener('keyup', (event) => {
+    const bit = KEY_BITS[event.code];
+    if (!bit) return;
+    event.preventDefault();
+    if (bit !== TUTORIAL_MOVEMENT_KEYS.UP) movementKeys &= ~bit;
+  });
   canvas.dataset.ready = 'true';
   window.tutorialSceneReady = true;
   requestAnimationFrame(frame);

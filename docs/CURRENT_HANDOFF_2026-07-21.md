@@ -346,6 +346,13 @@ npm start
 - TDD：`e55d862` 为模块/页面缺失的 RED；`b202bc9` 为 GREEN。回归锁定首个 30fps camera tick `{x:0,y:-269.5}`、wall dimensions 下的背景视差/裁切以及 player screen 坐标。浏览器实测页面加载原三层、角色且 console 无错误。完整 `npm test`/`npm run test:coverage` 为 **207/207 通过**，99.21% 行、84.97% 分支、96.20% 函数。
 - 严格边界：画布尚未把 16 帧 Wall_tut 碰撞 surface 接进人物 Movement、鼠标/左键、Guns、弹药/弹道、AI、HUD、过场或战役触发。所以它是源场景承载，不是第一关、不是可玩战役、更不是 1:1 完成。
 
+## 2026-07-22：Tutorial 原 Movement 核心输入纵切（仍非完整关卡）
+
+- 原始证据：`Movement.as` 的 `hitTest()` 只接受 `wall.getPixel32(...).toString(16).substring(0,2)=="ff"`；`EnterFrame()` 用 `(-17,-45)`、`(17,-45)` 决定贴墙蹲伏是否可自动起身，用 `(0,1)` 落地，终端下落时用 `(17,-20/-40/-55)` 与左侧镜像探针决定 `climbsmall/climbbig`。`doJump()` 从站立状态执行 `y-=6`、`yVel-=13*modJump`；`UnitMC.goto()` 决定这些 nextAnim 能否改写根时间轴。
+- 承载：`src/tutorial-movement.mjs` 是 Tutorial 专用的 pure source port，拒绝缺少已解码 `Wall_tut` alpha surface 的调用；其 A/D/S/W 核心输出由 `tutorial-scene-preview.mjs` 每个 30fps tick 送进 `requestTutorialActorMotion()`，再经过 `tutorial-unitmc-transition.mjs` 的原始防打断规则。页面加载的是 `loadTutorialWorld()` 的完整 16 帧集合，运行时只读取当前 `tutorialWorld.wall`，没有把可见前景或 Foundry 方盒当碰撞。
+- TDD：RED `2e3de00`（Movement 模块缺失）、`7c3b139`（运动状态尚未经过 UnitMC label 规则）、`501fa46`（场景尚未接线）、`8219965`（手动跳跃缺失）；GREEN 尚待本次工作树提交。`tests/tutorial-movement.test.mjs` 锁定自动起身、低顶保持蹲伏、alpha 脚底落地、原 terminal-fall 小攀爬与跳跃 boost；`tests/tutorial-actor-playback.test.mjs` 锁定 run 标签首帧与不可中断攀爬；`tests/tutorial-scene-preview.test.mjs` 锁定真实 wall/输入接线。全量 `npm test`/`npm run test:coverage` 为 **214/214 通过**，99.01% 行、83.35% 分支、96.33% 函数；浏览器已实际加载 Tutorial 场景、原图层与角色，无错误页。
+- 严格边界：这是 `Movement.as` 的已测核心分支，不是该类完整等价端口；尚未覆写倾斜计算、全部 modifier、降落伞、硬着陆、完整大小攀爬/顶棚恢复组合或原版输入回放。更没有鼠标瞄准、左键射击、Guns、伤害、AI、HUD、脚底/子弹战役触发、过场、胜负与原 SWF 帧差分。禁止把它称作“第一关已完成”或“游戏 1:1 完成”。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

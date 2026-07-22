@@ -325,6 +325,13 @@ npm start
 - TDD：`913f316` 是缺模块的 RED；`5379c9c` 是 GREEN。完整 `npm test`/`npm run test:coverage` 均为 **197/197 通过**，99.24% 行、85.23% 分支、96.11% 函数。
 - 严格边界：这是一个纯渲染数据计划，尚未被 Tutorial 浏览器页面消费；它没有 30fps 联动时钟、输入、碰撞、相机、弹药、伤害、AI 或地图启动路径。因此不能称为可玩 Tutorial，绝不可称为游戏 1:1 完成。
 
+## 2026-07-22：Tutorial 原角色 30fps 播放边界（仍不可启动）
+
+- 原始证据：`Guns.as:setFrame()` 用 `rifle`、`rifle_fire`、`rifle_reload` 驱动 M4 arm MovieClip；501/668 的火力帧是 78→79→80，`arm_gun_316.as` 在 80 的 callback 为 `doneShoot`。`UnitMC.doneShoot()` 仅调用 `unit.gun.setFrame("idle")`。根身体每 tick 仍使用 `UnitMC` 的真实 30fps root frame command。
+- 承载：`src/tutorial-actor-playback.mjs` 是完全独立于旧 QuickMatch 的 source runtime：`createTutorialActorPlayback()` 只接受已出生的 Campaign actor；`sampleTutorialActorPlayback()` 输出原角色 render plan；`beginTutorialActorGunAction()` 只接受 `Guns.setFrame` 的 idle/fire/reload 命令；`advanceTutorialActorPlayback()` 同时推进根帧和 arm 的一个离散 tick，且只在提取到 `doneShoot`/`doneReload` callback 时复位 M4 idle。不存在的下一 arm 帧会拒绝而非循环/插值。
+- TDD：`4e95816` 为模块缺失的 RED；`1c72a3f` 为 GREEN。回归锁定 Campaign `unit0` 的 skin 57 + root 1 + arm 77 初样本，以及 fire 的 78→79→80 与第三 tick 的 `doneShoot` 回 idle。完整 `npm test`/`npm run test:coverage` 均为 **200/200 通过**，99.22% 行、85.07% 分支、96.16% 函数。
+- 严格边界：该播放器目前没有挂载 Canvas、输入/瞄准角、真实碰撞位置、弹药扣除、弹道、镜头、HUD、地图或 AI。它不是可玩的 Tutorial，更不构成全游戏 1:1。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

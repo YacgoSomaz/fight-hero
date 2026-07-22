@@ -10,6 +10,8 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /getMapVisual\('tut'\)/);
   assert.match(script, /loadMapLayers/);
   assert.match(script, /loadTutorialWorld/);
+  assert.match(script, /applyCampaignOneSessionFrame/);
+  assert.match(script, /applyTutorialFootContact/);
   assert.match(script, /stepTutorialMovement/);
   assert.match(script, /requestTutorialActorMotion/);
   assert.match(script, /addEventListener\('keydown'/);

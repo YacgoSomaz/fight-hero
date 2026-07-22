@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionUnits, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -85,4 +85,38 @@ test('Campaign 1 advances spawned Unit Status after its source runScripts frame 
     { id: 'unit3', statusFrame: 1, spawn: 14 },
     { id: 'unit4', statusFrame: null, spawn: null },
   ]);
+});
+
+// User journey: when Status.damage reaches zero HP, the original Unit.die()
+// hides that Unit, gives it the source PhysActor corpse record and stops its
+// Unit/Status frame updates.  This is lifecycle data only; Box2D rendering,
+// score and respawn UI remain separate source work.
+test('Campaign 1 applies the source Unit.die corpse lifecycle and removes the PhysActor at frame 150', () => {
+  const session = createCampaignOneSession({ random: () => 0.5 });
+  const [attacker, target] = session.actors;
+  target.status.sSpawn = 0;
+  const corpse = applyCampaignOneSessionDeath(session, { target, attacker, gun: attacker.gun.curGun, extra: { headMult: 1.5 } });
+
+  assert.deepEqual({
+    targetDead: target.dead === corpse,
+    targetVisible: target.visible,
+    respawnTimer: target.respawnTimer,
+    canUseStreak: target.canUseStreak,
+    corpseId: corpse.id,
+    corpseOrigin: corpse.position,
+    corpseCount: session.corpses.length,
+  }, {
+    targetDead: true,
+    targetVisible: false,
+    respawnTimer: 150,
+    canUseStreak: false,
+    corpseId: 'corpse-unit1',
+    corpseOrigin: { x: 1530, y: 655 },
+    corpseCount: 1,
+  });
+  const unitFrames = advanceCampaignOneSessionUnits(session);
+  assert.deepEqual(unitFrames.map(({ id }) => id), ['unit0', 'unit2', 'unit3']);
+
+  for (let frame = 0; frame < 150; frame += 1) advanceCampaignOneSessionUnits(session);
+  assert.deepEqual(session.corpses, []);
 });

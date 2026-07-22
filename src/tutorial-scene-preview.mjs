@@ -9,7 +9,7 @@ import { traceTutorialLineBullet } from './tutorial-bullet-line-runtime.mjs';
 import { applyTutorialLineBulletHit } from './tutorial-bullet-hit-effects.mjs';
 import { renderTutorialLineBullet } from './tutorial-bullet-line-renderer.mjs';
 import { advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
-import { advanceTutorialPlayerAim, canvasPointToTutorialStage, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
+import { advanceTutorialPlayerAim, canvasPointToTutorialStage, deriveTutorialUnitAim, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
@@ -74,6 +74,15 @@ try {
   const sceneActorStates = new Map(initialActorBindings
     .filter((binding) => binding.id !== 'unit0' && binding.spawned)
     .map((binding) => [binding.id, createTutorialActorPlayback(binding)]));
+  const sceneActorAimStates = new Map(session.actors
+    .filter((actor) => !actor.human && actor.spawned && actor.position)
+    .map((actor) => [actor.id, {
+      aimX: actor.aim?.x ?? actor.position.x,
+      aimY: actor.aim?.y ?? actor.position.y,
+      aimRotation: 0,
+      reloadRotation: 0,
+      flip: actor.scaleX < 0,
+    }]));
   let gunState = null;
   let movementState = createTutorialMovementState({ noJump: player.noJump });
   let movementKeys = 0;
@@ -84,11 +93,15 @@ try {
   let previous = performance.now();
   let accumulated = 0;
 
-  function sourceArmHolder() {
-    const rootFrame = unitTimeline.frames[actorState.rootState.frame - 1];
+  function sourceArmHolderFor(playbackState) {
+    const rootFrame = unitTimeline.frames[playbackState.rootState.frame - 1];
     const holder = rootFrame?.find(([id]) => id === 'arm1hold');
-    if (!holder) throw new Error(`original UnitMC arm holder is unavailable: ${actorState.rootState.frame}`);
+    if (!holder) throw new Error(`original UnitMC arm holder is unavailable: ${playbackState.rootState.frame}`);
     return { x: holder[1], y: holder[2] };
+  }
+
+  function sourceArmHolder() {
+    return sourceArmHolderFor(actorState);
   }
 
   function syncPlayerRestrictionsFromSourceSession() {
@@ -146,6 +159,37 @@ try {
     }
   }
 
+  // AI.as has already smoothed the target coordinates. Unit.as consumes them
+  // directly after MC.goto(nextAnim), using that actor's current arm holder
+  // and its prior aimRoation for the original one-tick flip behavior.
+  function syncSceneActorAimStates() {
+    for (const sourceActor of session.actors) {
+      if (sourceActor.human || !sourceActor.spawned || !sourceActor.visible || sourceActor.dead || !sourceActor.position) continue;
+      const playbackState = sceneActorStates.get(sourceActor.id);
+      if (!playbackState) continue;
+      const previous = sceneActorAimStates.get(sourceActor.id) ?? {
+        aimX: sourceActor.position.x,
+        aimY: sourceActor.position.y,
+        aimRotation: 0,
+        reloadRotation: 0,
+      };
+      const target = sourceActor.aim ?? { x: previous.aimX, y: previous.aimY };
+      const mcRotation = sourceActor.movementState?.rotation ?? 0;
+      const aim = deriveTutorialUnitAim({ ...previous, aimX: target.x, aimY: target.y }, {
+        actor: sourceActor,
+        armHolder: sourceArmHolderFor(playbackState),
+        mcRotation,
+        jumping: Boolean(sourceActor.movementState?.jumping),
+        reloading: false,
+      });
+      sceneActorAimStates.set(sourceActor.id, aim);
+      sourceActor.scaleX = aim.flip ? -1 : 1;
+      sourceActor.aimRotation = aim.aimRotation;
+      sourceActor.mcRotation = mcRotation;
+      sourceActor.armY = sourceArmHolderFor(playbackState).y;
+    }
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -169,7 +213,7 @@ try {
       if (sourceActor.id === 'unit0' || !sourceActor.spawned || !sourceActor.visible || sourceActor.dead || !sourceActor.position) continue;
       const sceneActorState = sceneActorStates.get(sourceActor.id);
       if (!sceneActorState) continue;
-      const actorSample = sampleTutorialActorPlayback(sceneActorState, source, { aim: { flip: sourceActor.scaleX < 0 } });
+      const actorSample = sampleTutorialActorPlayback(sceneActorState, source, { aim: sceneActorAimStates.get(sourceActor.id) });
       const actorScreen = worldToTutorialScreen(sourceActor.position, arenaPosition);
       context.save();
       context.translate(actorScreen.x, actorScreen.y);
@@ -265,6 +309,7 @@ try {
         const sceneActorState = sceneActorStates.get(movement.id);
         if (sceneActorState) sceneActorStates.set(movement.id, requestTutorialActorMotion(sceneActorState, movement.nextAnim));
       }
+      syncSceneActorAimStates();
       for (const sourceActor of session.actors) {
         if (sourceActor.id === 'unit0' || !sourceActor.spawned || !sourceActor.visible || sourceActor.dead) continue;
         const sceneActorState = sceneActorStates.get(sourceActor.id);

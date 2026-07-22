@@ -67,9 +67,13 @@ try {
   const terrainCrop = getMapLayerCrop(visual.terrain);
   const session = tutorialWorld.session;
   const wall = { width: tutorialWorld.wall.width, height: tutorialWorld.wall.height };
-  let [player] = createTutorialActorBindings(session).actors;
+  const initialActorBindings = createTutorialActorBindings(session).actors;
+  let [player] = initialActorBindings;
   const source = { unitTimeline, rootFrameActions: TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS, m4Runtime: assets.runtime, armCallbacks: TUTORIAL_M4_ARM_CALLBACKS };
   let actorState = createTutorialActorPlayback(player);
+  const sceneActorStates = new Map(initialActorBindings
+    .filter((binding) => binding.id !== 'unit0' && binding.spawned)
+    .map((binding) => [binding.id, createTutorialActorPlayback(binding)]));
   let gunState = null;
   let movementState = createTutorialMovementState({ noJump: player.noJump });
   let movementKeys = 0;
@@ -123,6 +127,25 @@ try {
     sourcePlayer.movement = { xVelocity: movementState.xVel, yVelocity: movementState.yVel };
   }
 
+  // Campaign actors retain their own source UnitMC child skin and the weapon
+  // chosen by Stats_Campaign.  This synchronises only source records; it does
+  // not invent an AI movement/aim state for units whose AI.EnterFrame has not
+  // yet been migrated.
+  function syncSceneActorStates() {
+    const bindings = createTutorialActorBindings(session).actors;
+    for (const binding of bindings) {
+      if (binding.id === 'unit0' || !binding.spawned) continue;
+      let sceneActorState = sceneActorStates.get(binding.id);
+      if (!sceneActorState) {
+        sceneActorStates.set(binding.id, createTutorialActorPlayback(binding));
+        continue;
+      }
+      sceneActorState = { ...sceneActorState, actor: { ...sceneActorState.actor, ...binding, position: binding.position && { ...binding.position } } };
+      if (binding.guns.active !== sceneActorState.weaponId) sceneActorState = synchronizeTutorialActorWeapon(sceneActorState, binding.guns.active);
+      sceneActorStates.set(binding.id, sceneActorState);
+    }
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -139,6 +162,20 @@ try {
     context.translate(screen.x, screen.y);
     drawTutorialUnitPose(context, pose, assets);
     context.restore();
+    // Game.units owns this authored order. Only live, visible source Units
+    // receive an original UnitMC pose; a dead Unit is intentionally absent
+    // until PhysActor rendering is separately ported.
+    for (const sourceActor of session.actors) {
+      if (sourceActor.id === 'unit0' || !sourceActor.spawned || !sourceActor.visible || sourceActor.dead || !sourceActor.position) continue;
+      const sceneActorState = sceneActorStates.get(sourceActor.id);
+      if (!sceneActorState) continue;
+      const actorSample = sampleTutorialActorPlayback(sceneActorState, source, { aim: { flip: sourceActor.scaleX < 0 } });
+      const actorScreen = worldToTutorialScreen(sourceActor.position, arenaPosition);
+      context.save();
+      context.translate(actorScreen.x, actorScreen.y);
+      drawTutorialUnitPose(context, actorSample.pose, assets);
+      context.restore();
+    }
     // Game creates lineCont after unitCont within Arena.midCont, then clears
     // it once per source frame. Draw the same source trace above this frame's
     // unit layers using Arena's x/y translation.
@@ -156,6 +193,7 @@ try {
       sourceLineTraces = [];
       applyCampaignOneSessionFrame(session);
       syncPlayerRestrictionsFromSourceSession();
+      syncSceneActorStates();
       const armHolder = sourceArmHolder();
       aimState = advanceTutorialPlayerAim(aimState, {
         actor: player,
@@ -219,6 +257,11 @@ try {
       // inside UnitEnterFrame. Keep the same post-shot phase so an AI spawn
       // shield cannot disappear before the source bullet tests it.
       advanceCampaignOneSessionUnits(session);
+      for (const sourceActor of session.actors) {
+        if (sourceActor.id === 'unit0' || !sourceActor.spawned || !sourceActor.visible || sourceActor.dead) continue;
+        const sceneActorState = sceneActorStates.get(sourceActor.id);
+        if (sceneActorState) sceneActorStates.set(sourceActor.id, advanceTutorialActorPlayback(sceneActorState, source));
+      }
       const movement = stepTutorialMovement({
         state: movementState,
         actor: player,

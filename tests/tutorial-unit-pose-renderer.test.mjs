@@ -16,6 +16,10 @@ function riflePose() {
   return createTutorialUnitPosePlan({ rootFrame: timeline.frames[0], rearAction: m4.actions.rifle.rear[0].items, frontAction: m4.actions.rifle.front[0].items, skinFrame: 57 });
 }
 
+function pistolMuzzlePose() {
+  return createTutorialUnitPosePlan({ rootFrame: timeline.frames[0], rearAction: m4.sprites[501].frames[2].items, frontAction: m4.sprites[668].frames[2].items, skinFrame: 57, gunFrame: 2, muzzleFrame: 7 });
+}
+
 test('Tutorial Shape renderer paints each original crop at its own root or nested action matrix', () => {
   const context = recordingContext();
   const guns = [];
@@ -32,4 +36,19 @@ test('Tutorial Shape renderer paints each original crop at its own root or neste
 
 test('Tutorial Shape renderer rejects a missing direct source image instead of drawing a substitute', () => {
   assert.throws(() => drawTutorialUnitPose(recordingContext(), riflePose(), { imageFor: () => null, drawGun: () => {} }), /original Tutorial Shape asset is unavailable/);
+});
+
+test('Tutorial pose renderer draws the original USP2 MuzzleFlash_317 at its decoded arm display-list matrix', () => {
+  const context = recordingContext();
+  const muzzles = [];
+  drawTutorialUnitPose(context, pistolMuzzlePose(), {
+    imageFor: (source) => ({ source }),
+    drawGun: () => {},
+    drawMuzzle: (_context, muzzle) => muzzles.push(muzzle),
+  });
+  assert.deepEqual(muzzles, [{
+    rootId: 'arm1', character: 394, frame: 7,
+    root: { x: 0.3, y: -42, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0 },
+    local: { x: 41.8, y: -12.3, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0 },
+  }]);
 });

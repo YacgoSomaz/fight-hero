@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **332/332 通过**，覆盖率为 **99.01% 行、83.64% 分支、96.52% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **333/333 通过**，覆盖率为 **99.01% 行、83.60% 分支、96.53% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -480,6 +480,13 @@ npm start
 - TDD：`bc2b548→10beb66` 锁原 child Display List、矩阵、`420` 宽度与 level-50 分支；`f9fd7dc→4f6b23d` 锁网页只能使用 1474/1475/699 与原颜色变换，禁止回退到 1477 扁平图；`tests/aimer-source.test.mjs` 同步更新旧 HUD 断言，保证全量回归仍有效。
 - 验证：`npm test` **332/332** 通过，`npm run test:coverage` 为 **99.01% 行、83.64% 分支、96.52% 函数**。本轮没有取得原 SWF 与网页同输入同帧的视觉截图，因此不把自动回归误写成像素级验收。
 - 严格边界：现有 quick-match actor 尚未产生来自原 Match/Status 的真实经验，因而显示的是其现有默认 `0` 经验；顶部生命区、底部职业/生命/备用弹/全枪图、比分条动态字段、升级反馈，以及所有 HUD 的逐像素原版对照仍未完成。此条只完成 `expholder` 的来源可审计渲染，不代表 HUD、更不代表游戏 1:1 完成。
+
+## 2026-07-22：Campaign 1 原 `Unit.die → Player/AI.spawn` 循环（仍非完整战役）
+
+- 原始证据：`Unit.die()` 写 `visible=false` 与 `respawnTimer=30*5`。`Player.as:55–70` 与 `AI.as:368–381` 都在 dead 分支每个原 30fps 帧把非零 timer 减一，并且只在 timer 已为零的**下一帧**调用各自 `spawn()`。`Unit.unitSpawn()` 从 Arena 的 `NodeSpawn` 选择出生点、执行 `setClass() → Status.reset() → MC.goto('idle')`；随后 `Player.spawn()` 写 `status.sSpawn=2.5*30`，`AI.spawn()` 写 `status.sSpawn=.5*30`。 
+- 网页承载：`campaign-one-session.mjs` 从 `ARENA_SOURCE_LAYOUTS.tut` 的真实 `NodeSpawn` 选点，保留其 waypoint 名作为 AI 初始路由；死亡后第 150 帧仅归零，第 151 帧恢复 Unit、原 primary/secondary 枪、原 Status/UnitMC 起始状态及 Player/AI 各自保护帧。`tutorial-scene-preview.mjs` 在 dead 期间隐藏 source Player 且拒绝旧输入覆盖死亡位置；来源重生时重建原 binding、Movement、UnitMC、瞄准与枪状态，再显示来源位置。
+- TDD：`093fff9→bdd087f` 锁 150→下一帧、真实第一 NodeSpawn `(213.9,1470.25,'a')`、AI 的 15 帧和 Player 的 75 帧保护；`4af9c16→fe4a4df` 锁页面不能继续渲染/移动死者，并必须采用 session 的来源重生位置。全量 `npm test` **333/333** 通过，覆盖率为 **99.01% 行、83.60% 分支、96.53% 函数**。
+- 严格边界：这不是完整死亡/重生视觉。尸体仍没有 PhysActor/Box2D 可视层、倒计时文字/音效/特效、计分/经验/击杀条、胜负或逐帧 SWF 对照；本环境仍未取得真实原 SWF 与网页同输入的截图差分。它只使第一关的一条来源生命周期不再永远卡死，绝不能称为战役或游戏 1:1 完成。
 
 ## 索引
 

@@ -1,12 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { getMapLayerCrop, getMapVisual } from '../src/map-visuals.mjs';
 
+const MAP_IDS = Object.freeze(['tut', 'foundry', 'foundry2', 'train', 'train2', 'plane', 'plane2', 'swamp', 'swamp2', 'cave', 'cave2', 'dropship', 'missile', 'missile2']);
+
+async function readPngSize(source) {
+  const bytes = await readFile(new URL(`../${source.slice(2)}`, import.meta.url));
+  assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], `${source} must remain a PNG`);
+  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+}
+
 test('every launchable source map uses versioned runtime image layers rather than ignored extraction folders', () => {
-  for (const mapId of ['tut', 'foundry', 'foundry2', 'train', 'train2', 'plane', 'plane2', 'swamp', 'swamp2', 'cave', 'cave2', 'dropship', 'missile', 'missile2']) {
+  for (const mapId of MAP_IDS) {
     const visual = getMapVisual(mapId);
     for (const source of [visual.sky, visual.background, visual.terrain]) {
       assert.match(source, /^\.\/public\/assets\/maps\//, `${mapId} must not require a private runtime asset`);
+    }
+  }
+});
+
+test('every launchable map layer exists in the fresh-clone runtime and its authored crop is inside the PNG', async () => {
+  for (const mapId of MAP_IDS) {
+    const visual = getMapVisual(mapId);
+    for (const source of [visual.sky, visual.background, visual.terrain]) {
+      const crop = getMapLayerCrop(source);
+      const size = await readPngSize(source);
+      assert.ok(crop.width > 0 && crop.height > 0, `${mapId}: ${source} needs an authored visible crop`);
+      assert.ok(crop.x >= 0 && crop.y >= 0, `${mapId}: ${source} crop cannot begin outside its PNG`);
+      assert.ok(crop.x + crop.width <= size.width, `${mapId}: ${source} crop exceeds PNG width`);
+      assert.ok(crop.y + crop.height <= size.height, `${mapId}: ${source} crop exceeds PNG height`);
     }
   }
 });
@@ -20,8 +43,8 @@ test('Train draws the locally extracted original Arena terrain and Stats_Maps de
 });
 
 test('source background sprites use their authored visible bounds rather than transparent FFDec stage padding', () => {
-  assert.deepEqual(getMapLayerCrop('./public/assets/maps/source/sky/2.png'), { x: 796, y: 0, width: 1600, height: 812 });
-  assert.deepEqual(getMapLayerCrop('./public/assets/maps/source/background/6.png'), { x: 1336, y: 584, width: 2584, height: 292 });
+  assert.deepEqual(getMapLayerCrop('./public/assets/maps/source/sky/2.png'), { x: 796, y: 0, width: 1598, height: 809 });
+  assert.deepEqual(getMapLayerCrop('./public/assets/maps/source/background/6.png'), { x: 1336, y: 584, width: 2581, height: 292 });
 });
 
 test('Tutorial terrain uses its authored visible bounds instead of the empty FFDec stage canvas', () => {

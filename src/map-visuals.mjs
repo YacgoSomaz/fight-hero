@@ -7,12 +7,17 @@ const BG = `${SOURCE}/background`;
 const SKY = `${SOURCE}/sky`;
 const TUTORIAL = './public/assets/maps/tut';
 const CROP = Object.freeze({
-  [`${BG}/2.png`]: [1336, 184, 2400, 856], [`${BG}/6.png`]: [1336, 584, 2584, 292], [`${BG}/8.png`]: [1336, 184, 1296, 692],
+  // Foundry was already exported without FFDec's full stage canvas.  Its
+  // complete PNG bounds are therefore its authored viewport (not a 0×0
+  // implicit crop, which leaves the DOM map layer invisible).
+  './public/assets/maps/foundry.png': [0, 0, 2399, 853],
+  './public/assets/maps/foundry-foreground.png': [0, 0, 2874, 863],
+  [`${BG}/2.png`]: [1336, 184, 2400, 856], [`${BG}/6.png`]: [1336, 584, 2581, 292], [`${BG}/8.png`]: [1336, 184, 1296, 692],
   [`${BG}/10.png`]: [1252, 140, 2524, 1012], [`${BG}/12.png`]: [1260, 20, 2520, 1012], [`${BG}/14.png`]: [1336, 188, 2040, 696],
   [`${BG}/15.png`]: [1340, 272, 2032, 608], [`${BG}/18.png`]: [1312, 556, 2192, 464], [`${BG}/19.png`]: [1312, 184, 2200, 848],
-  [`${SKY}/1.png`]: [796, 0, 800, 600], [`${SKY}/2.png`]: [796, 0, 1600, 812], [`${SKY}/3.png`]: [796, 0, 1600, 812],
-  [`${SKY}/4.png`]: [796, 0, 1164, 812], [`${SKY}/5.png`]: [796, 0, 1164, 812], [`${SKY}/6.png`]: [796, 0, 1164, 812], [`${SKY}/7.png`]: [796, 0, 1600, 812],
-  [`${TUTORIAL}/sky.png`]: [796, 0, 1164, 812], [`${TUTORIAL}/background.png`]: [1312, 556, 2192, 464],
+  [`${SKY}/1.png`]: [796, 0, 800, 600], [`${SKY}/2.png`]: [796, 0, 1598, 809], [`${SKY}/3.png`]: [796, 0, 1598, 809],
+  [`${SKY}/4.png`]: [796, 0, 1164, 809], [`${SKY}/5.png`]: [796, 0, 1164, 809], [`${SKY}/6.png`]: [796, 0, 1164, 809], [`${SKY}/7.png`]: [796, 0, 1598, 809],
+  [`${TUTORIAL}/sky.png`]: [796, 0, 1164, 809], [`${TUTORIAL}/background.png`]: [1312, 556, 2192, 464],
   // FFDec preserves the authoring-stage border around each Arena frame.
   // These are the alpha bounds of the original exported foregrounds, so
   // camera sampling shares the coordinate range used by decoded physics.

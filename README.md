@@ -23,7 +23,7 @@
 - `Hud 1540` 的五个文本字段（职业、生命、等级、当前枪、备用弹药）已使用原字体导出物、原锚点、透明度和对齐方式接入；经验条动态填充、其它枪型和逐像素截图对照仍未完成；
 - 30 个战役/挑战 `Stats_Campaign.setMatch()` 配置已由原 AS3 机械提取为浏览器目录数据；Campaign 1 的 9 个计时动作、4 个比分推进、14 个脚底状态、子弹环境命中与换枪推进也已从四个原始 AS3 类生成可审计数据，并组成保留原 Tutorial Arena/5 个演员记录的独立会话模型。Tutorial 原 `Wall_tut` symbol 1378 的 16 帧亦已随运行时资源交付并完成触发色审计；尚未迁移完整角色、过场和结算的任务会明确拒绝启动，绝不回退为快速对战；
 - Tutorial `Wall_tut` 运行时加载器现要求原始 16 帧全部成功加载，并只允许按原 SWF 帧号选择已解码的碰撞蒙版。独立 `tutorial-scene-preview.html` 已把当前 wall surface 接入 `Movement.as` 的核心 A/D/S/W 探针、落地与侧墙攀爬分支，以及 UnitMC 原标签转场；它没有接入鼠标/左键、Guns、伤害、AI、HUD、脚底/子弹战役触发或原版逐帧对照，不能开放战役入口；
-- `npm run test:coverage` 当前为 **214/214 通过**（99.01% 行、83.35% 分支、96.33% 函数）。其中包含战役目录与 Campaign 1 脚本源码一致性、Hud 文本字段和 Aimer Flash 矩阵→Canvas 映射回归，以及 UnitMC `setSkin()` 嵌套子部件、完整根时间轴标签/转场/端点播放、`EnterFrame()` 的 head/arm holder 重定位、直接 Shape 裁切原点、M4 手臂的真实离散动作帧/回调、Campaign 1 `tut` 原地图三层/出生坐标/原 Arena 相机及 Movement 核心浏览器承载；这些都不等于可玩战役、动态经验条或完整 HUD 已完成。
+- `npm run test:coverage` 当前为 **215/215 通过**（99.01% 行、83.28% 分支、96.35% 函数）。其中包含战役目录与 Campaign 1 脚本源码一致性、Hud 文本字段和 Aimer Flash 矩阵→Canvas 映射回归，以及 UnitMC `setSkin()` 嵌套子部件、完整根时间轴标签/转场/端点播放、`EnterFrame()` 的 head/arm holder 重定位、直接 Shape 裁切原点、M4 手臂的真实离散动作帧/回调、Campaign 1 `tut` 原地图三层/出生坐标/原 Arena 相机及 Movement 核心浏览器承载；这些都不等于可玩战役、动态经验条或完整 HUD 已完成。
 
 它仍是迁移验证，**不是**像素级完整复刻。上述清单中凡未在证据台账标作“完成”的内容，一律不得对外称为已 1:1。下一位接手者必须先阅读 [1:1 复刻总计划](docs/ONE_TO_ONE_MASTER_PLAN.md)、[1:1 证据台账](docs/ONE_TO_ONE_EVIDENCE_LEDGER.md)、[当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)、[AI 交接报告](docs/AI_HANDOFF.md)、[运行时关系总表](docs/SWF_RUNTIME_RELATION_INDEX.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
 

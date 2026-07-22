@@ -23,6 +23,9 @@ import { ORIGINAL_AIMER } from './aimer-source.mjs';
 import { getOriginalAimerRig } from './aimer-rig.mjs';
 import { getHudAmmoBoxes } from './hud-ammo.mjs';
 import { getHudTextFields } from './hud-text-source.mjs';
+import { getFoundryForegroundRuntimePlan } from './foundry-foreground-runtime.mjs';
+import { createFoundryForegroundDomLayer, renderFoundryForegroundDomLayer } from './foundry-foreground-dom.mjs';
+import { advanceFoundryWorldTimeline, createFoundryWorldTimeline } from './foundry-world-timeline.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -50,8 +53,12 @@ const audio = new AudioBank({ muted: Boolean(saved.muted) });
 let sky = new Image();
 let map = new Image();
 let terrain = new Image();
+let foundryForeground = null;
+let foundryWorldTimeline = null;
+let foundryTimelineAccumulator = 0;
 const actorSprites = new Map();
-function commitMapLayers(next) {
+function isFoundryMap(mapId) { return mapId === 'foundry' || mapId === 'foundry2'; }
+function commitMapLayers(next, mapId) {
   sky = next.sky;
   map = next.map;
   terrain = next.terrain;
@@ -59,7 +66,8 @@ function commitMapLayers(next) {
     layer.className = 'map-layer';
     layer.dataset.mapLayer = role;
   }
-  mapBackdrop.replaceChildren(sky, map, terrain);
+  foundryForeground = isFoundryMap(mapId) ? createFoundryForegroundDomLayer(document) : null;
+  mapBackdrop.replaceChildren(sky, map, foundryForeground ?? terrain);
 }
 async function loadMapWorld(options = {}) {
   const prepared = await prepareSourceMapWorld({
@@ -70,7 +78,9 @@ async function loadMapWorld(options = {}) {
     loadMapLayers,
     loadSourceWallMask,
   });
-  commitMapLayers(prepared.layers);
+  commitMapLayers(prepared.layers, prepared.mapId);
+  foundryWorldTimeline = isFoundryMap(prepared.mapId) ? createFoundryWorldTimeline(prepared.mapId) : null;
+  foundryTimelineAccumulator = 0;
   saveStatus.textContent = `原始墙体已加载：symbol ${prepared.wall.source.characterId} / frame ${prepared.wall.frame} · ${prepared.wall.mask.width}×${prepared.wall.mask.height}`;
   return prepared.world;
 }
@@ -730,7 +740,7 @@ function drawCollisionBoxes() {
 function renderOriginalMapBackdrop(source) {
   const viewport = { width: canvas.clientWidth, height: canvas.clientHeight };
   if (!viewport.width || !viewport.height) return;
-  for (const [layer, followsCamera] of [[sky, false], [map, false], [terrain, true]]) {
+  for (const [layer, followsCamera] of [[sky, false], [map, false]]) {
     const crop = layer.sourceCrop;
     if (!layer.naturalWidth || !crop?.width || !crop?.height) continue;
     const layout = getDomMapLayerLayout({
@@ -742,6 +752,38 @@ function renderOriginalMapBackdrop(source) {
       left: `${layout.left}px`, top: `${layout.top}px`,
     });
   }
+  if (foundryForeground && foundryWorldTimeline) {
+    const plan = getFoundryForegroundRuntimePlan({
+      mapId: foundryWorldTimeline.mapId,
+      timelineFrame: foundryWorldTimeline.timelineFrame,
+      source,
+      viewport,
+    });
+    renderFoundryForegroundDomLayer(foundryForeground, plan.layers);
+    return;
+  }
+  const crop = terrain.sourceCrop;
+  if (!terrain.naturalWidth || !crop?.width || !crop?.height) return;
+  const layout = getDomMapLayerLayout({
+    naturalWidth: terrain.naturalWidth, naturalHeight: terrain.naturalHeight, crop, source,
+    world: world.config, viewport, followsCamera: true,
+  });
+  Object.assign(terrain.style, {
+    width: `${layout.width}px`, height: `${layout.height}px`,
+    left: `${layout.left}px`, top: `${layout.top}px`,
+  });
+}
+
+function advanceFoundrySourceTimeline(dt) {
+  if (!foundryWorldTimeline) return;
+  foundryTimelineAccumulator += dt;
+  const ticks = Math.floor(foundryTimelineAccumulator * 30);
+  if (!ticks) return;
+  foundryTimelineAccumulator -= ticks / 30;
+  const next = advanceFoundryWorldTimeline(foundryWorldTimeline, world.wallFrames, ticks);
+  foundryWorldTimeline = next.state;
+  world.wall = next.wall;
+  world.wallSource = Object.freeze({ characterId: world.wallSource.characterId, frame: foundryWorldTimeline.wallFrame });
 }
 
 function render() {
@@ -778,6 +820,7 @@ function frame(now) {
         sendRoomInput(online, input, networkDt).then((state) => { if (state) applyRoomState(world, state); }).catch((error) => { saveStatus.textContent = `联机断开：${error.message}`; });
       }
     } else {
+      advanceFoundrySourceTimeline(dt);
       step(world, { p1: input }, dt);
       for (const event of world.events.splice(0)) audio.play(event.type);
     }

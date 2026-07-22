@@ -18,7 +18,7 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /tutorialPlayerMouseUp\(gunState\)/);
   assert.match(script, /advanceTutorialGunRuntime\(gunState/);
   assert.match(script, /canvas\.addEventListener\('mousedown'/);
-  assert.match(script, /beginTutorialActorGunAction\(actorState, 'fire'\)/);
+  assert.match(script, /beginTutorialActorGunAction\(actorState, gunTick\.action\)/);
   assert.match(script, /requestTutorialActorMotion/);
   assert.match(script, /addEventListener\('keydown'/);
   assert.match(script, /tutorialWorld\.wall/);

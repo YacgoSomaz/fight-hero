@@ -5,6 +5,7 @@ import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldTo
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
+import { advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
@@ -65,6 +66,7 @@ try {
   let [player] = createTutorialActorBindings(session).actors;
   const source = { unitTimeline, rootFrameActions: TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS, m4Runtime: assets.runtime, armCallbacks: TUTORIAL_M4_ARM_CALLBACKS };
   let actorState = createTutorialActorPlayback(player);
+  let gunState = null;
   let movementState = createTutorialMovementState({ noJump: player.noJump });
   let movementKeys = 0;
   let arenaPosition = { x: 0, y: 0 };
@@ -86,6 +88,14 @@ try {
       actorState = synchronizeTutorialActorWeapon(actorState, 'USP2');
     } else if (player.guns.active === 'M4' && actorState.weaponId !== 'M4') {
       actorState = synchronizeTutorialActorWeapon(actorState, 'M4');
+    }
+    // Campaign 1's Tutorial pistol is noAmmo:true, so its exact source shot
+    // gate is independent of the unknown saved-class ammo multiplier.  Do
+    // not fabricate a source ammo profile for later Campaign weapons here.
+    if ((player.guns.active === 'USP2' || player.guns.active === 'none') && gunState?.gunId !== player.guns.active) {
+      gunState = createTutorialGunRuntime({ gunId: player.guns.active });
+    } else if (player.guns.active !== 'USP2' && player.guns.active !== 'none') {
+      gunState = null;
     }
     movementState = { ...movementState, noJump: player.noJump };
   }
@@ -114,6 +124,11 @@ try {
     while (accumulated >= TICK_MS) {
       applyCampaignOneSessionFrame(session);
       syncPlayerRestrictionsFromSourceSession();
+      if (gunState) {
+        const gunTick = advanceTutorialGunRuntime(gunState, { human: player.human });
+        gunState = gunTick.state;
+        if (gunTick.fired) actorState = beginTutorialActorGunAction(actorState, gunTick.action);
+      }
       const movement = stepTutorialMovement({
         state: movementState,
         actor: player,
@@ -140,12 +155,16 @@ try {
 
   render();
   canvas.addEventListener('mousedown', (event) => {
-    // Player.MouseDown() starts the Guns.shoot route.  This narrow preview
-    // has no source gun object until Campaign 1 calls setGuns(USP2, none),
-    // so do not fabricate a shot or substitute a weapon before that state.
-    if (event.button !== 0 || player.guns.active === 'none' || player.guns.active !== actorState.weaponId) return;
+    if (event.button !== 0 || !gunState) return;
     event.preventDefault();
-    actorState = beginTutorialActorGunAction(actorState, 'fire');
+    // Player.MouseDown() changes only mDown; the subsequent source tick owns
+    // Guns.shoot(), shotPressed and uint shootDelay.
+    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+    gunState = tutorialPlayerMouseDown(gunState, { gameStarted: true, noShoot: Boolean(sourcePlayer?.definition?.extra?.noShoot) });
+  });
+  canvas.addEventListener('mouseup', (event) => {
+    if (event.button !== 0 || !gunState) return;
+    gunState = tutorialPlayerMouseUp(gunState);
   });
   window.addEventListener('keydown', (event) => {
     const bit = KEY_BITS[event.code];

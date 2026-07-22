@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyTutorialStatusDamage, createTutorialStatus } from '../src/tutorial-status-damage-runtime.mjs';
+import { advanceTutorialStatusFrame, applyTutorialStatusDamage, createTutorialStatus } from '../src/tutorial-status-damage-runtime.mjs';
 
 function unit({
   human = false,
@@ -166,4 +166,36 @@ test('Status.damage applies the self-hit noAllyDmg reduction instead of the team
 
   assert.equal(result.damage, 4);
   assert.equal(self.status.hpCur, 96);
+});
+
+test('Status.EnterFrame advances source spawn protection, cooldown, hurt-bar easing, delayed regen and normal regen', () => {
+  const target = unit({ hp: 100 });
+  target.status.hpCur = 90;
+  target.status.regenDelay = 2;
+  target.status.sSpawn = 2;
+  target.status.bigSkillCooldown = 2;
+  target.status.barHurtWidth = 10;
+  target.unitInfo.regen = 0.1;
+
+  assert.deepEqual(advanceTutorialStatusFrame(target), { events: [], bloodAlpha: null });
+  assert.deepEqual({ spawn: target.status.sSpawn, cooldown: target.status.bigSkillCooldown, regenDelay: target.status.regenDelay, hurt: target.status.barHurtWidth, hp: target.status.hpCur }, { spawn: 1, cooldown: 1, regenDelay: 1, hurt: 9, hp: 90 });
+  advanceTutorialStatusFrame(target);
+  assert.deepEqual({ spawn: target.status.sSpawn, cooldown: target.status.bigSkillCooldown, regenDelay: target.status.regenDelay, hurt: target.status.barHurtWidth, hp: target.status.hpCur }, { spawn: 0, cooldown: 0, regenDelay: 0, hurt: 8.1, hp: 90 });
+  advanceTutorialStatusFrame(target);
+  assert.equal(target.status.hpCur, 90.1);
+});
+
+test('Status.EnterFrame reproduces Shadow Blend delay and opacity progression without a renderer substitute', () => {
+  const target = unit({ hp: 100, skill: { id: 'shadow2', value: 0.5 } });
+  target.status.stealthDelay = 1;
+  target.status.sInvis = 0.2;
+  target.crouching = true;
+  target.hasFlag = false;
+
+  const first = advanceTutorialStatusFrame(target);
+  assert.deepEqual(first, { events: [], bloodAlpha: null });
+  assert.equal(target.status.stealthDelay, 0);
+  assert.equal(target.status.sInvis, 0.1);
+  advanceTutorialStatusFrame(target);
+  assert.equal(target.status.sInvis, 0.2);
 });

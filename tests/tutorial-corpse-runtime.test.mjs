@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceTutorialCorpseFrame, createTutorialCorpse } from '../src/tutorial-corpse-runtime.mjs';
+import { advanceTutorialCorpseFrame, applyTutorialCorpseHit, createTutorialCorpse } from '../src/tutorial-corpse-runtime.mjs';
 
 test('PhysWorld.createCorpse preserves the original PhysActor origin, mirrored parts and initial body/head impulses', () => {
   const target = {
@@ -48,4 +48,22 @@ test('PhysWorld.createCorpse preserves source sky9 splash force and source input
   assert.deepEqual(corpse.bodyImpulses.at(-1), { x: 0, y: -6 });
   assert.deepEqual(advanceTutorialCorpseFrame(corpse), { removed: false });
   assert.throws(() => createTutorialCorpse({ target: { id: 'bad' }, attacker: { position: { x: 0, y: 0 } }, gun: { force: 0, splash: 0 }, extra: {} }), /PhysActor requires target/);
+});
+
+// User journey: an original Bullet that reaches an existing PhysActor must
+// not silently stop. PhysWorld.hitCorpse() distributes its narrow random
+// impulse and then applies the original weapon force from the shooter.
+test('PhysWorld.hitCorpse preserves per-part narrow impulse and source gun force', () => {
+  const corpse = createTutorialCorpse({
+    target: { id: 'unit1', position: { x: 100, y: 100 }, scaleX: 1, skinFrame: 5, movement: { xVelocity: 0, yVelocity: 0 } },
+    attacker: { id: 'unit0', position: { x: 50, y: 100 } }, gun: { id: 'USP2', force: 0, splash: 0 }, extra: {}, random: () => 0.5,
+  });
+  const result = applyTutorialCorpseHit({
+    corpse, attacker: { id: 'unit0', position: { x: 50, y: 100 } }, gun: { id: 'USP2', force: 3, splash: 0 }, extra: {}, random: () => 0.5,
+  });
+
+  assert.deepEqual(result, { applied: true, force: 3 });
+  assert.deepEqual(corpse.parts[0].impulses.at(-1), { x: 0, y: 0 });
+  assert.ok(Math.abs(corpse.bodyImpulses.at(-1).x - 2.342606428329091) < 1e-12);
+  assert.ok(Math.abs(corpse.bodyImpulses.at(-1).y + 1.8740851426632728) < 1e-12);
 });

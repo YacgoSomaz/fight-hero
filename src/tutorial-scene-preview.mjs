@@ -13,6 +13,7 @@ import { advanceTutorialPlayerAim, canvasPointToTutorialStage, deriveTutorialUni
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
+import { getTutorialUnitOverheadBar } from './tutorial-unit-overhead-hud.mjs';
 import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
@@ -53,7 +54,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, assets, tutorialWorld] = await Promise.all([
+  const [layers, unitTimeline, assets, tutorialWorld, unitBarImage] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
@@ -61,6 +62,7 @@ try {
     }),
     loadTutorialUnitPoseAssets({ loadImage }),
     loadTutorialWorld(),
+    loadImage('./public/assets/original-swf/unit-bar-670.png'),
   ]);
   const skyCrop = getMapLayerCrop(visual.sky);
   const backgroundCrop = getMapLayerCrop(visual.background);
@@ -190,6 +192,20 @@ try {
     }
   }
 
+  // Unit symbol 687 owns this display child independently of UnitMC. Its
+  // decoded matrix and Status.setBars() width are consumed by the source HUD
+  // plan; Canvas only reproduces Flash's ColorTransform with source-in.
+  function renderTutorialUnitOverheadBar(unit) {
+    if (!unit.status || !unit.position) return;
+    const bar = getTutorialUnitOverheadBar(unit, worldToTutorialScreen(unit.position, arenaPosition));
+    context.save();
+    context.drawImage(unitBarImage, 0, 0, bar.sourceWidth, bar.sourceHeight, bar.x, bar.y, bar.width, bar.height);
+    context.globalCompositeOperation = 'source-in';
+    context.fillStyle = bar.colour;
+    context.fillRect(bar.x, bar.y, bar.width, bar.height);
+    context.restore();
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -206,6 +222,8 @@ try {
     context.translate(screen.x, screen.y);
     drawTutorialUnitPose(context, pose, assets);
     context.restore();
+    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+    if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) renderTutorialUnitOverheadBar(sourcePlayer);
     // Game.units owns this authored order. Only live, visible source Units
     // receive an original UnitMC pose; a dead Unit is intentionally absent
     // until PhysActor rendering is separately ported.
@@ -219,6 +237,7 @@ try {
       context.translate(actorScreen.x, actorScreen.y);
       drawTutorialUnitPose(context, actorSample.pose, assets);
       context.restore();
+      renderTutorialUnitOverheadBar(sourceActor);
     }
     // Game creates lineCont after unitCont within Arena.midCont, then clears
     // it once per source frame. Draw the same source trace above this frame's

@@ -280,3 +280,20 @@ export function extractUnitMCSkinFrameBounds(skinFrame, { swf = swfPath, unitSou
     bounds: visualBounds(bytes, defs, character, skinFrame),
   }));
 }
+
+// Container-level layers are needed where UnitMC mutates one child visibility
+// (legup2.gun) after selecting the shared skin frame.
+export function extractUnitMCSkinFrameLayers(skinFrame, { swf = swfPath, unitSource = sourcePath } = {}) {
+  const graph = extractUnitMCSkinGraph({ swf, unitSource });
+  if (!Number.isInteger(skinFrame) || skinFrame < 1 || skinFrame > Math.min(...graph.targets.map(([, , frames]) => frames))) {
+    throw new Error(`Skin frame ${skinFrame} is outside the original UnitMC skin child range`);
+  }
+  const bytes = decompressSwf(swf);
+  const defs = definitions(bytes);
+  return graph.targets.map(([path, character]) => ({
+    path,
+    character,
+    items: displayListAtFrame(bytes, defs.get(character), skinFrame)
+      .map(({ depth, character: childCharacter, name }) => ({ depth, character: childCharacter, ...(name ? { name } : {}) })),
+  }));
+}

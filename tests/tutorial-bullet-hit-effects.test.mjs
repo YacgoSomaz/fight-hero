@@ -40,6 +40,9 @@ test('Bullet_Line_Basic preserves Bullet.doHitEffect source guards for non-unit 
     applied: false, reason: 'reflect', damage: 0, died: false, events: [], extra: {},
   });
   assert.equal(target.status.hpCur, 130);
+  assert.throws(() => applyTutorialLineBulletHit({ trace: { gunId: 'USP2', hit: { type: 'unit', target, extra: {} } }, shooter: {} }), /current gun/);
+  shooter.gun.curGun = { ...usp2, extra: { bounceShots: 1 } };
+  assert.throws(() => applyTutorialLineBulletHit({ trace: { gunId: 'USP2', hit: { type: 'unit', target, extra: {} } }, shooter }), /bounceShots/);
 });
 
 test('Bullet_Line_Basic sends a source corpse hit to PhysWorld.hitCorpse instead of treating it as non-unit', () => {

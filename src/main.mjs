@@ -1,4 +1,4 @@
-import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, step } from './engine.mjs';
+import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, getAimPivot, step } from './engine.mjs';
 import { getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera, worldToScreen } from './camera.mjs';
 import { AudioBank } from './audio.mjs';
 import { applyRoomState, joinPrivateRoom, sendRoomInput } from './online.mjs';
@@ -19,6 +19,7 @@ import { getUnitRenderPlan } from './unit-render-plan.mjs';
 import { getUnitDomRigFrame } from './unit-dom-rig.mjs';
 import { decodeFlashWallImage } from './wall-mask.mjs';
 import { ORIGINAL_AIMER } from './aimer-source.mjs';
+import { getOriginalAimerRig } from './aimer-rig.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -97,6 +98,10 @@ const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
 // Direct crop of the original Aimer (symbol 1431, frame 1).  It deliberately
 // replaces the old Canvas circle/plus fallback rather than approximating it.
 const originalAimerSprite = image(ORIGINAL_AIMER.source);
+const originalAimerPartSprites = new Map([
+  ['./public/assets/original-swf/aimer-line-1424.png', image('./public/assets/original-swf/aimer-line-1424.png')],
+  ['./public/assets/original-swf/aimer-circle-1428-frame1.png', image('./public/assets/original-swf/aimer-circle-1428-frame1.png')],
+]);
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
 const objectiveSprites = new Map();
 function getObjectiveSprite(mode, team) {
@@ -419,8 +424,24 @@ function drawBottomHud() {
 }
 
 function drawAimer(player) {
-  if (!originalAimerSprite.complete || !originalAimerSprite.naturalWidth) return;
-  ctx.drawImage(originalAimerSprite, pointer.x - ORIGINAL_AIMER.origin.x, pointer.y - ORIGINAL_AIMER.origin.y, ORIGINAL_AIMER.width, ORIGINAL_AIMER.height);
+  const arm = worldToScreen(getAimPivot(player), camera, canvas.width, canvas.height);
+  const rig = getOriginalAimerRig({ pointer, arm, dynRecoilMod: player.aimerDynRecoilMod });
+  const partSprites = rig.parts.map((part) => originalAimerPartSprites.get(part.source));
+  if (partSprites.some((sprite) => !sprite?.complete || !sprite.naturalWidth)) {
+    // Loading fallback is also an extracted original Aimer frame, never a
+    // Canvas approximation. It disappears as soon as source parts are ready.
+    if (originalAimerSprite.complete && originalAimerSprite.naturalWidth) ctx.drawImage(originalAimerSprite, pointer.x - ORIGINAL_AIMER.origin.x, pointer.y - ORIGINAL_AIMER.origin.y, ORIGINAL_AIMER.width, ORIGINAL_AIMER.height);
+    return;
+  }
+  rig.parts.forEach((part, index) => {
+    const sprite = partSprites[index];
+    ctx.save();
+    ctx.translate(part.x, part.y);
+    ctx.transform(...part.matrix);
+    ctx.scale(part.width / sprite.naturalWidth, part.height / sprite.naturalHeight);
+    ctx.drawImage(sprite, -part.origin.x, -part.origin.y);
+    ctx.restore();
+  });
 }
 
 function drawPlayer(player) {

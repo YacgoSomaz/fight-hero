@@ -10,7 +10,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **123/123 通过**，覆盖率为 **99.08% 行、88.19% 分支、93.61% 函数**，高于 80% 门槛。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **130/130 通过**，覆盖率为 **99.08% 行、87.93% 分支、93.72% 函数**，高于 80% 门槛。历史段落中保留的 123/124/127/128 计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -142,6 +142,8 @@ npm start
 **此段的再后续进展（2026-07-22）**：原 `curgun` 的 M4 图标已接入。证据链为 `Stats_Guns` 的 `M4.sprite="M4"` → GunsMenu 724 label `M4`（第 20 帧）→ Hud 1540 的 `(674.2,568)` 变换矩阵。FFDec 26.1.0 重新导出的 87×36 第 20 帧已置于 `public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png`；`main.mjs` 直接画原 PNG，删除旧滤镜/占位枪图。`73c8954`→`d999f96` 是 RED/GREEN 提交。全量回归为 128/128，覆盖率为 99.08% 行、87.72% 分支、93.69% 函数。仍只覆盖 M4 的当前枪图，不能误报为全枪 HUD 或完整切枪系统。
 
 **经验条深解包记录（2026-07-22，尚未网页接入）**：1477 不应再被当成不可拆的静态图。其 depth 1=1474 灰斜纹、depth 2=1475 绿斜纹、depth 3=`bar_exp` 918、depth 6=`txt_exp` 1476；918 内部为白矩形 699，并在 1477 depth 3 接收 `mult=[0,0,0,77]`、`add=[255,255,0,0]` ColorTransform 和 `a=3.1491546630859375,c=.6520538330078125,d=-.5157470703125,tx=-1.4,ty=8.4` 矩阵。`Hud.addExp` 的宽度规则是 `exp/(level²*3+40)*420`，50 级例外为 420/`Level Maxed`。这证明动态进度不能通过裁整张 1477 PNG 实现；完整数据和下一步门槛见证据台账 §6.1.4。
+
+**经验规则与可公开运行时资源（2026-07-22，规则已锁定，视觉仍阻断）**：`3f1c387` 是真实 RED：新增 `tests/hud-experience.test.mjs` 后，因 `src/hud-experience.mjs` 不存在而失败；`6e102f7` 是 GREEN：`getHudExperience({level, exp})` 逐字面转录 `Stats_Classes.getNextExp(level)=level²*3+40`、`Hud.addExp` 的 420 宽度公式和 50 级 `Level Maxed` 分支。当前全量为 130/130，覆盖率 99.08% 行、87.93% 分支、93.72% 函数。直接从 FFDec 导出的 `hud-exp-base-1474.svg`、`hud-exp-green-1475.svg`、`hud-exp-fill-699-source.svg` 和 `hud-exp-font-981.ttf` 已加入 `public/assets/original-swf/`，但**尚未由 `main.mjs` 消费**。原因是原版把 918 置于斜切矩阵后再设置 ActionScript `MovieClip.width`；在未对原 SWF 实机采样其零值、半值和满值实际 bounding/matrix 前，不允许用 Canvas clip 或任意 `scaleX` 猜测替代。下一位应先取得这三个原版状态的截图/矩阵，再新增“运行时分层经验条”RED 用例并接入。
 
 ## 索引
 

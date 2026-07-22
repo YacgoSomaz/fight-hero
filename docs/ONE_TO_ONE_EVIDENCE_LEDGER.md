@@ -171,6 +171,8 @@ Main.as（输入/屏幕切换）
 - `Stats_Classes.getNextExp(level)` 的精确公式为 `level * level * 3 + 40`。`Hud.addExp` 先写 `width = exp / nextExp * 420`；level 50 则强制 `width=420` 和 `Level Maxed`；达到阈值后将 exp 清零、level 加一并递归调用自身刷新显示。
 - 本机可重现导出命令：`ffdec-cli.jar -selectid 918,1474,1475,1476 -select '918:1,1474:1,1475:1,1476:1' -ignorebackground -export sprite,shape private-assets/hud-exp-export assets/reverse/4399-90433-25.swf`，随后额外导出 `-selectid 699 -export shape ...`。这些私有导出物不等于网页已接入。
 - **下一次实现门槛**：须将 1474、1475、699 的原 SVG/PNG 及 depth 3 的 matrix/ColorTransform 分层渲染；`bar_exp.width` 要按 Flash 的 bounding width 语义而不是随手裁剪；1476 字体与 TextField 对齐也要有原始证据。完成前保留当前“1477 静态图已接入”的低等级状态，不能标成动态经验已完成。
+
+**2026-07-22 规则层进展**：`tests/hud-experience.test.mjs` 已把 `Hud.addExp`/`Stats_Classes.getNextExp` 的等级 1、等级 5 与等级 50 行为锁为自动回归；`src/hud-experience.mjs` 是该规则的纯函数转录。1474、1475、699 及 1476 所用字体的直接 FFDec 导出已进入 `public/assets/original-swf/`，以避免后续运行时依赖被忽略的 `private-assets/`。这一进展只达到“数据/资源已接入仓库、视觉规则待验证”：网页仍在使用完整 1477 静态导出，不能声称动态经验条完成。
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

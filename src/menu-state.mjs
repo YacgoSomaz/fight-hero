@@ -94,10 +94,18 @@ const PLAYABLE_SOURCE_MAPS = new Set([
 ]);
 const PLAYABLE_MODE_NAMES = Object.freeze({ dm: '死亡竞赛', jug: 'Juggernaut', tdm: '团队死斗', ctf: '夺旗', dom: '据点占领' });
 export function isPlayableSelection(selection) {
+  // A campaign/challenge item carries a complete Stats_Campaign record. Until
+  // its actors, script and completion flow are actually migrated, launching
+  // its map with quick-match defaults would be a false playable claim.
+  if (selection.definition) return false;
   return PLAYABLE_SOURCE_MAPS.has(selection.map) && PLAYABLE_SOURCE_MODES.has(selection.mode);
 }
 
 export function getQuickMatchStatus(selection) {
+  if (selection.definition) return {
+    canLaunch: false,
+    message: '该原始任务的角色、脚本、过场或胜负流程尚未完整迁移，不能伪装为快速对战。',
+  };
   return isPlayableSelection(selection)
     ? { canLaunch: true, message: `原场景地图、碰撞、导航与本地${PLAYABLE_MODE_NAMES[selection.mode]}规则已接入。` }
     : { canLaunch: false, message: '该地图或模式尚未完成原版地图、碰撞与规则迁移。' };

@@ -204,6 +204,49 @@ test('Campaign 1 applies the source Unit.die corpse lifecycle and removes the Ph
   assert.deepEqual(session.corpses, []);
 });
 
+// User journey: in the original Under Siege TDM, a normal player kill does
+// not stop at corpse creation. Unit.die() updates both Score instances,
+// MatchSettings totals the authored teams and Hud.addExp() writes the
+// player's real SD.classSaves entry. This must remain one source-driven
+// lifecycle rather than a made-up browser score counter.
+test('Campaign 1 normal player kill applies original Score, TDM and experience-save state', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const [player, target] = session.actors;
+
+  applyCampaignOneSessionDeath(session, {
+    target,
+    attacker: player,
+    gun: player.gun.curGun,
+    extra: { headMult: 1.5 },
+  });
+
+  assert.deepEqual({
+    player: {
+      pscore: player.pscore,
+      kills: player.score.kills,
+      headshots: player.score.headshots,
+      killedTank: player.score.killed4,
+      multikill: player.score.multikill,
+      spree: player.score.spree,
+      killtimer: player.score.killtimer,
+    },
+    target: {
+      pscore: target.pscore,
+      deaths: target.score.deaths,
+      lives: target.score.lives,
+      spree: target.score.spree,
+      streak: target.score.streak,
+    },
+    tdm: session.match,
+    medicSave: session.classSaves[1],
+  }, {
+    player: { pscore: 1, kills: 1, headshots: 1, killedTank: 1, multikill: 1, spree: 1, killtimer: 105 },
+    target: { pscore: 0, deaths: 1, lives: -1, spree: 0, streak: 0 },
+    tdm: { mode: 'tdm', scoreLimit: 15, team1score: 1, team2score: 0, ended: false },
+    medicSave: { skin: 1, primary: 'M4', secondary: 'USP', skill: 'none', streak: 'none', level: 1, exp: 10, funds: 10 },
+  });
+});
+
 // Player.as and AI.as both decrement Unit.respawnTimer once per original
 // 30fps frame, then call their own spawn() only on the following frame. The
 // shared Unit.unitSpawn() selects an authored NodeSpawn; Player applies 75

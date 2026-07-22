@@ -20,5 +20,9 @@ test('Tutorial actor bindings retain each Campaign 1 source class, skin frame an
     { id: 'unit4', human: false, soldier: 'soldier', skin: 1, skinFrame: 151, spawned: false, noAim: false, position: null },
   ]);
   assert.deepEqual(bindings.actors[0].guns, { primary: 'M4', secondary: 'USP', active: 'M4' });
-  assert.equal(bindings.actors[0].level, null, 'Campaign source delegates player level to saved profile; adapter must not invent it');
+  assert.equal(bindings.actors[0].level, 1, 'the source first-run SD save supplies Campaign 1 player level one');
+  assert.deepEqual(bindings.actors[0].sourcePlayerProfile, {
+    name: 'Scientist', soldier: 'medic', skin: 7, team: 1, skill: 'none', streak: 'none', primary: 'M4', secondary: 'USP', level: 1,
+    extra: { spawn: { x: 285, y: 705, node: 'a' }, noAim: true }, diff: 10, hp: 85, crit: 0.06, aim: 0.7000000000000001, ammo: 0.9,
+  });
 });

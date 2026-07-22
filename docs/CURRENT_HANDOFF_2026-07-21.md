@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **328/328 通过**，覆盖率为 **99.00% 行、83.62% 分支、96.51% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **329/329 通过**，覆盖率为 **99.00% 行、83.62% 分支、96.51% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -91,6 +91,7 @@ npm start
 - 几何审计：`c06e525→aef49e5` 让 `extractFoundryForegroundRegistration()` 对每个 child 的完整 timeline 递归合并 SWF 的 Shape RECT 与 PlaceObject matrix；1252 的 76 帧原绘制几何是 `x=-2.284375..309.912210.., y=-53.8..38.042253..`，1258 的 306 帧为 `x=-15.4..535.55, y=-55..849.357928..`。这解释了 PNG 画布为什么不能直接当坐标，但也只包含当前 parser 能表达的 Shape/Sprite 几何，尚未涵盖 FFDec 导出中的滤镜/Morph 扩张；因此**不得把这些数值直接写进运行时 CSS**，下一步应建立“SWF 几何→FFDec PNG canvas”可证明的映射并做像素对照。
 - SVG 注册点与布局计划：`25f723f→0073707` 将 FFDec 从原 SWF 直接导出的 1252 全部 76 帧与 1258 全部 306 帧 SVG 置入公开运行时资源；每帧的 SVG root viewport 和第一个 Display List group 的平移均受测试锁定。1252 的 viewport/注册点是 `312.15×97.35`、`(-2.25,-59.35)`；1258 为 `550.95×904.35`、`(-15.4,-55)`。`4649900→e398bf1` 将 root Arena placement、SVG 注册点、相机 source rect 和 800×600 stage 统一为 `getFoundryForegroundLayout()`，并拒绝越界帧而不暗中回绕。这份布局计划可直接产生原 child 的屏幕 left/top/width/height，取代先前不能可靠定位的 PNG canvas 尺寸。
 - DOM 与碰撞接入：`fed44ca→3ba5cf5` 锁定 1252/1258 的同 parent stage frame 关系；第 32 帧为 water=32、pot=32、wall=2，水层仅按其原 76 帧循环，而 pot 保留 306 帧。`a3e56d2→c6d4449` 创建仅含原始 `1242@depth1 → 1252@depth2 → 1258@depth7` 的 DOM 容器，缺层或乱序即拒绝。`e88f509→727f0bd` 在发布 world 前解码所有原 wallMC 帧；`b9a07f4→af29aa3` 将它们交给同一 world；`36236ff→8dee9bd` 要求若目标 wall frame 缺失必须失败而不能继续用旧碰撞。最终 `1e1534a→40f49ce` 将该链路接入 `main.mjs`：Foundry / Foundry 夜图不再使用扁平 `foundry-foreground.png`，而是实时放置 1242 PNG、1252 SVG 和 1258 SVG；本地单人 30fps source tick 在物理 `step()` 前同时提交可见 frame 和 `world.wall`。
+- 稳定性修复：浏览器会把 `HTMLImageElement.src` 规范化为绝对 URL；原比较若仍使用相对 URL，会在每个 render tick 对不变的 1242/1252/1258 帧重新赋值，导致反复请求/闪烁。`b719249→12439ca` 用这种浏览器语义复现并锁定：DOM 节点记录原 source token，只有 source frame 实际变化才更换 `src`；相同帧连续渲染的三张原图均只加载一次。
 - 视觉验收边界：自动化浏览器两条通道均无法访问本机 `127.0.0.1:4173`（一个被客户端策略拦截，另一个不可用），因此这次只完成资源、矩阵、时间轴、DOM 结构和 collision authority 的自动回归；还**没有**原 SWF 与网页的同输入截图/录像对照。必须在可渲染 Canvas 的浏览器中人工检查 Foundry 初始帧、31→32、53→54、306→1、移动/攀爬/射击四种状态后，才能把 Foundry 这一纵切标记为视觉验收通过；更不能据此称游戏 1:1 已完成。
 
 ## 解包关系：可直接复用的证据

@@ -145,6 +145,95 @@ function inputTrigger(player) {
   return { key: 'swapGuns', requiredState: Number(swap[1]) };
 }
 
+function campaignOneUnitSection(unit) {
+  const start = unit.indexOf('if(MatchSettings.isCampaign && MatchSettings.caType == 0 && MatchSettings.caStage == 1)');
+  const end = unit.indexOf('else if(MatchSettings.isCampaign && MatchSettings.caType == 0 && MatchSettings.caStage == 5)', start);
+  if (start < 0 || end < 0) throw new Error('Campaign 1 Unit contact branch not found');
+  return unit.slice(start, end);
+}
+
+function unitTarget(value) {
+  if (value === 'this' || value === 'this.game.player' || value === 'game.player') return 'player';
+  const unit = value.match(/(?:this\.)?game\.units\[(\d+)\]/);
+  if (unit) return `unit${unit[1]}`;
+  throw new Error(`Unsupported Unit target: ${value}`);
+}
+
+function unitActions(body) {
+  const result = [];
+  for (const line of body.split(/\r?\n/)) {
+    const hud = line.match(/(?:this\.)?game\.hud\.gotoAndStop\("([^"]+)"\)/);
+    if (hud) { result.push({ type: 'hudFrame', frameLabel: hud[1] }); continue; }
+    const message = line.match(/(?:this\.)?game\.hud\.setMsg\((this|(?:this\.)?game\.(?:player|units\[\d+\])),"(.*)",(\d+),(true|false),([A-Za-z0-9_]+)\)/);
+    if (message) {
+      result.push({ type: 'message', target: unitTarget(message[1]), text: decodeString(message[2]), seconds: Number(message[3]), force: message[4] === 'true', voice: message[5] });
+      continue;
+    }
+    const guns = line.match(/this\.gun\.setGuns\("([^"]+)","([^"]+)"\)/);
+    if (guns) { result.push({ type: 'setGuns', target: 'player', primary: guns[1], secondary: guns[2] }); continue; }
+    const noAim = line.match(/this\.unitInfo\.extra\.noAim = (true|false)/);
+    if (noAim) { result.push({ type: 'setNoAim', target: 'player', value: noAim[1] === 'true' }); continue; }
+    const difficulty = line.match(/(?:this\.)?game\.units\[(\d+)\]\.setDiffStats\((\d+),(true|false)\)/);
+    if (difficulty) { result.push({ type: 'setDiffStats', target: `unit${difficulty[1]}`, difficulty: Number(difficulty[2]), reset: difficulty[3] === 'true' }); continue; }
+    const spawn = line.match(/(?:this\.)?game\.units\[(\d+)\]\.spawn\((-?\d+),(-?\d+),"([^"]+)"\)/);
+    if (spawn) { result.push({ type: 'spawn', target: `unit${spawn[1]}`, x: Number(spawn[2]), y: Number(spawn[3]), node: spawn[4] }); continue; }
+    const door = line.match(/(?:this\.)?game\.arena\.door\.gotoAndPlay\("([^"]+)"\)/);
+    if (door) { result.push({ type: 'doorFrame', frameLabel: door[1] }); continue; }
+    const elevator = line.match(/(?:this\.)?game\.arena\.elevator\.play\(\)/);
+    if (elevator) { result.push({ type: 'elevatorFrame', frameLabel: 'play' }); continue; }
+    if (/this\.game\.player\.gun\.curAmmo\.spareCur = 0/.test(line)) { result.push({ type: 'setAmmo', target: 'player', clip: 0, spare: 0 }); continue; }
+    if (/downarrows\[_loc2_\]\.visible = false/.test(line)) { result.push({ type: 'hideDownArrows' }); continue; }
+    if (/downarrows\[_loc3_\]\.visible = true/.test(line)) { result.push({ type: 'showDownArrows', state: 12 }); }
+  }
+  return result;
+}
+
+function sourceCaseBodies(source) {
+  const cases = [];
+  const matcher = /^\s+case (\d+):\s*$/gm;
+  let match;
+  while ((match = matcher.exec(source))) cases.push({ number: Number(match[1]), start: matcher.lastIndex, marker: match.index });
+  return cases.map((entry, index) => ({
+    number: entry.number,
+    body: source.slice(entry.start, cases[index + 1]?.marker ?? source.length),
+  }));
+}
+
+function surfaceTransitions(unit) {
+  const section = campaignOneUnitSection(unit);
+  const firstSwitch = section.indexOf('switch(');
+  // FFDec's decompiler emits special pop tokens whose exact glyph encoding
+  // varies by export version; the second switch in this scoped branch is the
+  // executable action switch after the sn→case dispatch table.
+  const secondSwitch = section.indexOf('switch(', firstSwitch + 1);
+  const end = section.indexOf('_loc1_ = 0;', secondSwitch);
+  if (firstSwitch < 0 || secondSwitch < 0 || end < 0) throw new Error('Campaign 1 Unit action switch not found');
+  return sourceCaseBodies(section.slice(secondSwitch, end))
+    .filter(({ number }) => number >= 0 && number <= 13)
+    .map(({ number, body }) => {
+      const state = number + 1;
+      return { state, effects: unitActions(body), showDownArrowsState: state, nextState: state + 1, resetFrame: true, wallFrame: state + 1 };
+    });
+}
+
+function bulletTransition(bullet) {
+  const body = blockAfter(bullet, /if\(Stats_Campaign\.sn == 9\)/);
+  const trigger = bulletTrigger(bullet);
+  return {
+    ...trigger, nextState: trigger.requiredState + 1, wallFrame: trigger.requiredState + 1,
+    effects: unitActions(body),
+  };
+}
+
+function inputTransition(player) {
+  const trigger = inputTrigger(player);
+  const body = blockAfter(player, /if\(Stats_Campaign\.sn == 12\)/);
+  return {
+    ...trigger, nextState: trigger.requiredState + 1, wallFrame: trigger.requiredState + 1,
+    effects: unitActions(body),
+  };
+}
+
 export function extractCampaignOneScript({ campaign, unit, bullet, player }) {
   const stage = campaignOneStage(campaign);
   return {
@@ -153,5 +242,8 @@ export function extractCampaignOneScript({ campaign, unit, bullet, player }) {
     surfaceTrigger: surfaceTrigger(unit),
     bulletTrigger: bulletTrigger(bullet),
     inputTrigger: inputTrigger(player),
+    surfaceTransitions: surfaceTransitions(unit),
+    bulletTransition: bulletTransition(bullet),
+    inputTransition: inputTransition(player),
   };
 }

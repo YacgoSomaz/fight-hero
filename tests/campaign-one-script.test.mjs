@@ -50,7 +50,7 @@ test('extracts the complete source-owned Campaign 1 transition surface', () => {
       { type: 'setGuns', target: 'player', primary: 'USP2', secondary: 'none' },
       { type: 'setNoAim', target: 'player', value: false },
     ],
-    nextState: 9, resetFrame: true, wallFrame: 9,
+    showDownArrowsState: 8, nextState: 9, resetFrame: true, wallFrame: 9,
   });
   assert.deepEqual(script.surfaceTransitions.find(({ state }) => state === 13), {
     state: 13,
@@ -64,7 +64,7 @@ test('extracts the complete source-owned Campaign 1 transition surface', () => {
       { type: 'spawn', target: 'unit3', x: 270, y: 1470, node: 'a' },
       { type: 'doorFrame', frameLabel: 'close' },
     ],
-    nextState: 14, resetFrame: true, wallFrame: 14,
+    showDownArrowsState: 13, nextState: 14, resetFrame: true, wallFrame: 14,
   });
   assert.deepEqual(script.bulletTransition, {
     hitObject: '9900ff', requiredState: 9, nextState: 10, wallFrame: 10,

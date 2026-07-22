@@ -209,6 +209,15 @@ npm start
 
 **下一位唯一正确步骤**：用图谱导出 Campaign 1 的 `55/57/105/151/155` 每个原始子 Sprite，并从 `arm1`/`arm2` 的枪型时间轴提取对应的局部矩阵；先以一个固定原始根动画帧 + 一个皮肤 index 做像素/矩阵组合 RED→GREEN，再接入连续状态机。
 
+## 2026-07-22：Campaign 1 原 skin PNG 与浏览器来源表（仍不可启动）
+
+- 原资源已交付：`public/assets/original-swf/unit-skins/DefineSprite_{266,298,385,538,568,598,631,666}/{55,57,105,151,155}.png` 共 40 张，直接用 FFDec 26.1.0 从 `4399-90433-25.swf` 的相应 nested Sprite/frame 导出。它们覆盖本 Tutorial 的五个 source skin index，包含头、躯干、上下腿、脚和双臂的上/下臂及手。
+- 浏览器来源表：运行 `node tools/generate-tutorial-skin-source.mjs` 会用原始图谱生成 `src/tutorial-skin-source.mjs`；`tutorialSkinAssetPath()` 只接受 `266/298/385/538/568/598/631/666`，明确拒绝 `669`，因此调用方无法再把 root 动画帧当作皮肤图。
+- TDD：`a00dba6`→`111376d` 固化 40 张直接导出 PNG 的存在性、格式和非零尺寸；`fef904b`→`bd4430e` 固化浏览器来源表与原 SWF 图谱逐项一致。完整回归 165/165，覆盖率行 99.38%、分支 87.20%、函数 95.76%。
+- 严格边界：PNG 尚未接入 `main.mjs`。现有 `m4-vector-runtime.local.json` 是 501/668 的枪械**动作** Display List，但其 `childFrames` 未灌入 Campaign skin index，不能作为 Tutorial 角色外观；不得将其与这些 PNG 的任意固定组合声称为已完成角色。
+
+**下一位唯一正确步骤**：解析 501/668 在 `rifle`、`rifle_fire`、`rifle_reload` 每帧对 `266/298/385` 的矩阵和枪械子层，并以 `skinFrame` 注入。先完成一个 `root-frame + arm-action-frame + skin-frame` 的可复现静态组合截图对照，再接入玩家状态机。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

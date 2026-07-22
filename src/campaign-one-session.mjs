@@ -2,6 +2,7 @@ import { ARENA_SOURCE_LAYOUTS } from './arena-source-layouts.mjs';
 import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
+import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
 import { advanceTutorialStatusFrame, createTutorialStatus } from './tutorial-status-damage-runtime.mjs';
@@ -15,7 +16,7 @@ function sourceGun(id) {
   return gun;
 }
 
-function activateSourceActor(actor) {
+function activateSourceActor(actor, aiArena, random) {
   // Unit.unitSpawn() resets Movement and restores the Unit's visible/alive
   // state before it invokes setClass() and Status.reset().
   actor.movement = { xVelocity: 0, yVelocity: 0 };
@@ -42,6 +43,13 @@ function activateSourceActor(actor) {
   // AI.spawn(), unlike Unit.spawn(), explicitly applies this half-second
   // protection after Unit.unitSpawn() has reset Status.
   if (!actor.human) actor.status.sSpawn = 0.5 * 30;
+  if (!actor.human) {
+    actor.ai = createTutorialAiState({ actor, arena: aiArena, random });
+    actor.aiKeys = 0;
+    actor.aiJumpRequested = false;
+    actor.aiShouldShoot = false;
+    actor.aim = { x: actor.ai.aimX, y: actor.ai.aimY };
+  }
 }
 
 function setActorGuns(actor, primary, secondary, active = primary) {
@@ -52,7 +60,7 @@ function setActorGuns(actor, primary, secondary, active = primary) {
   actor.gun.curGun = sourceGun(active);
 }
 
-function sourceActor(id, definition, { human, random }) {
+function sourceActor(id, definition, { human, random, aiArena }) {
   const spawn = definition.extra?.spawn ?? null;
   const actor = {
     id: `unit${id}`,
@@ -96,7 +104,7 @@ function sourceActor(id, definition, { human, random }) {
   actor.unitInfo = null;
   actor.status = null;
   actor.gun = null;
-  if (actor.spawned) activateSourceActor(actor);
+  if (actor.spawned) activateSourceActor(actor, aiArena, random);
   return actor;
 }
 
@@ -111,9 +119,12 @@ function applySourceEffects(session, effects) {
     else if (effect.type === 'spawn' && actor) {
       actor.spawned = true;
       actor.position = { x: effect.x, y: effect.y, node: effect.node };
-      activateSourceActor(actor);
+      activateSourceActor(actor, session.map.aiArena, session.random);
     }
-    else if (effect.type === 'setDiffStats' && actor) actor.difficulty = effect.difficulty;
+    else if (effect.type === 'setDiffStats' && actor) {
+      actor.difficulty = effect.difficulty;
+      if (!actor.human && actor.ai) actor.ai = setTutorialAiDifficulty(actor.ai, { actor, difficulty: effect.difficulty });
+    }
     else if (effect.type === 'setNoAim' && actor) actor.noAim = effect.value;
     else if (effect.type === 'setNoJump' && actor) actor.noJump = effect.value;
     else if (effect.type === 'setGuns' && actor) setActorGuns(actor, effect.primary, effect.secondary);
@@ -132,14 +143,16 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
   const definition = SOURCE_CAMPAIGN_CATALOG.campaign[0];
   const arena = ARENA_SOURCE_LAYOUTS[definition.map];
   if (!arena) throw new Error(`Campaign 1 Arena source is unavailable: ${definition.map}`);
+  const aiArena = compileTutorialAiArena(arena);
   return {
     definition,
-    map: { id: definition.map, wallCharacter: arena.wallCharacter, wallFrame: 1, nodes: arena.nodes },
+    map: { id: definition.map, wallCharacter: arena.wallCharacter, wallFrame: 1, nodes: arena.nodes, aiArena },
     runtime: createCampaignOneRuntime(),
-    actors: [sourceActor(0, definition.player, { human: true, random }), ...definition.bots.map((actor, index) => sourceActor(index + 1, actor, { human: false, random }))],
+    actors: [sourceActor(0, definition.player, { human: true, random, aiArena }), ...definition.bots.map((actor, index) => sourceActor(index + 1, actor, { human: false, random, aiArena }))],
     environment: { doorFrame: 'idle', elevatorFrame: 'idle' },
     effects: [],
     corpses: [],
+    random,
   };
 }
 
@@ -170,6 +183,26 @@ export function advanceCampaignOneSessionUnits(session) {
   for (const corpse of session.corpses) advanceTutorialCorpseFrame(corpse);
   session.corpses = session.corpses.filter((corpse) => !corpse.removed);
   return units;
+}
+
+// Game.EnterFrame calls AI.EnterFrame in the same live Game.units pass as
+// Unit status. This adapter writes only the original AI decisions; movement
+// and Guns remain their own source phases and must consume these exact fields.
+export function advanceCampaignOneSessionAi(session, { wall, gameStarted = true, random = session?.random ?? Math.random } = {}) {
+  if (!session?.map?.aiArena) throw new TypeError('Campaign AI requires source Arena nodes');
+  const results = [];
+  for (const actor of session.actors) {
+    if (actor.human || !actor.spawned || !actor.status || actor.dead) continue;
+    if (!actor.ai) actor.ai = createTutorialAiState({ actor, arena: session.map.aiArena, random });
+    const decision = advanceTutorialAi({ state: actor.ai, actor, units: session.actors, arena: session.map.aiArena, wall, gameStarted, random });
+    actor.ai = decision.state;
+    actor.aiKeys = decision.keys;
+    actor.aiJumpRequested = decision.jumpRequested;
+    actor.aiShouldShoot = decision.shouldShoot;
+    actor.aim = { x: decision.state.aimX, y: decision.state.aimY };
+    results.push({ id: actor.id, keys: decision.keys, jumpRequested: decision.jumpRequested, shouldShoot: decision.shouldShoot, targetId: decision.state.targetId, aim: { ...actor.aim } });
+  }
+  return results;
 }
 
 // Narrow lifecycle port of Unit.die().  The source proceeds from

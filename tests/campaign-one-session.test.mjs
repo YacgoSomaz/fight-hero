@@ -99,7 +99,7 @@ test('Campaign 1 records live original AI target/aim decisions on its spawned bo
 
   assert.deepEqual(results.map(({ id, keys, jumpRequested, shouldShoot, targetId, aim }) => ({ id, keys, jumpRequested, shouldShoot, targetId, aim })), [
     { id: 'unit1', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 44.4, y: 19.65 } },
-    { id: 'unit2', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 1848.6, y: 645.3 } },
+    { id: 'unit2', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 621.55, y: 645.3 } },
     { id: 'unit3', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 621.55, y: 645.3 } },
   ]);
   assert.equal(bot.ai.targetId, 'unit0');

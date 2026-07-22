@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **311/311 通过**，覆盖率为 **98.98% 行、83.41% 分支、96.19% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **313/313 通过**，覆盖率为 **99.00% 行、83.63% 分支、96.30% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -86,6 +86,7 @@ npm start
 - 继续解包已确认：Foundry Arena frame 的 depth 7 放置 `MBFZ_fla.pot_203` / symbol **1258**，矩阵平移为 `(1046.4,-65.05)`；该 MovieClip 共 **306** 帧。其源码 `addFrameScript(31, frame32, 53, frame54)` 分别在可见第 32 / 54 帧调用 `Arena.changeWallFrame(2)` / `(1)`。`src/source-wall-timeline.mjs` 与 `tests/source-wall-timeline.test.mjs` 已锁定这份 30fps、306 帧循环关系，且明确不为其他地图虚构帧切换。
 - 当前 `public/assets/maps/foundry-foreground.png` 是包含 pot 第 1 帧的完整 Arena 平面导出；1258 的 306 帧原 PNG 约 23.7 MB，尚未进入公开运行时，也尚未从该平面图拆出。若仅让 `world.wall` 切到 1261 frame 2，用户会遇到视觉仍为第 1 帧而碰撞已经改变的错误，因此主页面**暂时保持 Foundry 初始 frame 1**。
 - 不必从平面图擦洞：Foundry frame 的 depth 1 是原 shape **1242**（无 pot，RECT `(-154.6,-68)→(2947.4,879)`），depth 2 是 **1252** 的 76 帧环境 MovieClip（root matrix `(1160.2,722.95,.9674072265625,1)`），depth 7 是 **1258**。FFDec 已验证 1242 导出为 3102×947、1252 单帧 313×98、1258 单帧 665×1019；这些尺寸包含各自原注册边界，网页必须使用 RECT/Display List 原点，而不是按 alpha 像素猜对齐。
+- 可复现提取：`tools/parse-foundry-foreground.mjs` 直接解压原 SWF、读取 Arena symbol 1413 的 ShowFrame/PlaceObject Display List，并只返回 Foundry frame 2 中真正可绘制的 `1242@depth1`、`1252@depth2`、`1258@depth7`；每项带原矩阵和 symbol 帧数。`tests/foundry-foreground-source.test.mjs` 的 `4317b40→b939fe8` 是该规则的 RED→GREEN，防止把 `wallMC`（1261）或 `Node*` 编辑器对象混入可见前景，也防止按 PNG alpha 猜注册点。此工具现已受版本控制，新的 clone 可以复验。
 - 下一位只能按 Arena Display List 用上述原 child 素材重建可叠加的 Foundry 前景，再以 1258/1252 的原时间轴复合。完成前不得把 `source-wall-timeline.mjs` 接到 `main.mjs`，不得称 Foundry 动态墙体已迁移。
 
 ## 解包关系：可直接复用的证据

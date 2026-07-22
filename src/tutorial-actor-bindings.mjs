@@ -1,9 +1,11 @@
 import { SOURCE_CLASS_PROFILES } from './class-source.mjs';
+import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 
 const PROFILE_BY_ID = new Map(SOURCE_CLASS_PROFILES.map((profile) => [profile.id, profile]));
 
 function bindSourceActor(actor, index) {
   const profile = PROFILE_BY_ID.get(actor.soldier);
+  const sourcePlayerProfile = index === 0 ? createTutorialPlayerProfile(actor) : null;
   if (!profile) throw new Error(`Tutorial actor ${actor.id} has no decoded source class profile: ${actor.soldier}`);
   return {
     id: actor.id,
@@ -18,10 +20,11 @@ function bindSourceActor(actor, index) {
     runType: profile.runType,
     className: profile.name,
     classProfile: profile,
-    // Campaign 1 only supplies AI difficulty. Player level belongs to the
-    // original saved class profile, so retaining null is more faithful than
-    // borrowing the prototype's level-one Medic numbers.
-    level: index === 0 ? null : null,
+    // MatchSettings.updatePlayer() reads this from SD.classSaves before
+    // Unit.setClass() resolves class stats.  The player adapter uses SD.Init
+    // only for a first-run save; imported original saves can replace it.
+    level: sourcePlayerProfile?.level ?? null,
+    sourcePlayerProfile,
     difficulty: actor.difficulty,
     spawned: actor.spawned,
     position: actor.position ? { ...actor.position } : null,

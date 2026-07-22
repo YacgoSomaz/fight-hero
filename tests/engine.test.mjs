@@ -5,7 +5,7 @@ import { RIFLE_ARM_BASE_ANGLE, UNITMC_FRAMES, createWorld, getAimPivot, getMuzzl
 import { MAP_CROP, getFollowCamera, getMapSourceRect, screenToWorld, smoothCamera } from '../src/camera.mjs';
 import { FOUNDRY_LAYOUT } from '../src/foundry-layout.mjs';
 import { getUnitRigPose } from '../src/unit-rig.mjs';
-import { createFlashWallMask } from '../src/wall-mask.mjs';
+import { createFlashWallMask, createFlashWallSurface } from '../src/wall-mask.mjs';
 
 test('the web replica starts with a local player and a migrated AI opponent', () => {
   const world = createWorld();
@@ -505,6 +505,25 @@ test('firing creates a brief original-muzzle event independently from its tracer
   step(world, {}, 0.05);
   assert.equal(world.muzzleFlashes.length, 0);
   assert.ok(world.bullets.length > 0);
+});
+
+// Movement.as and Bullet.as both read the ARGB Wall_tut bitmap: a pixel is a
+// physical wall only when alpha is ff, and source triggers consume the RGB
+// suffix (e.g. ff00ff / 9900ff).  The web decoder must retain both facts.
+test('Flash tutorial wall surface retains exact opaque RGB trigger colours', () => {
+  const surface = createFlashWallSurface({
+    width: 3,
+    height: 1,
+    data: Uint8ClampedArray.from([
+      255, 0, 255, 255,
+      153, 0, 255, 255,
+      255, 0, 255, 180,
+    ]),
+  });
+  assert.equal(surface.colorAt(0, 0), 'ff00ff');
+  assert.equal(surface.colorAt(1.7, 0), '9900ff');
+  assert.equal(surface.colorAt(2, 0), '');
+  assert.equal(surface.isSolid(2, 0), false);
 });
 
 // User journey: a level-1 Medic holding the source M4 gets the same dynamic

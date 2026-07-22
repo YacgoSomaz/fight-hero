@@ -38,6 +38,10 @@ test('Tutorial USP2 reuses the original pistol arm display-list spans and exact 
 test('Tutorial USP2 cannot interpolate or move past its original pistol arm labels', () => {
   assert.throws(() => tutorialGunActionFrame(runtime, 'USP2', 'fire', 6), /outside original pistol_fire timeline/);
   assert.throws(() => tutorialGunActionFrame(runtime, 'USP2', 'invented', 0), /original USP2 command is unavailable/);
+  assert.throws(() => tutorialGunActionFrame(runtime, 'invented', 'idle', 0), /original Tutorial gun is unavailable/);
+  const missingBeretta = structuredClone(runtime);
+  missingBeretta.sprites[375].labels = missingBeretta.sprites[375].labels.filter(({ label }) => label !== 'Beretta');
+  assert.throws(() => tutorialGunActionFrame(missingBeretta, 'Beretta', 'idle', 0), /gun Sprite label is unavailable/);
 });
 
 test('Tutorial USP2 pose passes its original pistol arm lists and USP Sprite frame into the composed UnitMC pose', () => {

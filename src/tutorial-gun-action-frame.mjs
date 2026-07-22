@@ -1,19 +1,34 @@
 import { createTutorialUnitPosePlan } from './tutorial-unit-pose-plan.mjs';
+import { SOURCE_GUNS } from './gun-source.mjs';
 
-// Source: Stats_Guns.as records M4 -> sprite M4 / rifle labels and
-// USP2 -> sprite USP / pistol labels.  The two arm roots are the original
-// arm_gun_316 (501) and arm_front_328 (668) display lists.
-const SOURCE_GUNS = Object.freeze({
-  M4: Object.freeze({ gunFrame: 20, commands: Object.freeze({ idle: 'rifle', fire: 'rifle_fire', reload: 'rifle_reload' }) }),
-  USP2: Object.freeze({ gunFrame: 2, commands: Object.freeze({ idle: 'pistol', fire: 'pistol_fire', reload: 'pistol_reload' }) }),
-});
+const GUN_BY_ID = new Map(SOURCE_GUNS.map((gun) => [gun.id, gun]));
 
 const ARM_ROOTS = Object.freeze({ rear: 501, front: 668 });
 
 function sourceGun(id) {
-  const source = SOURCE_GUNS[id];
-  if (!source) throw new Error(`original Tutorial gun is unavailable: ${id}`);
-  return source;
+  const gun = GUN_BY_ID.get(id);
+  if (!gun?.sprite || !gun.animation?.idle || !gun.animation?.fire || !gun.animation?.reload) {
+    throw new Error(`original Tutorial gun is unavailable: ${id}`);
+  }
+  return Object.freeze({
+    sprite: gun.sprite,
+    // Guns.setFrame() uses frameIdle directly, but appends `_fire`/`_reload`
+    // before gotoAndPlay for the two non-idle arm spans.
+    commands: Object.freeze({
+      idle: gun.animation.idle,
+      fire: `${gun.animation.fire}_fire`,
+      reload: `${gun.animation.reload}_reload`,
+    }),
+  });
+}
+
+// Guns.setFrame() invokes arm1.gun.gotoAndStop(curGun.sprite).  Symbol 375
+// is the extracted source Gun Sprite, so its authored labels—not a hand map
+// of weapon ids—are the only valid source of the nested frame number.
+function sourceGunFrame(runtime, source) {
+  const frame = runtime?.sprites?.[375]?.labels?.find((entry) => entry.label === source.sprite)?.frame;
+  if (!Number.isInteger(frame)) throw new Error(`original Tutorial gun Sprite label is unavailable: ${source.sprite}`);
+  return frame;
 }
 
 function decodedArmSpan(runtime, rootId, label) {
@@ -55,7 +70,7 @@ function sourceActionFrame(runtime, gunId, source, command, label, actionIndex) 
     label,
     index: actionIndex,
     frame: rear.frame,
-    gunFrame: source.gunFrame,
+    gunFrame: sourceGunFrame(runtime, source),
     rearAction: rear.items,
     frontAction: front.items,
   };

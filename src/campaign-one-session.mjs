@@ -3,6 +3,7 @@ import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
+import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
 import { advanceTutorialStatusFrame, createTutorialStatus } from './tutorial-status-damage-runtime.mjs';
 import { createTutorialUnitProfile, getTutorialAiLevel } from './tutorial-unit-profile.mjs';
 
@@ -15,6 +16,14 @@ function sourceGun(id) {
 }
 
 function activateSourceActor(actor) {
+  // Unit.unitSpawn() resets Movement and restores the Unit's visible/alive
+  // state before it invokes setClass() and Status.reset().
+  actor.movement = { xVelocity: 0, yVelocity: 0 };
+  actor.skinFrame = actor.skin;
+  actor.dead = null;
+  actor.visible = true;
+  actor.respawnTimer = 0;
+  actor.canUseStreak = false;
   actor.unitInfo = createTutorialUnitProfile({
     soldier: actor.soldier,
     level: actor.level,
@@ -67,7 +76,14 @@ function sourceActor(id, definition, { human, random }) {
     noJump: false,
     // Unit/AI instances begin alive and standing. AI.spawn() is the one
     // source path that flips an initial UnitMC for Campaign aimReverse.
-    dead: false,
+    dead: null,
+    visible: !definition.extra?.noSpawn,
+    respawnTimer: 0,
+    canUseStreak: false,
+    // These are the source Movement.reset() velocities translated to the
+    // session record names used by the PhysActor state adapter.
+    movement: { xVelocity: 0, yVelocity: 0 },
+    skinFrame: definition.skin,
     blurred: false,
     crouching: false,
     scaleX: definition.extra?.aimReverse ? -1 : 1,
@@ -123,6 +139,7 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     actors: [sourceActor(0, definition.player, { human: true, random }), ...definition.bots.map((actor, index) => sourceActor(index + 1, actor, { human: false, random }))],
     environment: { doorFrame: 'idle', elevatorFrame: 'idle' },
     effects: [],
+    corpses: [],
   };
 }
 
@@ -147,9 +164,29 @@ export function applyCampaignOneSessionFrame(session) {
 // This adapter preserves that distinct phase and skips constructor-held
 // extra.noSpawn units which have not yet reached Unit.unitSpawn().
 export function advanceCampaignOneSessionUnits(session) {
-  return session.actors
-    .filter((actor) => actor.spawned && actor.status)
+  const units = session.actors
+    .filter((actor) => actor.spawned && actor.status && !actor.dead)
     .map((actor) => ({ id: actor.id, ...advanceTutorialStatusFrame(actor) }));
+  for (const corpse of session.corpses) advanceTutorialCorpseFrame(corpse);
+  session.corpses = session.corpses.filter((corpse) => !corpse.removed);
+  return units;
+}
+
+// Narrow lifecycle port of Unit.die().  The source proceeds from
+// Status.damage() to PhysWorld.createCorpse(), hides the Unit and starts its
+// fixed five-second respawn counter. Score, HUD, killstreak and respawn
+// presentation are intentionally not represented until their original
+// dependencies are migrated.
+export function applyCampaignOneSessionDeath(session, { target, attacker, gun, extra = {}, useMod = '', random = Math.random } = {}) {
+  if (!session?.corpses) throw new TypeError('Campaign Unit.die requires a source session corpse collection');
+  if (!target?.spawned || !target.status || target.dead) throw new Error('Campaign Unit.die requires a live spawned source target');
+  const corpse = createTutorialCorpse({ target, attacker, gun, extra, useMod, random });
+  session.corpses.push(corpse);
+  target.dead = corpse;
+  target.visible = false;
+  target.respawnTimer = 30 * 5;
+  target.canUseStreak = false;
+  return corpse;
 }
 
 export function applyCampaignOneSessionBulletEnvironmentHit(session, hitObject) {

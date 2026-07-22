@@ -33,6 +33,7 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /canvasPointToTutorialStage/);
   assert.match(script, /tutorialArenaPointer/);
   assert.match(script, /advanceTutorialPlayerAim/);
+  assert.match(script, /deriveTutorialUnitAim/);
   assert.match(script, /canvas\.addEventListener\('mousemove'/);
   assert.match(script, /advanceTutorialActorPlayback\(actorState, source, \{ advanceArm: !gunTick\.fired \}\)/);
   assert.match(script, /canvas\.addEventListener\('mousedown'/);
@@ -51,11 +52,13 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /player\.guns\.active === 'USP2'/);
   assert.match(script, /drawTutorialUnitPose/);
   assert.match(script, /sceneActorStates/);
+  assert.match(script, /sceneActorAimStates/);
   assert.match(script, /createTutorialActorPlayback\(binding\)/);
   assert.match(script, /sourceActor\.visible/);
   assert.match(script, /sourceActor\.dead/);
   assert.match(script, /advanceTutorialActorPlayback\(sceneActorState, source\)/);
   assert.match(script, /requestTutorialActorMotion\(sceneActorState, movement\.nextAnim\)/);
+  assert.match(script, /sampleTutorialActorPlayback\(sceneActorState, source, \{ aim: sceneActorAimStates\.get\(sourceActor\.id\) \}\)/);
   assert.match(script, /canvas\.dataset\.ready = 'true'/);
   assert.doesNotMatch(script, /main\.mjs|engine\.mjs|createWorld|foundry/);
 });

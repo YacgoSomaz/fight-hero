@@ -456,7 +456,11 @@ function drawAimer(player) {
     const sprite = partSprites[index];
     ctx.save();
     ctx.translate(part.x, part.y);
-    ctx.transform(...part.matrix);
+    // The decoded SWF child matrix has only its linear a/b/c/d terms;
+    // part.x/y is the separate Display List placement already applied above.
+    // Canvas requires six arguments, so preserve the source translation with
+    // zero local e/f terms instead of passing an invalid four-argument call.
+    ctx.transform(...part.matrix, 0, 0);
     ctx.scale(part.width / sprite.naturalWidth, part.height / sprite.naturalHeight);
     ctx.drawImage(sprite, -part.origin.x, -part.origin.y);
     ctx.restore();

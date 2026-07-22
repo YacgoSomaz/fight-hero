@@ -4,7 +4,7 @@
 
 ## 当前状态（2026-07-22）
 
-最终完成标准、实施顺序和不可用“能运行”替代的边界见 [1:1 复刻总计划](docs/ONE_TO_ONE_MASTER_PLAN.md)。每项原始证据、网页模块、测试、人工对照和明确缺口见 [1:1 证据台账](docs/ONE_TO_ONE_EVIDENCE_LEDGER.md)。
+最终完成标准、实施顺序和不可用“能运行”替代的边界见 [1:1 复刻总计划](docs/ONE_TO_ONE_MASTER_PLAN.md)。每项原始证据、网页模块、测试、人工对照和明确缺口见 [1:1 证据台账](docs/ONE_TO_ONE_EVIDENCE_LEDGER.md)。按对象、工作包、依赖、验收和交接字段拆开的执行清单见 [1:1 详细执行登记册](docs/ONE_TO_ONE_EXECUTION_REGISTER.md)。
 
 最新实际验收、地图空白修复、远端解包关系合并和下一位 AI 的接手顺序见 [当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)。
 
@@ -53,6 +53,7 @@ tests/engine.test.mjs 行为回归测试；另有 SWF 显示列表、枪械表�
 docs/
   ONE_TO_ONE_MASTER_PLAN.md    最终目标、阶段、验收门槛与依赖顺序
   ONE_TO_ONE_EVIDENCE_LEDGER.md 每个功能的原始证据→网页→测试→人工验收台账
+  ONE_TO_ONE_EXECUTION_REGISTER.md 逐对象的工作包、依赖、验收和交接字段
   AI_HANDOFF.md        当前交接报告、解包结论、坐标计算和下一步
   MIGRATION_STATUS.md  已迁移/未迁移范围
   SWF_DEEP_UNPACK_REPORT.md 证据与二进制解包报告

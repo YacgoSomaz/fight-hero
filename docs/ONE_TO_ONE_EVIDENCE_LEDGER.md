@@ -188,7 +188,7 @@ Main.as（输入/屏幕切换）
 | --- | --- | --- | --- | --- |
 | 81 把枪的数据入口 | `Stats_Guns.as:addGun(...)`（81 条）；解析关系 | 枪表解析工具与 M4 验证路径 | `stats-guns-parser.test.mjs` | `已定位+已回归解析`；解析成功不代表所有记录已转为游戏数据。 |
 | M4 肢体/枪械时间轴 | M4/前后臂/UnitMC label；深度报告中的 rifle/fire/reload 区间 | `m4-action-selector.mjs`、`vector-runtime-renderer.mjs`、`main.mjs` | `m4-action-selector.test.mjs`、渲染测试 | `已接入部分`；枪械图层可见性和完整 3 帧开火/35 帧换弹仍需逐帧输出/对照。 |
-| 枪械行为 | `Guns.as:shoot()`、`makeBullet()`、`Bullet.as`、`Bullet_Line_Basic.as`、Stats_Guns 字段 | `engine.mjs`；另有不接 generic engine 的 `tutorial-gun-runtime.mjs` 与 `tutorial-bullet-line-runtime.mjs`（USP2 wall-only source trace） | `engine.test.mjs`、`tutorial-gun-runtime.test.mjs`、`tutorial-bullet-line-runtime.test.mjs` | `已回归局部 M4 路径 + Tutorial USP2 墙体轨迹`；后者要求来源提供真实 `dynRecoilMod`，当前未接网页。不能当作完整 81 把枪、命中、伤害或可玩战役实现。 |
+| 枪械行为 | `SD.Init()`→`MatchSettings.updatePlayer()`→`Unit.setClass()`，以及 `Guns.as:shoot()`、`makeBullet()`、`EnterFrame()`、`Bullet.as`、`Bullet_Line_Basic.as`、Stats_Guns 字段 | `engine.mjs`；Tutorial 专用 `tutorial-player-profile.mjs`、`tutorial-gun-runtime.mjs` 与 `tutorial-bullet-line-runtime.mjs` | `tutorial-player-profile.test.mjs`、`tutorial-gun-runtime.test.mjs`、`tutorial-bullet-line-runtime.test.mjs` | `已回归局部 M4 路径 + Tutorial 首次新档 profile/recoil + USP2 wall-only trace`；页面已把原 profile 和 Movement 状态送入枪械 runtime，但尚未把 trace 接成可见线、单位命中、伤害、状态 9、电梯、声音或 HUD。不能当作完整 81 把枪、可通关战役或 1:1 完成。 |
 | 子弹种类 | 8 个 Bullet 子类；wall→敌人→尸体顺序 | `engine.mjs` 的基础实现 | `engine.test.mjs` | `已定位`；hitscan/反弹/跟踪/地雷/溅射等需逐类迁移与回归。 |
 | 伤害、盾、爆头、职业修正 | `Status.damage()` | `engine.mjs`、`unit-status.mjs` | `engine.test.mjs`、`unit-status.test.mjs` | `已接入部分`；必须按原判定顺序和职业/模式条件验证。 |
 | 声音、枪火、弹壳、粒子、爆炸 | `Stats_Guns` 名称字段、Effect/Particle、时间轴 | 基础音频模块 | 无逐枪逐帧测试 | `阻断`；没有原资源/触发点对照前不得自制替代效果。 |

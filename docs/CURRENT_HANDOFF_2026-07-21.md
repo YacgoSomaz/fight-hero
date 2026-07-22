@@ -399,6 +399,14 @@ npm start
 - TDD：`06ec8c9` 为缺模块的 RED，`115c107` 为 GREEN。测试锁定 USP2 的 `yOff=-8`、`xOff=8` inclusive half-step、10-unit trace、origin/impact、line path 与 `9900ff` wall colour；全量为 **232/232 通过**，覆盖率 **99.00% 行、82.81% 分支、96.03% 函数**。
 - 严格边界：Campaign 定义没有本地存档等级/aim 属性，故无法从该任务记录推导人类 player 的 `dynRecoilMod`。此模块尚未接入页面、原 Aimer、单位/尸体碰撞、`Status.damage`、状态 9、电梯、声音或 HUD；不得将“轨迹函数存在”写作可实际射击或可通关。
 
+## 2026-07-22：Campaign 1 首次存档档案与 USP2 散布状态（仍非完整关卡）
+
+- 纠正旧缺口：原 `SD.as:Init()` 已直接给出首次启动的 4 条 `classSaves`，且 `MatchSettings.updatePlayer()` 明确将 Campaign 的 `caPlayer` 覆盖项与 `SD.classSaves[usePlayer.soldier]` 的 level 合并；随后 `Unit.setClass()` 通过 `Stats_Classes.getClass()` 写入 hp/crit/aim/amm。此前把 Campaign 1 玩家 level 标成 `null` 是保守但不完整的处理，现已更正。
+- 承载：`private-assets/parse-sd-default-profiles.mjs` 机械提取 `SD.Init()` 的字面存档，生成 `src/sd-default-profile-source.mjs`；`src/tutorial-player-profile.mjs` 直接端口 Campaign merge + Unit 的数值属性写入；`tutorial-actor-bindings.mjs` 将默认新档的 Medic Lv.1（HP 85、crit .06、aim `.7000000000000001`、ammo .9）交给 Tutorial player。外部提供已解出的真实原存档时，可替换同一职业的 level，但**不得**伪称默认值等于某个用户的历史进度。
+- 枪械链：`Guns.setGuns()` 的 `dynRecoil=curGun.recoil`、`Guns.EnterFrame()` 的 crouch/jump/move/reflecting 散布修正及 `Guns.shoot()` 前的 `makeBullet` recoil snapshot 已进入 `tutorial-gun-runtime.mjs`。Tutorial 页面将已证实的 player aim/ammo 和 Movement 状态传入该 runtime；这修复了页面先前无法满足 source recoil 输入的故障。`USP2` 的 Bullet_Line_Basic 仍只完成 wall-only trace，尚未画线、命中单位、扣血、触发状态 9 或更新 HUD。
+- TDD：`5fa345e`→`1919371`（首次档案 RED→GREEN），`32ee699`→`f321fa9`（绑定接入），`fad5d95`→`f6003f4`（recoil/bullet snapshot），`7d1b394`→`025e29e`（网页输入）。本次完整 `npm test` 为 **236/236**；`npm run test:coverage` 为 **98.98% 行、82.29% 分支、96.09% 函数**。浏览器健康检查仅确认 `tutorial-scene-preview.html` 的 800×600 canvas `data-ready=true` 且错误文本为空，不能作为原版像素一致性证据。
+- 严格边界：这只补全了“默认新档 player → 枪械散布参数”的一条 source 链；没有原 SWF 与网页的同输入逐帧截图/状态差分，更没有 Tutorial 的单位命中、AI、HUD、过场、胜负、其余 14 战役、15 挑战、五模式或全地图。因此它绝不是“游戏 1:1 已完成”。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

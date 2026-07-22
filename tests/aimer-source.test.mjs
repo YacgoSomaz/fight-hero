@@ -38,3 +38,12 @@ test('the running game upgrades the original Aimer to its source line/circle Dis
   assert.match(aimerDraw, /ctx\.transform\(\.\.\.part\.matrix\)/, 'source line rotations must remain their decoded matrices');
   assert.match(aimerDraw, /ctx\.drawImage\(sprite,\s*-part\.origin\.x,\s*-part\.origin\.y\)/, 'source registration points must anchor the extracted images');
 });
+
+test('the first HUD migration uses extracted ScoreBar and experience-holder source sprites at their Hud 1540 anchors', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
+  assert.match(main, /hud-scorebar-1462\.png/);
+  assert.match(main, /hud-expholder-1477\.png/);
+  assert.match(main, /ctx\.drawImage\(hudScorebarSprite,\s*180,\s*23\)/);
+  assert.match(main, /ctx\.drawImage\(hudExpHolderSprite,\s*201,\s*588\)/);
+});

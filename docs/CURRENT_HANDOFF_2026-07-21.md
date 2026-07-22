@@ -135,7 +135,9 @@ npm start
 - TDD 提交链：`ea1db89 test: require source HUD score and experience art` 为实际 RED；`85054e1 fix: render source HUD score and experience holders` 为同一测试的 GREEN。全量 `npm test` 为 124/124 通过，`npm run test:coverage` 为 99.08% 行、88.18% 分支、93.61% 函数。
 - 本次浏览器核验：页面仍能得到原 800×600 Canvas，且两张原 HUD PNG 均由本地页面创建并可加载。该浏览器会把页底“开始战斗”的语义鼠标点击投递到可视区外（目标点 `y=723`），因此无法在本轮完成对局截图验收；**不得把这条资源存在性核验描述为完整 HUD 实机对照**。
 
-**仍缺且下一位必须继续解包/迁移**：`Status` 头顶条的真实显示关系、`txt_classname`/`txt_hp`/`txt_ammo`、`bulletCont` 954、`curgun` 724、`Hud.as` 的动态经验宽度、`setAmmoImage()` 的逐枪弹匣格、各模式比分逻辑和原 HUD 的逐像素对照。HUD 当前仅达到“两个静态原部件已接入并自动回归”。
+**仍缺且下一位必须继续解包/迁移**：`Status` 头顶条的真实显示关系、`txt_classname`/`txt_hp`/`txt_ammo`、`curgun` 724、`Hud.as` 的动态经验宽度、`setAmmoImage()` 的其余枪型弹匣格、各模式比分逻辑和原 HUD 的逐像素对照。HUD 当前仅达到“两个静态原部件与 M4 弹匣公式已接入并自动回归”。
+
+**此段的后续进展（2026-07-22，保留上文以说明起点）**：954 `bulletCont` 现已完成当前 M4 的原始纵切。`Hud.as` 的 `arifle` 分支使用 `drawBox(i,2,2,10,clip>i)`；网页将 M4 标为原类型 `arifle`，在 Hud 1540 placement `(664.3,571.3)` 施加 `scale(-1,-1)` 后绘制，不再使用旧的放大 `index*7` 矩形。RED/GREEN 提交是 `d8244c6`→`ad268ec`（公式）以及 `4f8d8c3`→`1145f0f`（运行时 placement）。全量回归为 127/127，覆盖率为 99.08% 行、87.96% 分支、93.69% 函数。仍未完成的清单不变，尤其是原字体文本、724 枪图、其他枪型和逐像素实机对照。
 
 ## 索引
 

@@ -101,7 +101,7 @@ Main.as（输入/屏幕切换）
 | 头/躯干/手臂/腿/枪 holder | `UnitMC.EnterFrame()` 和 `Unit.as` 覆盖矩阵 | `unit-dom-rig.mjs`、`main.mjs` 的 DOM part layer | `unit-dom-rig.test.mjs`、`scene-layering.test.mjs` | `已接入+已回归（10 部件）`；解除了 Canvas/DOM 合成导致角色不可见的阻断。仍需对跑、跳、蹲、攀爬、开火和换弹逐帧与原版采样核验。 |
 | 瞄准与左键发射 | `Main.MouseDown → Game.MouseDown → Player.mDown → Guns.shoot`；鼠标转 Arena 坐标 | `main.mjs`、`engine.mjs`、`m4-action-selector.mjs` | `engine.test.mjs`、`m4-action-selector.test.mjs` | `已接入部分`；须验证鼠标反向、枪口 pivot、持枪姿势、射击帧和换弹帧。 |
 | 准星（普通 M4 动态帧） | `Aimer.as`；1431 frame 1：`line1–4`（1424）与 `circle`（1428）；`Player.as:83–94` 的距离/余弦展开公式；`Guns.as:269–305,522–525` 的动态后坐力；`Stats_Guns` M4 recoil=4；`Stats_Classes` Medic L1 aim=70→`Unit.as` 归一化=.70 | 原 1431 合成图仅作加载中回退；`aimer-rig.mjs`、`main.mjs`、`engine.mjs` 使用原 1424/1428 PNG、原矩阵、`MC.arm1` pivot、后坐力一帧快照 | `aimer-rig.test.mjs`、`aimer-source.test.mjs`、`engine.test.mjs` | `已接入+自动回归+浏览器对局确认（普通 M4）`；已删除几何准星，左键经原 `dynRecoil → dynRecoilMod → Player` 帧时序驱动 5 个原部件。浏览器确认菜单隐藏、3 图层入场、原 PNG 返回 200、鼠标/左键输入进入对局。**未完成**：1431 frame 2 狙击准星、反射状态、所有武器/兵种/技能倍率、原版逐帧叠图。 |
-| 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs` 直接载入 `hud-scorebar-1462.png` 与 `hud-expholder-1477.png`；`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs`、`aimer-source.test.mjs` | `部分接入+自动回归`；1462/1477 只完成了已确认的原图及 `(180,23)`/`(201,588)` 锚点接入。顶部生命区、头顶动态条、职业/生命/等级、弹药/备弹、枪图和动态经验宽度仍未迁移，不能称 HUD 完成。 |
+| 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs` 直接载入 `hud-scorebar-1462.png` 与 `hud-expholder-1477.png`，并以 `hud-ammo.mjs` 重建 954 的 `drawBox` 逻辑；`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs`、`aimer-source.test.mjs`、`hud-ammo.test.mjs` | `部分接入+自动回归`；1462/1477 已在原锚点接入，954 已按原公式和双轴翻转接入 M4 `arifle`。顶部生命区、头顶动态条、职业/生命/等级、备用弹文字、枪图和动态经验宽度仍未迁移，不能称 HUD 完成。 |
 | 原始舞台坐标 | SWF header：800×600、30fps；HUD/Aimer 以此舞台坐标布局 | `index.html` 的 800×600 canvas；`style.css` 4:3 地图/角色覆盖层 | `stage-format.test.mjs`；浏览器实测 | `已接入+浏览器确认（基线）`；浏览器确认内部像素 800×600、显示比 1.3333、3 地图层和两套 10 部件角色可见。**未完成**：Hud 1540 的原坐标/安全区/响应式缩放逐像素对照。 |
 
 ### 6.1 HUD 1540 的已确认拆解与首批接入边界
@@ -140,6 +140,13 @@ Main.as（输入/屏幕切换）
 | `machine` | 两行各 `clipMax/2` | `(i,2,2,5,clip>i)`；第二行 rowY=`7` | 先计算 `overflow=max(clip-clipMax/2,0)`，第一行 `clip -= overflow`，第二行用 `overflow>i` |
 
 这些数据直接来自 `assets/reverse/ffdec-deep-20260720/scripts/Hud.as` 的 `addExp`、`setAmmoImage`、`drawBox` 和 `setGuns`。下一项实现应优先选择 **954 的原容器翻转 + arifle 弹匣** 或 **1477 的动态 `bar_exp`** 中的一个，分别完成 RED→GREEN→原版对照；不可在同一提交顺手替换所有 HUD。
+
+#### 6.1.2 954 `bulletCont` 的已完成 M4 纵切
+
+- 原始依据：`Hud.as:setAmmoImage(clip, clipMax, "arifle", spare)` 对每格调用 `drawBox(i,2,2,10,clip>i)`；Hud 1540 将 character 954 放在 `(664.30,571.30)`，并设置 `scaleX=-1, scaleY=-1`。
+- 网页承载：`src/hud-ammo.mjs` 逐字面转录所有可见弹种布局；`src/engine.mjs` 的当前 M4 武器状态显式标为 `ammoType:"arifle"`；`src/main.mjs` 在 954 原锚点做双轴翻转后直接画该公式产生的 2×10 格，不再保留旧的 5×25、`index*7` 放大近似。
+- TDD：`d8244c6`（缺模块的 RED）→ `ad268ec`（原公式 GREEN）；`4f8d8c3`（运行时 placement RED）→ `1145f0f`（954 transform GREEN）。`tests/hud-ammo.test.mjs` 覆盖 `arifle` 满/空格、machine 双行溢出和运行时锚点/翻转/旧近似移除。
+- 验证边界：本项证明当前 M4 弹匣按原公式/容器关系绘制；它不证明其它 80 把枪的 `ammoType` 已接入、`txt_ammo` 原字体/原位置已完成，或 HUD 已做原版逐像素截图对照。
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

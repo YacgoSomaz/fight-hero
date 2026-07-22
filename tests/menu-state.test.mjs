@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { CAMPAIGN_MISSIONS, CHALLENGE_MISSIONS, ORIGINAL_MAPS, ORIGINAL_MODES, cycleQuickMatchSelection, createMatchSelection, formatQuickMatchSummary, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from '../src/menu-state.mjs';
+import { SOURCE_CAMPAIGN_CATALOG } from '../src/campaign-source.mjs';
 
 test('menu exposes the original quick-match modes and source map order', () => {
   assert.deepEqual(ORIGINAL_MODES.map((mode) => mode.id), ['dm', 'jug', 'tdm', 'ctf', 'dom']);
@@ -12,6 +13,16 @@ test('menu preserves all extracted campaign and challenge mission entries', () =
   assert.equal(CHALLENGE_MISSIONS.length, 15);
   assert.deepEqual(CAMPAIGN_MISSIONS[6], { stage: 7, title: 'Intelligence', map: 'foundry', mode: 'ctf', score: 3, difficulty: 4 });
   assert.deepEqual(CHALLENGE_MISSIONS[4], { stage: 5, title: 'Prepared', map: 'foundry', mode: 'dm', score: 15, difficulty: 10 });
+});
+
+test('each browser mission retains its complete directly extracted source definition', () => {
+  assert.equal(CAMPAIGN_MISSIONS[0].definition, SOURCE_CAMPAIGN_CATALOG.campaign[0]);
+  assert.equal(CHALLENGE_MISSIONS[8].definition, SOURCE_CAMPAIGN_CATALOG.challenges[8]);
+  assert.deepEqual(
+    CAMPAIGN_MISSIONS[0].definition.player.extra,
+    { spawn: { x: 285, y: 705, node: 'a' }, noAim: true },
+  );
+  assert.deepEqual(CHALLENGE_MISSIONS[8].definition.extra, { jugDrain: true });
 });
 
 test('selecting an extracted mission keeps its authored score instead of replacing it with quick-match defaults', () => {

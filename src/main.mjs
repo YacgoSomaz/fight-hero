@@ -103,7 +103,9 @@ const originalAimerPartSprites = new Map([
   ['./public/assets/original-swf/aimer-line-1424.png', image('./public/assets/original-swf/aimer-line-1424.png')],
   ['./public/assets/original-swf/aimer-circle-1428-frame1.png', image('./public/assets/original-swf/aimer-circle-1428-frame1.png')],
 ]);
-const hudRifleSprite = { complete: false, naturalWidth: 0 };
+// Hud 1540.curgun is GunsMenu 724; M4 resolves to that timeline's label
+// frame 20. This is the source HUD icon, not the world-gun render.
+const hudM4MenuSprite = image('./public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png');
 // Direct FFDec exports of Hud 1540 children. Their positions below are the
 // original 800x600 Hud Display List anchors, not a responsive redesign.
 const hudScorebarSprite = image('./public/assets/original-swf/hud-scorebar-1462.png');
@@ -404,11 +406,13 @@ function drawBottomHud() {
   ctx.lineTo(ammoX + 252, hudY - 22);
   ctx.stroke();
 
-  if (hudRifleSprite.complete && hudRifleSprite.naturalWidth) {
-    // Frame 22 of the original Guns timeline, rendered as the white HUD silhouette.
-    ctx.filter = 'brightness(0) invert(1) grayscale(1)';
-    ctx.drawImage(hudRifleSprite, canvas.width - 210, hudY - 109, 190, 102);
-    ctx.filter = 'none';
+  if (hudM4MenuSprite.complete && hudM4MenuSprite.naturalWidth) {
+    // Hud 1540 frame 1: curgun character 724 at (674.2,568) with this
+    // Flash matrix. Preserve it rather than applying a generic HUD scale.
+    ctx.save();
+    ctx.transform(1.7536468505859375, -0.5263671875, 0.5263671875, 1.7536468505859375, 674.2, 568);
+    ctx.drawImage(hudM4MenuSprite, 0, 0);
+    ctx.restore();
   }
 
   ctx.fillStyle = '#f4f2ea';

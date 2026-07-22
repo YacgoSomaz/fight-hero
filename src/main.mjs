@@ -103,6 +103,10 @@ const originalAimerPartSprites = new Map([
   ['./public/assets/original-swf/aimer-circle-1428-frame1.png', image('./public/assets/original-swf/aimer-circle-1428-frame1.png')],
 ]);
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
+// Direct FFDec exports of Hud 1540 children. Their positions below are the
+// original 800x600 Hud Display List anchors, not a responsive redesign.
+const hudScorebarSprite = image('./public/assets/original-swf/hud-scorebar-1462.png');
+const hudExpHolderSprite = image('./public/assets/original-swf/hud-expholder-1477.png');
 const objectiveSprites = new Map();
 function getObjectiveSprite(mode, team) {
   const visual = getObjectiveVisual(mode, team);
@@ -350,6 +354,9 @@ function drawHud() {
   const player = world.players[0];
   ctx.fillStyle = 'rgba(3, 8, 17, .76)';
   ctx.fillRect(0, 0, canvas.width, 66);
+  if (hudScorebarSprite.complete && hudScorebarSprite.naturalWidth) {
+    ctx.drawImage(hudScorebarSprite, 180, 23);
+  }
   ctx.fillStyle = player.color;
   ctx.fillRect(28, 20, 210, 10);
   ctx.fillStyle = '#3b1620';
@@ -357,10 +364,6 @@ function drawHud() {
   ctx.fillStyle = '#f3f7ff';
   ctx.font = 'bold 16px system-ui';
   ctx.fillText(`P1  HP ${player.hp}/${player.maxHp}  ·  ${world.score.p1 ?? 0} 击倒`, 28, 53);
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#e8edf8';
-  ctx.font = '600 16px system-ui';
-  ctx.fillText(`${world.mapId} · AI ${difficulty.value} · ${running ? '战斗进行中' : '菜单'}`, canvas.width / 2, 30);
   ctx.textAlign = 'left';
 }
 
@@ -410,16 +413,9 @@ function drawBottomHud() {
   ctx.font = '700 15px system-ui';
   ctx.fillText('85 Hp', 59, hudY - 42);
   ctx.fillText('lvl: 1', 59, hudY - 20);
-  ctx.strokeStyle = 'rgba(232, 241, 101, .8)';
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.moveTo(canvas.width / 2 - 150, hudY - 4);
-  ctx.lineTo(canvas.width / 2 + 150, hudY - 4);
-  ctx.stroke();
-  ctx.fillStyle = '#eff5dd';
-  ctx.font = '700 11px system-ui';
-  ctx.textAlign = 'center';
-  ctx.fillText('Exp 1 / 43', canvas.width / 2, hudY - 1);
+  if (hudExpHolderSprite.complete && hudExpHolderSprite.naturalWidth) {
+    ctx.drawImage(hudExpHolderSprite, 201, 588);
+  }
   ctx.restore();
 }
 

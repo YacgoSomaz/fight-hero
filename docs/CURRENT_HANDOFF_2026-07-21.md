@@ -421,6 +421,13 @@ npm start
 - TDD：`2f2ef86`→`a18eeba`（Status.damage）；`db1dab3`→`eef5e7a`（原技能目录）；`93dd378`→`b866f44`（Unit profile）；`a3fc994`→`cd83cd9`（Campaign actor 初始化）；`234bd2c`→`d79e881`（Bullet hit/doHitEffect）；`23506e4`→`5d3359a`（Status frame）；`a8ea2ea`（session phase RED）与 `b93006b`（页面 RED）后的本次页面接线。完整 `npm test` 为 **268/268 通过**；`npm run test:coverage` 为 **98.96% 行、82.81% 分支、96.30% 函数**。本地浏览器启动检查：`tutorial-scene-preview.html` 画布 800×600、`data-ready=true`、错误文本为空。
 - 严格边界：目前页面没有敌方 actor 的原 Shape/UnitMC/AI 运行、头顶状态条、命中特效/声音、`Unit.die()`、尸体 `PhysActor`、计分/经验、反弹/反射子弹、换弹、重生、过场/胜负或原 SWF 同输入逐帧截图。因此它仅把**不可见的 source actor 数值状态**接进 USP2 命中，绝不是“已完成战斗”“第一关可玩”或“游戏 1:1 已完成”。下一步应从 `Unit.die`、`PhysWorld.createCorpse`、AI EnterFrame 与对应 UnitMC/Gun Display List 建立下一条可回归纵切。
 
+## 2026-07-22：Campaign 1 `Unit.die → PhysWorld.createCorpse` 生命周期（仍非可见战斗）
+
+- 原始证据：`Unit.die()` 将 `dead = game.physWorld.createCorpse(this,killer,gun,extra)`、`visible=false`、`respawnTimer=30*5`、`canUseStreak=false`；`PhysWorld.createCorpse()` 建立 `PhysActor` 后依次随机 `impulseAll`、加入 `mov.xVel/yVel`、按枪械 force/`sky9`/splash/`headMult` 加冲量；`PhysActor` 的 14 部件、镜像坐标来自 `MC.scaleX`、皮肤来自 `MC.curSkin`，`EnterFrame()` 在第 **150** 帧销毁。
+- 承载：`tutorial-corpse-runtime.mjs` 逐项记录 14 部件拓扑、原点、镜像、初始/击退/爆头冲量和第 150 帧移除；`campaign-one-session.mjs` 在来源 actor 上保存 `Movement.reset()` 初速度，并以 `applyCampaignOneSessionDeath()` 连接死者状态、尸体集合与存活 Unit 的 Status 帧跳过；页面 USP2 线命中在 `Status.damage().died` 时调用同一链，后续射线带入 `session.corpses`。
+- TDD：`2bc88a6`→`fa54799`（PhysActor 状态）；`37e61f8`→`e5ecb65`（Campaign Unit.die 生命周期）；`86611a5`→`b8096f0`（网页 Bullet→death→corpse 接线）。完整 `npm test`/`npm run test:coverage` 为 **272/272 通过**，98.97% 行、82.78% 分支、96.39% 函数；本地 `tutorial-scene-preview.html` 健康检查为 800×600、`data-ready=true`、error 为空。
+- 严格边界：尸体目前只是可审计的 source runtime 记录，**没有** Box2D fixture/joint 求解、PhysBody/Head 可视 Shape、尸体命中 `PhysWorld.hitCorpse()`、角色死亡动画、AI/敌方 UnitMC、复活、得分/经验/击杀条、音效、粒子或 SWF 同输入逐帧对照。不要把此记录称为“尸体物理已完成”“可见战斗完成”“第一关完成”或“游戏 1:1 完成”。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

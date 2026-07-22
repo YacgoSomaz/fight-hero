@@ -311,6 +311,13 @@ npm start
 - TDD：`3d3b157` 是转场模块缺失时的 RED；`3f41d91` 是 GREEN。回归覆盖了攀爬/硬着陆/跳跃防打断、duck/getup/slide 改写及强制跳转；完整 `npm test`/`npm run test:coverage` 为 **193/193 通过**，99.25% 行、85.75% 分支、96.00% 函数。
 - 严格边界：尚未把这些结果驱动到具体的 30fps `FrameLabel` 计数器，也未与 Tutorial wall、原皮肤/arm Display List、鼠标/键盘输入、弹药和相机一起运行。它仍不是可视或可玩角色。
 
+## 2026-07-22：UnitMC 根帧端点播放命令（仍不可启动）
+
+- 原始证据：`UnitMC.as:addFrameScript` 的零起始注册与各 `frameNN` 方法共同定义端点行为。已机械提取的关键命令包括 frame 20 `goto("idle",true)`、208 `goto("fall")`、264 `gotoAndPlay("fallloop")`、290 `stop()`、301 `goto("duckloop",true)`。根 FrameLabel 只说明区间，不能代替这些执行命令。
+- 承载：`extractUnitMCRootFrameActions()` 追踪每个注册 handler 到其 `goto`、直接 `gotoAndPlay` 或 `stop` 命令；`tutorial-unitmc-root-playback.mjs` 每次只推进一个原 30fps root tick。直接播放只改物理 frame，保留原 `curAnim` 边界；普通 goto 走同一套 `UnitMC.goto()` guard。修复了 source 的重要语义：`goto(label,true)` 即使 label 相同也会重新进入其首帧。
+- TDD：`43b6ac5` 为模块缺失的 RED；`4e6c1bb` 为 GREEN。完整 `npm test`/`npm run test:coverage` 为 **195/195 通过**，99.24% 行、85.32% 分支、96.10% 函数。
+- 严格边界：该播放器仍未持有角色的皮肤、原 M4 后/前臂 action index、输入/物理/枪械状态或 Canvas 显示。它不能独立形成可玩角色，更不构成 1:1 验收。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

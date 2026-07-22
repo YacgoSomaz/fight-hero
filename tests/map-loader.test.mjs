@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadMapLayers } from '../src/map-loader.mjs';
+import { loadSourceWallFrames } from '../src/map-loader.mjs';
+import { TUTORIAL_WALL_SOURCE } from '../src/tutorial-wall-source.mjs';
 
 function createFakeImages() {
   const images = [];
@@ -37,4 +39,14 @@ test('a missing source layer rejects launch instead of entering a blank map', as
   fake.images[1].onerror(new Error('missing background.png'));
   fake.images[2].onload();
   await assert.rejects(pending, /background\.png/);
+});
+
+test('Tutorial waits for every original Wall_tut frame before exposing a swappable wall set', async () => {
+  const fake = createFakeImages();
+  const pending = loadSourceWallFrames(TUTORIAL_WALL_SOURCE, fake.makeImage);
+  assert.equal(fake.images.length, 16);
+  assert.deepEqual(fake.images.map((image) => image.src), TUTORIAL_WALL_SOURCE.frames.map(({ file }) => file));
+  fake.images.forEach((image) => { image.complete = true; image.naturalWidth = 2757; image.naturalHeight = 1541; image.onload(); });
+  const frames = await pending;
+  assert.deepEqual(frames.map(({ frame, image }) => [frame, image]), TUTORIAL_WALL_SOURCE.frames.map(({ frame }, index) => [frame, fake.images[index]]));
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -104,6 +104,50 @@ test('Campaign 1 records live original AI target/aim decisions on its spawned bo
   ]);
   assert.equal(bot.ai.targetId, 'unit0');
   assert.deepEqual(bot.aim, { x: 44.4, y: 19.65 });
+});
+
+// User journey: when an authored AI ActionBox asks a live bot to move and
+// jump, the bot must enter the same Movement.as state machine as the player.
+// It cannot be moved by a separate custom steering loop, and a persistent
+// AI jump bit must not restart the source jump every frame.
+test('Campaign 1 consumes source AI keys and jump requests through original NPC Movement state', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const bot = session.actors[1];
+  bot.aiKeys = 8; // AI.as KEY.RIGHT
+  bot.aiJumpRequested = true;
+  const wall = {
+    // Exact test floor only at the original post-horizontal foot probe.
+    isSolid(x, y) {
+      return Math.floor(x) === 1531 && Math.floor(y) === 696;
+    },
+  };
+
+  const first = advanceCampaignOneSessionAiMovement(session, { wall });
+
+  assert.deepEqual(first, [{
+    id: 'unit1',
+    jumped: true,
+    nextAnim: 'fall',
+    position: { x: 1531.4, y: 676, node: 'a' },
+  }, {
+    id: 'unit2',
+    jumped: false,
+    nextAnim: 'fall',
+    position: { x: 1760, y: 695, node: 'a' },
+  }, {
+    id: 'unit3',
+    jumped: false,
+    nextAnim: 'fall',
+    position: { x: 1790, y: 695, node: 'a' },
+  }]);
+  assert.equal(bot.movementState.jumping, true);
+  assert.equal(bot.movement.yVelocity, -12.2);
+
+  const second = advanceCampaignOneSessionAiMovement(session, { wall });
+
+  assert.equal(second[0].jumped, false);
+  assert.equal(bot.position.y, 663.8);
+  assert.ok(Math.abs(bot.movementState.yVel + 11.4) < 1e-9);
 });
 
 // User journey: when Status.damage reaches zero HP, the original Unit.die()

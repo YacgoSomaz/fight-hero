@@ -369,6 +369,13 @@ npm start
 
 **下一位唯一正确步骤**：在不伪造 muzzle 或弹道的前提下，继续从原 SWF 提取 pistol `MuzzleFlash_317` 及相关 Bullet/HUD 消费显示列表，然后以 `Player.as` 的 `noAim/mDown`、`Guns.as:shoot/setFrame`、真实 pistol `shootDelay=.25` 和原 30fps arm callback 建立输入→开火→回 idle 的 RED→GREEN 回放。浏览器必须以原 Player 坐标换算鼠标；状态 8 前 `noAim=true` 时不得开放瞄准/射击。
 
+## 2026-07-22：Campaign 1 USP2 原枪口与左键首发纵切（仍非完整开火系统）
+
+- 原始证据：`MuzzleFlash_317.as:frame1()` 为 `gotoAndStop(UT.irand(1,totalFrames))`；`UT.irand(1,8)` 的实际定义为 `uint(Math.random()*(8))+1`。SWF 顶层 `DefineSprite 394` 有 8 个 ShowFrame，依次放置原 Shape `386..393`。`arm_gun_316` 的 `pistol_fire` 第一个源帧（实际 frame 3）在 depth 16 放置 394，矩阵为 `{x:41.8,y:-12.3,scaleX:1,scaleY:1,skew:0}`，下一帧移除。`Player.as` 的 `MouseDown()` 在 game 已开始且非 `noShoot` 时置 `mDown=true`，EnterFrame 才调用 `gun.shoot()`；本纵切没有伪称已实现后半段。
+- 承载：`tools/extract-usp2-muzzle-runtime.mjs` 直接从压缩原 SWF 解析 CWS、8 个 DefineShape 和 394 Sprite Display List，生成 `public/assets/usp2-muzzle-flash-runtime.local.json`（74,390 bytes）。`tutorial-actor-playback.mjs` 只在 USP2 `fire` action 创建时保留一次 1..8 frame；`tutorial-unit-pose-plan/renderer` 保留其原 root/action 矩阵并由 `tutorial-unit-pose-assets.mjs` 直接画原 Shape；`tutorial-scene-preview.mjs` 仅在 source 已给 USP2 后接受 canvas 左键并进入该首帧。
+- TDD：RED/GREEN 依次为 `00436eb`→`4b3c844`（原 394 extraction）、`c11990c`→`6c1161f`（播放状态）、`dc3053c`→`4f32fbb`（pose rendering）、`5b4117f`→`74032e4`（asset loading）、`2876891`→`4e58e00`（页面左键入口）。全量 `npm test` 与 `npm run test:coverage` 为 **223/223 通过**，覆盖率 **98.83% 行、83.17% 分支、95.82% 函数**；本地页面 `tutorial-scene-preview.html` 验证 `canvas.dataset.ready=true`、错误区为空、800×600。
+- 严格边界：没有完成 `Player.mDown` 持按、`Guns.shoot` 的 `shootDelay=.25*30`、`shotPressed`、clip/spare、`noShoot`、真实鼠标瞄准、Bullet 命中/墙体状态 9、枪声、Hud pistol、敌方/AI 或原 SWF 帧差分。尤其 canvas 左键目前只是 source 已授予 USP2 后触发原 `pistol_fire` 显示列表的窄入口，绝不是完整枪械系统、Tutorial 关卡或游戏 1:1。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

@@ -10,7 +10,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前合并后基线：`npm test` **105/105 通过**，覆盖率高于 80% 门槛。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **107/107 通过**，覆盖率高于 80% 门槛。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -22,7 +22,7 @@ npm start
 原始 SWF 导出
   ├─ public/assets/menu-source/       原菜单帧
   ├─ public/assets/maps/tut/          教程图三层运行时副本
-  ├─ private-assets/*export/          其他已解包地图的原图层
+  ├─ public/assets/maps/source/       其余原始 BgSky / Bg / Arena 三层运行时副本
   └─ assets/reverse/                  SWF、AS3/P-code、wall 和逐帧证据
 
 浏览器
@@ -49,6 +49,13 @@ npm start
 
 回归测试：`tests/map-loader.test.mjs`、`tests/map-visuals.test.mjs`、`tests/dom-map-layer.test.mjs`、`tests/game-start-render.test.mjs`。
 
+### 2026-07-22：全关卡运行时资源审计
+
+- 所有 14 个可启动地图 ID（教程、11 张快速对战图、Dropship、Missile 及夜间变体）均改为只引用 `public/assets/maps/**`；运行时不再读取被 `.gitignore` 忽略的 `private-assets/*export`。
+- 新增的地图资源测试会逐张读取 sky/background/terrain 的 PNG 头，验证三层均存在、均有可用裁切，且裁切矩形不越出图像实际尺寸。
+- 该测试还暴露并修正了三类会造成空白或错位的问题：Foundry 两层缺失裁切（原先为隐式 `0×0`）、BgSky 导出实际比记录少 3 像素高、Train 背景和宽天空导出实际少 2–3 像素宽。
+- 浏览器人工启动已复核：Facility、Foundry、Speeding Train、Caverns、战役第 13 关 Boarding Action、战役第 14 关 One Final Effort；前四张能显示相应的原始地图图层，两个战役专用图也能完成三层加载。Dropship/Missile 的精确场景注册点、碰撞与任务流程仍需逐图对照原版，不能据此宣称像素级完成。
+
 ## 解包关系：可直接复用的证据
 
 | 范围 | 已确认结论 | 入口 |
@@ -67,7 +74,7 @@ npm start
 ### 已有自动化覆盖
 
 - 原始菜单帧、可点击菜单区域、快速对战循环、战役/挑战目录；
-- 教程图原始三层资源和人工可见性验收；
+- 14 个可启动地图的原始三层运行时资源、裁切边界自动审计；教程、Foundry、Train、Caverns 与 Boarding Action 的人工可见性验收；
 - Foundry/Train 等已登记地图的节点、出生、路径和规则数据；
 - 移动、跳跃、蹲伏释放、坡面、攀爬、弹道、换弹、伤害、复活、相机；
 - UnitMC 部件矩阵回放、鼠标瞄准、M4 枪口/弹道共同坐标；
@@ -76,7 +83,7 @@ npm start
 
 ### 仍不得写成“已完成”
 
-- 所有地图的逐图人工镜头/碰撞验收；
+- 所有地图的逐图镜头、场景注册点、碰撞和战役结束条件人工验收；
 - 81 把武器的完整属性及开火/换弹子时间轴；
 - M4 `rifle_fire` 三帧和 `rifle_reload` 35 帧的完整矢量渲染；
 - 原版全部角色、随机档案、关卡推进、滤镜、粒子、音频混音、存档格式；

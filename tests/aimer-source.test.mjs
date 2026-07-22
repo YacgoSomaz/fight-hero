@@ -35,7 +35,10 @@ test('the running game upgrades the original Aimer to its source line/circle Dis
   assert.match(main, /import\s*\{\s*getOriginalAimerRig\s*\}\s*from\s*'\.\/aimer-rig\.mjs'/);
   assert.match(main, /getOriginalAimerRig\(\{[\s\S]*dynRecoilMod:\s*player\.aimerDynRecoilMod/);
   assert.match(aimerDraw, /getAimPivot\(player\)/, 'Player.as measures target distance from MC.arm1');
-  assert.match(aimerDraw, /ctx\.transform\(\.\.\.part\.matrix\)/, 'source line rotations must remain their decoded matrices');
+  // Flash stores this child placement as a four-coefficient linear matrix
+  // with its translation in the parent placement. Canvas requires all six
+  // coefficients, so a direct spread crashes the live renderer.
+  assert.match(aimerDraw, /ctx\.translate\(part\.x, part\.y\);[\s\S]*ctx\.transform\(\.\.\.part\.matrix, 0, 0\)/, 'the source translation and four-coefficient rotation must map to a valid Canvas transform');
   assert.match(aimerDraw, /ctx\.drawImage\(sprite,\s*-part\.origin\.x,\s*-part\.origin\.y\)/, 'source registration points must anchor the extracted images');
 });
 

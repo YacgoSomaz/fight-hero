@@ -297,6 +297,13 @@ npm start
 - TDD：`93ea60e` 为缺提取器/播放边界的 RED；`91ca95f` 与 `d0e70b6` 为 GREEN 并确保解析器被版本控制。全量 `npm test`/`npm run test:coverage` 为 **188/188 通过**，99.25% 行、86.46% 分支、95.97% 函数。
 - 严格边界：播放模块目前仅是纯数据边界，未被浏览器 actor 消费。`doneShoot`/`doneReload` 的真实动作尚未和原 UnitMC 根身体状态、输入、弹药、物理、镜头或可见画面共同回放，故不得称为可玩 Tutorial 或 1:1。
 
+## 2026-07-22：UnitMC 根时间轴 FrameLabel 原始来源（仍不可启动）
+
+- 原始证据：直接遍历 `4399-90433-25.swf` 的 `DefineSprite 669` 内部 tag，得到 frameCount=449 和 23 个 `FrameLabel`。它不仅包含先前简化表里的 idle/run/jump/fall/duck/climb，还包含必须保留的 `landrun1`、`landrunback1`、`landrun2`、`landrunback2`、`land`、`tuck`、`slide`。例如 `run1=21`、`landrun1=39`、`runback1=58`、`run2=95`、`jump=191`、`slide=291`、`landhard=409`。
+- 承载：`extractUnitMCRootTimeline()` 从 SWF 的真实 `FrameLabel` tag 返回 label 边界；浏览器 `tutorial-unitmc-root-timeline-source.mjs` 与该提取结果逐项相等。它不借用 `engine.mjs` 的合并后 `UNITMC_FRAMES`，不能再把落地过渡、滑铲或两种 runType 抹成同一段。
+- TDD：`3f5d9d5` 是浏览器来源表不存在时的 RED；`a766fe8` 是 SWF 机械提取与浏览器来源表 GREEN。完整 `npm test`/`npm run test:coverage` 为 **190/190 通过**，99.25% 行、86.30% 分支、95.99% 函数。
+- 严格边界：当前只是精确帧边界，尚未实现 `UnitMC.goto()` 对当前动画的拒绝/重定向规则，也未把根帧与 M4 action、皮肤、碰撞/输入合成为 Tutorial actor。不能以“根帧表存在”声称人物动作已迁移。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

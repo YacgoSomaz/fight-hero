@@ -13,10 +13,20 @@ export async function loadSourceWallMask(mapId, {
   const frames = await loadSourceWallFrames(source, makeImage);
   const selected = frames.find((candidate) => candidate.frame === frame);
   if (!selected) throw new Error(`Original Arena wallMC frame ${frame} is unavailable for ${mapId}`);
+  // Dynamic Arena children (for example Foundry pot_203) can call
+  // changeWallFrame during a stage tick. Decode every source frame before
+  // publishing the world so that visual and collision state can change in the
+  // same tick rather than waiting for an image decode.
+  const masks = Object.freeze(frames.map((candidate) => Object.freeze({
+    frame: candidate.frame,
+    mask: decodeWallImage(candidate.image),
+  })));
+  const selectedMask = masks.find((candidate) => candidate.frame === frame);
   return Object.freeze({
     source,
     frame,
     frames: Object.freeze(frames),
-    mask: decodeWallImage(selected.image),
+    masks,
+    mask: selectedMask.mask,
   });
 }

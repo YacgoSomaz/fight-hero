@@ -66,6 +66,31 @@ test('extracts the complete source-owned Campaign 1 transition surface', () => {
     ],
     showDownArrowsState: 13, nextState: 14, resetFrame: true, wallFrame: 14,
   });
+  assert.deepEqual(script.surfaceTransitions.find(({ state }) => state === 10), {
+    state: 10,
+    effects: [
+      { type: 'hudFrame', frameLabel: 'tutclimb' },
+      { type: 'message', target: 'player', text: "Ahhh, my legs! I... I can't jump...", seconds: 5, force: true, voice: 'V_Ca1_8' },
+      { type: 'healToMax', target: 'player', show: false, force: true },
+      { type: 'damageCurrentHealthFraction', target: 'player', fraction: 0.8, source: 'env', extra: {}, force: true },
+      { type: 'setNoJump', target: 'player', value: true },
+      { type: 'playSound', sound: 'S_Mine1' },
+      { type: 'playSound', sound: 'S_Pan' },
+    ],
+    showDownArrowsState: 10, nextState: 11, resetFrame: true, wallFrame: 11,
+  });
+  assert.deepEqual(script.surfaceTransitions.find(({ state }) => state === 11), {
+    state: 11,
+    effects: [
+      { type: 'playSound', sound: 'S_Equip' },
+      { type: 'message', target: 'player', text: 'Nice, some more ammo and a new weapon.', seconds: 5, force: true, voice: 'V_Ca1_9' },
+      { type: 'setGuns', target: 'player', primary: 'M4', secondary: 'USP' },
+      { type: 'swapGuns', target: 'player' },
+      { type: 'hudFrame', frameLabel: 'tutswitch' },
+      { type: 'setNoJump', target: 'player', value: false },
+    ],
+    showDownArrowsState: 11, nextState: 12, resetFrame: true, wallFrame: 12,
+  });
   assert.deepEqual(script.bulletTransition, {
     hitObject: '9900ff', requiredState: 9, nextState: 10, wallFrame: 10,
     effects: [

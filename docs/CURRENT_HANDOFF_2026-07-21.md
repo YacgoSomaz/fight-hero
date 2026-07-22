@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **329/329 通过**，覆盖率为 **99.00% 行、83.62% 分支、96.51% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **332/332 通过**，覆盖率为 **99.01% 行、83.64% 分支、96.52% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -472,6 +472,14 @@ npm start
 - 承载：`tutorial-gun-action-frame.mjs` 从完整生成的 `Stats_Guns` 读取真实 sprite/arm label，再从 runtime 375 标签取枪帧；Campaign 1 的 Beretta/Socom/USP NPC 可以输出原 pistol pose。`tutorial-corpse-runtime.mjs`/`tutorial-bullet-hit-effects.mjs` 记录并消费 `hitCorpse` 冲量。`tutorial-scene-preview.mjs` 为每个已 spawn NPC 保留独立 UnitMC playback，按 session actor 的 source position/flip/visible/dead 渲染原 Shape/arm/gun pose；死亡 actor 不画，直到 PhysActor 可视层存在。
 - TDD：`debc284`→`8550a91`（`hitCorpse`）；`f130f83`→`bf7fec2`（Bullet corpse effect）；`bcf68d6`→`43c98da`（NPC 原枪姿态）；`617b915`→`c3ab739`（场景 NPC 承载）。完整 `npm test`/`npm run test:coverage` 为 **276/276 通过**，98.97% 行、83.11% 分支、96.43% 函数；浏览器页面检查为 800×600、`data-ready=true`、error 为空。
 - 严格边界：NPC 当前只按原 idle/root 时间轴更新；**未**迁移 `AI.EnterFrame` 的目标选择、瞄准、路径、跳跃、射击、重生或枪械事件，也没有原版 NPC 输入/状态截图对照。尸体没有 Box2D 或可视 Phys* 层，页面的浏览器检查未证明敌人移动到相机范围后的像素一致性。它不是“敌方 AI 已完成”、不是可玩战斗、更不是 1:1 完成。
+
+## 2026-07-22：Hud 1540 `expholder` 原子显示列表接入（仍非完整 HUD）
+
+- 原始证据：Hud 1540 在原舞台 `(200.55,588.45)` 放置 `expholder` 1477。其 children 是 depth 1 的灰底 1474、depth 2 的绿底 1475、depth 3 的 `bar_exp` 918；918 再放置 Shape 699，原矩阵为 `a=3.1491546630859375,b=0,c=.6520538330078125,d=-.5157470703125,tx=-1.4,ty=8.4`，颜色变换结果为 `rgb(255,255,0)`、alpha `77/256`。`Hud.addExp()` 的唯一宽度规则为 `exp / Stats_Classes.getNextExp(level) * 420`，第 50 级强制 `420` 与 `Level Maxed`。
+- 网页承载：`src/hud-experience-render-plan.mjs` 将上述原 child 次序、矩阵、颜色与文本 placement 固化为只读渲染计划；`main.mjs` 直接载入 `hud-exp-base-1474.svg`、`hud-exp-green-1475.svg`、`hud-exp-fill-699-source.svg`，在原 anchor 按 Flash 的动态 `width` 缩放整个 918 x 轴后，以 `source-in` 施加原颜色变换。它不再把 `hud-expholder-1477.png` 的静态合成图当作动态经验条。文本直接使用从 SWF 导出的 `hud-exp-font-981.ttf`。
+- TDD：`bc2b548→10beb66` 锁原 child Display List、矩阵、`420` 宽度与 level-50 分支；`f9fd7dc→4f6b23d` 锁网页只能使用 1474/1475/699 与原颜色变换，禁止回退到 1477 扁平图；`tests/aimer-source.test.mjs` 同步更新旧 HUD 断言，保证全量回归仍有效。
+- 验证：`npm test` **332/332** 通过，`npm run test:coverage` 为 **99.01% 行、83.64% 分支、96.52% 函数**。本轮没有取得原 SWF 与网页同输入同帧的视觉截图，因此不把自动回归误写成像素级验收。
+- 严格边界：现有 quick-match actor 尚未产生来自原 Match/Status 的真实经验，因而显示的是其现有默认 `0` 经验；顶部生命区、底部职业/生命/备用弹/全枪图、比分条动态字段、升级反馈，以及所有 HUD 的逐像素原版对照仍未完成。此条只完成 `expholder` 的来源可审计渲染，不代表 HUD、更不代表游戏 1:1 完成。
 
 ## 索引
 

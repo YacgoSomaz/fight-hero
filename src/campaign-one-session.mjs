@@ -1,7 +1,8 @@
 import { ARENA_SOURCE_LAYOUTS } from './arena-source-layouts.mjs';
 import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
+import { SOURCE_DEFAULT_CLASS_SAVES } from './sd-default-profile-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
-import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
+import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
 import { advanceTutorialAiGunRuntime, createTutorialGunRuntime } from './tutorial-gun-runtime.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
@@ -18,7 +19,116 @@ function sourceGun(id) {
   return gun;
 }
 
-function activateSourceActor(actor, aiArena, random) {
+function cloneSourceClassSaves() {
+  return SOURCE_DEFAULT_CLASS_SAVES.map((save) => (save === 0 ? 0 : { ...save }));
+}
+
+function createSourceScore() {
+  // Score.as declares these fields on every Unit, including constructor-held
+  // `extra.noSpawn` units. Keep the source names so later ScoreBar, feeds and
+  // stats consumers do not need an invented score schema.
+  return {
+    headshots: 0,
+    killed1: 0,
+    killed2: 0,
+    killed3: 0,
+    killed4: 0,
+    bulletsFired: 0,
+    bulletsHit: 0,
+    flagCap: 0,
+    domCap: 0,
+    jugKill: 0,
+    lives: 0,
+    kills: 0,
+    deaths: 0,
+    suicides: 0,
+    betrayals: 0,
+    killtimer: 0,
+    multikill: 0,
+    spree: 0,
+    streak: 0,
+  };
+}
+
+function updateSourcePscore(session, actor) {
+  // Score.updateScore() only assigns pscore for dm/tdm/jug/zom. Campaign 1
+  // is the decoded `tdm` path, so preserve the original formula rather than
+  // deriving a bespoke team total from raw kill counts.
+  if (['dm', 'tdm', 'jug', 'zom'].includes(session.match.mode)) {
+    actor.pscore = actor.score.kills - actor.score.suicides - actor.score.betrayals;
+  }
+}
+
+function updateSourceTeamScores(session) {
+  if (session.match.mode !== 'tdm') return;
+  session.match.team1score = session.actors
+    .filter((actor) => actor.team === 1)
+    .reduce((total, actor) => total + actor.pscore, 0);
+  session.match.team2score = session.actors
+    .filter((actor) => actor.team === 2)
+    .reduce((total, actor) => total + actor.pscore, 0);
+  if (session.match.team1score >= session.match.scoreLimit) {
+    session.match.team1score = session.match.scoreLimit;
+    session.match.ended = true;
+  } else if (session.match.team2score >= session.match.scoreLimit) {
+    session.match.team2score = session.match.scoreLimit;
+    session.match.ended = true;
+  }
+}
+
+function addSourceExperience(session, attacker, target) {
+  // Unit.die() awards only human normal kills. Its two getUnitExp calls are
+  // `4 + level * 1.4`, followed by Math.ceil; Hud.addExp() then owns the
+  // persistent class save and the zero-remainder level-up behavior.
+  const award = Math.ceil(Math.min(
+    4 + (attacker.unitInfo.level + 3) * 1.4,
+    4 + target.unitInfo.level * 1.4,
+  ));
+  const save = session.classSaves[attacker.unitInfo.number];
+  if (!save) throw new Error(`Campaign source class save is unavailable: ${attacker.unitInfo.number}`);
+  save.funds += award;
+  if (save.level === 50) return award;
+  save.exp += award;
+  const nextExp = save.level * save.level * 3 + 40;
+  if (save.exp >= nextExp) {
+    save.exp = 0;
+    save.level += 1;
+  }
+  return award;
+}
+
+function applySourceDeathScore(session, { target, attacker, extra }) {
+  // This is the non-visual section of Unit.die() guarded by `!gameEnded`.
+  // Corpse creation deliberately remains outside that guard, matching source.
+  if (session.match.ended) return;
+  target.score.spree = 0;
+  target.score.deaths += 1;
+  target.score.lives -= 1;
+  target.score.streak = 0;
+  if (target === attacker) {
+    target.score.suicides += 1;
+    updateSourcePscore(session, target);
+  } else if (extra.teamkill) {
+    // FFDec's decoded Unit.die() invokes `this.score.addBetrayal()` in this
+    // branch. Preserve that source receiver until a bytecode-level correction
+    // supplies contrary evidence; do not silently substitute a conventional
+    // attacker penalty.
+    target.score.betrayals += 1;
+    updateSourcePscore(session, target);
+  } else {
+    attacker.score.multikill += 1;
+    attacker.score.spree += 1;
+    attacker.score.kills += 1;
+    attacker.score.killtimer = 3.5 * 30;
+    if (extra.headMult) attacker.score.headshots += 1;
+    attacker.score[`killed${target.unitInfo.number}`] += 1;
+    updateSourcePscore(session, attacker);
+    if (attacker.human) addSourceExperience(session, attacker, target);
+  }
+  updateSourceTeamScores(session);
+}
+
+function activateSourceActor(actor, aiArena, random, classSaves) {
   // Unit.unitSpawn() resets Movement and restores the Unit's visible/alive
   // state before it invokes setClass() and Status.reset().
   actor.movement = { xVelocity: 0, yVelocity: 0 };
@@ -28,6 +138,7 @@ function activateSourceActor(actor, aiArena, random) {
   actor.visible = true;
   actor.respawnTimer = 0;
   actor.canUseStreak = false;
+  if (actor.human) actor.level = createTutorialPlayerProfile(actor, { classSaves }).level;
   actor.unitInfo = createTutorialUnitProfile({
     soldier: actor.soldier,
     level: actor.level,
@@ -77,7 +188,7 @@ function respawnSourceActor(session, actor) {
   // its own aim and spawn-protection setup.
   actor.position = sourceSpawnNode(session);
   actor.guns = { primary: actor.primary, secondary: actor.secondary, active: actor.primary };
-  activateSourceActor(actor, session.map.aiArena, session.random);
+  activateSourceActor(actor, session.map.aiArena, session.random, session.classSaves);
   actor.aim = actor.human
     ? { x: actor.position.x + 200, y: actor.position.y - 50 }
     : { x: actor.ai.aimX, y: actor.ai.aimY };
@@ -92,7 +203,7 @@ function setActorGuns(actor, primary, secondary, active = primary) {
   if (!actor.human && actor.unitInfo) actor.gunRuntime = createTutorialGunRuntime({ gunId: active, ammoMultiplier: actor.unitInfo.amm });
 }
 
-function sourceActor(id, definition, { human, random, aiArena }) {
+function sourceActor(id, definition, { human, random, aiArena, classSaves }) {
   const spawn = definition.extra?.spawn ?? null;
   const actor = {
     id: `unit${id}`,
@@ -128,15 +239,17 @@ function sourceActor(id, definition, { human, random, aiArena }) {
     crouching: false,
     scaleX: definition.extra?.aimReverse ? -1 : 1,
     guns: { primary: definition.primary, secondary: definition.secondary, active: definition.primary },
+    pscore: 0,
+    score: createSourceScore(),
     definition,
   };
   // Unit.setClass() runs only from Unit.unitSpawn().  `extra.noSpawn` actors
   // are constructed but remain uninitialised until their authored spawn event.
-  actor.level = human ? createTutorialPlayerProfile(actor).level : getTutorialAiLevel(definition.difficulty, random);
+  actor.level = human ? createTutorialPlayerProfile(actor, { classSaves }).level : getTutorialAiLevel(definition.difficulty, random);
   actor.unitInfo = null;
   actor.status = null;
   actor.gun = null;
-  if (actor.spawned) activateSourceActor(actor, aiArena, random);
+  if (actor.spawned) activateSourceActor(actor, aiArena, random, classSaves);
   return actor;
 }
 
@@ -151,7 +264,7 @@ function applySourceEffects(session, effects) {
     else if (effect.type === 'spawn' && actor) {
       actor.spawned = true;
       actor.position = { x: effect.x, y: effect.y, node: effect.node };
-      activateSourceActor(actor, session.map.aiArena, session.random);
+      activateSourceActor(actor, session.map.aiArena, session.random, session.classSaves);
     }
     else if (effect.type === 'setDiffStats' && actor) {
       actor.difficulty = effect.difficulty;
@@ -176,16 +289,24 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
   const arena = ARENA_SOURCE_LAYOUTS[definition.map];
   if (!arena) throw new Error(`Campaign 1 Arena source is unavailable: ${definition.map}`);
   const aiArena = compileTutorialAiArena(arena);
-  return {
+  const classSaves = cloneSourceClassSaves();
+  const session = {
     definition,
     map: { id: definition.map, wallCharacter: arena.wallCharacter, wallFrame: 1, nodes: arena.nodes, aiArena },
     runtime: createCampaignOneRuntime(),
-    actors: [sourceActor(0, definition.player, { human: true, random, aiArena }), ...definition.bots.map((actor, index) => sourceActor(index + 1, actor, { human: false, random, aiArena }))],
+    actors: [],
+    match: { mode: definition.mode, scoreLimit: definition.score, team1score: 0, team2score: 0, ended: false },
+    classSaves,
     environment: { doorFrame: 'idle', elevatorFrame: 'idle' },
     effects: [],
     corpses: [],
     random,
   };
+  session.actors = [
+    sourceActor(0, definition.player, { human: true, random, aiArena, classSaves }),
+    ...definition.bots.map((actor, index) => sourceActor(index + 1, actor, { human: false, random, aiArena, classSaves })),
+  ];
+  return session;
 }
 
 export function applyCampaignOneSessionSurfaceContact(session, contact) {
@@ -199,7 +320,12 @@ export function applyCampaignOneSessionSurfaceContact(session, contact) {
 // use.  Keeping this in the session prevents a browser preview from merely
 // logging dialogue/equipment events while continuing with stale actor flags.
 export function applyCampaignOneSessionFrame(session) {
-  const effects = runCampaignOneFrame(session.runtime);
+  const effects = [
+    ...runCampaignOneFrame(session.runtime),
+    // Stats_Campaign.runScripts() reads MatchSettings.team1score on the next
+    // game frame after Score.updateScore() has recomputed the TDM totals.
+    ...applyCampaignOneScore(session.runtime, session.match.team1score),
+  ];
   applySourceEffects(session, effects);
   return effects;
 }
@@ -320,6 +446,7 @@ export function applyCampaignOneSessionDeath(session, { target, attacker, gun, e
   if (!session?.corpses) throw new TypeError('Campaign Unit.die requires a source session corpse collection');
   if (!target?.spawned || !target.status || target.dead) throw new Error('Campaign Unit.die requires a live spawned source target');
   const corpse = createTutorialCorpse({ target, attacker, gun, extra, useMod, random });
+  applySourceDeathScore(session, { target, attacker, extra });
   session.corpses.push(corpse);
   target.dead = corpse;
   target.visible = false;

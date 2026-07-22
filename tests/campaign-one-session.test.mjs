@@ -243,7 +243,8 @@ test('Campaign 1 normal player kill applies original Score, TDM and experience-s
     player: { pscore: 1, kills: 1, headshots: 1, killedTank: 1, multikill: 1, spree: 1, killtimer: 105 },
     target: { pscore: 0, deaths: 1, lives: -1, spree: 0, streak: 0 },
     tdm: { mode: 'tdm', scoreLimit: 15, team1score: 1, team2score: 0, ended: false },
-    medicSave: { skin: 1, primary: 'M4', secondary: 'USP', skill: 'none', streak: 'none', level: 1, exp: 10, funds: 10 },
+    // Unit.die(): ceil(min(getUnitExp(1 + 3), getUnitExp(1))) = ceil(5.4) = 6.
+    medicSave: { skin: 1, primary: 'M4', secondary: 'USP', skill: 'none', streak: 'none', level: 1, exp: 6, funds: 6 },
   });
 });
 

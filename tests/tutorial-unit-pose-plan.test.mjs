@@ -37,3 +37,19 @@ test('a fixed Tutorial pose composes original root, M4 action and direct skin Sh
     { rootId: 'arm1', character: 375, frame: 20 },
   ]);
 });
+
+test('Tutorial pose applies UnitMC EnterFrame headhold and arm1hold x/y overrides before drawing direct Shapes', () => {
+  const pose = createTutorialUnitPosePlan({
+    rootFrame: timeline.frames[0],
+    rearAction: m4.actions.rifle.rear[0].items,
+    frontAction: m4.actions.rifle.front[0].items,
+    skinFrame: 57,
+  });
+  assert.deepEqual(pose.staticParts.find(({ id }) => id === 'head').root, {
+    x: 1.9, y: -49.4, scaleX: 0.9730224609375, scaleY: 0.97650146484375,
+    skewX: 0.2154998779296875, skewY: -0.2312469482421875,
+  });
+  assert.deepEqual(pose.armParts.find(({ id }) => id === 'arm1.arm2up').root, {
+    x: 0.3, y: -42, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0,
+  });
+});

@@ -51,6 +51,28 @@ test('wall loader keeps the selected source frame attached to its decoded mask',
   });
 });
 
+test('Foundry prepares every original wallMC frame before the pot timeline can switch its visible frame', async () => {
+  const decoded = [];
+  const result = await loadSourceWallMask('foundry', {
+    makeImage: loadedImageFactory([]),
+    decodeWallImage: (image) => {
+      decoded.push(image.file);
+      return { decoded: image.file };
+    },
+  });
+
+  assert.deepEqual({ decoded, masks: result.masks }, {
+    decoded: [
+      './public/assets/original-swf/wall-foundry-1261/1.png',
+      './public/assets/original-swf/wall-foundry-1261/2.png',
+    ],
+    masks: [
+      { frame: 1, mask: { decoded: './public/assets/original-swf/wall-foundry-1261/1.png' } },
+      { frame: 2, mask: { decoded: './public/assets/original-swf/wall-foundry-1261/2.png' } },
+    ],
+  });
+});
+
 test('wall loader refuses a nonexistent source frame instead of silently falling back', async () => {
   const made = [];
   await assert.rejects(

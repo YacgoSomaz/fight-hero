@@ -41,11 +41,17 @@ export function createTutorialActorPlayback(actor) {
 
 // This is the narrow source command boundary of Guns.setFrame(). It does not
 // accept input events or generic animation aliases.
-export function beginTutorialActorGunAction(state, command) {
+export function beginTutorialActorGunAction(state, command, { random = Math.random } = {}) {
   requiredState(state);
   const label = tutorialGunSource(state.weaponId).commands[command];
   if (!label) throw new Error(`original Guns.setFrame command is unavailable: ${command}`);
-  return { ...state, actionState: { label, index: 0 }, events: [] };
+  // MuzzleFlash_317.frame1(): gotoAndStop(UT.irand(1, totalFrames)).
+  // It is instantiated only by the first pistol_fire arm frame, so retain
+  // this one source result in playback state and clear it on the next tick.
+  const muzzleFrame = state.weaponId === 'USP2' && command === 'fire'
+    ? Math.trunc(random() * 8) + 1
+    : undefined;
+  return { ...state, actionState: { label, index: 0, ...(muzzleFrame ? { muzzleFrame } : {}) }, events: [] };
 }
 
 // Campaign scripts call Guns.setGuns(). This keeps that source-selected gun

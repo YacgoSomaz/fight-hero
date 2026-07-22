@@ -17,6 +17,6 @@ export function createTutorialActorRenderPlan({ actor, rootState, actionState, w
     rootFrame: rootState.frame,
     rootAnimation: rootState.animation,
     arm,
-    pose: createTutorialUnitPoseAtGunAction({ rootFrame, runtime: m4Runtime, gunId: weaponId, command: arm.command, actionIndex: actionState.index, skinFrame: actor.skinFrame }),
+    pose: createTutorialUnitPoseAtGunAction({ rootFrame, runtime: m4Runtime, gunId: weaponId, command: arm.command, actionIndex: actionState.index, skinFrame: actor.skinFrame, muzzleFrame: actionState.muzzleFrame }),
   };
 }

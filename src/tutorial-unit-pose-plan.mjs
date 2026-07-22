@@ -34,16 +34,24 @@ function enterFrameRoot(roots, id) {
   return holder ? { ...root, x: holder.x, y: holder.y } : root;
 }
 
-function planArm(rootId, action, skinFrame, roots, gunFrame) {
+function planArm(rootId, action, skinFrame, roots, gunFrame, muzzleFrame) {
   const root = enterFrameRoot(roots, rootId);
   if (!root || !Array.isArray(action)) throw new Error(`UnitMC ${rootId} root/action data is required`);
   const childFrames = m4SkinChildFrames(skinFrame);
   const armParts = [];
   const gunParts = [];
+  const muzzleParts = [];
   for (const item of action) {
     const local = actionTransform(item);
     if (item.name === 'gun') {
       gunParts.push({ rootId, character: item.character, frame: gunFrame ?? childFrames.gun, root, local });
+      continue;
+    }
+    // arm_gun_316 places MuzzleFlash_317 (character 394) at depth 16 only
+    // on pistol_fire's first frame.  Its own frame is selected once by the
+    // original constructor; it must not be regenerated during canvas paint.
+    if (rootId === 'arm1' && item.character === 394 && muzzleFrame) {
+      muzzleParts.push({ rootId, character: item.character, frame: muzzleFrame, root, local });
       continue;
     }
     const path = ARM_PATH[`${rootId}:${item.name}`];
@@ -59,12 +67,12 @@ function planArm(rootId, action, skinFrame, roots, gunFrame) {
       local,
     });
   }
-  return { armParts, gunParts };
+  return { armParts, gunParts, muzzleParts };
 }
 
 // A source-only pose. It preserves the original root and nested action
 // matrices as two transforms; callers must not flatten/round these values.
-export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction, skinFrame, gunFrame } = {}) {
+export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction, skinFrame, gunFrame, muzzleFrame } = {}) {
   if (gunFrame !== undefined && (!Number.isInteger(gunFrame) || gunFrame < 1)) throw new Error('original Tutorial gun Sprite frame is required');
   const roots = rootFrameItems(rootFrame);
   const staticParts = rootFrame
@@ -79,11 +87,12 @@ export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction,
         root: enterFrameRoot(roots, id),
       };
     });
-  const rear = planArm('arm1', rearAction, skinFrame, roots, gunFrame);
-  const front = planArm('arm2', frontAction, skinFrame, roots, gunFrame);
+  const rear = planArm('arm1', rearAction, skinFrame, roots, gunFrame, muzzleFrame);
+  const front = planArm('arm2', frontAction, skinFrame, roots, gunFrame, muzzleFrame);
   return {
     staticParts,
     armParts: [...rear.armParts, ...front.armParts],
     gunParts: [...rear.gunParts, ...front.gunParts],
+    muzzleParts: [...rear.muzzleParts, ...front.muzzleParts],
   };
 }

@@ -186,6 +186,15 @@ npm start
 
 **下一位唯一正确步骤**：先建立从 Campaign 1 原 actor 定义到 Tutorial 专用输入/物理 actor 的一对一适配层，并针对 Scientist 初始禁瞄准/无枪、Unit 1–4 的出生/未出生、`noJump` 等写 RED。不得把 `engine.mjs` 当前 Medic/M4 quick-match actor 重新命名成 Scientist 后接入。
 
+## 2026-07-22：Campaign 1 原角色身份与皮肤帧来源（仍不可启动）
+
+- 原始证据：`Stats_Classes.getClass()` 定义 Medic/Assassin/Commando/Tank 的 id、`startFrame`、`runType` 与 1–50 级线性数据；`Unit.setClass()` 的皮肤选择是 `unitInfo.frame = startFrame + skin`。Campaign 1 `Stats_Campaign.setPlr/addBot` 提供 Scientist / tank / soldier / medic 的 soldier 和 skin，且 Unit 4 `noSpawn=true`。
+- 承载：`private-assets/parse-stats-classes.mjs` 机械提取原类数据；`npm run extract:campaign` 新生成 `src/class-source.mjs`，并由 `tutorial-actor-bindings.mjs` 建立独立 Tutorial binding。其当前精确结果为 Scientist Medic skin 7→frame 57、Tank skin 5→105、Commando skin 5→155、Medic skin 5→55、未出生 Unit 4 Commando skin 1→151。
+- 诚实边界：Campaign 原 Player 等级由 `MatchSettings.updatePlayer()` 读取保存档 `SD.classSaves[...]`，不是 Campaign 1 的静态值；绑定层明确将 level 保留为 `null`，不会偷用 prototype 的 level-1 Medic 数值。绑定层也尚未调用通用 engine、UnitMC DOM renderer 或浏览器输入。
+- TDD：`661ae7f`→`957ed58`（Stats_Classes 原记录/公式）；`1c39d19`→`2443653`（浏览器生成物一致性）；`6264b40`→`1f125c7`（Campaign 1 的五位 actor 身份、帧、出生/禁瞄准和枪械）。完整回归 162/162，覆盖率行 99.37%、分支 87.46%、函数 95.48%。
+
+**下一位唯一正确步骤**：不要渲染“站着的 57/105/155 帧”作为游戏完成。先从原 `UnitMC` 时间轴导出/验证这些 skin frame 的完整 body-part display list，再建立 Tutorial 输入/Movement adapter；脚底 ARGB 碰撞、`noAim/noJump`、原枪械和相机都须在同一专用 world 中按输入回放验证。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

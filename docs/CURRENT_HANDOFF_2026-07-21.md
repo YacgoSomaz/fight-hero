@@ -8,7 +8,7 @@
 - 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`，并以 `advanceCampaignOneSessionAiMovement()` 将 key/jump 消费到同一份 `tutorial-movement.mjs`（`Movement.as`）状态。
 - 场景承载：`tutorial-scene-preview.mjs` 在原 AI 决策后、单位 Status 后消费原 wall surface，写回 actor 位置、蹲伏/跳跃状态，并把返回的 `nextAnim` 交给 `requestTutorialActorMotion()`；因此不再由旧通用 AI 控制 NPC 平移。
 - TDD：`9450a59→570cc91` 为 AI runtime 的 RED→GREEN；`b79626c→d181cce` 为 Campaign 会话决策接入；`48e3164→fd0c630` 为 Movement 消费；`f2fb52a→bb496ea` 为浏览器 UnitMC 动作接入。当前完整回归为 `npm test` **285/285**，全局覆盖率 **98.99% 行、83.29% 分支、96.08% 函数**。
-- 严格边界：NPC 的 **行动和 arm/head 瞄准** 已接到原 Movement/UnitMC：`deriveTutorialUnitAim()` 直接复用 `Unit.as` 的 holder、前一帧 `aimRoation`、翻转及 reload 旋转关系，且不重复套用 Player 的鼠标平滑。`aiShouldShoot` 仍未接入原 `Guns.shoot/makeBullet`，也没有原版输入/截图差分、重生、头顶血条或完整战役流程。因此不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应迁移原 NPC Guns 阶段与视觉/伤害对照。
+- 严格边界：NPC 的 **行动、arm/head 瞄准和第一条枪械/子弹纵切** 已接到原链路：`deriveTutorialUnitAim()` 直接复用 `Unit.as` 的 holder、前一帧 `aimRoation`、翻转及 reload 旋转关系；`aiShouldShoot` 经每个 NPC 独立的 `Guns.shoot() → Guns.EnterFrame()` 状态（含 AS3 `Number` 初值 `dynRecoilMod=0`）进入枪械 arm fire、`Bullet_Line_Basic` 与现有 Status/死亡会话。仍没有 AI 对战的原版逐帧截图、尸体视觉/Box2D、重生、头顶血条、音频或完整战役流程。因此不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应做原版输入/帧对照及可见战斗/重生/HUD 纵切。
 
 ## 快速开始
 

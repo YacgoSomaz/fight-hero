@@ -73,6 +73,20 @@ test('a USP2 fire action preserves its original MuzzleFlash_317 random frame for
   assert.deepEqual(sampleTutorialActorPlayback(state, source).pose.muzzleParts, []);
 });
 
+test('a source tick that starts USP2 fire advances the UnitMC root but keeps the authored muzzle frame until the next arm tick', () => {
+  let state = synchronizeTutorialActorWeapon(createTutorialActorPlayback(player), 'USP2');
+  state = beginTutorialActorGunAction(state, 'fire', { random: () => 0 });
+  state = advanceTutorialActorPlayback(state, source, { advanceArm: false });
+  const first = sampleTutorialActorPlayback(state, source);
+  assert.deepEqual({ rootFrame: state.rootState.frame, action: state.actionState, muzzle: first.pose.muzzleParts.map(({ frame }) => frame) }, {
+    rootFrame: 2, action: { label: 'pistol_fire', index: 0, muzzleFrame: 1 }, muzzle: [1],
+  });
+  state = advanceTutorialActorPlayback(state, source);
+  assert.deepEqual({ action: state.actionState, muzzle: sampleTutorialActorPlayback(state, source).pose.muzzleParts }, {
+    action: { label: 'pistol_fire', index: 1 }, muzzle: [],
+  });
+});
+
 test('Tutorial actor playback refuses a Campaign actor that has not spawned', () => {
   assert.throws(() => createTutorialActorPlayback(unspawned), /has not spawned/);
 });

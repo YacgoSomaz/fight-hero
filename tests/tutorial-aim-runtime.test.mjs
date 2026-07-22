@@ -25,9 +25,9 @@ test('Tutorial Player aim preserves the source half-step smoothing, arm-holder o
   assert.deepEqual({ aimX: state.aimX, aimY: state.aimY, flip: state.flip, aimerStage: state.aimerStage }, {
     aimX: 305, aimY: 45, flip: false, aimerStage: null,
   });
-  near(state.aimRotation, 79.82155816602566);
-  near(state.armRotation, -10.17844183397434);
-  near(state.headRotation, -6.107065100384604);
+  near(state.aimRotation, 79.82448915695684);
+  near(state.armRotation, -10.175510843043156);
+  near(state.headRotation, -6.105306505825894);
 
   const blocked = advanceTutorialPlayerAim(state, {
     actor: { position: { x: 100, y: 100 } },

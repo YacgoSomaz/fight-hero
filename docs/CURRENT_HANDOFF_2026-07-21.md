@@ -376,6 +376,15 @@ npm start
 - TDD：RED/GREEN 依次为 `00436eb`→`4b3c844`（原 394 extraction）、`c11990c`→`6c1161f`（播放状态）、`dc3053c`→`4f32fbb`（pose rendering）、`5b4117f`→`74032e4`（asset loading）、`2876891`→`4e58e00`（页面左键入口）。全量 `npm test` 与 `npm run test:coverage` 为 **223/223 通过**，覆盖率 **98.83% 行、83.17% 分支、95.82% 函数**；本地页面 `tutorial-scene-preview.html` 验证 `canvas.dataset.ready=true`、错误区为空、800×600。
 - 严格边界：没有完成 `Player.mDown` 持按、`Guns.shoot` 的 `shootDelay=.25*30`、`shotPressed`、clip/spare、`noShoot`、真实鼠标瞄准、Bullet 命中/墙体状态 9、枪声、Hud pistol、敌方/AI 或原 SWF 帧差分。尤其 canvas 左键目前只是 source 已授予 USP2 后触发原 `pistol_fire` 显示列表的窄入口，绝不是完整枪械系统、Tutorial 关卡或游戏 1:1。
 
+## 2026-07-22：Campaign 1 USP2 的原 `Player → Guns` 输入/射速纵切（仍非完整关卡）
+
+- 原始证据：`Player.as` 的 `MouseDown()` 只在 `game.gameStarted && !unitInfo.extra.noShoot` 时写 `mDown=true`，`MouseUp()` 写回 false 并调用 `gun.releaseMouse()`；每次 `Player` EnterFrame 才在 `mDown` 下调用 `gun.shoot()`。`Guns.as:shoot()` 先拒绝非零 `shootDelay`、`shotPressed`、reloading、空 clip 与 `extra.noShoot`，再在非自动人类枪写 `shotPressed=true`、调用 `setFrame("fire")`、`makeBullet()`，最后将 `shootDelay=curGun.shootDelay*30` 写入 `uint`。同一 `UnitEnterFrame` 随后调用 `gun.EnterFrame()`，故新写入的 delay 已在同一 source tick 减 1。`Stats_Guns.as` 的 USP2 是 `clipSize=1`、`clipSpare=0`、`damage=15`、`shootDelay=.25`、`noAmmo=true`、`autoFire=false`；其 `uint(.25*30)` 为 7，首发 tick 结束为 6。
+- 承载：`tools/generate-gun-source.mjs` 仅机械解析每条 `Stats_Guns.addGun` literal call，输出 `src/gun-source.mjs`，拒绝把手写少量枪表作为来源。`src/tutorial-gun-runtime.mjs` 只实现上述已证实的 Player/Guns 窄状态；`tutorial-scene-preview.mjs` 的左键只调用 `tutorialPlayerMouseDown()`，每个 30fps tick 再调用 `advanceTutorialGunRuntime()`。枪实际获准开火时才请求原 `pistol_fire`；为匹配 source first tick，root 仍推进、但 arm fire index 保持在首帧至下一 arm tick，因此 394 的原随机枪口火焰不会被同 tick 提前移除。
+- TDD：`01e2bc8`→`7c7264b`（完整原枪表生成与等值校验）；`49c40a3`→`1b832a3`（USP2 的 `mDown`/`shotPressed`/`uint shootDelay`/`noAmmo`）；`9ac0690`→`7f30851`（场景只经 Player→Guns 链路开火）；`6d7a9eb`→`fef800a`（首发 arm 帧不被同 tick 推掉）。当前 `npm test` 与 `npm run test:coverage` 为 **227/227 通过**，覆盖率 **99.05% 行、83.08% 分支、95.90% 函数**。
+- 严格边界：这不是完整 `Guns` 端口：尚未调用原 `makeBullet()`，没有鼠标→Arena 瞄准/arm transform、命中与 `Wall_tut` 状态 9、枪声、pistol HUD、敌人/AI、重装流程、M4 或其余枪械的真实存档/弹药配置，也没有原 SWF 同输入帧截图或像素差分。因此此纵切**不能**被描述为“Tutorial 已可玩”、“第一关完成”或“游戏 1:1 已完成”。
+
+**下一位唯一正确步骤**：先从 `Player.as` 的 mouse/Aimer 关系、`Guns.as:makeBullet()`、`Bullet_Line_Basic` 与 Campaign 1 状态 9 的原执行顺序提取可复现证据；先写 RED，之后只迁移一个“真实鼠标瞄准→枪口/子弹起点→原墙体/目标命中”的纵切。不要用 `engine.mjs` 的泛用 tracer、手画子弹或固定鼠标角度作为替代。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

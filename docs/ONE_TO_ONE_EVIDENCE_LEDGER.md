@@ -104,6 +104,12 @@ Main.as（输入/屏幕切换）
 | 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs` 直接载入 `hud-scorebar-1462.png` 与 `hud-expholder-1477.png`，并以 `hud-ammo.mjs` 重建 954 的 `drawBox` 逻辑；`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs`、`aimer-source.test.mjs`、`hud-ammo.test.mjs` | `部分接入+自动回归`；1462/1477 已在原锚点接入，954 已按原公式和双轴翻转接入 M4 `arifle`。顶部生命区、头顶动态条、职业/生命/等级、备用弹文字、枪图和动态经验宽度仍未迁移，不能称 HUD 完成。 |
 | 原始舞台坐标 | SWF header：800×600、30fps；HUD/Aimer 以此舞台坐标布局 | `index.html` 的 800×600 canvas；`style.css` 4:3 地图/角色覆盖层 | `stage-format.test.mjs`；浏览器实测 | `已接入+浏览器确认（基线）`；浏览器确认内部像素 800×600、显示比 1.3333、3 地图层和两套 10 部件角色可见。**未完成**：Hud 1540 的原坐标/安全区/响应式缩放逐像素对照。 |
 
+### 6.0 Campaign 1 独立原角色时间轴纵切（当前仅预览）
+
+| 子项 | 原始证据 | 当前网页承载 | 自动证据 | 人工证据 | 当前状态 / 已知差异 |
+| --- | --- | --- | --- | --- | --- |
+| Campaign 1 `unit0` 的 root + M4 | `Stats_Campaign.setMatch()` 的 unit0/skin 7；`UnitMC` symbol 669/449 帧、`EnterFrame()`；M4 501/668 Display List；`Guns.as:setFrame()`；`arm_gun_316.as` callback | `tutorial-actor-bindings.mjs`、`tutorial-actor-playback.mjs`、`tutorial-actor-preview.html`、`tutorial-actor-preview.mjs`；画布只读取原 Shape、root timeline 和 M4 runtime | `tutorial-actor-render-plan.test.mjs`、`tutorial-actor-playback.test.mjs`、`tutorial-actor-preview.test.mjs`、`tutorial-unit-pose-plan.test.mjs`、`tutorial-unit-pose-renderer.test.mjs` | 本地浏览器已加载 800×600 预览并检查无 console error；尚无原 SWF 同输入/同帧叠图 | `已接入+已回归`；当前仅 unit0、skin 57、idle/M4 source tick。已修正一个已知差异：`UnitMC.EnterFrame()` 会把可见 `head` 及 `arm1/arm2` 的 **x/y** 改为 `headhold/arm1hold`，此前扁平绘制导致头臂断开；scale/skew 保持原可见子件值。仍缺真实鼠标瞄准、左键、弹药、弹道、碰撞、相机、地图、AI、其它动作及原版像素对照，故不可称可玩或完成。 |
+
 ### 6.1 HUD 1540 的已确认拆解与首批接入边界
 
 - `Hud` symbol **1540** 的 idle frame 在原 800×600 舞台放置：`txt_classname` 1442=`(3,531)`、`txt_hp` 1441=`(71,560)`、`txt_ammo` 1440=`(668,559)`、`bulletCont` 954=`(664,571)`、`curgun` 724=`(674,568)`、`scorebar` 1462=`(180,23)`、`expholder` 1477=`(201,588)`；这些是网页替换当前临时 `drawHud/drawBottomHud` 的坐标证据。

@@ -332,6 +332,13 @@ npm start
 - TDD：`4e95816` 为模块缺失的 RED；`1c72a3f` 为 GREEN。回归锁定 Campaign `unit0` 的 skin 57 + root 1 + arm 77 初样本，以及 fire 的 78→79→80 与第三 tick 的 `doneShoot` 回 idle。完整 `npm test`/`npm run test:coverage` 均为 **200/200 通过**，99.22% 行、85.07% 分支、96.16% 函数。
 - 严格边界：该播放器目前没有挂载 Canvas、输入/瞄准角、真实碰撞位置、弹药扣除、弹道、镜头、HUD、地图或 AI。它不是可玩的 Tutorial，更不构成全游戏 1:1。
 
+## 2026-07-22：Tutorial 原角色浏览器承载与 holder 修正（仍不可启动）
+
+- 浏览器承载：`tutorial-actor-preview.html`/`src/tutorial-actor-preview.mjs` 以 800×600 Canvas 每 `1000/30` ms 调一次 `advanceTutorialActorPlayback()`，再以同一个 source render plan 绘制。它只加载 39 个直接 Shape、UnitMC 669 root timeline、M4 Display List 和原 arm callback 的 M4 投影；不导入 `main.mjs`、`engine.mjs` 或旧 DOM Medic rig。`src/tutorial-unitmc-root-frame-actions-source.mjs` 与原 `UnitMC.as` 的完整 root frame command 机械结果一致；M4 callback 表仅保留 M4 timeline 实际使用的 80/81/115，避免把 `arm_gun_316` 中其他武器 callback 混入。
+- 发现与修复：初次浏览器实测虽显示 `data-ready=true` 且无 console error，但截图揭示头、躯干、枪臂断开。这证明之前 pose plan 错把 root Display List 的 `head/arm1/arm2` placement 当最终位置。原 `UnitMC.EnterFrame()` 每 tick 执行 `head.x/y=headhold.x/y`、`arm1.x/y=arm1hold.x/y`、`arm2.x/y=arm1hold.x/y`，但不改 scale/skew。`tutorial-unit-pose-plan.mjs` 现精确保留该覆盖；重载后的浏览器截图已不再出现该断开关系。
+- TDD：`3d61f5d` 是浏览器预览来源缺失的 RED；`e10a7be` 是页面/来源表 GREEN。可视修复的 RED 是 `da61333`，GREEN 是 `ab5ea65`；回归锁定 headhold 和 arm1hold 的精确 root x/y，并同步锁定 Canvas transform。完整 `npm test`/`npm run test:coverage` 为 **203/203 通过**，99.22% 行、85.11% 分支、96.17% 函数。
+- 严格边界：浏览器预览只能证明来源资源成功渲染与 holder 关系不再断裂；没有原 SWF 同帧截图、输入回放或像素差分，也没有游戏世界。因此它不能作为任何地图、人物完整动作或 1:1 完成的证据。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

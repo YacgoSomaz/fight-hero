@@ -143,6 +143,15 @@ npm start
 
 **下一位唯一可接受的第一步**：先为一个原始 Campaign 1 动作写 RED——例如初始 `sn=1,fc=0` 的禁枪、20 帧语音或 `ff00ff` 脚底触发；再将 `SOURCE_CAMPAIGN_ONE_SCRIPT` 作为数据依赖接入新的可序列化 Campaign 1 运行时。禁止把该表手抄进 `engine.mjs`，禁止解除菜单入口，禁止以普通 Foundry 快速对战替代教程关。
 
+## 2026-07-22：Campaign 1 状态机与 Tutorial 会话模型（仍不可启动）
+
+- 已完成的来源驱动状态面：生成物现锁定 9 个 `runScripts` 帧动作、4 个 `team1score` 分支、`ff00ff` 人类脚底接触的 14 个 `sn=1..14` 状态、`9900ff` 子弹环境命中和 `sn=12` 换枪开门。伤腿的满血→当前血量 80% 环境伤害、`noJump`、补给后 M4/USP/换枪/恢复跳跃、Unit 1–3 生成、门/电梯/HUD/声音调用均由同一 AS3 抽取器保留。
+- `src/campaign-one-runtime.mjs` 实现原 `Stats_Campaign.fc` 的“判定后递增”语义，以及比分、脚底、换枪、电梯的状态变换；它只返回原效果事件，尚不假装已经渲染或执行。`src/campaign-one-session.mjs` 从 `SOURCE_CAMPAIGN_CATALOG.campaign[0]` 和 `ARENA_SOURCE_LAYOUTS.tut` 合成会话：Tutorial `wallCharacter=1378`、Scientist 与三名敌人的精确出生点、`noAim`，以及无出生点的 Unit 4 友军都可审计。
+- TDD 链：`a24bba0`→`54dce87`（帧/比分）；`b2350f4`→`eb179d8`（脚底/换枪）；`5fcf7f0`→`0c6e2e1`（电梯）；`a98c4d2`→`580e1d8`（来源会话）；`d4ddee1`→`d5f7b64`（伤腿/补给解析）。最终补充了运行时回归 `2165c59`。全量为 148/148，覆盖率 99.34% 行、87.68% 分支、95.00% 函数。
+- **不可越过的边界**：`tut` 只有可见三层与 Arena 节点；原 `Wall_tut` 的逐帧像素墙体 / 彩色触发图尚未在网页端导出和消费。现有 `engine.mjs` 仍是通用快速对战 actor，不能承担 Scientist、Tank、Soldier、Medic 的原属性、`noAim/noJump`、脚底色或 Unit 4 延迟生成。没有这些、Cutscene、原 HUD 与结束/解锁前，战役入口必须继续拒绝启动。
+
+**下一位唯一正确步骤**：从 `Wall_tut_240`/symbol 1378 导出每一个被 `changeWallFrame` 使用的原始 wall bitmap 与颜色，再写 RED：`ff00ff` 只有原触发像素能推进且 `9900ff` 只有原子弹环境命中能开电梯；之后才可把 `campaign-one-session` 接入专用 Tutorial World。不得用 NodePhysBox、可见前景或 Foundry mask 代替 `Wall_tut`。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

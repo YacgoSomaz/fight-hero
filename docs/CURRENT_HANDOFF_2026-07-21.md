@@ -385,6 +385,13 @@ npm start
 
 **下一位唯一正确步骤**：先从 `Player.as` 的 mouse/Aimer 关系、`Guns.as:makeBullet()`、`Bullet_Line_Basic` 与 Campaign 1 状态 9 的原执行顺序提取可复现证据；先写 RED，之后只迁移一个“真实鼠标瞄准→枪口/子弹起点→原墙体/目标命中”的纵切。不要用 `engine.mjs` 的泛用 tracer、手画子弹或固定鼠标角度作为替代。
 
+## 2026-07-22：Tutorial 原鼠标→持枪瞄准关系（仍无子弹）
+
+- 原始证据：`Player.as:EnterFrame()` 在 `noAim=false` 时按 `aimX += (game.arena.mouseX-aimX)*.5`、`aimY += (game.arena.mouseY-aimY)*.5` 平滑。`Unit.as` 先用**上一 tick** `aimRoation` 和 `MC.rotation` 决定非跳跃 flip，再从 `x+MC.arm1.x+MC.rotation*1.2,y+MC.arm1.y` 到 `aimX,aimY` 计算 `UT.getRotation()-90`，写入 `aimRoation`，最后依次写 `MC.arm1/arm2.rotation=rotReload+rotArm`、`head.rotation=rotReload+rotArm*.6`、`MC.scaleX=flip?-1:1`。`UnitMC.EnterFrame()` 先将 arm1/arm2 的 x/y 改为 `arm1hold`，故不能用原 root placement 的旧 arm x/y。Arena 是被平移的 DisplayObject，因此 `arena.mouseX/Y = stageMouse - arena.x/y`。
+- 承载：`tutorial-aim-runtime.mjs` 是上述公式的纯端口；网页鼠标事件先由 CSS canvas rect 归一化为固定 SWF 800×600，再转为 Arena local。`tutorial-unit-pose-plan.mjs` 按 Flash `DisplayObject.rotation` 的矩阵语义在 holder 之后重建 arm/head transform；`tutorial-unit-pose-renderer.mjs` 在 pose 标明 flip 时翻转完整 UnitMC。它们只消费当前 decoded root/action/Shape 数据，不借用 `engine.mjs` 的 generic rig。
+- TDD：`fe79b11` 为 aim 模块缺失的有效 RED，`ccef16d` 为公式 GREEN；`aec5679` 为 source aim 可视消费缺失的有效 RED，`667c0e6` 为 Green。全量 `npm test`/`npm run test:coverage` 为 **230/230 通过**，覆盖率 **99.01% 行、82.79% 分支、95.96% 函数**。本地浏览器访问 `tutorial-scene-preview.html` 返回 `data-ready=true`、空错误文本、Canvas 800×600。
+- 严格边界：本段没有接入原 Aimer 1431 的可见 Display List，没有 `Guns.makeBullet`、`Bullet_Line_Basic`、射线墙/单位命中、状态 9、电梯、声音、HUD 或截图差分。它证明的是人物指向的 source transform，不是“已射向鼠标”或“Tutorial 已可玩”。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

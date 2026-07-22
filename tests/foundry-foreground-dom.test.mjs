@@ -3,10 +3,10 @@ import test from 'node:test';
 
 import { createFoundryForegroundDomLayer, renderFoundryForegroundDomLayer } from '../src/foundry-foreground-dom.mjs';
 
-function fakeDocument() {
+function fakeDocument({ canonicalizeSrc = false } = {}) {
   return {
     createElement(tagName) {
-      return {
+      const element = {
         tagName,
         className: '',
         dataset: {},
@@ -14,6 +14,15 @@ function fakeDocument() {
         children: [],
         replaceChildren(...children) { this.children = children; },
       };
+      if (tagName === 'img' && canonicalizeSrc) {
+        let source = '';
+        element.sourceAssignments = 0;
+        Object.defineProperty(element, 'src', {
+          get() { return source; },
+          set(value) { element.sourceAssignments += 1; source = new URL(value, 'http://127.0.0.1:4173/').href; },
+        });
+      }
+      return element;
     },
   };
 }
@@ -44,4 +53,18 @@ test('Foundry foreground DOM layer contains only original child artwork in origi
 test('Foundry foreground DOM layer rejects a partial or unordered Display List', () => {
   const node = createFoundryForegroundDomLayer(fakeDocument());
   assert.throws(() => renderFoundryForegroundDomLayer(node, [{ depth: 7 }]), /three original child layers/);
+});
+
+test('Foundry foreground does not reload an unchanged relative source after the browser canonicalizes image.src', () => {
+  const node = createFoundryForegroundDomLayer(fakeDocument({ canonicalizeSrc: true }));
+  const layers = [
+    { depth: 1, character: 1242, frame: 1, type: 'png', source: './public/assets/original-swf/foundry-foreground-1242/1.png', left: 0, top: 0, width: 1, height: 1 },
+    { depth: 2, character: 1252, frame: 1, type: 'svg', source: './public/assets/original-swf/foundry-foreground-1252-svg/1.svg', left: 0, top: 0, width: 1, height: 1 },
+    { depth: 7, character: 1258, frame: 1, type: 'svg', source: './public/assets/original-swf/foundry-foreground-1258-svg/1.svg', left: 0, top: 0, width: 1, height: 1 },
+  ];
+
+  renderFoundryForegroundDomLayer(node, layers);
+  renderFoundryForegroundDomLayer(node, layers);
+
+  assert.deepEqual(node.children.map((image) => image.sourceAssignments), [1, 1, 1]);
 });

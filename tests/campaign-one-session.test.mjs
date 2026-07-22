@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionUnits, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -65,5 +65,24 @@ test('Campaign 1 creates source Unit.setClass/Status state only for actors whose
     { id: 'unit2', level: 1, unitInfo: { id: 'soldier', hp: 100, crit: 0.04, aim: 0.6, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 100, hpMax: 100, sSpawn: 15 }, currentGun: 'Socom' },
     { id: 'unit3', level: 1, unitInfo: { id: 'medic', hp: 85, crit: 0.06, aim: 0.7000000000000001, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 85, hpMax: 85, sSpawn: 15 }, currentGun: 'USP' },
     { id: 'unit4', level: 18, unitInfo: null, status: null, currentGun: null },
+  ]);
+});
+
+test('Campaign 1 advances spawned Unit Status after its source runScripts frame and leaves noSpawn actors untouched', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const results = advanceCampaignOneSessionUnits(session);
+
+  assert.deepEqual(results, [
+    { id: 'unit0', events: [], bloodAlpha: 0 },
+    { id: 'unit1', events: [], bloodAlpha: null },
+    { id: 'unit2', events: [], bloodAlpha: null },
+    { id: 'unit3', events: [], bloodAlpha: null },
+  ]);
+  assert.deepEqual(session.actors.map(({ id, status }) => ({ id, statusFrame: status?.fc ?? null, spawn: status?.sSpawn ?? null })), [
+    { id: 'unit0', statusFrame: 1, spawn: 0 },
+    { id: 'unit1', statusFrame: 1, spawn: 14 },
+    { id: 'unit2', statusFrame: 1, spawn: 14 },
+    { id: 'unit3', statusFrame: 1, spawn: 14 },
+    { id: 'unit4', statusFrame: null, spawn: null },
   ]);
 });

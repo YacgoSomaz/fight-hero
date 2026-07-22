@@ -29,6 +29,10 @@ export function createTutorialGunRuntime({ gunId, ammoMultiplier = 1 } = {}) {
     shotPressed: false,
     reloading: false,
     shootDelay: 0,
+    // Guns.setGuns() assigns dynRecoil immediately. dynRecoilMod is assigned
+    // later by Guns.EnterFrame, after Player.EnterFrame has had its shot.
+    dynRecoil: gun.recoil,
+    dynRecoilMod: null,
     ammo: {
       clipCur: clipMax,
       clipMax,
@@ -37,6 +41,23 @@ export function createTutorialGunRuntime({ gunId, ammoMultiplier = 1 } = {}) {
       total,
     },
   };
+}
+
+function sourceScatter(state, unit) {
+  if (!Number.isFinite(unit?.aim) || !Number.isFinite(unit?.xVelocity)
+    || typeof unit.crouching !== 'boolean' || typeof unit.jumping !== 'boolean' || typeof unit.reflecting !== 'boolean') {
+    throw new TypeError('Tutorial Guns.EnterFrame requires original unit aim and movement state');
+  }
+  const gun = sourceGun(state.gunId);
+  const dynRecoil = state.dynRecoil > gun.recoil ? state.dynRecoil - 0.05 : state.dynRecoil;
+  let dynRecoilMod;
+  if (unit.reflecting) dynRecoilMod = dynRecoil * 2;
+  else if (unit.crouching) dynRecoilMod = dynRecoil * 0.6;
+  else if (unit.jumping) dynRecoilMod = dynRecoil * 1.2;
+  else if (unit.xVelocity) dynRecoilMod = dynRecoil * 1.1;
+  else dynRecoilMod = dynRecoil;
+  dynRecoilMod *= unit.reflecting ? 2 - unit.aim * 0.5 : 2 - unit.aim;
+  return { ...state, dynRecoil, dynRecoilMod };
 }
 
 // Player.MouseDown() only records mDown; Player.EnterFrame() owns the later
@@ -59,12 +80,18 @@ function sourceShoot(state, { human }) {
   if (!state.ammo.clipCur || gun.extra?.noShoot) return { state, fired: false };
   const ammo = cloneAmmo(state.ammo);
   if (!gun.extra?.noAmmo) ammo.clipCur -= 1;
+  const bullet = { gunId: state.gunId, dynRecoil: state.dynRecoil, dynRecoilMod: state.dynRecoilMod };
+  // A human Unit creates Guns with a Hud. Guns.shoot() applies its recoil
+  // kick only in that branch; the following EnterFrame reduces it by .05.
+  const dynRecoil = human && state.dynRecoil < gun.recoil * 1.7 ? state.dynRecoil + 0.3 : state.dynRecoil;
   return {
     fired: true,
+    bullet,
     state: {
       ...state,
       shotPressed: !gun.autoFire && human,
       shootDelay: as3Uint(gun.shootDelay * 30),
+      dynRecoil,
       ammo,
     },
   };
@@ -73,8 +100,10 @@ function sourceShoot(state, { human }) {
 // One Player.EnterFrame followed by Unit.UnitEnterFrame's Guns.EnterFrame.
 // Guns.shoot occurs first; its just-written delay is decremented by the same
 // source tick afterwards.
-export function advanceTutorialGunRuntime(state, { human = true } = {}) {
-  let result = state.mDown ? sourceShoot(state, { human }) : { state, fired: false };
-  if (result.state.shootDelay) result = { ...result, state: { ...result.state, shootDelay: result.state.shootDelay - 1 } };
-  return { state: result.state, fired: result.fired, action: result.fired ? 'fire' : null };
+export function advanceTutorialGunRuntime(state, { human = true, unit } = {}) {
+  let result = state.mDown ? sourceShoot(state, { human }) : { state, fired: false, bullet: null };
+  let nextState = result.state;
+  if (nextState.shootDelay) nextState = { ...nextState, shootDelay: nextState.shootDelay - 1 };
+  nextState = sourceScatter(nextState, unit);
+  return { state: nextState, fired: result.fired, action: result.fired ? 'fire' : null, bullet: result.bullet };
 }

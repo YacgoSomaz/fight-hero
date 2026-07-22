@@ -203,3 +203,42 @@ test('Campaign 1 applies the source Unit.die corpse lifecycle and removes the Ph
   for (let frame = 0; frame < 150; frame += 1) advanceCampaignOneSessionUnits(session);
   assert.deepEqual(session.corpses, []);
 });
+
+// Player.as and AI.as both decrement Unit.respawnTimer once per original
+// 30fps frame, then call their own spawn() only on the following frame. The
+// shared Unit.unitSpawn() selects an authored NodeSpawn; Player applies 75
+// source protection frames and AI applies 15. A source session cannot leave
+// killed actors hidden forever or reappear at a made-up coordinate.
+test('Campaign 1 respawns dead source actors one frame after 150 ticks at an authored Arena spawn', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const [player, bot] = session.actors;
+  const playerProtection = player.status.sSpawn;
+  const botProtection = bot.status.sSpawn;
+  const corpse = applyCampaignOneSessionDeath(session, { target: bot, attacker: player, gun: player.gun.curGun });
+
+  for (let frame = 0; frame < 150; frame += 1) advanceCampaignOneSessionUnits(session);
+  assert.deepEqual({ dead: bot.dead === corpse, visible: bot.visible, timer: bot.respawnTimer }, { dead: true, visible: false, timer: 0 });
+
+  advanceCampaignOneSessionUnits(session);
+  assert.deepEqual({
+    dead: bot.dead,
+    visible: bot.visible,
+    position: bot.position,
+    hp: bot.status.hpCur,
+    spawnProtection: bot.status.sSpawn,
+    gun: bot.gun.curGun.id,
+    aiWaypoint: bot.ai.nextWaypointId,
+    initialPlayerProtection: playerProtection,
+    initialBotProtection: botProtection,
+  }, {
+    dead: null,
+    visible: true,
+    position: { x: 213.9, y: 1470.25, node: 'a' },
+    hp: 130,
+    spawnProtection: 15,
+    gun: 'Beretta',
+    aiWaypoint: 'a',
+    initialPlayerProtection: 75,
+    initialBotProtection: 15,
+  });
+});

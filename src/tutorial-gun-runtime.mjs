@@ -32,7 +32,9 @@ export function createTutorialGunRuntime({ gunId, ammoMultiplier = 1 } = {}) {
     // Guns.setGuns() assigns dynRecoil immediately. dynRecoilMod is assigned
     // later by Guns.EnterFrame, after Player.EnterFrame has had its shot.
     dynRecoil: gun.recoil,
-    dynRecoilMod: null,
+    // AS3 Number instance fields default to 0. AI can call Guns.shoot()
+    // before the first Guns.EnterFrame refreshes this value.
+    dynRecoilMod: 0,
     ammo: {
       clipCur: clipMax,
       clipMax,
@@ -102,6 +104,17 @@ function sourceShoot(state, { human }) {
 // source tick afterwards.
 export function advanceTutorialGunRuntime(state, { human = true, unit } = {}) {
   let result = state.mDown ? sourceShoot(state, { human }) : { state, fired: false, bullet: null };
+  let nextState = result.state;
+  if (nextState.shootDelay) nextState = { ...nextState, shootDelay: nextState.shootDelay - 1 };
+  nextState = sourceScatter(nextState, unit);
+  return { state: nextState, fired: result.fired, action: result.fired ? 'fire' : null, bullet: result.bullet };
+}
+
+// AI.EnterFrame calls Guns.shoot() directly after its source probability
+// gate. Unlike Player it has no mDown edge or non-auto shotPressed latch;
+// UnitEnterFrame still immediately runs Guns.EnterFrame afterwards.
+export function advanceTutorialAiGunRuntime(state, { shouldShoot = false, unit } = {}) {
+  const result = shouldShoot ? sourceShoot(state, { human: false }) : { state, fired: false, bullet: null };
   let nextState = result.state;
   if (nextState.shootDelay) nextState = { ...nextState, shootDelay: nextState.shootDelay - 1 };
   nextState = sourceScatter(nextState, unit);

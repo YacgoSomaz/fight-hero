@@ -44,7 +44,9 @@ test('aimed limbs remain on the decoded arm holder while the head uses its own o
   assert.deepEqual(parts.find(({ id }) => id === 'arm2').position, { x: .3, y: -42 });
   assert.deepEqual(parts.find(({ id }) => id === 'head').position, { x: 1.9, y: -49.4 });
   assert.deepEqual(parts.find(({ id }) => id === 'arm1').offset, { x: -9, y: -15 });
-  assert.deepEqual(parts.find(({ id }) => id === 'head').matrix.map((value) => Number(value.toFixed(3))), [0.574, 0.789, -0.79, 0.576]);
+  // Unit.as retains the source scale magnitude before applying its 60% head
+  // aim rotation; these values intentionally are not the raw frame skew.
+  assert.deepEqual(parts.find(({ id }) => id === 'head').matrix.map((value) => Number(value.toFixed(3))), [0.586, 0.811, -0.806, 0.59]);
 });
 
 test('an unavailable original timeline frame produces no invented body pose', () => {

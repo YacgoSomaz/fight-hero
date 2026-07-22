@@ -24,3 +24,11 @@ export async function loadMapLayers(visual, makeImage = browserImage) {
   ]);
   return { sky, map, terrain };
 }
+
+// A timeline wall is a single original SWF symbol with multiple source frames.
+// Keep frame metadata paired with its loaded image so a source transition can
+// switch its collision image atomically later on.
+export async function loadSourceWallFrames(source, makeImage = browserImage) {
+  const images = await Promise.all(source.frames.map(({ file }) => loadLayer(file, makeImage)));
+  return source.frames.map((frame, index) => ({ ...frame, image: images[index] }));
+}

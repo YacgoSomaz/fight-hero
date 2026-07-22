@@ -173,6 +173,20 @@ function unitActions(body) {
     if (guns) { result.push({ type: 'setGuns', target: 'player', primary: guns[1], secondary: guns[2] }); continue; }
     const noAim = line.match(/this\.unitInfo\.extra\.noAim = (true|false)/);
     if (noAim) { result.push({ type: 'setNoAim', target: 'player', value: noAim[1] === 'true' }); continue; }
+    if (/this\.status\.heal\(this\.status\.hpMax,false,true\)/.test(line)) {
+      result.push({ type: 'healToMax', target: 'player', show: false, force: true });
+      continue;
+    }
+    const damage = line.match(/this\.status\.damage\(this\.status\.hpCur \* ([\d.]+),this,Stats_Guns\.gunOb\["([^"]+)"\],\{\},(true|false)\)/);
+    if (damage) {
+      result.push({ type: 'damageCurrentHealthFraction', target: 'player', fraction: Number(damage[1]), source: damage[2], extra: {}, force: damage[3] === 'true' });
+      continue;
+    }
+    const noJump = line.match(/this\.mov\.noJump = (true|false)/);
+    if (noJump) { result.push({ type: 'setNoJump', target: 'player', value: noJump[1] === 'true' }); continue; }
+    const sound = line.match(/SH\.playSound\(([A-Za-z0-9_]+)\)/);
+    if (sound) { result.push({ type: 'playSound', sound: sound[1] }); continue; }
+    if (/this\.gun\.swapGuns\(\)/.test(line)) { result.push({ type: 'swapGuns', target: 'player' }); continue; }
     const difficulty = line.match(/(?:this\.)?game\.units\[(\d+)\]\.setDiffStats\((\d+),(true|false)\)/);
     if (difficulty) { result.push({ type: 'setDiffStats', target: `unit${difficulty[1]}`, difficulty: Number(difficulty[2]), reset: difficulty[3] === 'true' }); continue; }
     const spawn = line.match(/(?:this\.)?game\.units\[(\d+)\]\.spawn\((-?\d+),(-?\d+),"([^"]+)"\)/);

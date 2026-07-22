@@ -296,6 +296,33 @@ export const SOURCE_CAMPAIGN_ONE_SCRIPT = Object.freeze({
           "seconds": 5,
           "force": true,
           "voice": "V_Ca1_8"
+        },
+        {
+          "type": "healToMax",
+          "target": "player",
+          "show": false,
+          "force": true
+        },
+        {
+          "type": "damageCurrentHealthFraction",
+          "target": "player",
+          "fraction": 0.8,
+          "source": "env",
+          "extra": {},
+          "force": true
+        },
+        {
+          "type": "setNoJump",
+          "target": "player",
+          "value": true
+        },
+        {
+          "type": "playSound",
+          "sound": "S_Mine1"
+        },
+        {
+          "type": "playSound",
+          "sound": "S_Pan"
         }
       ],
       "showDownArrowsState": 10,
@@ -306,6 +333,10 @@ export const SOURCE_CAMPAIGN_ONE_SCRIPT = Object.freeze({
     {
       "state": 11,
       "effects": [
+        {
+          "type": "playSound",
+          "sound": "S_Equip"
+        },
         {
           "type": "message",
           "target": "player",
@@ -321,8 +352,17 @@ export const SOURCE_CAMPAIGN_ONE_SCRIPT = Object.freeze({
           "secondary": "USP"
         },
         {
+          "type": "swapGuns",
+          "target": "player"
+        },
+        {
           "type": "hudFrame",
           "frameLabel": "tutswitch"
+        },
+        {
+          "type": "setNoJump",
+          "target": "player",
+          "value": false
         }
       ],
       "showDownArrowsState": 11,

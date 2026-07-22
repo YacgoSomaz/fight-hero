@@ -7,9 +7,9 @@
 ### 后续：Unit symbol 687 头顶当前生命条（仍未完成 HUD）
 
 - 原始证据：`Unit` 是 symbol 687，其 frame 1 Display List 将 `bar_hp`（symbol 670）以矩阵 `c9 45 3f 27 2f 0c de 4a 0b` 放在本地 `(-27,-76.25)`，纵向缩放 `0.61224365234375`；`Status.as:setBars()` 写 `bar_hp.width = hpCur / hpMax * (40 + hpMax / 10)`；`Unit.as:setTeam()` 提供三队的 ColorTransform 色值。
-- 网页承载：`src/tutorial-unit-overhead-hud.mjs` 仅返回这份原位置、原 670 PNG、`Status` 已计算的宽度及原 ColorTransform 颜色；`tutorial-scene-preview.mjs` 以 `source-in` 模拟 Flash 色变换，给活着的 source player/NPC 绘制。没有自制矩形、标签或位置估算。
+- 网页承载：`src/tutorial-unit-overhead-hud.mjs` 返回这份原位置、原 670 PNG、`Status` 已计算的 HP/受伤宽度及原 ColorTransform；`bar_hurt` 直接解析其 Display List 的 `#f90000`、alpha `128/256`，并按 `Status.setBars()` 的实时 x 值连接在 HP 条右端。`tutorial-scene-preview.mjs` 以 `source-in` 模拟 Flash 色变换，给活着的 source player/NPC 绘制。没有自制矩形、标签或位置估算。
 - TDD：`13ecb63→6a08394`（源 HUD 计划）与 `99e68d9→f9f3170`（场景承载）为 RED→GREEN；`0fa60dd→629502f` 使场景帧循环错误可见，而不是保留“ready 但黑屏”的假健康状态。
-- 严格边界：只接入了 **bar_hp**，没有原 `bar_hurt`、姓名/等级 TextField、图标、底部职业/生命/弹药/经验动态 UI，更没有原版截图对照；因此仍不得称“头顶 HUD 完成”或“Campaign 1 可玩”。
+- 严格边界：已接入 **bar_hp/bar_hurt**，但没有姓名/等级 TextField、图标、底部职业/生命/弹药/经验动态 UI，更没有原版截图对照；因此仍不得称“头顶 HUD 完成”或“Campaign 1 可玩”。
 
 - 原始证据：`assets/reverse/ffdec-deep-20260720/scripts/AI.as`、`Arena.as`、`NodeWaypoint.as`、`NodeAiAction.as` 与解包后的 `ARENA_SOURCE_LAYOUTS.tut`。`NodeAiAction` symbol 1268 的本地矩形为 69×69，网页按原 Display List matrix 得到实际 `width/height`，不以自制导航网格代替。
 - 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`，并以 `advanceCampaignOneSessionAiMovement()` 将 key/jump 消费到同一份 `tutorial-movement.mjs`（`Movement.as`）状态。

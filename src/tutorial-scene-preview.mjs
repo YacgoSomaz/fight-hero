@@ -166,10 +166,34 @@ try {
   function syncPlayerCollisionState() {
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
     if (!sourcePlayer) throw new Error('Campaign 1 source player collision record is unavailable');
+    // Player.EnterFrame returns immediately while Unit.die() owns this actor.
+    // Never overwrite its corpse/respawn position with stale local input.
+    if (sourcePlayer.dead) return;
     sourcePlayer.position = { ...player.position };
     sourcePlayer.scaleX = aimState.flip ? -1 : 1;
     sourcePlayer.crouching = movementState.crouching;
     sourcePlayer.movement = { xVelocity: movementState.xVel, yVelocity: movementState.yVel };
+  }
+
+  // Player.as calls unitSpawn() only after its dead-frame timer reaches zero.
+  // The source session has then reset UnitMC, Movement, Status and the exact
+  // Arena NodeSpawn position. Rebuild the visible binding from that session
+  // record instead of continuing to display the dead local actor at its old
+  // coordinate or borrowing a generic quick-match respawn.
+  function synchronizePlayerSourceRespawn() {
+    const binding = createTutorialActorBindings(session).actors.find(({ id }) => id === 'unit0');
+    if (!binding?.spawned || !binding.position) throw new Error('Campaign 1 Player respawn has no source actor binding');
+    player = binding;
+    actorState = createTutorialActorPlayback(binding);
+    movementState = createTutorialMovementState({ noJump: binding.noJump });
+    movementKeys = 0;
+    aimState = {
+      aimX: binding.position.x + 200,
+      aimY: binding.position.y - 50,
+      aimRotation: 0,
+      reloadRotation: 0,
+    };
+    gunState = null;
   }
 
   // Campaign actors retain their own source UnitMC child skin and the weapon
@@ -287,19 +311,19 @@ try {
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
     drawParallax(layers.map, backgroundCrop, arenaPosition, wall);
     drawArena(layers.terrain, terrainCrop, arenaPosition);
-    const screen = worldToTutorialScreen(player.position, arenaPosition);
-    const sample = sampleTutorialActorPlayback(actorState, source, { aim: aimState });
-    // `none` and later weapons outside this decoded source subset must remain
-    // invisible rather than borrowing M4 or USP2 art.
-    const pose = player.guns.active === actorState.weaponId
-      ? sample.pose
-      : { ...sample.pose, gunParts: [], muzzleParts: [] };
-    context.save();
-    context.translate(screen.x, screen.y);
-    drawTutorialUnitPose(context, pose, assets);
-    context.restore();
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
     if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) {
+      const screen = worldToTutorialScreen(player.position, arenaPosition);
+      const sample = sampleTutorialActorPlayback(actorState, source, { aim: aimState });
+      // `none` and later weapons outside this decoded source subset must remain
+      // invisible rather than borrowing M4 or USP2 art.
+      const pose = player.guns.active === actorState.weaponId
+        ? sample.pose
+        : { ...sample.pose, gunParts: [], muzzleParts: [] };
+      context.save();
+      context.translate(screen.x, screen.y);
+      drawTutorialUnitPose(context, pose, assets);
+      context.restore();
       renderTutorialUnitOverheadBar(sourcePlayer);
     }
     // Game.units owns this authored order. Only live, visible source Units
@@ -430,7 +454,15 @@ try {
           });
         }
       }
+      const sourcePlayerBeforeUnits = session.actors.find(({ id }) => id === 'unit0');
+      const playerWasDead = Boolean(sourcePlayerBeforeUnits?.dead);
       advanceCampaignOneSessionUnits(session);
+      const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+      const playerRespawned = Boolean(playerWasDead && !sourcePlayer?.dead);
+      if (playerRespawned) {
+        synchronizePlayerSourceRespawn();
+        syncPlayerRestrictionsFromSourceSession();
+      }
       const aiMovements = advanceCampaignOneSessionAiMovement(session, { wall: tutorialWorld.wall });
       syncSceneActorStates();
       for (const movement of aiMovements) {
@@ -443,25 +475,29 @@ try {
         const sceneActorState = sceneActorStates.get(sourceActor.id);
         if (sceneActorState) sceneActorStates.set(sourceActor.id, advanceTutorialActorPlayback(sceneActorState, source));
       }
-      const movement = stepTutorialMovement({
-        state: movementState,
-        actor: player,
-        wall: tutorialWorld.wall,
-        keys: movementKeys,
-      });
-      player = movement.actor;
-      movementState = movement.state;
-      syncPlayerCollisionState();
-      applyTutorialFootContact(tutorialWorld, {
-        x: player.position.x,
-        y: player.position.y + 1,
-        human: player.human,
-      });
-      syncPlayerRestrictionsFromSourceSession();
-      actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
-      if (movement.aim) aimState = { ...aimState, aimX: movement.aim.x, aimY: movement.aim.y };
-      arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);
-      actorState = advanceTutorialActorPlayback(actorState, source, { advanceArm: !gunTick.fired });
+      if (!sourcePlayer?.dead) {
+        const movement = stepTutorialMovement({
+          state: movementState,
+          actor: player,
+          wall: tutorialWorld.wall,
+          keys: movementKeys,
+        });
+        player = movement.actor;
+        movementState = movement.state;
+        syncPlayerCollisionState();
+        applyTutorialFootContact(tutorialWorld, {
+          x: player.position.x,
+          y: player.position.y + 1,
+          human: player.human,
+        });
+        syncPlayerRestrictionsFromSourceSession();
+        actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
+        if (movement.aim) aimState = { ...aimState, aimX: movement.aim.x, aimY: movement.aim.y };
+        arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);
+        // Player.spawn() returns immediately after UnitMC.goto('idle'), so a
+        // fresh source actor must retain that frame for this tick.
+        if (!playerRespawned) actorState = advanceTutorialActorPlayback(actorState, source, { advanceArm: !gunTick.fired });
+      }
       accumulated -= TICK_MS;
     }
     render();

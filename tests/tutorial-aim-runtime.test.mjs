@@ -60,7 +60,7 @@ test('Tutorial AI Unit aim maps its source target directly into UnitMC arm and h
   });
 
   assert.deepEqual({ aimX: state.aimX, aimY: state.aimY, flip: state.flip }, { aimX: 300, aimY: 50, flip: false });
-  near(state.aimRotation, 75.25643716352926);
-  near(state.armRotation, -14.74356283647074);
-  near(state.headRotation, -8.846137701882444);
+  near(state.aimRotation, 81.02737338510363);
+  near(state.armRotation, -8.97262661489637);
+  near(state.headRotation, -5.383575968937822);
 });

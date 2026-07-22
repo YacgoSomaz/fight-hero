@@ -40,30 +40,24 @@ export function tutorialArenaPointer(stageMouse, arenaPosition) {
   return { x: stageMouse.x - arenaPosition.x, y: stageMouse.y - arenaPosition.y };
 }
 
-// Source port of Player.EnterFrame's aimX/aimY smoothing and Unit.EnterFrame
-// arm/head transform calculations. `aimRotation` is intentionally read before
-// it is rewritten: the source flip calculation has that one-source-tick lag.
-export function advanceTutorialPlayerAim(sourceState, {
+// Direct Unit.as EnterFrame transform segment shared by Player and AI. AI.as
+// has already smoothed its target before it reaches UnitEnterFrame, whereas
+// Player performs source pointer smoothing in advanceTutorialPlayerAim().
+// `aimRotation` is intentionally read before it is rewritten: the source
+// flip calculation has that one-source-tick lag.
+export function deriveTutorialUnitAim(sourceState, {
   actor,
-  arenaMouse,
   armHolder,
   mcRotation = 0,
   unitRotation = 0,
   spinRotation = 0,
   jumping = false,
-  noAim = false,
   reloading = false,
-  stageMouse,
 } = {}) {
-  if (![sourceState?.aimX, sourceState?.aimY, sourceState?.aimRotation, sourceState?.reloadRotation, actor?.position?.x, actor?.position?.y, arenaMouse?.x, arenaMouse?.y, armHolder?.x, armHolder?.y, mcRotation, unitRotation, spinRotation].every(Number.isFinite)) {
-    throw new TypeError('Tutorial Player source aim state and coordinates are required');
+  if (![sourceState?.aimX, sourceState?.aimY, sourceState?.aimRotation, sourceState?.reloadRotation, actor?.position?.x, actor?.position?.y, armHolder?.x, armHolder?.y, mcRotation, unitRotation, spinRotation].every(Number.isFinite)) {
+    throw new TypeError('Tutorial Unit source aim state and coordinates are required');
   }
-  let aimX = sourceState.aimX;
-  let aimY = sourceState.aimY;
-  if (!noAim) {
-    aimX += (arenaMouse.x - aimX) * 0.5;
-    aimY += (arenaMouse.y - aimY) * 0.5;
-  }
+  const { aimX, aimY } = sourceState;
   const flip = jumping
     ? aimX < actor.position.x
     : fixRotation(sourceState.aimRotation - mcRotation) < 0;
@@ -85,6 +79,43 @@ export function advanceTutorialPlayerAim(sourceState, {
     armRotation: reloadRotation + rotArm,
     headRotation: reloadRotation + rotArm * 0.6,
     flip,
+  });
+}
+
+// Source port of Player.EnterFrame's pointer-specific aimX/aimY smoothing,
+// followed by its Unit.as arm/head transform calculation.
+export function advanceTutorialPlayerAim(sourceState, {
+  actor,
+  arenaMouse,
+  armHolder,
+  mcRotation = 0,
+  unitRotation = 0,
+  spinRotation = 0,
+  jumping = false,
+  noAim = false,
+  reloading = false,
+  stageMouse,
+} = {}) {
+  if (![sourceState?.aimX, sourceState?.aimY, arenaMouse?.x, arenaMouse?.y].every(Number.isFinite)) {
+    throw new TypeError('Tutorial Player source pointer aim state and coordinates are required');
+  }
+  let aimX = sourceState.aimX;
+  let aimY = sourceState.aimY;
+  if (!noAim) {
+    aimX += (arenaMouse.x - aimX) * 0.5;
+    aimY += (arenaMouse.y - aimY) * 0.5;
+  }
+  const unit = deriveTutorialUnitAim({ ...sourceState, aimX, aimY }, {
+    actor,
+    armHolder,
+    mcRotation,
+    unitRotation,
+    spinRotation,
+    jumping,
+    reloading,
+  });
+  return Object.freeze({
+    ...unit,
     aimerStage: noAim ? { x: -1000, y: -1000 } : (stageMouse ? { x: stageMouse.x, y: stageMouse.y } : null),
   });
 }

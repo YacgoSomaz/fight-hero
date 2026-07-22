@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { advanceTutorialPlayerAim, canvasPointToTutorialStage, tutorialArenaPointer } from '../src/tutorial-aim-runtime.mjs';
+import { advanceTutorialPlayerAim, canvasPointToTutorialStage, deriveTutorialUnitAim, tutorialArenaPointer } from '../src/tutorial-aim-runtime.mjs';
 
 function near(actual, expected, epsilon = 1e-9) {
   assert.ok(Math.abs(actual - expected) <= epsilon, `expected ${actual} to be within ${epsilon} of ${expected}`);
@@ -42,4 +42,25 @@ test('Tutorial Player aim preserves the source half-step smoothing, arm-holder o
   assert.deepEqual({ aimX: blocked.aimX, aimY: blocked.aimY, aimerStage: blocked.aimerStage }, {
     aimX: 305, aimY: 45, aimerStage: { x: -1000, y: -1000 },
   });
+});
+
+// User journey: a Campaign AI has already smoothed aimX/aimY inside AI.as.
+// Its Unit.as EnterFrame must therefore use those exact coordinates for the
+// arm/head transforms without applying Player's pointer half-step a second
+// time.
+test('Tutorial AI Unit aim maps its source target directly into UnitMC arm and head rotations', () => {
+  const state = deriveTutorialUnitAim({ aimX: 300, aimY: 50, aimRotation: 0, reloadRotation: 0 }, {
+    actor: { position: { x: 100, y: 100 } },
+    armHolder: { x: 10, y: -20 },
+    mcRotation: 0,
+    unitRotation: 0,
+    spinRotation: 0,
+    jumping: false,
+    reloading: false,
+  });
+
+  assert.deepEqual({ aimX: state.aimX, aimY: state.aimY, flip: state.flip }, { aimX: 300, aimY: 50, flip: false });
+  near(state.aimRotation, 75.25643716352926);
+  near(state.armRotation, -14.74356283647074);
+  near(state.headRotation, -8.846137701882444);
 });

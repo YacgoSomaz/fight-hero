@@ -16,6 +16,7 @@ import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 import { getUnitOverheadHud } from './unit-status.mjs';
 import { getUnitRenderPlan } from './unit-render-plan.mjs';
+import { getUnitDomRigFrame } from './unit-dom-rig.mjs';
 import { decodeFlashWallImage } from './wall-mask.mjs';
 
 const canvas = document.querySelector('#game');
@@ -565,23 +566,62 @@ function renderActorOverlay() {
   const active = new Set();
   for (const player of world.players) {
     active.add(player.id);
-    let sprite = actorSprites.get(player.id);
-    if (!sprite) {
-      sprite = image('./public/assets/unit-parts/unit-idle.png');
+    let actor = actorSprites.get(player.id);
+    if (!actor) {
+      const root = document.createElement('div');
+      root.className = 'actor-unit';
+      const sprite = image('./public/assets/unit-parts/unit-idle.png');
       sprite.className = 'actor-sprite';
-      actorSprites.set(player.id, sprite);
-      actorOverlay.append(sprite);
+      const rig = document.createElement('div');
+      rig.className = 'actor-rig';
+      root.append(sprite, rig);
+      actor = { root, sprite, rig, parts: new Map() };
+      actorSprites.set(player.id, actor);
+      actorOverlay.append(root);
     }
     const screen = worldToScreen(player, camera, canvas.width, canvas.height);
-    sprite.hidden = !player.alive;
-    sprite.style.width = `${75 * width / canvas.width}px`;
-    sprite.style.height = `${90 * height / canvas.height}px`;
-    sprite.style.left = `${screen.x * width / canvas.width}px`;
-    sprite.style.top = `${screen.y * height / canvas.height}px`;
-    sprite.style.transform = `translate(-50%, -100%) scaleX(${player.facing})`;
+    const scale = width / canvas.width;
+    actor.root.hidden = !player.alive;
+    actor.root.style.left = `${screen.x * scale}px`;
+    actor.root.style.top = `${screen.y * scale}px`;
+    actor.root.style.transform = `scale(${scale * player.facing}, ${scale})`;
+    const rig = getUnitDomRigFrame({
+      frames: unitTimeline?.frames,
+      frameNumber: player.animationFrame,
+      aimAngle: player.aimAngle,
+      facing: player.facing,
+      recoil: player.recoil,
+    });
+    // Keep the complete original source sprite only until the decoded
+    // UnitMC frame is available.  Once it is, every visible limb comes from
+    // the original body-part export and original frame matrix below.
+    actor.sprite.hidden = !player.alive || rig.length >= 1;
+    actor.rig.hidden = !player.alive || rig.length === 0;
+    const activeParts = new Set();
+    for (const part of rig) {
+      activeParts.add(part.id);
+      let node = actor.parts.get(part.id);
+      if (!node) {
+        const imageNode = image(part.source);
+        const wrapper = document.createElement('span');
+        wrapper.className = 'actor-rig-part';
+        wrapper.append(imageNode);
+        actor.parts.set(part.id, { wrapper, image: imageNode });
+        actor.rig.append(wrapper);
+        node = actor.parts.get(part.id);
+      }
+      const [a, b, c, d] = part.matrix;
+      node.wrapper.hidden = false;
+      node.wrapper.style.left = `${part.position.x}px`;
+      node.wrapper.style.top = `${part.position.y}px`;
+      node.wrapper.style.transform = `matrix(${a}, ${b}, ${c}, ${d}, 0, 0)`;
+      node.image.style.left = `${part.offset.x}px`;
+      node.image.style.top = `${part.offset.y}px`;
+    }
+    for (const [id, node] of actor.parts) node.wrapper.hidden = !activeParts.has(id);
   }
-  for (const [id, sprite] of actorSprites) {
-    if (!active.has(id)) { sprite.remove(); actorSprites.delete(id); }
+  for (const [id, actor] of actorSprites) {
+    if (!active.has(id)) { actor.root.remove(); actorSprites.delete(id); }
   }
 }
 

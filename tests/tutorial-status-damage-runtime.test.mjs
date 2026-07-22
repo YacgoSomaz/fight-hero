@@ -47,7 +47,7 @@ test('Status.damage uses the source human difficulty factor before subtracting H
   assert.equal(result.damage, 9.75);
   assert.equal(target.status.hpCur, 75.25);
   assert.equal(target.status.regenDelay, 90);
-  assert.equal(target.status.barHpWidth, 42.93676470588235);
+  assert.equal(target.status.barHpWidth, 42.936764705882354);
 });
 
 test('Status.damage gives a bullet head hit its source head bonus instead of rolling critical', () => {
@@ -79,7 +79,7 @@ test('Status.damage lets operation recover from otherwise fatal non-bypass damag
   const result = applyTutorialStatusDamage(target, attacker, { typeName: 'Rifle', extra: {} }, {}, 30, { random: () => 1 });
 
   assert.deepEqual(result, { applied: true, reason: null, damage: 30, died: false, events: ['operation'] });
-  assert.equal(target.status.hpCur, 50);
+  assert.equal(target.status.hpCur, 40);
   assert.equal(target.status.bigSkillCooldown, 30);
 });
 

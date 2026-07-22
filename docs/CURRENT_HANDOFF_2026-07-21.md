@@ -488,6 +488,13 @@ npm start
 - TDD：`093fff9→bdd087f` 锁 150→下一帧、真实第一 NodeSpawn `(213.9,1470.25,'a')`、AI 的 15 帧和 Player 的 75 帧保护；`4af9c16→fe4a4df` 锁页面不能继续渲染/移动死者，并必须采用 session 的来源重生位置。全量 `npm test` **333/333** 通过，覆盖率为 **99.01% 行、83.60% 分支、96.53% 函数**。
 - 严格边界：这不是完整死亡/重生视觉。尸体仍没有 PhysActor/Box2D 可视层、倒计时文字/音效/特效、计分/经验/击杀条、胜负或逐帧 SWF 对照；本环境仍未取得真实原 SWF 与网页同输入的截图差分。它只使第一关的一条来源生命周期不再永远卡死，绝不能称为战役或游戏 1:1 完成。
 
+## 2026-07-22：Campaign 1 普通击杀的原 Score → TDM → 存档经验链（仍非可见 HUD）
+
+- 原始证据：`Unit.die()` 在 `!gameEnded` 的普通异队击杀分支先让死者 `Score.addDeath()`，再让击杀者 `Score.addKill()`、按 `headMult` 增加 `headshots`、按死者 `unitInfo.num` 增加 `killedN`；人类击杀的奖赏为 `ceil(min(Stats_Classes.getUnitExp(attacker.level + 3), Stats_Classes.getUnitExp(target.level)))`。`Stats_Classes.getUnitExp(level)` 为 `4 + level * 1.4`。`Score.updateScore()` 在 TDM 写 `pscore = kills - suicides - betrayals`，`MatchSettings.updateScores()` 汇总 team 1/2、在 score limit 截断并通知 HUD。`Hud.addExp()` 将奖励写入 `SD.classSaves[class].funds/exp`，用 `level² * 3 + 40` 判断升级，达到阈值时清零 exp 并升一级。
+- 承载：`campaign-one-session.mjs` 为每个来源 Unit 建立完整 Score 字段，第一关创建独立、可变的 `SD.Init()` classSaves 副本和 `{mode:'tdm',scoreLimit:15}`。`applyCampaignOneSessionDeath()` 在来源尸体逻辑前执行该原数值分支；它将普通人类击杀更新到 actor `pscore`、两队总分和职业存档。后续 `applyCampaignOneSessionFrame()` 让已解包的 Campaign `team1score` 脚本在下一 source frame 消费真实总分。
+- TDD：`926cd82` 是有效 RED（session 尚无 Score），`e1981b8` 是 GREEN。断言锁定 Lv.1 玩家击杀 Lv.1 Tank 的原结果：`ceil(min(9.6,5.4))=6`，以及 kills/headshots/killed4/multikill/spree/killtimer=105、TDM `1:0`、Medic save 的 `exp=6/funds=6`。完整 `npm test` 为 **334/334 通过**；`npm run test:coverage` 为 **98.94% 行、83.42% 分支、96.58% 函数**。
+- 严格边界：本轮没有把这份 session 状态接进 `tutorial-scene-preview` 或 `main.mjs` 的原 1462/1477 HUD，也没有击杀 feed、升级粒子/音效、杀连、吸血/护甲、友伤/自杀、其他模式、胜负画面或原 SWF 同输入截图差分。它只迁移并回归了第一关“普通人类击杀”的真实数值状态，不能称为 HUD、关卡、战役或游戏 1:1 完成。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

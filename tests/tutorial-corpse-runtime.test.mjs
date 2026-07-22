@@ -1,0 +1,37 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { advanceTutorialCorpseFrame, createTutorialCorpse } from '../src/tutorial-corpse-runtime.mjs';
+
+test('PhysWorld.createCorpse preserves the original PhysActor origin, mirrored parts and initial body/head impulses', () => {
+  const target = {
+    id: 'unit1', position: { x: 100, y: 100 }, scaleX: 1, skinFrame: 105,
+    movement: { xVelocity: 2, yVelocity: -3 },
+  };
+  const attacker = { id: 'unit0', position: { x: 50, y: 100 } };
+  const corpse = createTutorialCorpse({
+    target, attacker, gun: { id: 'USP2', force: 3, splash: 0 }, extra: { headMult: 1.5 }, random: () => 0.5,
+  });
+
+  assert.deepEqual({ id: corpse.id, sourceUnitId: corpse.sourceUnitId, position: corpse.position, flip: corpse.flip, skinFrame: corpse.skinFrame, partCount: corpse.parts.length }, {
+    id: 'corpse-unit1', sourceUnitId: 'unit1', position: { x: 100, y: 60 }, flip: 1, skinFrame: 105, partCount: 14,
+  });
+  assert.deepEqual(corpse.parts.slice(0, 3).map(({ kind, position }) => ({ kind, position })), [
+    { kind: 'hand', position: { x: 119, y: 68 } },
+    { kind: 'lowerArm', position: { x: 111, y: 68 } },
+    { kind: 'upperArm', position: { x: 101, y: 61 } },
+  ]);
+  assert.deepEqual(corpse.bodyImpulses, [{ x: 0, y: 0 }, { x: 2, y: -3 }, { x: 3, y: 0 }]);
+  assert.ok(Math.abs(corpse.headImpulses[0].x - 7.844645405527361) < 1e-12);
+  assert.ok(Math.abs(corpse.headImpulses[0].y + 1.5689290811054724) < 1e-12);
+});
+
+test('PhysActor.EnterFrame removes a corpse exactly on source frame 150', () => {
+  const corpse = createTutorialCorpse({
+    target: { id: 'unit1', position: { x: 0, y: 40 }, scaleX: -1, skinFrame: 5, movement: { xVelocity: 0, yVelocity: 0 } },
+    attacker: { id: 'unit0', position: { x: 10, y: 40 } }, gun: { id: 'USP2', force: 0, splash: 0 }, extra: {}, random: () => 0.5,
+  });
+  corpse.fc = 149;
+
+  assert.deepEqual(advanceTutorialCorpseFrame(corpse), { removed: true });
+  assert.equal(corpse.removed, true);
+});

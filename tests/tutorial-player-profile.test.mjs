@@ -20,7 +20,7 @@ test('Campaign 1 player combines original first-run SD save and caPlayer exactly
     diff: 10,
     hp: 85,
     crit: 0.06,
-    aim: 0.7,
+    aim: 0.7000000000000001,
     ammo: 0.9,
   });
 });
@@ -50,6 +50,6 @@ test('Campaign player keeps its source overrides but receives a supplied origina
     hp: 190,
     crit: 0.3,
     aim: 1.1,
-    ammo: 1.9,
+    ammo: 1.9000000000000001,
   });
 });

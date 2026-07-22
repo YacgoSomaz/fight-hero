@@ -40,3 +40,19 @@ test('Tutorial line bullet rejects an unresolved source scatter profile instead 
     wall: { isSolid: () => false, colorAt: () => '' },
   }), /dynRecoilMod/);
 });
+
+test('Tutorial USP2 stops at the first original living unit hit box after checking wall pixels', () => {
+  const shooter = {
+    id: 'unit0', team: 1, position: { x: 100, y: 100 }, aimRotation: 90, mcRotation: 0, armY: -42, scaleX: 1, dynRecoil: 0, dynRecoilMod: 0,
+  };
+  const enemy = { id: 'unit1', team: 2, position: { x: 205, y: 80 }, scaleX: 1, crouching: false, dead: false, blurred: false };
+  const trace = traceTutorialLineBullet({
+    gunId: 'USP2', shooter,
+    wall: { isSolid: () => false, colorAt: () => '' },
+    units: [shooter, enemy],
+    random: () => 0.5,
+  });
+
+  assert.deepEqual(trace.hit, { type: 'unit', target: enemy, extra: {} });
+  assert.deepEqual(trace.impact, { x: 195, y: 50 });
+});

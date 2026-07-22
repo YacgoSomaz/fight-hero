@@ -188,21 +188,18 @@ npm start
 
 ## 2026-07-22：Campaign 1 原角色身份与皮肤帧来源（仍不可启动）
 
-- 原始证据：`Stats_Classes.getClass()` 定义 Medic/Assassin/Commando/Tank 的 id、`startFrame`、`runType` 与 1–50 级线性数据；`Unit.setClass()` 的皮肤选择是 `unitInfo.frame = startFrame + skin`。Campaign 1 `Stats_Campaign.setPlr/addBot` 提供 Scientist / tank / soldier / medic 的 soldier 和 skin，且 Unit 4 `noSpawn=true`。
-- 承载：`private-assets/parse-stats-classes.mjs` 机械提取原类数据；`npm run extract:campaign` 新生成 `src/class-source.mjs`，并由 `tutorial-actor-bindings.mjs` 建立独立 Tutorial binding。其当前精确结果为 Scientist Medic skin 7→frame 57、Tank skin 5→105、Commando skin 5→155、Medic skin 5→55、未出生 Unit 4 Commando skin 1→151。
+- 原始证据：`Stats_Classes.getClass()` 定义 Medic/Assassin/Commando/Tank 的 id、`startFrame`、`runType` 与 1–50 级线性数据；`Unit.setClass()` 的皮肤选择是 `unitInfo.frame = startFrame + skin`，随后 `UnitMC.setSkin()` 将该数值写入 head/body/arm/leg/foot 等**子 MovieClip**。Campaign 1 `Stats_Campaign.setPlr/addBot` 提供 Scientist / tank / soldier / medic 的 soldier 和 skin，且 Unit 4 `noSpawn=true`。
+- 承载：`private-assets/parse-stats-classes.mjs` 机械提取原类数据；`npm run extract:campaign` 新生成 `src/class-source.mjs`，并由 `tutorial-actor-bindings.mjs` 建立独立 Tutorial binding。其当前精确子部件 skin index 为 Scientist Medic skin 7→57、Tank skin 5→105、Commando skin 5→155、Medic skin 5→55、未出生 Unit 4 Commando skin 1→151；这些不是 UnitMC 根时间轴编号。
 - 诚实边界：Campaign 原 Player 等级由 `MatchSettings.updatePlayer()` 读取保存档 `SD.classSaves[...]`，不是 Campaign 1 的静态值；绑定层明确将 level 保留为 `null`，不会偷用 prototype 的 level-1 Medic 数值。绑定层也尚未调用通用 engine、UnitMC DOM renderer 或浏览器输入。
-- TDD：`661ae7f`→`957ed58`（Stats_Classes 原记录/公式）；`1c39d19`→`2443653`（浏览器生成物一致性）；`6264b40`→`1f125c7`（Campaign 1 的五位 actor 身份、帧、出生/禁瞄准和枪械）。完整回归 162/162，覆盖率行 99.37%、分支 87.46%、函数 95.48%。
+- TDD：`661ae7f`→`957ed58`（Stats_Classes 原记录/公式）；`1c39d19`→`2443653`（浏览器生成物一致性）；`6264b40`→`1f125c7`（Campaign 1 的五位 actor 身份、帧、出生/禁瞄准和枪械）。完整回归 162/162，覆盖率行 99.37%、分支 87.45%、函数 95.48%。
 
-**下一位唯一正确步骤**：不要渲染“站着的 57/105/155 帧”作为游戏完成。先从原 `UnitMC` 时间轴导出/验证这些 skin frame 的完整 body-part display list，再建立 Tutorial 输入/Movement adapter；脚底 ARGB 碰撞、`noAim/noJump`、原枪械和相机都须在同一专用 world 中按输入回放验证。
+**下一位唯一正确步骤**：不要把 `57/105/155` 当根时间轴帧或渲染成站立整图。先按 `UnitMC.setSkin()` 的 head/body/arms/legs/feet 子层定位与导出这些 skin index，再把根时间轴的 run/jump/crouch/climb/fire/reload Display List 组合到各皮肤；脚底 ARGB 碰撞、`noAim/noJump`、原枪械和相机都须在同一专用 world 中按输入回放验证。
 
-## 2026-07-22：Tutorial actor 原完整皮肤帧渲染计划（仍不可启动）
+## 2026-07-22：纠正错误的 Tutorial skin→root-frame 映射
 
-- 原始资源：`public/assets/unit-frames/1..449.png` 是 UnitMC symbol 669 的本地直接导出。Campaign 1 所需的 57、105、155、55、151 均存在，不再以单一 Medic 合成图作五人外观替代。
-- 承载：`tutorial-actor-render-plan.mjs` 以 actor binding 的 `Unit.setClass(startFrame + skin)` 结果生成原 PNG 路径、出生可见性和原坐标。它不会自行画轮廓、重配颜色或把 `noSpawn` actor 偷换成站立单位。
-- TDD：`8741264`→`e293af5` 锁定五个路径、源文件存在性和 Unit 4 的 `visible=false`。完整回归 163/163，覆盖率行 99.37%、分支 87.50%、函数 95.51%。
-- 严格边界：这不是 UnitMC 动画或浏览器渲染完成。完整图仅为 source fallback；尚缺按 run/jump/crouch/climb/fire/reload 标签使用原 display list 的选择器，且其尚未进入 `main.mjs`。不要提前解除 Campaign 1 入口。
-
-**下一位唯一正确步骤**：把 Tutorial actor 的动态状态映射到原 UnitMC frame labels（非手切整帧），先对 Scientist 的禁瞄准/无枪→取得 USP→M4/USP 和 Tank/Commando/Medic 初始状态写输入回放 RED；然后才与专用 `TutorialWorld` 组合。
+- 发现：`public/assets/unit-frames/1..449.png` 是 UnitMC symbol 669 的**根动画时间轴**导出；`UnitMC.setSkin(57/105/155...)` 却是对嵌套 head/body/limb MovieClip 的 `gotoAndStop`。两者编号空间不同，不能相互替换。
+- 处理：`401540c` 是将语义改成 `skinFrame` 的有效 RED；`445799f` 为 GREEN，改名 binding 字段且删除 `tutorial-actor-render-plan.mjs` 与其错误的根 PNG 映射。此前 `8741264`→`e293af5` 已被该修复明确废止，不能作为渲染完成证据。
+- 严格边界：当前只保留正确的角色身份/skin index，尚无 Tutorial 可视 actor。下一步必须从原 SWF 的嵌套 skin Display List 导出子部件，而不是搜索同号根帧 PNG。
 
 ## 2026-07-22：原 Aimer 静态资源接入记录
 

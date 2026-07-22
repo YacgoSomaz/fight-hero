@@ -40,3 +40,21 @@ test('Tutorial gun runtime does not start a source shot while Player or the acti
   const blocked = advanceTutorialGunRuntime(held);
   assert.deepEqual({ fired: blocked.fired, state: blocked.state }, { fired: false, state: held });
 });
+
+test('Tutorial USP2 preserves source Guns.EnterFrame scatter modifiers and the pre-shot makeBullet recoil snapshot', () => {
+  let state = createTutorialGunRuntime({ gunId: 'USP2', ammoMultiplier: 0.9 });
+  let tick = advanceTutorialGunRuntime(state, {
+    human: true,
+    unit: { aim: 0.7000000000000001, crouching: true, jumping: false, xVelocity: 0, reflecting: false },
+  });
+  assert.equal(tick.state.dynRecoilMod, 2.34);
+
+  state = tutorialPlayerMouseDown(tick.state, { gameStarted: true, noShoot: false });
+  tick = advanceTutorialGunRuntime(state, {
+    human: true,
+    unit: { aim: 0.7000000000000001, crouching: false, jumping: false, xVelocity: 0, reflecting: false },
+  });
+  assert.deepEqual(tick.bullet, { gunId: 'USP2', dynRecoil: 3, dynRecoilMod: 2.34 });
+  assert.equal(tick.state.dynRecoil, 3.25);
+  assert.equal(tick.state.dynRecoilMod, 4.2250000000000005);
+});

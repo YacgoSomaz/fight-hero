@@ -75,9 +75,18 @@ test('source menu hit areas use the exported 1443×985 image coordinates, with n
 
 test('visible Chinese copy describes real selectable source-mission entries', () => {
   assert.equal(MENU_CHINESE_COPY.home.quickmatch, '快速对战');
-  assert.equal(MENU_CHINESE_COPY.campaign.availability, '可选择原始战役任务，并以已迁移地图与规则启动。');
-  assert.equal(MENU_CHINESE_COPY.challenges.availability, '可选择原始挑战任务，并以已迁移地图与规则启动。');
+  assert.equal(MENU_CHINESE_COPY.campaign.availability, '可浏览原始战役目录；未完整迁移的任务会显示真实缺口。');
+  assert.equal(MENU_CHINESE_COPY.challenges.availability, '可浏览原始挑战目录；未完整迁移的任务会显示真实缺口。');
   assert.equal(MENU_CHINESE_COPY.quickmatch.availability, '可开始：5 种已迁移的原始对战规则。');
+});
+
+test('campaign menu renders the selected source mission availability in the non-art margin', () => {
+  const main = readFileSync(new URL('../src/main.mjs', import.meta.url), 'utf8');
+  const missionOverlay = main.match(/function renderMissionOverlay\(screen\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+  assert.match(main, /getQuickMatchStatus/);
+  assert.match(missionOverlay, /addQuickValue\('mission-availability',\s*status\.message,\s*25\.0,\s*MENU_QUICK_SUMMARY_TOP,\s*50\.0\)/);
+  assert.match(main, /quickStatus\s*=\s*getQuickMatchStatus\(matchSelection\)\.message/);
 });
 
 test('the first visible menu is the source home screen with real menu controls', () => {

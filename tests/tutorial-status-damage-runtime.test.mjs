@@ -93,3 +93,77 @@ test('Status.damage preserves source teamkill early return for noAllyDmg', () =>
   assert.equal(extra.teamkill, true);
   assert.equal(target.status.hpCur, 85);
 });
+
+test('Status.damage layers the original campaign-bot, juggernaut, will and surge multipliers', () => {
+  const target = unit({
+    human: false,
+    team: 2,
+    hp: 200,
+    isJug: true,
+    skill: { id: 'will', value: 2 },
+  });
+  target.matchIsCampaign = true;
+  target.status.sSurge = 1;
+  const attacker = unit({ human: false, team: 1, diff: 5 });
+  attacker.status.sSurge = 1;
+  const result = applyTutorialStatusDamage(target, attacker, { typeName: 'Rifle', extra: {} }, {}, 100, { random: () => 1 });
+
+  assert.equal(result.damage, 10.510499999999999);
+  assert.equal(target.status.hpCur, 189.4895);
+  assert.deepEqual(result.events, ['ironwill']);
+  assert.equal(target.status.bigSkillCooldown, 40);
+});
+
+test('Status.damage carries teamkill and critical flags when allied damage is allowed', () => {
+  const target = unit({ human: true, team: 1, hp: 100 });
+  const primary = { typeName: 'Rifle', extra: { critical: 0.1, criticalDmg: 0.2 } };
+  const attacker = unit({ human: false, team: 1, diff: 10, crit: 0.2, primary });
+  const extra = {};
+  const result = applyTutorialStatusDamage(target, attacker, primary, extra, 10, { random: () => 0 });
+
+  assert.equal(result.damage, 4.65);
+  assert.deepEqual(result.events, ['critical']);
+  assert.deepEqual(extra, { teamkill: true, critMult: true });
+  assert.equal(target.status.hpCur, 95.35);
+});
+
+test('Status.damage keeps bypassed spawn protection and shield out of explosive resistance math', () => {
+  const targetPrimary = { typeName: 'Rifle', extra: { resist: 0.8, reduce: 0.25 } };
+  const target = unit({ human: true, hp: 100, shield: 20, skill: { id: 'resist', value: 0.5 }, primary: targetPrimary });
+  target.status.sSpawn = 5;
+  const explosive = { typeName: 'Explosive', extra: {} };
+  const attacker = unit({ human: false, diff: 10, primary: explosive, currentGun: explosive });
+  const result = applyTutorialStatusDamage(target, attacker, explosive, { splashMult: 0.5, shielded: true }, 100, { bypassProtection: true, random: () => 1 });
+
+  assert.equal(result.damage, 15);
+  assert.equal(target.status.hpCur, 85);
+  assert.equal(target.status.shCur, 20);
+});
+
+test('Status.damage triggers blur after surviving low health and reports death only for Unit.die to consume', () => {
+  const blurTarget = unit({ human: true, hp: 100, skill: { id: 'blur', value: 2 } });
+  blurTarget.status.hpCur = 40;
+  const attacker = unit({ human: false, diff: 10 });
+  const blurResult = applyTutorialStatusDamage(blurTarget, attacker, { typeName: 'Rifle', extra: {} }, {}, 20, { random: () => 1 });
+  assert.deepEqual(blurResult, { applied: true, reason: null, damage: 20, died: false, events: ['blur'] });
+  assert.equal(blurTarget.status.sBlur, 60);
+  assert.equal(blurTarget.status.bigSkillCooldown, 60);
+
+  const deathTarget = unit({ human: true, hp: 10 });
+  deathTarget.status.sReflect = 5;
+  const deathResult = applyTutorialStatusDamage(deathTarget, attacker, { typeName: 'Rifle', extra: {} }, {}, 15, { bypassProtection: true, random: () => 1 });
+  assert.deepEqual(deathResult, { applied: true, reason: null, damage: 15, died: true, events: ['die'] });
+  assert.equal(deathTarget.status.hpCur, 0);
+  assert.equal(deathTarget.dead, false);
+});
+
+test('Status.damage applies the self-hit noAllyDmg reduction instead of the teamkill return', () => {
+  const self = unit({ human: true, team: 1, hp: 100 });
+  const gun = { typeName: 'Rifle', extra: { noAllyDmg: true } };
+  self.gun.primary = gun;
+  self.gun.curGun = gun;
+  const result = applyTutorialStatusDamage(self, self, gun, {}, 10, { random: () => 1 });
+
+  assert.equal(result.damage, 4);
+  assert.equal(self.status.hpCur, 96);
+});

@@ -2,6 +2,13 @@
 
 本文件是下一位开发者或 AI 的当前入口。旧报告保留解包证据与历史过程；若它们和本文件冲突，以本文件、当前代码与测试为准。
 
+## 2026-07-22：原 AI 决策层与 Campaign 1 会话接入（未可玩）
+
+- 原始证据：`assets/reverse/ffdec-deep-20260720/scripts/AI.as`、`Arena.as`、`NodeWaypoint.as`、`NodeAiAction.as` 与解包后的 `ARENA_SOURCE_LAYOUTS.tut`。`NodeAiAction` symbol 1268 的本地矩形为 69×69，网页按原 Display List matrix 得到实际 `width/height`，不以自制导航网格代替。
+- 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`。
+- TDD：`9450a59→570cc91` 为 AI runtime 的 RED→GREEN；`b79626c→d181cce` 为 Campaign 会话接入 RED→GREEN。当前完整回归为 `npm test` **283/283**，全局覆盖率 **98.98% 行、82.75% 分支、96.06% 函数**。
+- 严格边界：这只迁移了**决策状态**。`tutorial-scene-preview.mjs` 尚未消费 NPC 的 `aiKeys`、`aiJumpRequested`、`aim`、`aiShouldShoot`，因此 NPC 不会因此真实走路、攀爬、跳跃、瞄准或开枪；不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应以 `Movement.doJump/EnterFrame`、UnitMC motion 和 Guns.shoot 的原始阶段顺序消费这些字段，并对原版输入/截图做验证。
+
 ## 快速开始
 
 ```powershell

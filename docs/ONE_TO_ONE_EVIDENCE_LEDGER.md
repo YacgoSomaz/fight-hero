@@ -200,7 +200,7 @@ Main.as（输入/屏幕切换）
 
 | 子项 | 原始证据 | 当前网页承载 | 自动证据 | 当前状态 / 必须补项 |
 | --- | --- | --- | --- | --- |
-| AI 目标/视线 | `AI.as`；每 1–12 帧错峰扫描，20px wall line-of-sight，450/枪射程限制 | `engine.mjs` | `engine.test.mjs` | `已接入近似`；需要按源码分支建立状态/输入回放，不能仅凭“会开枪”判定完成。 |
+| AI 目标/视线 | `AI.as`；每 1–12 帧错峰扫描，20px wall line-of-sight，450/枪射程限制 | 通用 `engine.mjs` 仍为旧近似；新增 `tutorial-ai-runtime.mjs` 和 Campaign 1 actor 的 `ai/aim/aiKeys` | `tutorial-ai-runtime.test.mjs`、`campaign-one-session.test.mjs`；RED/GREEN `9450a59→570cc91`、`b79626c→d181cce` | `已接入+已回归（决策状态）`；**未完成**：浏览器消费、Movement/攀爬/跳跃、UnitMC 动作、Guns、重生及原版输入/截图差分，不能称完整 AI。 |
 | AI 路点/ActionBox | `NodeWaypoint`、`NodeAiAction`、AI 路径关系 | `arena-source-layouts.mjs`、`engine.mjs` | `map-porting.test.mjs`、`engine.test.mjs` | `已定位+部分接入`；每图图搜索、跳跃、蹲伏、坑脱困必须与原版实机对照。 |
 | 五种常规模式 | `MatchSettings.as`，dm/jug/tdm/ctf/dom 计分关系 | `engine.mjs`、目标视觉模块 | `engine.test.mjs`、`objective-visuals.test.mjs` | `已接入基础`；出生、胜负、队伍、旗帜和占领完整生命周期尚未逐模式回放。 |
 | Jug / Zom 等特殊规则 | `MatchSettings`/`Stats_Campaign` | 部分基础模式数据 | 无完整回放 | `阻断`；需要原始参数、角色转换和结束条件。 |

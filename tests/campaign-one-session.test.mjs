@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -85,6 +85,25 @@ test('Campaign 1 advances spawned Unit Status after its source runScripts frame 
     { id: 'unit3', statusFrame: 1, spawn: 14 },
     { id: 'unit4', statusFrame: null, spawn: null },
   ]);
+});
+
+test('Campaign 1 records live original AI target/aim decisions on its spawned bot actors', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const [player, bot] = session.actors;
+  player.position = { x: 1480, y: 695, node: 'a' };
+  player.status.sSpawn = 0;
+  for (const actor of session.actors.slice(1, 4)) actor.status.sSpawn = 0;
+  bot.ai = { ...bot.ai, getTargetEvent: 1, aimX: 0, aimY: 0 };
+
+  const results = advanceCampaignOneSessionAi(session, { wall: { isSolid: () => false }, gameStarted: true, random: () => 0.999 });
+
+  assert.deepEqual(results.map(({ id, keys, jumpRequested, shouldShoot, targetId, aim }) => ({ id, keys, jumpRequested, shouldShoot, targetId, aim })), [
+    { id: 'unit1', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 44.4, y: 19.65 } },
+    { id: 'unit2', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 1848.6, y: 645.3 } },
+    { id: 'unit3', keys: 0, jumpRequested: false, shouldShoot: false, targetId: 'unit0', aim: { x: 621.55, y: 645.3 } },
+  ]);
+  assert.equal(bot.ai.targetId, 'unit0');
+  assert.deepEqual(bot.aim, { x: 44.4, y: 19.65 });
 });
 
 // User journey: when Status.damage reaches zero HP, the original Unit.die()

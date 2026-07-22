@@ -134,6 +134,15 @@ npm start
 
 **下一位的唯一正确续作**：不要解除任何任务的启动限制来“恢复可玩”。先选择 Campaign 1，将 `setPlr/addBot` 的 actor 创建、`runScripts` 的 `sn/fc` 状态、前后 Cutscene frame、胜利判定和解锁保存逐项建成可序列化运行时与原版输入/截图对照；只有该关从开始到结束无已知差异，才能单独解除第 1 关的限制。
 
+## 2026-07-22：Campaign 1 脚本跨类证据生成（尚未接入运行时）
+
+- 原始证据不是单个 `setMatch()`：`Stats_Campaign.as:runScripts()` 提供 `sn/fc` 计时及比分分支；`Unit.as` 读取角色脚底 `(0,1)` 像素，`ff00ff` 仅在人类走到 Campaign 1 时触发教程状态；`Bullet.as` 的环境命中色 `9900ff` 在 `sn==9` 时启动电梯分支；`Player.as` 的 `swapGuns()` 在 `sn==12` 时推进并开门。此前只加载地图/目录无法还原这条分散状态机。
+- 可重现生成链：`private-assets/parse-campaign-one-script.mjs` 只读取四份已解包 AS3；`npm run extract:campaign` 生成公开运行时可读的 `src/campaign-one-script-source.mjs`。输出锁定 9 个计时动作、4 个比分推进以及三种外部触发条件，所有文本、帧数、语音标识、坐标和状态号均来自原代码。
+- TDD：`d39478f` 是缺解析器的 RED，`ad70a43` 为跨类提取 GREEN；`e0f0366` 是缺浏览器生成物的 RED，`412f3c4` 为生成物 GREEN。`tests/campaign-one-script.test.mjs` 锁定提取结果，`tests/campaign-one-script-source.test.mjs` 锁定生成物与当前解包源完全深相等。全量回归为 141/141，覆盖率为 99.32% 行、87.56% 分支、94.44% 函数。
+- 严格边界：这不是 Campaign 1 “已完成”或“可玩”。`engine.mjs` 尚未消费该数据，`tut` 的独立 wallMC、彩色触发像素、原 actor 创建、教程 HUD frame、Cutscene timeline、胜负流程、解锁/存档和原版输入/截图对照均未完成。因此第 1 关入口必须继续拒绝启动。
+
+**下一位唯一可接受的第一步**：先为一个原始 Campaign 1 动作写 RED——例如初始 `sn=1,fc=0` 的禁枪、20 帧语音或 `ff00ff` 脚底触发；再将 `SOURCE_CAMPAIGN_ONE_SCRIPT` 作为数据依赖接入新的可序列化 Campaign 1 运行时。禁止把该表手抄进 `engine.mjs`，禁止解除菜单入口，禁止以普通 Foundry 快速对战替代教程关。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

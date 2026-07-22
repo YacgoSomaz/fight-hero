@@ -5,7 +5,7 @@ import { extractArmGunCallbacks } from '../private-assets/parse-arm-gun-callback
 import { extractUnitMCRootFrameActions } from '../private-assets/parse-unitmc-skin-graph.mjs';
 import { createCampaignOneSession } from '../src/campaign-one-session.mjs';
 import { createTutorialActorBindings } from '../src/tutorial-actor-bindings.mjs';
-import { beginTutorialActorGunAction, createTutorialActorPlayback, sampleTutorialActorPlayback, advanceTutorialActorPlayback } from '../src/tutorial-actor-playback.mjs';
+import { beginTutorialActorGunAction, createTutorialActorPlayback, sampleTutorialActorPlayback, advanceTutorialActorPlayback, requestTutorialActorMotion } from '../src/tutorial-actor-playback.mjs';
 
 const unitTimeline = JSON.parse(fs.readFileSync(new URL('../public/assets/unitmc-timeline.json', import.meta.url), 'utf8'));
 const m4Runtime = JSON.parse(fs.readFileSync(new URL('../public/assets/m4-vector-runtime.local.json', import.meta.url), 'utf8'));
@@ -44,4 +44,17 @@ test('a source M4 fire action exposes frames 78/79/80 and only returns to idle o
 
 test('Tutorial actor playback refuses a Campaign actor that has not spawned', () => {
   assert.throws(() => createTutorialActorPlayback(unspawned), /has not spawned/);
+});
+
+test('Tutorial movement requests the original UnitMC run label and keeps its decoded label frame', () => {
+  const state = requestTutorialActorMotion(createTutorialActorPlayback(player), 'run1');
+
+  assert.deepEqual(state.rootState, { frame: 21, animation: 'run1', stopped: false });
+});
+
+test('Tutorial movement cannot interrupt an original UnitMC climb with a synthetic idle pose', () => {
+  const climbing = { ...createTutorialActorPlayback(player), rootState: { frame: 392, animation: 'climbsmall', stopped: false } };
+  const state = requestTutorialActorMotion(climbing, 'idle');
+
+  assert.deepEqual(state.rootState, { frame: 392, animation: 'climbsmall', stopped: false });
 });

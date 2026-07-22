@@ -1,10 +1,8 @@
 import { createTutorialActorRenderPlan } from './tutorial-actor-render-plan.mjs';
-import { tutorialM4ActionTick } from './tutorial-m4-action-playback.mjs';
+import { tutorialGunActionFrameAtLabel, tutorialGunSource } from './tutorial-gun-action-frame.mjs';
 import { advanceTutorialUnitRootFrame } from './tutorial-unitmc-root-playback.mjs';
 import { TUTORIAL_UNITMC_ROOT_TIMELINE } from './tutorial-unitmc-root-timeline-source.mjs';
 import { transitionTutorialUnitMC } from './tutorial-unitmc-transition.mjs';
-
-const GUN_ACTIONS = Object.freeze({ idle: 'rifle', fire: 'rifle_fire', reload: 'rifle_reload' });
 
 function requiredActor(actor) {
   if (!actor || typeof actor.id !== 'string') throw new Error('original Tutorial actor binding is required');
@@ -29,10 +27,14 @@ function originalRootLabelFrame(label) {
 // Starts only from a Campaign-owned actor. The initial values mirror UnitMC's
 // constructor root label and Guns.setFrame('idle') M4 arm label.
 export function createTutorialActorPlayback(actor) {
+  const bound = requiredActor(actor);
+  const weaponId = bound.guns?.active;
+  const gun = tutorialGunSource(weaponId);
   return {
-    actor: requiredActor(actor),
+    actor: bound,
+    weaponId,
     rootState: { frame: 1, animation: 'idle', stopped: false },
-    actionState: { label: 'rifle', index: 0 },
+    actionState: { label: gun.commands.idle, index: 0 },
     events: [],
   };
 }
@@ -41,9 +43,17 @@ export function createTutorialActorPlayback(actor) {
 // accept input events or generic animation aliases.
 export function beginTutorialActorGunAction(state, command) {
   requiredState(state);
-  const label = GUN_ACTIONS[command];
+  const label = tutorialGunSource(state.weaponId).commands[command];
   if (!label) throw new Error(`original Guns.setFrame command is unavailable: ${command}`);
   return { ...state, actionState: { label, index: 0 }, events: [] };
+}
+
+// Campaign scripts call Guns.setGuns(). This keeps that source-selected gun
+// and its authored idle arm label together; it never remaps USP2 to M4.
+export function synchronizeTutorialActorWeapon(state, weaponId) {
+  requiredState(state);
+  const gun = tutorialGunSource(weaponId);
+  return { ...state, weaponId, actionState: { label: gun.commands.idle, index: 0 }, events: [] };
 }
 
 // The Movement.as nextAnim string is fed through UnitMC.goto(), not directly
@@ -68,6 +78,7 @@ export function sampleTutorialActorPlayback(state, source) {
     actor: state.actor,
     rootState: state.rootState,
     actionState: state.actionState,
+    weaponId: state.weaponId,
     unitTimeline: source?.unitTimeline,
     m4Runtime: source?.m4Runtime,
   });
@@ -81,14 +92,15 @@ export function advanceTutorialActorPlayback(state, source) {
     throw new Error('original Tutorial playback sources are required');
   }
   const rootState = advanceTutorialUnitRootFrame(state.rootState, source.rootFrameActions);
-  const action = tutorialM4ActionTick(source.m4Runtime, source.armCallbacks, state.actionState.label, state.actionState.index);
+  const action = tutorialGunActionFrameAtLabel(source.m4Runtime, state.weaponId, state.actionState.label, state.actionState.index);
+  const callback = source.armCallbacks[action.frame] ?? null;
   let actionState = state.actionState;
-  const events = action.callback ? [...state.events, action.callback] : [...state.events];
-  if (action.callback === 'doneShoot' || action.callback === 'doneReload') {
-    actionState = { label: 'rifle', index: 0 };
-  } else if (state.actionState.label !== 'rifle') {
+  const events = callback ? [...state.events, callback] : [...state.events];
+  if (callback === 'doneShoot' || callback === 'doneReload') {
+    actionState = { label: tutorialGunSource(state.weaponId).commands.idle, index: 0 };
+  } else if (state.actionState.label !== tutorialGunSource(state.weaponId).commands.idle) {
     // Validate the next source frame rather than silently looping an action.
-    tutorialM4ActionTick(source.m4Runtime, source.armCallbacks, state.actionState.label, state.actionState.index + 1);
+    tutorialGunActionFrameAtLabel(source.m4Runtime, state.weaponId, state.actionState.label, state.actionState.index + 1);
     actionState = { label: state.actionState.label, index: state.actionState.index + 1 };
   }
   return { ...state, rootState, actionState, events };

@@ -40,11 +40,8 @@ function originalActionFrames(runtime, label) {
 // Resolves source MovieClip frames rather than generating weapon poses. A
 // span ends at the next authored label on each arm root; no interpolation or
 // repeated terminal frame is allowed.
-export function tutorialGunActionFrame(runtime, gunId, command, actionIndex) {
+function sourceActionFrame(runtime, gunId, source, command, label, actionIndex) {
   if (!Number.isInteger(actionIndex) || actionIndex < 0) throw new Error(`outside original ${gunId} timeline: ${actionIndex}`);
-  const source = sourceGun(gunId);
-  const label = source.commands[command];
-  if (!label) throw new Error(`original ${gunId} command is unavailable: ${command}`);
   const action = originalActionFrames(runtime, label);
   const rear = action.rear[actionIndex];
   const front = action.front[actionIndex];
@@ -62,6 +59,20 @@ export function tutorialGunActionFrame(runtime, gunId, command, actionIndex) {
     rearAction: rear.items,
     frontAction: front.items,
   };
+}
+
+export function tutorialGunActionFrame(runtime, gunId, command, actionIndex) {
+  const source = sourceGun(gunId);
+  const label = source.commands[command];
+  if (!label) throw new Error(`original ${gunId} command is unavailable: ${command}`);
+  return sourceActionFrame(runtime, gunId, source, command, label, actionIndex);
+}
+
+export function tutorialGunActionFrameAtLabel(runtime, gunId, label, actionIndex) {
+  const source = sourceGun(gunId);
+  const command = Object.entries(source.commands).find(([, sourceLabel]) => sourceLabel === label)?.[0];
+  if (!command) throw new Error(`original ${gunId} arm label is unavailable: ${label}`);
+  return sourceActionFrame(runtime, gunId, source, command, label, actionIndex);
 }
 
 export function createTutorialUnitPoseAtGunAction({ rootFrame, runtime, gunId, command, actionIndex, skinFrame } = {}) {

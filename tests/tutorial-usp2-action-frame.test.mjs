@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { tutorialGunActionFrame } from '../src/tutorial-gun-action-frame.mjs';
+import { createTutorialUnitPoseAtGunAction } from '../src/tutorial-gun-action-frame.mjs';
 
 const runtime = JSON.parse(fs.readFileSync(new URL('../public/assets/m4-vector-runtime.local.json', import.meta.url), 'utf8'));
 
@@ -37,4 +38,20 @@ test('Tutorial USP2 reuses the original pistol arm display-list spans and exact 
 test('Tutorial USP2 cannot interpolate or move past its original pistol arm labels', () => {
   assert.throws(() => tutorialGunActionFrame(runtime, 'USP2', 'fire', 6), /outside original pistol_fire timeline/);
   assert.throws(() => tutorialGunActionFrame(runtime, 'USP2', 'invented', 0), /original USP2 command is unavailable/);
+});
+
+test('Tutorial USP2 pose passes its original pistol arm lists and USP Sprite frame into the composed UnitMC pose', () => {
+  const timeline = JSON.parse(fs.readFileSync(new URL('../public/assets/unitmc-timeline.json', import.meta.url), 'utf8'));
+  const pose = createTutorialUnitPoseAtGunAction({
+    rootFrame: timeline.frames[0],
+    runtime,
+    gunId: 'USP2',
+    command: 'fire',
+    actionIndex: 0,
+    skinFrame: 57,
+  });
+  assert.deepEqual(
+    pose.gunParts.map(({ rootId, character, frame }) => ({ rootId, character, frame })),
+    [{ rootId: 'arm1', character: 375, frame: 2 }],
+  );
 });

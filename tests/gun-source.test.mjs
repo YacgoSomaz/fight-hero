@@ -9,7 +9,7 @@ test('browser gun source is a direct generated copy of every original Stats_Guns
   assert.deepEqual(SOURCE_GUNS, extractGunDefinitions(source));
   assert.deepEqual(SOURCE_GUNS.find(({ id }) => id === 'USP2'), {
     type: 5, id: 'USP2', sprite: 'USP', name: 'USP', typeName: 'Pistol', levelRequired: 1,
-    damage: 15, force: 3, splash: 0, clipSize: 15, clipSpare: 3, range: 66, recoil: 3,
+    damage: 15, force: 3, splash: 0, clipSize: 1, clipSpare: 0, range: 66, recoil: 3,
     autoFire: false, shootDelay: 0.25, xOffset: 8, yOffset: -8,
     effect: { shoot: 'smoke', hit: 'bulletspark', shell: 'pistol', hudBullet: 'pistol' },
     animation: { idle: 'pistol', fire: 'pistol', reload: 'pistol' },

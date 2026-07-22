@@ -1,5 +1,6 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback } from './tutorial-actor-playback.mjs';
+import { applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -7,6 +8,7 @@ import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
+import { applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
 
@@ -69,6 +71,18 @@ try {
   let previous = performance.now();
   let accumulated = 0;
 
+  function syncPlayerRestrictionsFromSourceSession() {
+    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+    if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable');
+    player = {
+      ...player,
+      noAim: sourcePlayer.noAim,
+      noJump: sourcePlayer.noJump,
+      guns: { ...sourcePlayer.guns },
+    };
+    movementState = { ...movementState, noJump: player.noJump };
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -76,9 +90,15 @@ try {
     drawArena(layers.terrain, terrainCrop, arenaPosition);
     const screen = worldToTutorialScreen(player.position, arenaPosition);
     const sample = sampleTutorialActorPlayback(actorState, source);
+    // Campaign 1 source frame zero removes the initial M4.  The USP2 source
+    // arm Sprite has not yet been migrated, so omit the M4 gun Display List
+    // rather than rendering it as an incorrect substitute for none/USP2.
+    const pose = player.guns.active === 'M4'
+      ? sample.pose
+      : { ...sample.pose, gunParts: [] };
     context.save();
     context.translate(screen.x, screen.y);
-    drawTutorialUnitPose(context, sample.pose, assets);
+    drawTutorialUnitPose(context, pose, assets);
     context.restore();
   }
 
@@ -86,6 +106,8 @@ try {
     accumulated += Math.min(now - previous, 250);
     previous = now;
     while (accumulated >= TICK_MS) {
+      applyCampaignOneSessionFrame(session);
+      syncPlayerRestrictionsFromSourceSession();
       const movement = stepTutorialMovement({
         state: movementState,
         actor: player,
@@ -94,6 +116,12 @@ try {
       });
       player = movement.actor;
       movementState = movement.state;
+      applyTutorialFootContact(tutorialWorld, {
+        x: player.position.x,
+        y: player.position.y + 1,
+        human: player.human,
+      });
+      syncPlayerRestrictionsFromSourceSession();
       actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
       if (movement.aim) player.aim = movement.aim;
       arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);

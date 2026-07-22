@@ -1,6 +1,6 @@
 import { ARENA_SOURCE_LAYOUTS } from './arena-source-layouts.mjs';
 import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
-import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime } from './campaign-one-runtime.mjs';
+import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 
 function sourceActor(id, definition) {
   const spawn = definition.extra?.spawn ?? null;
@@ -65,6 +65,16 @@ export function createCampaignOneSession() {
 
 export function applyCampaignOneSessionSurfaceContact(session, contact) {
   const effects = applyCampaignOneSurfaceContact(session.runtime, contact);
+  applySourceEffects(session, effects);
+  return effects;
+}
+
+// Stats_Campaign.runScripts() is evaluated on every source frame, and its
+// effects mutate the same actor records that later surface/input transitions
+// use.  Keeping this in the session prevents a browser preview from merely
+// logging dialogue/equipment events while continuing with stale actor flags.
+export function applyCampaignOneSessionFrame(session) {
+  const effects = runCampaignOneFrame(session.runtime);
   applySourceEffects(session, effects);
   return effects;
 }

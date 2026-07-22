@@ -353,6 +353,13 @@ npm start
 - TDD：RED `2e3de00`（Movement 模块缺失）、`7c3b139`（运动状态尚未经过 UnitMC label 规则）、`501fa46`（场景尚未接线）、`8219965`（手动跳跃缺失）、`04e83e2`（斜坡角缺失）；GREEN `3ec7f00`（Movement 核心接线）、`7a0a06b`（原左右脚底扫描和 0.3 角度插值）。`tests/tutorial-movement.test.mjs` 锁定自动起身、低顶保持蹲伏、alpha 脚底落地、原 terminal-fall 小攀爬、跳跃 boost 与左右十像素斜坡角；`tests/tutorial-actor-playback.test.mjs` 锁定 run 标签首帧与不可中断攀爬；`tests/tutorial-scene-preview.test.mjs` 锁定真实 wall/输入接线。全量 `npm test`/`npm run test:coverage` 为 **215/215 通过**，99.01% 行、83.28% 分支、96.35% 函数；浏览器已实际加载 Tutorial 场景、原图层与角色，无错误页。
 - 严格边界：这是 `Movement.as` 的已测核心分支，不是该类完整等价端口；尚未覆写全部 modifier、降落伞、硬着陆、完整大小攀爬/顶棚恢复组合或原版输入回放。更没有鼠标瞄准、左键射击、Guns、伤害、AI、HUD、脚底/子弹战役触发、过场、胜负与原 SWF 帧差分。禁止把它称作“第一关已完成”或“游戏 1:1 完成”。
 
+## 2026-07-22：Tutorial `runScripts` 与脚底状态实际消费（仍非完整关卡）
+
+- 原始证据：`Stats_Campaign.runScripts()` 以当前 `sn/fc` 执行后才增长帧数，Campaign 1 frame 0 为 `player.gun.setGuns("none","none")`。`Unit.as` 中当前人类脚底 `getPixel(0,1)` 触发教程分支：状态 8 的 `ff00ff` 接触给 USP2、`noAim=false`、`tutshoot` 与 Wall frame 9；状态 9 的 `9900ff` 子弹命中才是电梯分支。初始 `unit0` 的 `noAim:true` 是原 `Stats_Campaign.setMatch()` 数据，不可在初始教程页用鼠标瞄准覆盖。
+- 承载：`applyCampaignOneSessionFrame()` 新增为 session 的唯一 runScripts 消费入口，返回并原子写入当前 actor/effect 数据。教程页每 30fps tick 先消费它，再在 Movement 后将 `(x,y+1)` 交给 `applyTutorialFootContact()`；随后只从 session `unit0` 同步 `noAim/noJump/guns`。当源状态为 none/USP2 时页面**不再错误绘制 M4**；USP2 原 arm/gun Display List 未迁移，故目前只显示无枪手部，不能把它写成 USP2 已显示。
+- TDD：RED `5899afa`（runScripts 效果没有被 session 消费）、`c6ba5fc`（场景没有调用 timeline/foot trigger）；GREEN 尚待本次工作树提交。`campaign-one-session.test.mjs` 锁定 frame 0 必须使实际 player guns 成为 none 且 runtime frame 变为 1；`tutorial-scene-preview.test.mjs` 锁定场景走 source session frame 与 original wall foot contact。全量 `npm test`/`npm run test:coverage` 为 **216/216 通过**，99.01% 行、83.44% 分支、96.36% 函数；浏览器加载检查显示原 Tutorial 三层/角色、起始 M4 已消失、无错误页。
+- 严格边界：这些效果没有完整 HUD/消息/箭头/音频/过场呈现；USP2、瞄准与左键射击、M4 换枪、状态 9 子弹环境命中、伤害/生命、敌方 Unit/AI/子弹、胜负和原 SWF 输入截图均未完成。此条绝非“Tutorial 已玩通”。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

@@ -28,3 +28,17 @@ test('Hud.as machine layout preserves its overflow row rather than truncating ro
     { x: 16, y: 7, width: 2, height: 5, filled: false },
   ]);
 });
+
+test('the running M4 HUD uses the decoded bulletCont anchor and both-axis Flash flip', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
+  const engine = await readFile(new URL('../src/engine.mjs', import.meta.url), 'utf8');
+  const hudDraw = main.match(/function drawBottomHud\(\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+  assert.match(main, /import\s*\{\s*getHudAmmoBoxes\s*\}\s*from\s*'\.\/hud-ammo\.mjs'/);
+  assert.match(engine, /weapon:\s*\{[\s\S]*?ammoType:\s*'arifle'/);
+  assert.match(hudDraw, /getHudAmmoBoxes\(\{\s*clip,\s*clipMax:\s*world\.players\[0\]\.weapon\.clipMax,\s*type:\s*world\.players\[0\]\.weapon\.ammoType\s*\}\)/);
+  assert.match(hudDraw, /ctx\.translate\(664\.3,\s*571\.3\)/);
+  assert.match(hudDraw, /ctx\.scale\(-1,\s*-1\)/);
+  assert.doesNotMatch(hudDraw, /index \* 7|hudY - 48/, 'the enlarged approximate boxes must be removed');
+});

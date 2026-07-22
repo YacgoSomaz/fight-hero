@@ -101,14 +101,16 @@ Main.as（输入/屏幕切换）
 | 头/躯干/手臂/腿/枪 holder | `UnitMC.EnterFrame()` 和 `Unit.as` 覆盖矩阵 | `unit-dom-rig.mjs`、`main.mjs` 的 DOM part layer | `unit-dom-rig.test.mjs`、`scene-layering.test.mjs` | `已接入+已回归（10 部件）`；解除了 Canvas/DOM 合成导致角色不可见的阻断。仍需对跑、跳、蹲、攀爬、开火和换弹逐帧与原版采样核验。 |
 | 瞄准与左键发射 | `Main.MouseDown → Game.MouseDown → Player.mDown → Guns.shoot`；鼠标转 Arena 坐标 | `main.mjs`、`engine.mjs`、`m4-action-selector.mjs` | `engine.test.mjs`、`m4-action-selector.test.mjs` | `已接入部分`；须验证鼠标反向、枪口 pivot、持枪姿势、射击帧和换弹帧。 |
 | 准星（普通 M4 动态帧） | `Aimer.as`；1431 frame 1：`line1–4`（1424）与 `circle`（1428）；`Player.as:83–94` 的距离/余弦展开公式；`Guns.as:269–305,522–525` 的动态后坐力；`Stats_Guns` M4 recoil=4；`Stats_Classes` Medic L1 aim=70→`Unit.as` 归一化=.70 | 原 1431 合成图仅作加载中回退；`aimer-rig.mjs`、`main.mjs`、`engine.mjs` 使用原 1424/1428 PNG、原矩阵、`MC.arm1` pivot、后坐力一帧快照 | `aimer-rig.test.mjs`、`aimer-source.test.mjs`、`engine.test.mjs` | `已接入+自动回归+浏览器对局确认（普通 M4）`；已删除几何准星，左键经原 `dynRecoil → dynRecoilMod → Player` 帧时序驱动 5 个原部件。浏览器确认菜单隐藏、3 图层入场、原 PNG 返回 200、鼠标/左键输入进入对局。**未完成**：1431 frame 2 狙击准星、反射状态、所有武器/兵种/技能倍率、原版逐帧叠图。 |
-| 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs`、`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs` | `阻断`；顶部/底部仍有文字、矩形和固定数值，必须拆接 Hud 的职业、经验、弹药、备用弹药与模式元素。 |
+| 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs` 直接载入 `hud-scorebar-1462.png` 与 `hud-expholder-1477.png`；`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs`、`aimer-source.test.mjs` | `部分接入+自动回归`；1462/1477 只完成了已确认的原图及 `(180,23)`/`(201,588)` 锚点接入。顶部生命区、头顶动态条、职业/生命/等级、弹药/备弹、枪图和动态经验宽度仍未迁移，不能称 HUD 完成。 |
 | 原始舞台坐标 | SWF header：800×600、30fps；HUD/Aimer 以此舞台坐标布局 | `index.html` 的 800×600 canvas；`style.css` 4:3 地图/角色覆盖层 | `stage-format.test.mjs`；浏览器实测 | `已接入+浏览器确认（基线）`；浏览器确认内部像素 800×600、显示比 1.3333、3 地图层和两套 10 部件角色可见。**未完成**：Hud 1540 的原坐标/安全区/响应式缩放逐像素对照。 |
 
-### 6.1 HUD 1540 的已确认拆解（待接入，不算实现）
+### 6.1 HUD 1540 的已确认拆解与首批接入边界
 
 - `Hud` symbol **1540** 的 idle frame 在原 800×600 舞台放置：`txt_classname` 1442=`(3,531)`、`txt_hp` 1441=`(71,560)`、`txt_ammo` 1440=`(668,559)`、`bulletCont` 954=`(664,571)`、`curgun` 724=`(674,568)`、`scorebar` 1462=`(180,23)`、`expholder` 1477=`(201,588)`；这些是网页替换当前临时 `drawHud/drawBottomHud` 的坐标证据。
 - `HudInfo` symbol **1504** 位于 `(101,245)`，有 9 帧；其第 1 帧已由 FFDec 直接导出，尺寸 291×291，是原教程信息窗，不可误当底栏。
-- 原 `ScoreBar` 1462 已导出为 184×45；原经验容器 1477 为 397×16。导出物目前位于 `private-assets/hud-core-export/`，必须经 TDD 接入到 `public/assets/original-swf/` 后才可将 HUD 条目改为“已接入”。
+- 原 `ScoreBar` 1462 已导出为 184×45；原经验容器 1477 为 397×16。两者已机械复制为 `public/assets/original-swf/hud-scorebar-1462.png` 和 `public/assets/original-swf/hud-expholder-1477.png`，并由 `main.mjs` 直接在原 800×600 锚点 `(180,23)` 与 `(201,588)` 绘制。
+- TDD：`ea1db89` 是 RED，`aimer-source.test.mjs` 证明旧运行时代码并未读取这两个原图；`85054e1` 是 GREEN，要求运行时代码读取精确原路径并以两个精确 Hud 1540 坐标绘制。全量回归为 124/124，覆盖率为 99.08% 行、88.18% 分支、93.61% 函数。
+- **严格边界**：FFDec 导出的 1462/1477 是当前静态时间轴图像，不是 `Hud.as` 所有动态文本、计分、`bar_exp.width` 或 `setAmmoImage()` 的完整替身。本次已删除与 1477 重复的手画经验线，但仍保留的临时生命/弹药/职业绘制必须在找到相应原 symbol 与状态关系后逐项替换。
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

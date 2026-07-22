@@ -128,6 +128,15 @@ npm start
 
 **边界**：此项只恢复了舞台和相机的坐标基线，不代表 HUD 1540 已迁移或像素级截图已通过；当前顶部/底部仍有待替换的临时 HUD 绘制。
 
+## 2026-07-22：Hud 1540 首批原图接入（ScoreBar / Experience Holder）
+
+- 原始依据：Hud symbol 1540 的 idle Display List 将 `scorebar`（character 1462）放在原舞台 `(180,23)`，将 `expholder`（character 1477）放在 `(201,588)`；直接导出物分别为 184×45 和 397×16。
+- 运行时变更：这两个 PNG 已从 `private-assets/hud-core-export/` 机械复制到 `public/assets/original-swf/`，`src/main.mjs` 在原始 800×600 坐标直接 `drawImage`。原先自行画出的经验横线和 `Exp 1 / 43` 已删除，避免与 1477 的原图叠加。
+- TDD 提交链：`ea1db89 test: require source HUD score and experience art` 为实际 RED；`85054e1 fix: render source HUD score and experience holders` 为同一测试的 GREEN。全量 `npm test` 为 124/124 通过，`npm run test:coverage` 为 99.08% 行、88.18% 分支、93.61% 函数。
+- 本次浏览器核验：页面仍能得到原 800×600 Canvas，且两张原 HUD PNG 均由本地页面创建并可加载。该浏览器会把页底“开始战斗”的语义鼠标点击投递到可视区外（目标点 `y=723`），因此无法在本轮完成对局截图验收；**不得把这条资源存在性核验描述为完整 HUD 实机对照**。
+
+**仍缺且下一位必须继续解包/迁移**：`Status` 头顶条的真实显示关系、`txt_classname`/`txt_hp`/`txt_ammo`、`bulletCont` 954、`curgun` 724、`Hud.as` 的动态经验宽度、`setAmmoImage()` 的逐枪弹匣格、各模式比分逻辑和原 HUD 的逐像素对照。HUD 当前仅达到“两个静态原部件已接入并自动回归”。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

@@ -392,6 +392,13 @@ npm start
 - TDD：`fe79b11` 为 aim 模块缺失的有效 RED，`ccef16d` 为公式 GREEN；`aec5679` 为 source aim 可视消费缺失的有效 RED，`667c0e6` 为 Green。全量 `npm test`/`npm run test:coverage` 为 **230/230 通过**，覆盖率 **99.01% 行、82.79% 分支、95.96% 函数**。本地浏览器访问 `tutorial-scene-preview.html` 返回 `data-ready=true`、空错误文本、Canvas 800×600。
 - 严格边界：本段没有接入原 Aimer 1431 的可见 Display List，没有 `Guns.makeBullet`、`Bullet_Line_Basic`、射线墙/单位命中、状态 9、电梯、声音、HUD 或截图差分。它证明的是人物指向的 source transform，不是“已射向鼠标”或“Tutorial 已可玩”。
 
+## 2026-07-22：Tutorial USP2 `Bullet_Line_Basic` 墙体路径（尚未接页面）
+
+- 原始证据：`Guns.as:makeBullet()` 传入 `aimRoation + UT.rand(-dynRecoil,dynRecoilMod)`、`unit.x + MC.rotation*1.2`、`unit.y + MC.arm1.y`、`xOff` 与 gun id；`Bullet.as` 先按 `rotation + 90*MC.scaleX` 加 `yOff`，再以 `xVel/yVel` 进行包含端点的 `0..xOff` 个半步 hit test；`Bullet_Line_Basic` 再以完整 10 单位步长走到 `maxDist=(range+UT.irand(-3,3))*10` 或命中，并以原枪 `parameters` 生成线段路径。`Bullet.hitTestAll()` 的 wall 分支只接受 alpha `ff`，并返回 ARGB 的 RGB hex 供 Campaign 状态 9 检查。
+- 承载：`tutorial-bullet-line-runtime.mjs` 只实现已证实的 USP2 wall-only 轨迹；必须显式接收已解析的 `dynRecoil` 和 `dynRecoilMod`，缺失时拒绝执行。它不读取或调用旧 `engine.mjs` tracer；已命中时返回原色值，例如 `9900ff`，以便后续通过现有 `applyTutorialBulletEnvironmentHit()` 消费。
+- TDD：`06ec8c9` 为缺模块的 RED，`115c107` 为 GREEN。测试锁定 USP2 的 `yOff=-8`、`xOff=8` inclusive half-step、10-unit trace、origin/impact、line path 与 `9900ff` wall colour；全量为 **232/232 通过**，覆盖率 **99.00% 行、82.81% 分支、96.03% 函数**。
+- 严格边界：Campaign 定义没有本地存档等级/aim 属性，故无法从该任务记录推导人类 player 的 `dynRecoilMod`。此模块尚未接入页面、原 Aimer、单位/尸体碰撞、`Status.damage`、状态 9、电梯、声音或 HUD；不得将“轨迹函数存在”写作可实际射击或可通关。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

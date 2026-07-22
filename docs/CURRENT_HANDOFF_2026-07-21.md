@@ -4,12 +4,12 @@
 
 ## 2026-07-22：原 AI 决策、Movement 与 Campaign 1 场景接入（仍未可玩）
 
-### 后续：Unit symbol 687 头顶生命条与文字（仍未完成 HUD）
+### 后续：Unit symbol 687 头顶生命条、文字与职业图标（仍未完成 HUD）
 
 - 原始证据：`Unit` 是 symbol 687，其 frame 1 Display List 将 `bar_hp`（symbol 670）以矩阵 `c9 45 3f 27 2f 0c de 4a 0b` 放在本地 `(-27,-76.25)`，纵向缩放 `0.61224365234375`；`Status.as:setBars()` 写 `bar_hp.width = hpCur / hpMax * (40 + hpMax / 10)`；`Unit.as:setTeam()` 提供三队的 ColorTransform 色值。
-- 网页承载：`src/tutorial-unit-overhead-hud.mjs` 返回这份原位置、原 670 PNG、`Status` 已计算的 HP/受伤宽度及原 ColorTransform；`bar_hurt` 直接解析其 Display List 的 `#f90000`、alpha `128/256`，并按 `Status.setBars()` 的实时 x 值连接在 HP 条右端。`tutorial-unit-overhead-labels.mjs` 直接使用 Unit 的 DefineEditText 684/685 边界、first-frame matrix 和 `Unit.setTeam()` 前景色；缺失的 DefineFont3 683 已由本地原 SWF 用 FFDec 26.1.0 导出为 `public/assets/original-swf/unit-font-683.ttf`（SHA-256 `547E3168B0C85D45BC039782C04190554B76DB721E8C23BC4FDF5F13E395AC25`），页面加载失败即报错，绝不回退为系统字体。`tutorial-scene-preview.mjs` 以 `source-in` 模拟 Flash 色变换，并以源字体给活着的 source player/NPC 绘制。
-- TDD：`13ecb63→6a08394`（源 HUD 计划）与 `99e68d9→f9f3170`（场景承载）为 RED→GREEN；`0fa60dd→629502f` 使场景帧循环错误可见；`98a6659→d139c0b` 锁定 684/685 的原字体、矩阵、文字、颜色和拒绝替代行为。
-- 严格边界：已接入 **bar_hp/bar_hurt/txt_name/txt_level**，但没有图标、底部职业/生命/弹药/经验动态 UI，更没有原版截图对照；当前内嵌浏览器无法渲染 Canvas 供截图验证，真实 Chrome 连接在本机不可用，故这项没有视觉验收结论。因此仍不得称“头顶 HUD 完成”或“Campaign 1 可玩”。
+- 网页承载：`src/tutorial-unit-overhead-hud.mjs` 返回这份原位置、原 670 PNG、`Status` 已计算的 HP/受伤宽度及原 ColorTransform；`bar_hurt` 直接解析其 Display List 的 `#f90000`、alpha `128/256`，并按 `Status.setBars()` 的实时 x 值连接在 HP 条右端。`tutorial-unit-overhead-icon.mjs` 以 Unit 687 的 depth 3 matrix `19 a9 53 74 e8`（`-34.7,-80.3`）选择原 symbol 682 的 sniper/medic/soldier/tank 帧，并严格按 `Unit.setTeam()` 前景色与 0.7 alpha 着色。`tutorial-unit-overhead-labels.mjs` 直接使用 Unit 的 DefineEditText 684/685 边界、first-frame matrix 和同一前景色；缺失的 DefineFont3 683 已由本地原 SWF 用 FFDec 26.1.0 导出为 `public/assets/original-swf/unit-font-683.ttf`（SHA-256 `547E3168B0C85D45BC039782C04190554B76DB721E8C23BC4FDF5F13E395AC25`），页面加载失败即报错，绝不回退为系统字体。`tutorial-scene-preview.mjs` 以 `source-in` 模拟 Flash 色变换，保留原 depth 1 HP→depth 3 icon→depth 6 hurt→depth 8/9 text 顺序。
+- TDD：`13ecb63→6a08394`（源 HUD 计划）与 `99e68d9→f9f3170`（场景承载）为 RED→GREEN；`0fa60dd→629502f` 使场景帧循环错误可见；`98a6659→d139c0b` 锁定 684/685 的原字体、矩阵、文字、颜色和拒绝替代行为；`08bb49e→bc6b7dc` 锁定 682 图标、`Unit.setClass()` 的 icon 字段与原 depth 顺序。
+- 严格边界：已接入 **bar_hp/bar_hurt/icon/txt_name/txt_level**，但仍没有底部职业/生命/弹药/经验动态 UI，更没有原版截图对照；当前内嵌浏览器无法渲染 Canvas 供截图验证，真实 Chrome 连接在本机不可用，故这项没有视觉验收结论。因此仍不得称“头顶 HUD 完成”或“Campaign 1 可玩”。
 
 - 原始证据：`assets/reverse/ffdec-deep-20260720/scripts/AI.as`、`Arena.as`、`NodeWaypoint.as`、`NodeAiAction.as` 与解包后的 `ARENA_SOURCE_LAYOUTS.tut`。`NodeAiAction` symbol 1268 的本地矩形为 69×69，网页按原 Display List matrix 得到实际 `width/height`，不以自制导航网格代替。
 - 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`，并以 `advanceCampaignOneSessionAiMovement()` 将 key/jump 消费到同一份 `tutorial-movement.mjs`（`Movement.as`）状态。
@@ -25,7 +25,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **294/294 通过**，覆盖率为 **98.98% 行、83.46% 分支、96.13% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **297/297 通过**，覆盖率为 **98.99% 行、83.38% 分支、96.13% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 

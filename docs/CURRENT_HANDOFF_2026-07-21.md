@@ -360,6 +360,15 @@ npm start
 - TDD：RED `5899afa`（runScripts 效果没有被 session 消费）、`c6ba5fc`（场景没有调用 timeline/foot trigger）；GREEN 尚待本次工作树提交。`campaign-one-session.test.mjs` 锁定 frame 0 必须使实际 player guns 成为 none 且 runtime frame 变为 1；`tutorial-scene-preview.test.mjs` 锁定场景走 source session frame 与 original wall foot contact。全量 `npm test`/`npm run test:coverage` 为 **216/216 通过**，99.01% 行、83.44% 分支、96.36% 函数；浏览器加载检查显示原 Tutorial 三层/角色、起始 M4 已消失、无错误页。
 - 严格边界：这些效果没有完整 HUD/消息/箭头/音频/过场呈现；USP2、瞄准与左键射击、M4 换枪、状态 9 子弹环境命中、伤害/生命、敌方 Unit/AI/子弹、胜负和原 SWF 输入截图均未完成。此条绝非“Tutorial 已玩通”。
 
+## 2026-07-22：Campaign 1 USP2 原 arm Display List 与场景切枪（仍非完整关卡）
+
+- 原始证据：`Stats_Guns.as` 明确记录 `USP2` 的 `sprite="USP"`、`frameIdle/frameFire/frameReload="pistol"`、`shotSound=S_pistolFire`、`noAmmo=true`。原 `arm_gun_316`（symbol 501）与 `arm_front_328`（668）保留同名标签；其实际范围为 `pistol=2`、`pistol_fire=3..8`、`pistol_reload=9..37`。501 的 `gun` 是 symbol 375；375 的 `USP` 标签是 frame 2，显示 Shape 299。`arm_gun_316.as` 的原 `addFrameScript` 在 8 调 `doneShoot`、9 调 `reloadSound`、37 调 `doneReload`。
+- 承载：`tutorial-gun-action-frame.mjs` 从版本控制的原 501/668 Display List 按下一原标签计算 action span，不插值、不循环，也不会把 USP2 改画为 M4。`tutorial-unit-pose-plan.mjs` 接收原枪 Sprite frame，使 pistol pose 的 `gunParts` 为 `{character:375,frame:2}`。`tutorial-actor-playback.mjs` 由 Campaign actor 的 `guns.active` 同步武器，且仅在提取的回调帧回到原 idle label。`tutorial-scene-preview.mjs` 在 Campaign state 8 的原 `setGuns('USP2','none')` 生效后切换到该 pose；`none` 和尚未解出的枪型一律隐藏，不能借用已有图形。
+- TDD：`33f0839`→`c959a9b` 锁 USP2 source arm span；`917e92b`→`97f75ab` 锁 USP Sprite 第 2 帧进入 UnitMC pose；`c4bd5c1`→`b371184` 锁 Campaign 切枪后 pistol 3–8 与 frame-8 `doneShoot`；`18aa0ae`→`c60b016` 锁场景调用该同步；`3e2f8b2` 将共享 arm_gun 的完整已消费回调同原 AS3 机械结果对照。最终全量 `npm test`、`npm run test:coverage` 均为 **220/220 通过**，覆盖率 **99.01% 行、83.31% 分支、96.44% 函数**。本地浏览器访问 `tutorial-scene-preview.html` 已确认 `canvas.dataset.ready=true`、错误区为空、无 error/warning console 日志；这只证明加载，不是原版动作截图对照。
+- 严格边界：没有导入 pistol 的 `MuzzleFlash_317`（symbol 394）显示列表，未接入 `Player.mDown → Guns.shoot` 的鼠标/左键、USP 弹药/命中/音频、`Hud.setAmmoImage('pistol')`、HUD 枪图、AI、敌方 actor、状态 9 子弹环境命中、任务过场或截图差分。状态 8 的“拿到手枪”只是一个来源可审计、自动回归的局部纵切，绝不能称为 Tutorial、Campaign 1 或整个游戏 1:1 完成。
+
+**下一位唯一正确步骤**：在不伪造 muzzle 或弹道的前提下，继续从原 SWF 提取 pistol `MuzzleFlash_317` 及相关 Bullet/HUD 消费显示列表，然后以 `Player.as` 的 `noAim/mDown`、`Guns.as:shoot/setFrame`、真实 pistol `shootDelay=.25` 和原 30fps arm callback 建立输入→开火→回 idle 的 RED→GREEN 回放。浏览器必须以原 Player 坐标换算鼠标；状态 8 前 `noAim=true` 时不得开放瞄准/射击。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

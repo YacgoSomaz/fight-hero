@@ -13,7 +13,7 @@ import { advanceTutorialPlayerAim, canvasPointToTutorialStage, deriveTutorialUni
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
-import { getTutorialUnitOverheadBar } from './tutorial-unit-overhead-hud.mjs';
+import { getTutorialUnitOverheadHud } from './tutorial-unit-overhead-hud.mjs';
 import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
@@ -203,13 +203,17 @@ try {
   // plan; Canvas only reproduces Flash's ColorTransform with source-in.
   function renderTutorialUnitOverheadBar(unit) {
     if (!unit.status || !unit.position) return;
-    const bar = getTutorialUnitOverheadBar(unit, worldToTutorialScreen(unit.position, arenaPosition));
-    context.save();
-    context.drawImage(unitBarImage, 0, 0, bar.sourceWidth, bar.sourceHeight, bar.x, bar.y, bar.width, bar.height);
-    context.globalCompositeOperation = 'source-in';
-    context.fillStyle = bar.colour;
-    context.fillRect(bar.x, bar.y, bar.width, bar.height);
-    context.restore();
+    const hud = getTutorialUnitOverheadHud(unit, worldToTutorialScreen(unit.position, arenaPosition));
+    for (const bar of [hud.hp, hud.hurt]) {
+      if (bar.width <= 0) continue;
+      context.save();
+      context.drawImage(unitBarImage, 0, 0, bar.sourceWidth, bar.sourceHeight, bar.x, bar.y, bar.width, bar.height);
+      context.globalCompositeOperation = 'source-in';
+      context.globalAlpha = bar.alpha ?? 1;
+      context.fillStyle = bar.colour;
+      context.fillRect(bar.x, bar.y, bar.width, bar.height);
+      context.restore();
+    }
   }
 
   function render() {

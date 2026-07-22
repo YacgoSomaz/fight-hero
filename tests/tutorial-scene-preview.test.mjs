@@ -35,7 +35,6 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /tutorialArenaPointer/);
   assert.match(script, /advanceTutorialPlayerAim/);
   assert.match(script, /deriveTutorialUnitAim/);
-  assert.match(script, /getTutorialUnitOverheadBar/);
   assert.match(script, /getTutorialUnitOverheadHud/);
   assert.match(script, /unit-bar-670\.png/);
   assert.match(script, /renderTutorialUnitOverheadBar\(sourcePlayer/);

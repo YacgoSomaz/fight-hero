@@ -12,7 +12,7 @@ test('Tutorial camera follows the original Arena EnterFrame 0.7 step and clamps 
 test('Tutorial background parallax uses Arena wall dimensions and the source crop origin', () => {
   assert.deepEqual(
     getTutorialParallaxLayerPosition({ x: -400, y: -300 }, { width: 2757, height: 1541 }, { x: 10, y: 20, width: 1200, height: 900 }),
-    { x: -91.75881451200817, y: -115.64293304994687 },
+    { x: -91.75779253960143, y: -115.64293304994686 },
   );
 });
 

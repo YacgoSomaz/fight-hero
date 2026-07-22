@@ -41,4 +41,47 @@ test('extracts the complete source-owned Campaign 1 transition surface', () => {
   assert.equal(script.bulletTrigger.requiredState, 9);
   assert.equal(script.inputTrigger.key, 'swapGuns');
   assert.equal(script.inputTrigger.requiredState, 12);
+
+  assert.deepEqual(script.surfaceTransitions.find(({ state }) => state === 8), {
+    state: 8,
+    effects: [
+      { type: 'hudFrame', frameLabel: 'tutshoot' },
+      { type: 'message', target: 'player', text: "Oh, a pistol... I'm a little rusty.", seconds: 4, force: true, voice: 'V_Ca1_6' },
+      { type: 'setGuns', target: 'player', primary: 'USP2', secondary: 'none' },
+      { type: 'setNoAim', target: 'player', value: false },
+    ],
+    nextState: 9, resetFrame: true, wallFrame: 9,
+  });
+  assert.deepEqual(script.surfaceTransitions.find(({ state }) => state === 13), {
+    state: 13,
+    effects: [
+      { type: 'message', target: 'unit1', text: "There's one more. We can't let him escape, eliminate him!", seconds: 6, force: true, voice: 'V_Ca1_10' },
+      { type: 'setDiffStats', target: 'unit1', difficulty: 1, reset: true },
+      { type: 'setDiffStats', target: 'unit2', difficulty: 1, reset: true },
+      { type: 'setDiffStats', target: 'unit3', difficulty: 1, reset: true },
+      { type: 'spawn', target: 'unit1', x: 300, y: 1200, node: 'i' },
+      { type: 'spawn', target: 'unit2', x: 750, y: 1130, node: 'h' },
+      { type: 'spawn', target: 'unit3', x: 270, y: 1470, node: 'a' },
+      { type: 'doorFrame', frameLabel: 'close' },
+    ],
+    nextState: 14, resetFrame: true, wallFrame: 14,
+  });
+  assert.deepEqual(script.bulletTransition, {
+    hitObject: '9900ff', requiredState: 9, nextState: 10, wallFrame: 10,
+    effects: [
+      { type: 'hudFrame', frameLabel: 'idle' },
+      { type: 'message', target: 'player', text: "It looks like the elevator's out.. I'll have to jump.", seconds: 5, force: true, voice: 'V_Ca1_7' },
+      { type: 'setAmmo', target: 'player', clip: 0, spare: 0 },
+      { type: 'elevatorFrame', frameLabel: 'play' },
+      { type: 'hideDownArrows' },
+    ],
+  });
+  assert.deepEqual(script.inputTransition, {
+    key: 'swapGuns', requiredState: 12, nextState: 13, wallFrame: 13,
+    effects: [
+      { type: 'hudFrame', frameLabel: 'idle' },
+      { type: 'showDownArrows', state: 12 },
+      { type: 'doorFrame', frameLabel: 'open' },
+    ],
+  });
 });

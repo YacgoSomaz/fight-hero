@@ -15,6 +15,7 @@ test('Unit.setClass builds the original level-one Medic numeric profile with the
     level: 1,
     number: 1,
     id: 'medic',
+    icon: 'medic',
     name: 'Medic',
     startFrame: 50,
     runType: 1,

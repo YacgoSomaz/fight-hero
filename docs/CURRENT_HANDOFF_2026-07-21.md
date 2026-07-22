@@ -195,6 +195,15 @@ npm start
 
 **下一位唯一正确步骤**：不要渲染“站着的 57/105/155 帧”作为游戏完成。先从原 `UnitMC` 时间轴导出/验证这些 skin frame 的完整 body-part display list，再建立 Tutorial 输入/Movement adapter；脚底 ARGB 碰撞、`noAim/noJump`、原枪械和相机都须在同一专用 world 中按输入回放验证。
 
+## 2026-07-22：Tutorial actor 原完整皮肤帧渲染计划（仍不可启动）
+
+- 原始资源：`public/assets/unit-frames/1..449.png` 是 UnitMC symbol 669 的本地直接导出。Campaign 1 所需的 57、105、155、55、151 均存在，不再以单一 Medic 合成图作五人外观替代。
+- 承载：`tutorial-actor-render-plan.mjs` 以 actor binding 的 `Unit.setClass(startFrame + skin)` 结果生成原 PNG 路径、出生可见性和原坐标。它不会自行画轮廓、重配颜色或把 `noSpawn` actor 偷换成站立单位。
+- TDD：`8741264`→`e293af5` 锁定五个路径、源文件存在性和 Unit 4 的 `visible=false`。完整回归 163/163，覆盖率行 99.37%、分支 87.50%、函数 95.51%。
+- 严格边界：这不是 UnitMC 动画或浏览器渲染完成。完整图仅为 source fallback；尚缺按 run/jump/crouch/climb/fire/reload 标签使用原 display list 的选择器，且其尚未进入 `main.mjs`。不要提前解除 Campaign 1 入口。
+
+**下一位唯一正确步骤**：把 Tutorial actor 的动态状态映射到原 UnitMC frame labels（非手切整帧），先对 Scientist 的禁瞄准/无枪→取得 USP→M4/USP 和 Tank/Commando/Medic 初始状态写输入回放 RED；然后才与专用 `TutorialWorld` 组合。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

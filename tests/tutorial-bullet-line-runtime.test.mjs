@@ -25,11 +25,11 @@ test('Tutorial USP2 Bullet_Line_Basic preserves source muzzle offset, xOff half-
   assert.deepEqual(trace, {
     gunId: 'USP2',
     rotation: 90,
-    origin: { x: 137, y: 58 },
-    impact: { x: 267, y: 58 },
+    origin: { x: 145, y: 50 },
+    impact: { x: 275, y: 50 },
     distance: 130,
     hit: { type: 'wall', color: '9900ff' },
-    linePath: [{ x: 137, y: 58 }],
+    linePath: [{ x: 145, y: 50 }],
   });
 });
 

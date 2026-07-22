@@ -23,6 +23,10 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /traceTutorialLineBullet/);
   assert.match(script, /applyTutorialLineBulletHit/);
   assert.match(script, /applyCampaignOneSessionDeath/);
+  assert.match(script, /function synchronizePlayerSourceRespawn\(\)/, 'the source Player.as respawn must reset the visible actor state');
+  assert.match(script, /if \(sourcePlayer\.dead\) return;/, 'a dead source player must not keep moving or being rendered by stale local state');
+  assert.match(script, /playerWasDead && !sourcePlayer\.dead/, 'the visible player must adopt the source Arena respawn position on the source respawn tick');
+  assert.match(script, /if \(sourcePlayer\?\.spawned && sourcePlayer\.visible && !sourcePlayer\.dead\) \{[\s\S]*?drawTutorialUnitPose/, 'the scene must hide the source player while Unit.die has made it invisible');
   assert.match(script, /renderTutorialLineBullet/);
   assert.match(script, /applyTutorialBulletEnvironmentHit/);
   assert.match(script, /units:\s*session\.actors/);

@@ -2,12 +2,13 @@
 
 本文件是下一位开发者或 AI 的当前入口。旧报告保留解包证据与历史过程；若它们和本文件冲突，以本文件、当前代码与测试为准。
 
-## 2026-07-22：原 AI 决策层与 Campaign 1 会话接入（未可玩）
+## 2026-07-22：原 AI 决策、Movement 与 Campaign 1 场景接入（仍未可玩）
 
 - 原始证据：`assets/reverse/ffdec-deep-20260720/scripts/AI.as`、`Arena.as`、`NodeWaypoint.as`、`NodeAiAction.as` 与解包后的 `ARENA_SOURCE_LAYOUTS.tut`。`NodeAiAction` symbol 1268 的本地矩形为 69×69，网页按原 Display List matrix 得到实际 `width/height`，不以自制导航网格代替。
-- 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`。
-- TDD：`9450a59→570cc91` 为 AI runtime 的 RED→GREEN；`b79626c→d181cce` 为 Campaign 会话接入 RED→GREEN。当前完整回归为 `npm test` **283/283**，全局覆盖率 **98.98% 行、82.75% 分支、96.06% 函数**。
-- 严格边界：这只迁移了**决策状态**。`tutorial-scene-preview.mjs` 尚未消费 NPC 的 `aiKeys`、`aiJumpRequested`、`aim`、`aiShouldShoot`，因此 NPC 不会因此真实走路、攀爬、跳跃、瞄准或开枪；不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应以 `Movement.doJump/EnterFrame`、UnitMC motion 和 Guns.shoot 的原始阶段顺序消费这些字段，并对原版输入/截图做验证。
+- 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`，并以 `advanceCampaignOneSessionAiMovement()` 将 key/jump 消费到同一份 `tutorial-movement.mjs`（`Movement.as`）状态。
+- 场景承载：`tutorial-scene-preview.mjs` 在原 AI 决策后、单位 Status 后消费原 wall surface，写回 actor 位置、蹲伏/跳跃状态，并把返回的 `nextAnim` 交给 `requestTutorialActorMotion()`；因此不再由旧通用 AI 控制 NPC 平移。
+- TDD：`9450a59→570cc91` 为 AI runtime 的 RED→GREEN；`b79626c→d181cce` 为 Campaign 会话决策接入；`48e3164→fd0c630` 为 Movement 消费；`f2fb52a→bb496ea` 为浏览器 UnitMC 动作接入。当前完整回归为 `npm test` **285/285**，全局覆盖率 **98.99% 行、83.29% 分支、96.08% 函数**。
+- 严格边界：NPC 的 **行动** 已接到原 Movement/UnitMC，但其 `aim` 尚未转换为 Unit 的 arm/head 变换，`aiShouldShoot` 尚未接入原 `Guns.shoot/makeBullet`，也没有原版输入/截图差分、重生、头顶血条或完整战役流程。因此不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应先迁移 AI Unit 的瞄准变换，再迁移原 NPC Guns 阶段与视觉/伤害对照。
 
 ## 快速开始
 

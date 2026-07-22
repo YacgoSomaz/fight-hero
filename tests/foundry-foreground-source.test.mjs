@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { extractFoundryForegroundDisplayList } from '../private-assets/parse-foundry-foreground.mjs';
+import { extractFoundryForegroundDisplayList } from '../tools/parse-foundry-foreground.mjs';
 
 test('extracts the original Foundry foreground children from Arena frame 2 without flattening them', () => {
   const source = extractFoundryForegroundDisplayList();

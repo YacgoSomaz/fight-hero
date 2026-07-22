@@ -281,6 +281,15 @@ npm start
 
 **严格边界不变**：固定姿势浏览器承载不等于 Tutorial actor、原版截图叠图或任何可玩关卡。下一位应获取原 SWF 相同 skin+weapon+root/action frame 的可靠截图后进行像素叠图；再按原 30fps root/M4 action 帧推进 run/jump/climb/aim/fire/reload。不要把此渲染器接回当前 generic Medic quick-match renderer。
 
+## 2026-07-22：Tutorial M4 原动作离散帧解析（仍不可启动）
+
+- 原始证据：`Guns.as:setFrame()` 对 idle 调用 `arm1/arm2.gotoAndStop(curGun.frameIdle)`，而 fire/reload 追加 `"_fire"`/`"_reload"` 后调用 `gotoAndPlay()`。版本控制的 501/668 Display List 对应 M4 label 的实际帧为 `rifle=[77]`、`rifle_fire=[78,79,80]`、`rifle_reload=[81..115]`。这些不是可任意缩放的动画时长，也不能固定取每段第一帧。
+- 承载：`src/tutorial-m4-action-frame.mjs` 的 `tutorialM4ActionFrame()` 只接受原 runtime 中存在的 label 与零起始离散 index，返回前/后臂同一实际帧及其原 `items` 列表；不存在的 label、负数、越界 index、缺失 items 或前后帧不一致会拒绝。`createTutorialUnitPoseAtAction()` 将该列表交给既有 root/action/skin 姿势计划，不插值、不循环、不生成替代臂或枪。
+- TDD：`1016983` 是模块不存在时的 RED；`140f5a1` 是 GREEN。测试锁定 idle=77、fire 的首/末=78/80、reload 的首/末=81/115，且锁定 fire 第 2 个 Display List 的枪局部矩阵正确进入姿势计划。完整 `npm test`/`npm run test:coverage` 为 **185/185 通过**，99.24% 行、86.74% 分支、95.88% 函数。
+- 严格边界：这里的 `actionIndex` 是证据输入，尚未从原 `shootDelay`、`reloading`、帧率/播放停止条件推导，也未接入浏览器 actor。因此它不是“能开火/能换弹”的实现，更不是完整角色状态机或 1:1 游戏。
+
+**下一位唯一正确步骤**：继续从 `Guns.as`、枪械 stats 和 arm Sprite timeline 建立原 `shootDelay`/reload 完结到 action index 的逐帧时钟，并和 UnitMC 根 30fps 状态帧一起在 Tutorial 专用 actor 中回放。每个时钟转移均须先有原 SWF 实机帧或 AS3 证据与 RED；没有可靠原版截图叠图前，不能开放 Tutorial 菜单入口、更不能声明 1:1 完成。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

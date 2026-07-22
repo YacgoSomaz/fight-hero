@@ -78,8 +78,8 @@ export const MENU_PRESENTATION_MODE = 'source-art-only';
 export const MENU_CHINESE_COPY = Object.freeze({
   home: Object.freeze({ title: '主菜单', campaign: '战役', challenges: '挑战', quickmatch: '快速对战', availability: '当前可用：战役、挑战与快速对战均可进入。' }),
   quickmatch: Object.freeze({ title: '快速对战', back: '返回', start: '开始游戏', availability: '可开始：5 种已迁移的原始对战规则。' }),
-  campaign: Object.freeze({ title: '战役', back: '返回', start: '开始任务', availability: '可选择原始战役任务，并以已迁移地图与规则启动。' }),
-  challenges: Object.freeze({ title: '挑战', back: '返回', start: '开始任务', availability: '可选择原始挑战任务，并以已迁移地图与规则启动。' }),
+  campaign: Object.freeze({ title: '战役', back: '返回', start: '开始任务', availability: '可浏览原始战役目录；未完整迁移的任务会显示真实缺口。' }),
+  challenges: Object.freeze({ title: '挑战', back: '返回', start: '开始任务', availability: '可浏览原始挑战目录；未完整迁移的任务会显示真实缺口。' }),
 });
 
 export function getMenuHitAreas(screen) {

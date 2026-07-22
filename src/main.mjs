@@ -7,7 +7,7 @@ import { drawVectorRuntimeFrame } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas, getMissionEntries } from './menu-ui.mjs';
-import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
+import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { commitStartedGameFrame } from './game-start-render.mjs';
@@ -171,7 +171,8 @@ function addQuickValue(name, text, left, top, width, selected = false) {
 function renderMissionOverlay(screen) {
   menuOverlay.replaceChildren();
   const selected = selectedMissionIndex[screen] ?? 0;
-  getMissionEntries(screen).forEach((mission, index) => {
+  const missions = getMissionEntries(screen);
+  missions.forEach((mission, index) => {
     addQuickValue(
       `${screen}-mission-${mission.stage}`,
       `第 ${mission.stage} 关 · ${mission.title}`,
@@ -181,6 +182,13 @@ function renderMissionOverlay(screen) {
       index === selected,
     );
   });
+  const selectedMission = missions[selected];
+  if (selectedMission) {
+    const status = getQuickMatchStatus(updateMatchSelection(matchSelection, selectedMission));
+    // This margin lies below the unmodified source-art navigation strip. It
+    // makes a rejected source mission actionable rather than a dead button.
+    addQuickValue('mission-availability', status.message, 25.0, MENU_QUICK_SUMMARY_TOP, 50.0);
+  }
 }
 
 function renderQuickmatchOverlay() {
@@ -247,7 +255,7 @@ music.addEventListener('change', () => { audio.setMuted(!music.checked); if (mus
 async function launchSelectedMatch() {
   if (!isPlayableSelection(matchSelection)) {
     quickSelectionChanged = true;
-    quickStatus = '该原始关卡的地图碰撞尚未迁移，不能伪装为可玩。';
+    quickStatus = getQuickMatchStatus(matchSelection).message;
     if (menuSurface.dataset.screen === 'quickmatch') renderQuickmatchOverlay();
     else renderMissionOverlay(menuSurface.dataset.screen);
     return;
@@ -282,7 +290,7 @@ function selectMission(kind, index) {
   selectedMissionIndex[kind] = index;
   matchSelection = updateMatchSelection(matchSelection, mission);
   quickSelectionChanged = true;
-  quickStatus = isPlayableSelection(matchSelection) ? '' : '该关原始地图仍待迁移。';
+  quickStatus = isPlayableSelection(matchSelection) ? '' : getQuickMatchStatus(matchSelection).message;
   renderMissionOverlay(kind);
 }
 

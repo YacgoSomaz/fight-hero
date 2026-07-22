@@ -1,6 +1,6 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { advanceCampaignOneSessionUnits, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
+import { advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -120,6 +120,7 @@ try {
     sourcePlayer.position = { ...player.position };
     sourcePlayer.scaleX = aimState.flip ? -1 : 1;
     sourcePlayer.crouching = movementState.crouching;
+    sourcePlayer.movement = { xVelocity: movementState.xVel, yVelocity: movementState.yVel };
   }
 
   function render() {
@@ -199,10 +200,19 @@ try {
             shooter: sourcePlayer,
             wall: tutorialWorld.wall,
             units: session.actors,
+            corpses: session.corpses,
           });
           sourceLineTraces.push(trace);
           if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
-          else applyTutorialLineBulletHit({ trace, shooter: sourcePlayer });
+          else {
+            const hitOutcome = applyTutorialLineBulletHit({ trace, shooter: sourcePlayer });
+            if (hitOutcome.died) applyCampaignOneSessionDeath(session, {
+              target: trace.hit.target,
+              attacker: sourcePlayer,
+              gun: sourcePlayer.gun.curGun,
+              extra: hitOutcome.extra,
+            });
+          }
         }
       }
       // Player.EnterFrame fires before UnitEnterFrame; Status is then first

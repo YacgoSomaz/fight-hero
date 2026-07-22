@@ -297,3 +297,22 @@ export function extractUnitMCSkinFrameLayers(skinFrame, { swf = swfPath, unitSou
       .map(({ depth, character: childCharacter, name }) => ({ depth, character: childCharacter, ...(name ? { name } : {}) })),
   }));
 }
+
+// FFDec crops a direct Shape export to the Shape's own RECT, not to the
+// surrounding child Sprite's visual union. This matters for legup2: its
+// container also carries a separately named gun child that UnitMC hides.
+export function extractUnitMCSkinBaseShapeBounds(skinFrame, { swf = swfPath, unitSource = sourcePath } = {}) {
+  const graph = extractUnitMCSkinGraph({ swf, unitSource });
+  if (!Number.isInteger(skinFrame) || skinFrame < 1 || skinFrame > Math.min(...graph.targets.map(([, , frames]) => frames))) {
+    throw new Error(`Skin frame ${skinFrame} is outside the original UnitMC skin child range`);
+  }
+  const bytes = decompressSwf(swf);
+  const defs = definitions(bytes);
+  return graph.targets.map(([path, character]) => {
+    const direct = displayListAtFrame(bytes, defs.get(character), skinFrame).find(({ name }) => !name);
+    if (!direct?.character) throw new Error(`UnitMC skin ${path}/${skinFrame} has no direct base Shape`);
+    const bounds = directBounds(bytes, defs.get(direct.character));
+    if (!bounds) throw new Error(`UnitMC skin ${path}/${skinFrame} base ${direct.character} is not a direct Shape`);
+    return { path, character: direct.character, bounds };
+  });
+}

@@ -3,6 +3,7 @@ import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
+import { advanceTutorialAiGunRuntime, createTutorialGunRuntime } from './tutorial-gun-runtime.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
@@ -42,6 +43,7 @@ function activateSourceActor(actor, aiArena, random) {
     secondary: sourceGun(actor.guns.secondary),
     curGun: sourceGun(actor.guns.active),
   };
+  if (!actor.human) actor.gunRuntime = createTutorialGunRuntime({ gunId: actor.guns.active, ammoMultiplier: actor.unitInfo.amm });
   // AI.spawn(), unlike Unit.spawn(), explicitly applies this half-second
   // protection after Unit.unitSpawn() has reset Status.
   if (!actor.human) actor.status.sSpawn = 0.5 * 30;
@@ -60,6 +62,7 @@ function setActorGuns(actor, primary, secondary, active = primary) {
   actor.gun.primary = sourceGun(primary);
   actor.gun.secondary = sourceGun(secondary);
   actor.gun.curGun = sourceGun(active);
+  if (!actor.human && actor.unitInfo) actor.gunRuntime = createTutorialGunRuntime({ gunId: active, ammoMultiplier: actor.unitInfo.amm });
 }
 
 function sourceActor(id, definition, { human, random, aiArena }) {
@@ -203,6 +206,33 @@ export function advanceCampaignOneSessionAi(session, { wall, gameStarted = true,
     actor.aiShouldShoot = decision.shouldShoot;
     actor.aim = { x: decision.state.aimX, y: decision.state.aimY };
     results.push({ id: actor.id, keys: decision.keys, jumpRequested: decision.jumpRequested, shouldShoot: decision.shouldShoot, targetId: decision.state.targetId, aim: { ...actor.aim } });
+  }
+  return results;
+}
+
+// AI.as calls gun.shoot() after its target/probability branch; its inherited
+// UnitEnterFrame then runs Guns.EnterFrame.  Keep the runtime per original
+// NPC so pistols do not inherit Player.mDown or share a delay/ammo record.
+export function advanceCampaignOneSessionAiGuns(session) {
+  if (!session?.actors) throw new TypeError('Campaign AI Guns requires source session actors');
+  const results = [];
+  for (const actor of session.actors) {
+    if (actor.human || !actor.spawned || !actor.status || actor.dead) continue;
+    if (!actor.gunRuntime || actor.gunRuntime.gunId !== actor.guns.active) {
+      actor.gunRuntime = createTutorialGunRuntime({ gunId: actor.guns.active, ammoMultiplier: actor.unitInfo.amm });
+    }
+    const tick = advanceTutorialAiGunRuntime(actor.gunRuntime, {
+      shouldShoot: actor.aiShouldShoot,
+      unit: {
+        aim: actor.unitInfo.aim,
+        crouching: actor.crouching,
+        jumping: Boolean(actor.movementState?.jumping),
+        xVelocity: actor.movement.xVelocity,
+        reflecting: Boolean(actor.reflecting),
+      },
+    });
+    actor.gunRuntime = tick.state;
+    results.push({ id: actor.id, fired: tick.fired, action: tick.action, bullet: tick.bullet });
   }
   return results;
 }

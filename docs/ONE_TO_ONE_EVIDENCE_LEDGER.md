@@ -96,9 +96,9 @@ Main.as（输入/屏幕切换）
 
 | 子项 | 原始证据 | 当前网页承载 | 自动证据 | 当前状态 / 必须补项 |
 | --- | --- | --- | --- | --- |
-| UnitMC 时间轴 | `UnitMC.as`；symbol 669、449 帧、frame labels、Display List matrix | `public/assets/unitmc-timeline.json`、`unit-rig.mjs`、`main.mjs` | `unit-render-plan.test.mjs`、`vector-runtime-renderer.test.mjs` | `已定位+部分接入`；时间轴资料不等于浏览器已可见地逐帧重建。 |
-| 原始 Medic 完整皮肤 | 解包的 Unit 皮肤导出物 | `public/assets/unit-parts/unit-idle.png`、`#actorOverlay` | `unit-render-plan.test.mjs`、`scene-layering.test.mjs` | `已接入可见回退`；当前 DOM 覆盖层保证角色不消失，但仅能显示完整 idle 皮肤/翻转，不能关闭跑、攀爬、瞄准状态机条目。 |
-| 头/躯干/手臂/腿/枪 holder | `UnitMC.EnterFrame()` 和 `Unit.as` 覆盖矩阵 | `unit-rig.mjs`、`main.mjs` Canvas 路径 | 相关渲染测试 | `阻断`；Canvas 与 DOM 图层合成契约曾导致角色不可见，必须将真实部件状态以稳定可见层输出，并逐帧对照。 |
+| UnitMC 时间轴 | `UnitMC.as`；symbol 669、449 帧、frame labels、Display List matrix | `public/assets/unitmc-timeline.json`、`unit-dom-rig.mjs`、`main.mjs` 的 `#actorOverlay` | `unit-dom-rig.test.mjs`、`scene-layering.test.mjs`、`unit-render-plan.test.mjs` | `已接入+已回归（第一纵切）`；浏览器已确认两个角色各生成 10 个原始部件，静态完整皮肤在时间轴就绪后隐藏，瞄准会改写前臂矩阵。尚未逐帧对照全部动作。 |
+| 原始 Medic 完整皮肤 | 解包的 Unit 皮肤导出物 | `public/assets/unit-parts/unit-idle.png`、`#actorOverlay` | `unit-render-plan.test.mjs`、`scene-layering.test.mjs` | `已接入可见回退`；只有 timeline 尚未加载或某帧不可用时才显示，不能关闭跑、攀爬、瞄准状态机条目。 |
+| 头/躯干/手臂/腿/枪 holder | `UnitMC.EnterFrame()` 和 `Unit.as` 覆盖矩阵 | `unit-dom-rig.mjs`、`main.mjs` 的 DOM part layer | `unit-dom-rig.test.mjs`、`scene-layering.test.mjs` | `已接入+已回归（10 部件）`；解除了 Canvas/DOM 合成导致角色不可见的阻断。仍需对跑、跳、蹲、攀爬、开火和换弹逐帧与原版采样核验。 |
 | 瞄准与左键发射 | `Main.MouseDown → Game.MouseDown → Player.mDown → Guns.shoot`；鼠标转 Arena 坐标 | `main.mjs`、`engine.mjs`、`m4-action-selector.mjs` | `engine.test.mjs`、`m4-action-selector.test.mjs` | `已接入部分`；须验证鼠标反向、枪口 pivot、持枪姿势、射击帧和换弹帧。 |
 | 头顶血条 / 底部 HUD / 准星 | 原 HUD symbol、Status/Unit 显示关系 | `main.mjs`、`unit-status.mjs` | `unit-status.test.mjs` | `阻断`；现有文字/几何 HUD 不能称为原 HUD，需要导出并接入原 symbol，确认裁切、层级和随状态变化。 |
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
@@ -130,7 +130,7 @@ Main.as（输入/屏幕切换）
 
 以下顺序是依赖顺序，不是“哪项看起来最容易”。每完成一小段，就应在本台账把原始证据、模块、测试、人工回放链接补齐。
 
-1. **稳定角色渲染契约**：保留当前原始完整皮肤 DOM 覆盖层以防角色消失；将 UnitMC 每帧部件矩阵、z-order、翻转和枪械 holder 转换为同一稳定层，先完成 Medic + M4 的 idle/run/jump/duck/climb/aim/fire/reload 对照。不得轮播整帧截图冒充独立肢体。
+1. **完成角色渲染的剩余状态**：已将 10 个原始部件、绘制顺序、frame matrix、左右翻转和瞄准 holder 放进稳定 DOM 层；接下来逐帧对照 Medic + M4 的 run/jump/duck/climb/aim/fire/reload，补齐真实 M4 action 帧，而不是轮播整帧截图。
 2. **原 HUD symbol**：从解包物定位职业/血量/经验/弹药/准星/头顶条的 exact symbol、裁切和时间轴，接入稳定层，并以原图截图逐项对照。
 3. **逐图 wallMC**：先导出并审计每个 Arena 的 wall mask 与地图坐标关系，再让 Movement、Bullet、AI 统一读取；每图建立出生、边缘、坡、平台、坑、攀爬和镜头回归。
 4. **M4 完整纵切**：完成枪的数据、手臂标签、子弹、后坐、HUD、声音/枪火的原始时间关系，再扩展到 Stats_Guns 的其余 80 把枪，禁止把固定 M4 演示扩张为“完整枪表”。

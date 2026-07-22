@@ -155,8 +155,9 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG, te
     aimX: spawnX + 100, aimY: spawnY - 47, aimAngle: 0,
     animation: 'idle', animationTime: 0, animationFrame: 1, animationBlend: 0, climb: null,
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
+    classAim: SOURCE_MEDIC_LEVEL_ONE_AIM, dynRecoil: SOURCE_M4_RECOIL, dynRecoilMod: SOURCE_M4_RECOIL * (2 - SOURCE_MEDIC_LEVEL_ONE_AIM),
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
-    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, shootDelay: 0.15 },
+    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, recoil: SOURCE_M4_RECOIL, shootDelay: 0.15 },
     color, team, carriedFlagId: null, isJug: false, isBot, ai: isBot ? {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
       navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,
@@ -178,6 +179,10 @@ export const UNITMC_FRAMES = Object.freeze({
 // is reconstructed from the original rifle idle label (501/668 frame 77),
 // its M4 gun child (375 frame 20), and the fixed Medic skin subparts.
 const ARM1_PIVOT = Object.freeze({ x: 0.3, y: -42 });
+// Stats_Guns.addGun(1,"M4",..., range 60, recoil 4, ...) and
+// Stats_Classes.getClass(1, 1): Medic aimMin 70, normalised by Unit.as.
+const SOURCE_M4_RECOIL = 4;
+const SOURCE_MEDIC_LEVEL_ONE_AIM = 0.7;
 // The M4 child is positioned relative to the Medic hand and its duplicate
 // rife_clip layer is excluded; keep the ballistic origin on the final tip.
 const RIFLE_BARREL_TIP = Object.freeze({ x: 71, y: -8 });
@@ -498,6 +503,10 @@ function spawnBullet(world, actor) {
   world.bullets.push({ owner: actor.id, x: muzzleX, y: muzzleY, px: muzzleX, py: muzzleY, vx: Math.cos(actor.aimAngle) * world.config.bulletSpeed, vy: Math.sin(actor.aimAngle) * world.config.bulletSpeed, ttl: 0.8, damage: 1 });
   world.muzzleFlashes.push({ owner: actor.id, x: muzzleX, y: muzzleY, facing: actor.facing, angle: actor.aimAngle, ttl: world.config.muzzleFlashDuration });
   actor.fireTimer = world.config.fireCooldown; actor.crosshairSpread = Math.min(28, actor.crosshairSpread + 9); actor.recoil = 1;
+  // Guns.shoot raises dynRecoil only through the player path which owns Hud.
+  // Its source condition is strictly less-than, so the final .3 can overshoot
+  // the nominal 1.7× value by one increment.
+  if (!actor.isBot && actor.dynRecoil < gun.recoil * 1.7) actor.dynRecoil += 0.3;
   world.events.push({ type: 'fire', actor: actor.id });
   if (!gun.clip) reload(world, actor);
 }
@@ -620,8 +629,17 @@ function updateObjectives(world, dt) {
   if (world.mode === 'ctf') updateCtf(world);
   if (world.mode === 'dom') updateDomination(world, dt);
 }
+function updateSourceDynamicRecoil(actor, dt) {
+  const gun = actor.weapon;
+  // Guns.EnterFrame: .05 per native 30fps frame while above base recoil.
+  if (actor.dynRecoil > gun.recoil) actor.dynRecoil = Math.max(gun.recoil, actor.dynRecoil - 0.05 * dt * 30);
+  // Branch order is Guns.EnterFrame. Reflection is not an implemented M4
+  // state yet, so do not invent it; idle, crouch, jump and movement are exact.
+  const stance = actor.crouching ? 0.6 : !actor.grounded ? 1.2 : actor.vx ? 1.1 : 1;
+  actor.dynRecoilMod = actor.dynRecoil * stance * (2 - actor.classAim);
+}
 function updateActor(world, actor, input, dt) {
-  if (!actor.alive) { actor.deathTimer -= dt; if (actor.deathTimer <= 0) { actor.alive = true; actor.hp = actor.maxHp; actor.x = actor.spawnX; actor.y = actor.spawnY; actor.vx = actor.vy = 0; actor.weapon.clip = actor.weapon.clipMax; actor.weapon.spare = 90; } return; }
+  if (!actor.alive) { actor.deathTimer -= dt; if (actor.deathTimer <= 0) { actor.alive = true; actor.hp = actor.maxHp; actor.x = actor.spawnX; actor.y = actor.spawnY; actor.vx = actor.vy = 0; actor.weapon.clip = actor.weapon.clipMax; actor.weapon.spare = 90; actor.dynRecoil = actor.weapon.recoil; actor.dynRecoilMod = actor.dynRecoil * (2 - actor.classAim); } return; }
   if (updateClimb(world, actor, dt)) return;
   updateCrouch(world, actor, input.down);
   const left = Boolean(input.left); const right = Boolean(input.right); actor.vx = ((right ? 1 : 0) - (left ? 1 : 0)) * (actor.crouching ? world.config.crouchSpeed : world.config.moveSpeed);
@@ -642,6 +660,7 @@ function updateActor(world, actor, input, dt) {
   actor.fireTimer = Math.max(0, actor.fireTimer - dt); actor.hitTimer = Math.max(0, actor.hitTimer - dt); actor.crosshairSpread = Math.max(actor.crosshairRestSpread, actor.crosshairSpread - 26 * dt); actor.recoil = Math.max(0, actor.recoil - 7 * dt);
   if (actor.weapon.reloadRemaining) { actor.weapon.reloadRemaining -= dt; if (actor.weapon.reloadRemaining <= 0) completeReload(actor); }
   if (input.reload) reload(world, actor); if ((input.fire || input.firePressed) && !actor.weapon.reloadRemaining) spawnBullet(world, actor);
+  updateSourceDynamicRecoil(actor, dt);
   const movingBackward = actor.vx * actor.facing < -1;
   const fallingAnimation = actor.animation === 'fall' && actor.animationTime >= (UNITMC_FRAMES.fall[1] - UNITMC_FRAMES.fall[0] + 1) / 30 ? 'fallloop' : 'fall';
   const crouchAnimation = actor.animation === 'duck' && actor.animationTime >= (UNITMC_FRAMES.duck[1] - UNITMC_FRAMES.duck[0] + 1) / 30 ? 'duckloop' : actor.animation === 'duckloop' ? 'duckloop' : 'duck';

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -148,6 +148,26 @@ test('Campaign 1 consumes source AI keys and jump requests through original NPC 
   assert.equal(second[0].jumped, false);
   assert.equal(bot.position.y, 663.8);
   assert.ok(Math.abs(bot.movementState.yVel + 11.4) < 1e-9);
+});
+
+// User journey: a source AI decision that passed AI.as's probability gate
+// must call the bot's actual Guns.shoot runtime, preserving its selected
+// Beretta and its independent delay/ammunition state.
+test('Campaign 1 consumes an AI shoot decision through the original bot gun state', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const bot = session.actors[1];
+  bot.aiShouldShoot = true;
+
+  const results = advanceCampaignOneSessionAiGuns(session);
+
+  assert.deepEqual(results, [
+    { id: 'unit1', fired: true, action: 'fire', bullet: { gunId: 'Beretta', dynRecoil: 3, dynRecoilMod: 0 } },
+    { id: 'unit2', fired: false, action: null, bullet: null },
+    { id: 'unit3', fired: false, action: null, bullet: null },
+  ]);
+  assert.deepEqual({ gunId: bot.gunRuntime.gunId, delay: bot.gunRuntime.shootDelay, clip: bot.gunRuntime.ammo.clipCur }, {
+    gunId: 'Beretta', delay: 6, clip: 11,
+  });
 });
 
 // User journey: when Status.damage reaches zero HP, the original Unit.die()

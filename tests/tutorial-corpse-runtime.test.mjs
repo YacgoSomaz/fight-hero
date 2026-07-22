@@ -67,3 +67,20 @@ test('PhysWorld.hitCorpse preserves per-part narrow impulse and source gun force
   assert.ok(Math.abs(corpse.bodyImpulses.at(-1).x - 2.342606428329091) < 1e-12);
   assert.ok(Math.abs(corpse.bodyImpulses.at(-1).y + 1.8740851426632728) < 1e-12);
 });
+
+test('PhysWorld.hitCorpse preserves sky9 splash adjustment and same-position body nudge', () => {
+  const corpse = createTutorialCorpse({
+    target: { id: 'unit1', position: { x: 0, y: 40 }, scaleX: 1, skinFrame: 5, movement: { xVelocity: 0, yVelocity: 0 } },
+    attacker: { id: 'unit0', position: { x: 1, y: 1 } }, gun: { id: 'USP2', force: 0, splash: 0 }, extra: {}, random: () => 0.5,
+  });
+  const splashExtra = { hitX: 0, hitY: 0 };
+  assert.deepEqual(applyTutorialCorpseHit({
+    corpse, attacker: { id: 'unit0', position: { x: 1, y: 1 } }, gun: { id: 'RPG', force: 2, splash: 100 }, extra: splashExtra, useMod: 'sky9', random: () => 0.5,
+  }), { applied: true, force: 3 });
+  assert.deepEqual(splashExtra, { hitX: 0, hitY: 1 });
+  assert.deepEqual(applyTutorialCorpseHit({
+    corpse, attacker: { id: 'unit0', position: { x: 0, y: 0 } }, gun: { id: 'USP2', force: 3, splash: 0 }, extra: {}, random: () => 0.5,
+  }), { applied: true, force: 3 });
+  assert.equal(corpse.parts.find(({ kind }) => kind === 'body').position.y, -1);
+  assert.throws(() => applyTutorialCorpseHit({ corpse: {}, attacker: { position: { x: 0, y: 0 } }, gun: { force: 0, splash: 0 } }), /PhysActor body/);
+});

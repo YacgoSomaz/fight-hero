@@ -96,6 +96,39 @@ export function createTutorialCorpse({ target, attacker, gun, extra, useMod = ''
   return corpse;
 }
 
+function requireSourceCorpse(corpse) {
+  const body = corpse?.parts?.find(({ kind }) => kind === 'body');
+  if (!body || !Array.isArray(corpse.parts) || !Array.isArray(body.impulses)
+    || !Number.isFinite(body.position?.x) || !Number.isFinite(body.position?.y)) {
+    throw new TypeError('PhysWorld.hitCorpse requires a source PhysActor body and parts');
+  }
+  return body;
+}
+
+// Direct numerical state port of PhysWorld.hitCorpse().  This intentionally
+// records source impulses only; Box2D force integration and the Phys* sprite
+// display list are not substituted by a hand-drawn corpse renderer.
+export function applyTutorialCorpseHit({ corpse, attacker, gun, extra = {}, useMod = '', random = Math.random } = {}) {
+  const body = requireSourceCorpse(corpse);
+  if (!Number.isFinite(attacker?.position?.x) || !Number.isFinite(attacker?.position?.y)) throw new TypeError('PhysWorld.hitCorpse requires attacker source position');
+  if (!Number.isFinite(gun?.force) || !Number.isFinite(gun?.splash)) throw new TypeError('PhysWorld.hitCorpse requires source gun force and splash');
+  for (const part of corpse.parts) addImpulse(part, { x: random() - 0.5, y: random() - 0.5 });
+  let force = gun.force;
+  if (useMod === 'sky9') force *= 1.5;
+  if (force) {
+    let rotation;
+    if (gun.splash) {
+      if (extra.hitX === body.position.x && extra.hitY === body.position.y) extra.hitY += 1;
+      rotation = getRotation(extra.hitX, extra.hitY, body.position.x, body.position.y - 40);
+    } else {
+      if (attacker.position.x === body.position.x && attacker.position.y === body.position.y) body.position.y -= 1;
+      rotation = getRotation(attacker.position.x, attacker.position.y, body.position.x, body.position.y);
+    }
+    addImpulse(body, { x: xMoveToRot(rotation, force), y: yMoveToRot(rotation, force) });
+  }
+  return { applied: true, force };
+}
+
 // PhysActor.EnterFrame increments first, then destroys exactly at 5 * 30.
 export function advanceTutorialCorpseFrame(corpse) {
   corpse.fc += 1;

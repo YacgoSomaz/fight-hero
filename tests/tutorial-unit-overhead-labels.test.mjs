@@ -46,6 +46,19 @@ test('Unit.setTeam applies the original front team colour to both text fields, i
   assert.equal(getTutorialUnitOverheadLabels({ ...base, team: 2 }, screen)[1].colour, '#cc9900');
 });
 
+test('Unit.setJug switches text fields to their authored second-frame matrices', () => {
+  const labels = getTutorialUnitOverheadLabels({
+    isJug: true,
+    team: 2,
+    unitInfo: { name: 'Juggernaut', level: 50 },
+  }, { x: 400, y: 300 });
+
+  assert.deepEqual(labels.map(({ x, y, symbolId, colour }) => ({ x, y, symbolId, colour })), [
+    { x: 391.25, y: 212.5, symbolId: 684, colour: '#cc9900' },
+    { x: 372.45, y: 212.5, symbolId: 685, colour: '#cc9900' },
+  ]);
+});
+
 test('missing original Unit info is rejected rather than silently substituting a label', () => {
   assert.throws(
     () => getTutorialUnitOverheadLabels({ team: 0 }, { x: 0, y: 0 }),

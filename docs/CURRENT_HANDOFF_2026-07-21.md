@@ -258,6 +258,17 @@ npm start
 
 **经验规则与可公开运行时资源（2026-07-22，规则已锁定，视觉仍阻断）**：`3f1c387` 是真实 RED：新增 `tests/hud-experience.test.mjs` 后，因 `src/hud-experience.mjs` 不存在而失败；`6e102f7` 是 GREEN：`getHudExperience({level, exp})` 逐字面转录 `Stats_Classes.getNextExp(level)=level²*3+40`、`Hud.addExp` 的 420 宽度公式和 50 级 `Level Maxed` 分支。当前全量为 130/130，覆盖率 99.08% 行、87.93% 分支、93.72% 函数。直接从 FFDec 导出的 `hud-exp-base-1474.svg`、`hud-exp-green-1475.svg`、`hud-exp-fill-699-source.svg` 和 `hud-exp-font-981.ttf` 已加入 `public/assets/original-swf/`，但**尚未由 `main.mjs` 消费**。原因是原版把 918 置于斜切矩阵后再设置 ActionScript `MovieClip.width`；在未对原 SWF 实机采样其零值、半值和满值实际 bounding/matrix 前，不允许用 Canvas clip 或任意 `scaleX` 猜测替代。下一位应先取得这三个原版状态的截图/矩阵，再新增“运行时分层经验条”RED 用例并接入。
 
+## 2026-07-22：Tutorial 皮肤原始 Shape 证据与 M4 注入边界（仍不可启动）
+
+- 纠正：`DefineSprite_598` 的直接导出包含一个名为 `gun` 的子层（character 505），但原 `UnitMC.setSkin()` 明确执行 `legup2.gun.visible = false`。因此把腿导成整张容器 PNG 后直接复用会导致左/右腿的枪械层错误，不能作为最终人物渲染。
+- 机械提取：`parse-unitmc-skin-graph.mjs` 现可按 `UnitMC.as:setSkin()` 的目标表读取 55/57/105/151/155 的嵌套 Display List、每个 child 的注册 bounds 和直接 Shape character。`tools/generate-tutorial-skin-shape-source.mjs` 从该图谱生成 `src/tutorial-skin-shape-source.mjs`，不接受手写角色图或根动画 669。
+- 原始资源：39 个所需 `DefineShape` 均由 FFDec 26.1.0 直接从 `4399-90433-25.swf` 导出到 `public/assets/original-swf/unit-skin-shapes/{character}.png`。每个 head/body/arms/legs/feet 映射都指向其原 Shape；不会把 character 505 混入 `legup2`。
+- M4 边界：`src/m4-skin-child-frames.mjs` 已把原 M4 501/668 arm action 的 `gun=20` 与 Tutorial 的六个 arm child skin frame 合成来源表。这只是可测试的 Display List 输入，尚未接入浏览器，也不是可玩的 Tutorial actor。
+- TDD：`745df7c`→`ff69f22` 锁 M4 子肢体注入；`173bcf5`→`eb3b2ed` 锁子部件注册 bounds；`6e7042e`→`86f380f` 锁浏览器来源；`8ec935e`→`4c051b8` 锁 `legup2.gun` 的独立层；`70e8400`→`b8507c3` 锁 39 张原 Shape 文件和无枪腿映射。最新全量验证：`npm test` / `npm run test:coverage` 均为 170/170 通过，99.27% 行、86.72% 分支、95.82% 函数。
+- 严格边界：这些资源和关系**还没有**组成浏览器内的一名 Tutorial 角色，更没有进入菜单、输入、物理、AI、过场或结算。不得把“皮肤部件可证实导出”说成“游戏 1:1 已完成”。
+
+**下一位唯一正确步骤**：为一个固定原 root 动画帧与一个 M4 action frame 写 RED，要求在每个原 child matrix 和 crop-origin bounds 下拼装 Shape，而非拼装 container PNG；之后用同一套计划驱动 run/jump/climb/aim/fire/reload。完成原版截图叠图前，不接入/开放 Campaign 1。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

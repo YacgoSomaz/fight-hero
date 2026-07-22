@@ -29,10 +29,10 @@ test('extracts the complete source-owned Campaign 1 transition surface', () => {
   ]);
 
   assert.deepEqual(script.scoreTransitions, [
-    { state: 14, score: 6, nextState: 15, target: 'unit4', text: 'Hehehah, take some of this!', seconds: 5, force: true, voice: 'V_Ca1_15' },
-    { state: 15, score: 9, nextState: 16, target: 'player', text: "I'm very sorry for killing you!", seconds: 4, force: true, voice: 'V_Ca1_16' },
-    { state: 16, score: 12, nextState: 17, target: 'unit1', text: 'Their firepower is too strong... Aeuughh!', seconds: 5, force: true, voice: 'V_Ca1_17' },
-    { state: 17, score: 14, nextState: 18, target: 'unit4', text: 'These guys are smalltime!', seconds: 5, force: true, voice: 'V_Ca1_18' },
+    { state: 14, score: 6, nextState: 15, type: 'message', target: 'unit4', text: 'Hehehah, take some of this!', seconds: 5, force: true, voice: 'V_Ca1_15' },
+    { state: 15, score: 9, nextState: 16, type: 'message', target: 'player', text: "I'm very sorry for killing you!", seconds: 4, force: true, voice: 'V_Ca1_16' },
+    { state: 16, score: 12, nextState: 17, type: 'message', target: 'unit1', text: 'Their firepower is too strong... Aeuughh!', seconds: 5, force: true, voice: 'V_Ca1_17' },
+    { state: 17, score: 14, nextState: 18, type: 'message', target: 'unit4', text: 'These guys are smalltime!', seconds: 5, force: true, voice: 'V_Ca1_18' },
   ]);
 
   assert.equal(script.surfaceTrigger.surface, 'ff00ff');

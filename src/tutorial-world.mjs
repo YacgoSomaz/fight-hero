@@ -1,4 +1,4 @@
-import { applyCampaignOneSessionBulletEnvironmentHit, createCampaignOneSession } from './campaign-one-session.mjs';
+import { applyCampaignOneSessionBulletEnvironmentHit, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from './campaign-one-session.mjs';
 
 function replaceSourceWall(world) {
   const frame = world.session.map.wallFrame;
@@ -20,6 +20,13 @@ export function createTutorialWorld({ wallSet, session = createCampaignOneSessio
 export function applyTutorialBulletEnvironmentHit(world, { x, y }) {
   const hitObject = world.wall.colorAt(x, y);
   const effects = applyCampaignOneSessionBulletEnvironmentHit(world.session, hitObject);
+  if (effects.some((effect) => effect.type === 'changeWallFrame')) replaceSourceWall(world);
+  return effects;
+}
+
+export function applyTutorialFootContact(world, { x, y, human }) {
+  const surface = world.wall.colorAt(x, y);
+  const effects = applyCampaignOneSessionSurfaceContact(world.session, { surface, human });
   if (effects.some((effect) => effect.type === 'changeWallFrame')) replaceSourceWall(world);
   return effects;
 }

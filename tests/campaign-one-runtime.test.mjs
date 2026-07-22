@@ -51,6 +51,34 @@ test('Campaign 1 applies the source human foot-contact transition', () => {
   assert.deepEqual(runtime, { state: 9, frame: 0 });
 });
 
+test('Campaign 1 preserves the source injury and recovery effects on contact transitions', () => {
+  const injured = createCampaignOneRuntime({ state: 10, frame: 4 });
+  const recovered = createCampaignOneRuntime({ state: 11, frame: 7 });
+
+  assert.deepEqual(applyCampaignOneSurfaceContact(injured, { surface: 'ff00ff', human: true }), [
+    { type: 'hudFrame', frameLabel: 'tutclimb' },
+    { type: 'message', target: 'player', text: "Ahhh, my legs! I... I can't jump...", seconds: 5, force: true, voice: 'V_Ca1_8' },
+    { type: 'healToMax', target: 'player', show: false, force: true },
+    { type: 'damageCurrentHealthFraction', target: 'player', fraction: 0.8, source: 'env', extra: {}, force: true },
+    { type: 'setNoJump', target: 'player', value: true },
+    { type: 'playSound', sound: 'S_Mine1' },
+    { type: 'playSound', sound: 'S_Pan' },
+    { type: 'showDownArrows', state: 10 },
+    { type: 'changeWallFrame', frameLabel: 11 },
+  ]);
+  assert.deepEqual(applyCampaignOneSurfaceContact(recovered, { surface: 'ff00ff', human: true }), [
+    { type: 'playSound', sound: 'S_Equip' },
+    { type: 'message', target: 'player', text: 'Nice, some more ammo and a new weapon.', seconds: 5, force: true, voice: 'V_Ca1_9' },
+    { type: 'setGuns', target: 'player', primary: 'M4', secondary: 'USP' },
+    { type: 'swapGuns', target: 'player' },
+    { type: 'hudFrame', frameLabel: 'tutswitch' },
+    { type: 'setNoJump', target: 'player', value: false },
+    { type: 'showDownArrows', state: 11 },
+    { type: 'changeWallFrame', frameLabel: 12 },
+  ]);
+  assert.deepEqual({ injured, recovered }, { injured: { state: 11, frame: 0 }, recovered: { state: 12, frame: 0 } });
+});
+
 // User journey: pressing the original swap-guns control at sn=12 opens the
 // authored door only after it has pointed to the matching down-arrow.
 test('Campaign 1 applies the source gun-swap transition at state twelve only', () => {

@@ -10,5 +10,7 @@ test('the source-only Tutorial pose preview loads original Shape assets without 
   assert.match(script, /loadTutorialUnitPoseAssets/);
   assert.match(script, /createTutorialUnitPosePlan/);
   assert.match(script, /drawTutorialUnitPose/);
+  assert.match(script, /canvas\.dataset\.ready = 'true'/);
+  assert.match(script, /canvas\.dataset\.ready = 'false'/);
   assert.doesNotMatch(script, /unit-dom-rig|unit-parts|main\.mjs/);
 });

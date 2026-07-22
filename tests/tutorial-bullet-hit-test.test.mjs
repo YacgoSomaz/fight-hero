@@ -25,7 +25,7 @@ test('Tutorial Bullet.hitTestAll distinguishes standing body and head boxes, car
 });
 
 test('Tutorial Bullet.hitTestAll skips same teams, dead or blurred units, then tests corpses at source radius thirty', () => {
-  const corpse = { id: 'corpse0', position: { x: 124, y: 100 } };
+  const corpse = { id: 'corpse0', position: { x: 120, y: 80 } };
   const skipped = [
     { ...standingEnemy, id: 'ally', team: 1 },
     { ...standingEnemy, id: 'dead', dead: true },

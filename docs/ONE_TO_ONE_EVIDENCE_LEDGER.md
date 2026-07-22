@@ -100,7 +100,9 @@ Main.as（输入/屏幕切换）
 | 原始 Medic 完整皮肤 | 解包的 Unit 皮肤导出物 | `public/assets/unit-parts/unit-idle.png`、`#actorOverlay` | `unit-render-plan.test.mjs`、`scene-layering.test.mjs` | `已接入可见回退`；只有 timeline 尚未加载或某帧不可用时才显示，不能关闭跑、攀爬、瞄准状态机条目。 |
 | 头/躯干/手臂/腿/枪 holder | `UnitMC.EnterFrame()` 和 `Unit.as` 覆盖矩阵 | `unit-dom-rig.mjs`、`main.mjs` 的 DOM part layer | `unit-dom-rig.test.mjs`、`scene-layering.test.mjs` | `已接入+已回归（10 部件）`；解除了 Canvas/DOM 合成导致角色不可见的阻断。仍需对跑、跳、蹲、攀爬、开火和换弹逐帧与原版采样核验。 |
 | 瞄准与左键发射 | `Main.MouseDown → Game.MouseDown → Player.mDown → Guns.shoot`；鼠标转 Arena 坐标 | `main.mjs`、`engine.mjs`、`m4-action-selector.mjs` | `engine.test.mjs`、`m4-action-selector.test.mjs` | `已接入部分`；须验证鼠标反向、枪口 pivot、持枪姿势、射击帧和换弹帧。 |
-| 头顶血条 / 底部 HUD / 准星 | 原 HUD symbol、Status/Unit 显示关系 | `main.mjs`、`unit-status.mjs` | `unit-status.test.mjs` | `阻断`；现有文字/几何 HUD 不能称为原 HUD，需要导出并接入原 symbol，确认裁切、层级和随状态变化。 |
+| 准星（静态源图） | `Aimer.as`；symbol 1431 的 frame 1；其 Display List 含 `line1–4`（1424）和 `circle`（1428） | `public/assets/original-swf/aimer-1431-frame1.png`、`aimer-source.mjs`、`main.mjs` | `aimer-source.test.mjs` | `已接入+浏览器确认（仅静态原图）`；运行时已删除 Canvas 圆圈/加号回退，直接在鼠标中心绘制原导出物。`Player.as` 的 recoil 展开尚未按 5 个子部件重建，不能声称动态准星已完成。 |
+| 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs`、`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs` | `阻断`；顶部/底部仍有文字、矩形和固定数值，必须拆接 Hud 的职业、经验、弹药、备用弹药与模式元素。 |
+| 原始舞台坐标 | SWF header：800×600、30fps；HUD/Aimer 以此舞台坐标布局 | 当前为 `canvas 1280×720` 与 DOM 地图层 | 浏览器实测记录 | `阻断`；已确认原/网页纵横比不一致。不得把当前截图视为像素对齐，需先建立 800×600→响应式的统一坐标变换。 |
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

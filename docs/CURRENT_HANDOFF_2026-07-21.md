@@ -407,6 +407,13 @@ npm start
 - TDD：`5fa345e`→`1919371`（首次档案 RED→GREEN），`32ee699`→`f321fa9`（绑定接入），`fad5d95`→`f6003f4`（recoil/bullet snapshot），`7d1b394`→`025e29e`（网页输入），`7d16cba`→`a7f3279`（Bullet_Line_Basic 页面绘制）。本次完整 `npm test` 为 **237/237**；`npm run test:coverage` 为 **98.96% 行、82.18% 分支、96.11% 函数**。浏览器健康检查确认 `tutorial-scene-preview.html` 的 800×600 canvas `data-ready=true` 且错误文本为空，不能作为原版像素一致性证据。
 - 严格边界：这只补全了“默认新档 player → USP2 对原墙体的可见 line trace / 环境入口”的一条 source 链；没有原 SWF 与网页的同输入逐帧截图/状态差分，也未覆盖单位/尸体命中、`Status.damage`、命中特效/声音、HUD、AI、过场、胜负、其余 14 战役、15 挑战、五模式或全地图。因此它绝不是“游戏 1:1 已完成”。
 
+## 2026-07-22：Tutorial USP2 的原 `Bullet.hitTestAll` 命中选择（仍无伤害/敌人运行时）
+
+- 原始证据：`Bullet.as:hitTestAll()` 先查 `alpha==0xff` 的 wall（除非 ignore 参数），再按 `game.units` 顺序排除射手、死亡、`sBlur` 与同队；站立 body 为 `(x-13,y-44,26,44)`、head 为上方余下区域，蹲伏对应 `(x-13,y-28,26,28)`；头部写 `headMult=1.5`，攻击方向相对 target `MC.scaleX` 反向时还写 `assassin=1.5`。之后才以 `UT.getDist()<30` 查 `physWorld.actors` 的尸体。`UT.inBox` 为严格开区间，`Unit` 对 `extra.noSpawn` 的初始位置是 `(-4000,-4000)`。
+- 承载：`tutorial-bullet-hit-test.mjs` 是上述顺序、边界和 modifier 的窄纯端口；`tutorial-bullet-line-runtime.mjs` 在每个原半步/完整步先调它，因此 wall、存活单位、尸体都可使 USP2 线停止。`campaign-one-session.mjs` 为 actor 保存对应的 team/dead/blur/crouch/scaleX，并将 `noSpawn` actor 置于原 `-4000,-4000`。网页 trace 传入真实 Campaign actor session，而不是用 `null` 或泛用碰撞器绕过原分支。
+- TDD：`0ab6419`→`292f2b5` 锁 `Bullet.hitTestAll` 的 wall/unit/corpse 顺序和 head/assassin；`e6e163a`→`4112696` 锁 line 在第一个活单位盒停止；`15a20ef`→`cbb9167` 锁页面将 Campaign actor session 传入 trace。完整 `npm test` 为 **241/241 通过**；`npm run test:coverage` 为 **98.96% 行、82.08% 分支、96.11% 函数**。本地网页启动检查为 canvas `800×600`、`data-ready=true`、错误文本为空；它仅是加载健康检查。
+- 严格边界：这不是 `Status.damage` 端口。当前命中不会扣血、触发死亡、渲染/驱动敌人、写击杀/经验或播放命中特效/声音；也没有原版同输入逐帧截图对照。`Status.damage` 的数值路径及各 bot 的原 `setClass/setDiff`/随机等级/AI runtime 必须先继续从 SWF 做可回归迁移，禁止用现有泛用 engine 伤害或手写 NPC 补齐。因此仍不得称为 Tutorial 已完成、第一关可玩或游戏 1:1 已完成。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

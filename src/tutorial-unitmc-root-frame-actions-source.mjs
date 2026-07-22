@@ -1,0 +1,27 @@
+// Generated from 4399-90433-25.swf UnitMC.as addFrameScript handlers.
+// Keep this browser-owned table aligned with the mechanical extractor.
+export const TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS = Object.freeze({
+  1: { type: 'goto', label: 'idle', force: true },
+  20: { type: 'goto', label: 'idle', force: true },
+  38: { type: 'goto', label: 'run1', force: true },
+  57: { type: 'goto', label: 'run1', force: true },
+  75: { type: 'goto', label: 'runback1', force: true },
+  94: { type: 'goto', label: 'runback1', force: true },
+  118: { type: 'goto', label: 'run2', force: true },
+  142: { type: 'goto', label: 'run2', force: true },
+  166: { type: 'goto', label: 'runback2', force: true },
+  190: { type: 'goto', label: 'runback2', force: true },
+  208: { type: 'goto', label: 'fall', force: false },
+  264: { type: 'play', label: 'fallloop' },
+  279: { type: 'goto', label: 'idle', force: true },
+  290: { type: 'stop' },
+  301: { type: 'goto', label: 'duckloop', force: true },
+  305: { type: 'goto', label: 'duckloop', force: false },
+  321: { type: 'goto', label: 'duckloop', force: true },
+  354: { type: 'goto', label: 'duckrun', force: true },
+  387: { type: 'goto', label: 'duckrunback', force: true },
+  391: { type: 'goto', label: 'idle', force: true },
+  396: { type: 'goto', label: 'idle', force: true },
+  408: { type: 'goto', label: 'idle', force: true },
+  449: { type: 'goto', label: 'idle', force: true },
+});

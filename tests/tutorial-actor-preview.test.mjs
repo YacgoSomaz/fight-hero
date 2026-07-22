@@ -11,7 +11,11 @@ const armSource = fs.readFileSync(new URL('../assets/reverse/ffdec-deep-20260720
 
 test('browser-owned Tutorial tick sources exactly preserve the decoded UnitMC and M4 callbacks', () => {
   assert.deepEqual(TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS, extractUnitMCRootFrameActions(unitMcSource));
-  assert.deepEqual(TUTORIAL_M4_ARM_CALLBACKS, extractArmGunCallbacks(armSource));
+  const armCallbacks = extractArmGunCallbacks(armSource);
+  // arm_gun_316 is shared by every gun. M4's decoded rifle/reload action
+  // lists reach only these three source frames, so the browser must retain
+  // that projection instead of treating callbacks for other guns as M4 data.
+  assert.deepEqual(TUTORIAL_M4_ARM_CALLBACKS, Object.fromEntries([80, 81, 115].map((frame) => [frame, armCallbacks[frame]])));
 });
 
 test('Tutorial actor preview carries the original actor tick into a canvas instead of the generic quick-match rig', () => {

@@ -120,7 +120,7 @@ Main.as（输入/屏幕切换）
 | 生命文字 `txt_hp` | 1441, `(70.60,560.25)` | 随 `Status` 当前 HP 更新 | 仍是固定 `85 Hp` | 连接 Player `hp/maxHp` 和原文本格式；同时接入 `Status` 头顶条，不可只改底栏 |
 | 等级 `txt_level` | 1438, `(63.15,580.75)` | `addExp` 升级后写 `"lvl: " + level` | 仍是固定 `lvl: 1` | 使用原格式、真实职业存档等级；等级上限 50 的分支也必须保留 |
 | 当前枪名 `txt_curgun` | 1439, `(633.95,530.60)` | `setGuns(first, second)` 写 `first.name` | 未接入 | 用 Stats_Guns 原 `name`；不要写武器别名或 CSS 图标 |
-| 当前枪图 `curgun` | 724, `(674.20,568.00)`, `scale=1.7536468505859375`, matrix `b=-0.5263671875,c=0.5263671875` | `setGuns` 执行 `curgun.gotoAndStop(first.sprite)` | 当前为另一路手绘/变色图逻辑，未与 Hud 724 对齐 | 先导出 724 的帧及枪 ID→`sprite` 映射；按该 matrix 绘制，不能以通用 M4 轮廓替代 |
+| 当前枪图 `curgun` | 724, `(674.20,568.00)`, `scale=1.7536468505859375`, matrix `b=-0.5263671875,c=0.5263671875` | `setGuns` 执行 `curgun.gotoAndStop(first.sprite)` | `main.mjs` 直接使用 `hud-gunsmenu-724-m4-frame20.png` 和原 matrix | `hud-gun-source.test.mjs` | `部分接入+自动回归（M4）`；M4 标签帧 20 已接入。其它 GunsMenu 724 帧、切枪/nextgun、原 `txt_curgun` 文本及所有枪 ID→标签映射仍未迁移。 |
 | 下一枪 `nextgun` | 724, `(649.40,580.70)`, `scale=.6141357421875` | `setGuns` 执行 `nextgun.gotoAndStop(second.sprite)` | 未接入 | 与 `curgun` 共用原 724 时间轴，但保留不同位置/缩放 |
 | 备用弹药 `txt_ammo` | 1440, `(667.60,559.25)` | `setAmmoImage(..., param4)` 写 `"" + param4` | 临时手画数字 | 由真实 `weapon.spare` 写入，采用原文本部件/样式 |
 | 弹匣容器 `bulletCont` | 954, `(664.30,571.30)`, `scaleX=-1,scaleY=-1` | `setAmmoImage(clip, clipMax, type, spare)` 清空 graphics 后以 `drawBox` 生成 | 当前矩形方向、尺寸和位置均为近似 | 保留原容器的双轴翻转；逐类型重建原 `drawBox` 参数，参数见下表 |
@@ -147,6 +147,13 @@ Main.as（输入/屏幕切换）
 - 网页承载：`src/hud-ammo.mjs` 逐字面转录所有可见弹种布局；`src/engine.mjs` 的当前 M4 武器状态显式标为 `ammoType:"arifle"`；`src/main.mjs` 在 954 原锚点做双轴翻转后直接画该公式产生的 2×10 格，不再保留旧的 5×25、`index*7` 放大近似。
 - TDD：`d8244c6`（缺模块的 RED）→ `ad268ec`（原公式 GREEN）；`4f8d8c3`（运行时 placement RED）→ `1145f0f`（954 transform GREEN）。`tests/hud-ammo.test.mjs` 覆盖 `arifle` 满/空格、machine 双行溢出和运行时锚点/翻转/旧近似移除。
 - 验证边界：本项证明当前 M4 弹匣按原公式/容器关系绘制；它不证明其它 80 把枪的 `ammoType` 已接入、`txt_ammo` 原字体/原位置已完成，或 HUD 已做原版逐像素截图对照。
+
+#### 6.1.3 724 `curgun` 的已完成 M4 纵切
+
+- 原始依据：`Hud.as:setGuns(first, second)` 通过 `curgun.gotoAndStop(first.sprite)` 选择 GunsMenu 724；`Stats_Guns.as` 的 M4 记录 `sprite="M4"`；724 时间轴的标签 `M4` 是第 **20** 帧。Hud 1540 在 `(674.20,568.00)` 放置该 character，矩阵为 `(a=1.7536468505859375,b=-0.5263671875,c=0.5263671875,d=1.7536468505859375)`。
+- 可重现导出：使用 FFDec 26.1.0（本机 `private-assets/tools/ffdec_26.1.0/ffdec-cli.jar`，不纳入运行时仓库资源）执行 `-selectid 724 -select '724:1-' -ignorebackground -export sprite private-assets/hud-gun-export assets/reverse/4399-90433-25.swf`；将 `DefineSprite_724_MBFZ_fla.GunsMenu_176/20.png` 机械复制为版本控制的 `public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png`（87×36）。
+- 网页承载与 TDD：`73c8954` 为 RED，要求原路径、原 frame 和原 Hud matrix；`d999f96` 为 GREEN，`main.mjs` 以 `ctx.transform(a,b,c,d,674.2,568)` 后直接绘制该 PNG，删除旧 `hudRifleSprite` 假占位和 `filter` 改色。`tests/hud-gun-source.test.mjs` 阻止这三项关系回退。
+- 验证边界：只完成当前 M4 `curgun`。`nextgun` 的 `(649.4,580.7,.6141357421875)` placement、81 枪的各自标签、换枪事件和原文本部件仍未完成；绝不可将“724 第 20 帧已显示”写为“全枪 HUD 完成”。
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

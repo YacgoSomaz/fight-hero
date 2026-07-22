@@ -139,6 +139,8 @@ npm start
 
 **此段的后续进展（2026-07-22，保留上文以说明起点）**：954 `bulletCont` 现已完成当前 M4 的原始纵切。`Hud.as` 的 `arifle` 分支使用 `drawBox(i,2,2,10,clip>i)`；网页将 M4 标为原类型 `arifle`，在 Hud 1540 placement `(664.3,571.3)` 施加 `scale(-1,-1)` 后绘制，不再使用旧的放大 `index*7` 矩形。RED/GREEN 提交是 `d8244c6`→`ad268ec`（公式）以及 `4f8d8c3`→`1145f0f`（运行时 placement）。全量回归为 127/127，覆盖率为 99.08% 行、87.96% 分支、93.69% 函数。仍未完成的清单不变，尤其是原字体文本、724 枪图、其他枪型和逐像素实机对照。
 
+**此段的再后续进展（2026-07-22）**：原 `curgun` 的 M4 图标已接入。证据链为 `Stats_Guns` 的 `M4.sprite="M4"` → GunsMenu 724 label `M4`（第 20 帧）→ Hud 1540 的 `(674.2,568)` 变换矩阵。FFDec 26.1.0 重新导出的 87×36 第 20 帧已置于 `public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png`；`main.mjs` 直接画原 PNG，删除旧滤镜/占位枪图。`73c8954`→`d999f96` 是 RED/GREEN 提交。全量回归为 128/128，覆盖率为 99.08% 行、87.72% 分支、93.69% 函数。仍只覆盖 M4 的当前枪图，不能误报为全枪 HUD 或完整切枪系统。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

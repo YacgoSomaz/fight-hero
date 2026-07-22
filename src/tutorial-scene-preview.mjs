@@ -1,6 +1,6 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -128,9 +128,9 @@ try {
   }
 
   // Campaign actors retain their own source UnitMC child skin and the weapon
-  // chosen by Stats_Campaign.  This synchronises only source records; it does
-  // not invent an AI movement/aim state for units whose AI.EnterFrame has not
-  // yet been migrated.
+  // chosen by Stats_Campaign.  AI movement writes back through the same
+  // source actor records, so this synchronisation preserves the UnitMC state
+  // while replacing only the live source binding fields.
   function syncSceneActorStates() {
     const bindings = createTutorialActorBindings(session).actors;
     for (const binding of bindings) {
@@ -253,10 +253,18 @@ try {
           }
         }
       }
-      // Player.EnterFrame fires before UnitEnterFrame; Status is then first
-      // inside UnitEnterFrame. Keep the same post-shot phase so an AI spawn
-      // shield cannot disappear before the source bullet tests it.
+      // AI.EnterFrame decides its source key flags before its UnitEnterFrame
+      // tail calls Status/Guns/Movement.  First preserve those decisions,
+      // then run the shared Status phase and consume keys with Movement.as.
+      // This keeps AI collision out of the old generic browser controller.
+      advanceCampaignOneSessionAi(session, { wall: tutorialWorld.wall, gameStarted: true });
       advanceCampaignOneSessionUnits(session);
+      const aiMovements = advanceCampaignOneSessionAiMovement(session, { wall: tutorialWorld.wall });
+      syncSceneActorStates();
+      for (const movement of aiMovements) {
+        const sceneActorState = sceneActorStates.get(movement.id);
+        if (sceneActorState) sceneActorStates.set(movement.id, requestTutorialActorMotion(sceneActorState, movement.nextAnim));
+      }
       for (const sourceActor of session.actors) {
         if (sourceActor.id === 'unit0' || !sourceActor.spawned || !sourceActor.visible || sourceActor.dead) continue;
         const sceneActorState = sceneActorStates.get(sourceActor.id);

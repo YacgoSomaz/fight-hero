@@ -68,5 +68,7 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /shooter:\s*sourceActor/);
   assert.match(script, /sampleTutorialActorPlayback\(sceneActorState, source, \{ aim: sceneActorAimStates\.get\(sourceActor\.id\) \}\)/);
   assert.match(script, /canvas\.dataset\.ready = 'true'/);
+  assert.match(script, /function reportTutorialSceneFailure\(reason\)/);
+  assert.match(script, /catch \(reason\) \{\s*reportTutorialSceneFailure\(reason\);/);
   assert.doesNotMatch(script, /main\.mjs|engine\.mjs|createWorld|foundry/);
 });

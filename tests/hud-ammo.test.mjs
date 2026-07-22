@@ -37,7 +37,8 @@ test('the running M4 HUD uses the decoded bulletCont anchor and both-axis Flash 
 
   assert.match(main, /import\s*\{\s*getHudAmmoBoxes\s*\}\s*from\s*'\.\/hud-ammo\.mjs'/);
   assert.match(engine, /weapon:\s*\{[\s\S]*?ammoType:\s*'arifle'/);
-  assert.match(hudDraw, /getHudAmmoBoxes\(\{\s*clip,\s*clipMax:\s*world\.players\[0\]\.weapon\.clipMax,\s*type:\s*world\.players\[0\]\.weapon\.ammoType\s*\}\)/);
+  assert.match(hudDraw, /const\s+player\s*=\s*world\.players\[0\]/, 'the lower HUD reads the active local Player once');
+  assert.match(hudDraw, /getHudAmmoBoxes\(\{\s*clip,\s*clipMax:\s*player\.weapon\.clipMax,\s*type:\s*player\.weapon\.ammoType\s*\}\)/);
   assert.match(hudDraw, /ctx\.translate\(664\.3,\s*571\.3\)/);
   assert.match(hudDraw, /ctx\.scale\(-1,\s*-1\)/);
   assert.doesNotMatch(hudDraw, /index \* 7|hudY - 48/, 'the enlarged approximate boxes must be removed');

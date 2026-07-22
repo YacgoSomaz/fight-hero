@@ -157,7 +157,10 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG, te
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
     classAim: SOURCE_MEDIC_LEVEL_ONE_AIM, dynRecoil: SOURCE_M4_RECOIL, dynRecoilMod: SOURCE_M4_RECOIL * (2 - SOURCE_MEDIC_LEVEL_ONE_AIM), aimerDynRecoilMod: SOURCE_M4_RECOIL * (2 - SOURCE_MEDIC_LEVEL_ONE_AIM),
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
-    fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, ammoType: 'arifle', reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, recoil: SOURCE_M4_RECOIL, shootDelay: 0.15 },
+    // Current validation slice is the original level-one Medic. These fields
+    // are consumed by Hud 1540's real dynamic TextField formatting.
+    className: 'Medic', level: 1,
+    fireTimer: 0, weapon: { name: 'M4', clip: 30, clipMax: 30, spare: 90, ammoType: 'arifle', reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, recoil: SOURCE_M4_RECOIL, shootDelay: 0.15 },
     color, team, carriedFlagId: null, isJug: false, isBot, ai: isBot ? {
       scanFrame: id === 'bot1' ? 4 : 8, targetId: null, aimSpeed: 0.21, difficulty: 6,
       navIndex: null, currentWaypointId: null, nextWaypointId: null, waypointFrames: 0, blockedFrames: 0,

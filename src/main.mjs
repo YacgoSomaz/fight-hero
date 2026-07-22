@@ -21,6 +21,7 @@ import { decodeFlashWallImage } from './wall-mask.mjs';
 import { ORIGINAL_AIMER } from './aimer-source.mjs';
 import { getOriginalAimerRig } from './aimer-rig.mjs';
 import { getHudAmmoBoxes } from './hud-ammo.mjs';
+import { getHudTextFields } from './hud-text-source.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -110,6 +111,14 @@ const hudM4MenuSprite = image('./public/assets/original-swf/hud-gunsmenu-724-m4-
 // original 800x600 Hud Display List anchors, not a responsive redesign.
 const hudScorebarSprite = image('./public/assets/original-swf/hud-scorebar-1462.png');
 const hudExpHolderSprite = image('./public/assets/original-swf/hud-expholder-1477.png');
+// DefineFont3 979/981 were directly exported from the SWF. Do not substitute
+// system-ui for QTypeSquare-Bold_12pt_st or QTypeSquare-Bold_10pt_st.
+if (typeof FontFace === 'function' && document.fonts) {
+  void Promise.all([
+    new FontFace('QTypeSquare-Bold_12pt_st', 'url(./public/assets/original-swf/hud-font-979.ttf)').load(),
+    new FontFace('QTypeSquare-Bold_10pt_st', 'url(./public/assets/original-swf/hud-exp-font-981.ttf)').load(),
+  ]).then((fonts) => fonts.forEach((font) => document.fonts.add(font))).catch(() => {});
+}
 const objectiveSprites = new Map();
 function getObjectiveSprite(mode, team) {
   const visual = getObjectiveVisual(mode, team);
@@ -371,12 +380,12 @@ function drawHud() {
 }
 
 function drawBottomHud() {
+  const player = world.players[0];
   const hudY = canvas.height - 24;
   const ammoX = canvas.width - 335;
-  const ammo = world.players[0].weapon.spare;
-  const clip = world.players[0].weapon.clip;
+  const clip = player.weapon.clip;
 
-  const ammoBoxes = getHudAmmoBoxes({ clip, clipMax: world.players[0].weapon.clipMax, type: world.players[0].weapon.ammoType });
+  const ammoBoxes = getHudAmmoBoxes({ clip, clipMax: player.weapon.clipMax, type: player.weapon.ammoType });
   // Hud 1540.bulletCont (character 954) is placed at (664.3,571.3) with
   // both axes inverted. Its local drawBox coordinates therefore grow left/up
   // on the original 800x600 screen.
@@ -396,8 +405,7 @@ function drawBottomHud() {
   ctx.save();
   ctx.fillStyle = '#f4f2ea';
   ctx.font = '700 17px system-ui';
-  ctx.fillText(String(ammo), ammoX + 226, hudY - 27);
-  if (world.players[0].weapon.reloadRemaining) ctx.fillText('RELOAD', ammoX + 123, hudY - 63);
+  if (player.weapon.reloadRemaining) ctx.fillText('RELOAD', ammoX + 123, hudY - 63);
   ctx.strokeStyle = 'rgba(255, 255, 255, .82)';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -415,17 +423,19 @@ function drawBottomHud() {
     ctx.restore();
   }
 
-  ctx.fillStyle = '#f4f2ea';
-  ctx.font = '700 12px system-ui';
-  ctx.fillText('Medic', 12, hudY - 72);
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.moveTo(30, hudY - 61); ctx.lineTo(30, hudY - 28);
-  ctx.moveTo(13, hudY - 45); ctx.lineTo(47, hudY - 45);
-  ctx.stroke();
-  ctx.font = '700 15px system-ui';
-  ctx.fillText('85 Hp', 59, hudY - 42);
-  ctx.fillText('lvl: 1', 59, hudY - 20);
+  const sourceTextFields = getHudTextFields({ className: player.className, hp: player.hp, level: player.level, weaponName: player.weapon.name, spare: player.weapon.spare });
+  // 979=QTypeSquare-Bold_12pt_st and 981=QTypeSquare-Bold_10pt_st.
+  ctx.fillStyle = '#ffffff';
+  ctx.textBaseline = 'top';
+  for (const field of sourceTextFields) {
+    ctx.globalAlpha = field.alpha;
+    ctx.textAlign = field.align;
+    ctx.font = `${field.fontPx}px "${field.fontFamily}"`;
+    ctx.fillText(field.text, field.x, field.y);
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
   if (hudExpHolderSprite.complete && hudExpHolderSprite.naturalWidth) {
     ctx.drawImage(hudExpHolderSprite, 201, 588);
   }

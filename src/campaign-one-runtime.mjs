@@ -30,3 +30,36 @@ export function applyCampaignOneScore(runtime, team1score) {
   runtime.state = transition.nextState;
   return [effectFrom(transition)];
 }
+
+function copyEffects(effects) {
+  return effects.map((effect) => ({ ...effect }));
+}
+
+function changeWall(transition) {
+  return { type: 'changeWallFrame', frameLabel: transition.wallFrame };
+}
+
+export function applyCampaignOneSurfaceContact(runtime, { surface, human }) {
+  if (!human || surface !== SOURCE_CAMPAIGN_ONE_SCRIPT.surfaceTrigger.surface) return [];
+  const transition = SOURCE_CAMPAIGN_ONE_SCRIPT.surfaceTransitions.find((entry) => entry.state === runtime.state);
+  if (!transition) return [];
+  runtime.state = transition.nextState;
+  if (transition.resetFrame) runtime.frame = 0;
+  return [
+    ...copyEffects(transition.effects),
+    { type: 'showDownArrows', state: transition.showDownArrowsState },
+    changeWall(transition),
+  ];
+}
+
+export function applyCampaignOneGunSwap(runtime) {
+  const transition = SOURCE_CAMPAIGN_ONE_SCRIPT.inputTransition;
+  if (runtime.state !== transition.requiredState) return [];
+  runtime.state = transition.nextState;
+  // Player.as opens the door after incrementing sn and changing the Arena
+  // wall.  Preserve that order while retaining the extracted HUD/arrow calls.
+  const doorIndex = transition.effects.findIndex((effect) => effect.type === 'doorFrame');
+  const beforeDoor = transition.effects.slice(0, doorIndex < 0 ? transition.effects.length : doorIndex);
+  const afterDoor = doorIndex < 0 ? [] : transition.effects.slice(doorIndex);
+  return [...copyEffects(beforeDoor), changeWall(transition), ...copyEffects(afterDoor)];
+}

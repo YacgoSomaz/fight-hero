@@ -414,6 +414,13 @@ npm start
 - TDD：`0ab6419`→`292f2b5` 锁 `Bullet.hitTestAll` 的 wall/unit/corpse 顺序和 head/assassin；`e6e163a`→`4112696` 锁 line 在第一个活单位盒停止；`15a20ef`→`cbb9167` 锁页面将 Campaign actor session 传入 trace。完整 `npm test` 为 **241/241 通过**；`npm run test:coverage` 为 **98.96% 行、82.08% 分支、96.11% 函数**。本地网页启动检查为 canvas `800×600`、`data-ready=true`、错误文本为空；它仅是加载健康检查。
 - 严格边界：这不是 `Status.damage` 端口。当前命中不会扣血、触发死亡、渲染/驱动敌人、写击杀/经验或播放命中特效/声音；也没有原版同输入逐帧截图对照。`Status.damage` 的数值路径及各 bot 的原 `setClass/setDiff`/随机等级/AI runtime 必须先继续从 SWF 做可回归迁移，禁止用现有泛用 engine 伤害或手写 NPC 补齐。因此仍不得称为 Tutorial 已完成、第一关可玩或游戏 1:1 已完成。
 
+## 2026-07-22：Campaign 1 原 Unit/Status/Bullet 伤害状态纵切（仍非完整战斗）
+
+- 原始证据：`Stats_Skills.Init()` 的 **22** 条 `addSkill`；`Stats_Classes.getAiLevel(diff)=max(1,diff*3+UT.irand(-3,4))`；`Unit.setClass()` 的等级插值、`extra.hp`、技能与 `regen`；`Unit.unitSpawn()` 的 `setClass() → Status.reset()`；`AI.spawn()` 的 `status.sSpawn=15`；`Game.EnterFrame()` 的 `runScripts → units` 顺序和 `UnitEnterFrame()` 的 `Status.EnterFrame()`；`Bullet_Line_Basic` 构造完射线后立即 `doHitEffect()`，其中 live Unit 调 `Status.damage(stats.dmg*dmgMod, shooter, stats, extra)`。
+- 承载：`skill-source.mjs` 从 `Stats_Skills.as` 机械生成，`tutorial-unit-profile.mjs` 端口 `getAiLevel/getClass/setClass` 数值部分，`campaign-one-session.mjs` 只为已实际 spawn 的 Campaign actor 建立 `unitInfo/status/gun`，并保留 `extra.noSpawn` actor 为未初始化。`tutorial-status-damage-runtime.mjs` 端口 `Status.reset/damage` 与数值型 `EnterFrame`；`tutorial-bullet-hit-effects.mjs` 将 USP2 line hit 接到该 Status。网页在原 Player 开火后传入 session 的原 shooter、执行 `Status.damage`，然后推进 session Status，因此 AI 出生保护按 **15** 原帧倒数。
+- TDD：`2f2ef86`→`a18eeba`（Status.damage）；`db1dab3`→`eef5e7a`（原技能目录）；`93dd378`→`b866f44`（Unit profile）；`a3fc994`→`cd83cd9`（Campaign actor 初始化）；`234bd2c`→`d79e881`（Bullet hit/doHitEffect）；`23506e4`→`5d3359a`（Status frame）；`a8ea2ea`（session phase RED）与 `b93006b`（页面 RED）后的本次页面接线。完整 `npm test` 为 **268/268 通过**；`npm run test:coverage` 为 **98.96% 行、82.81% 分支、96.30% 函数**。本地浏览器启动检查：`tutorial-scene-preview.html` 画布 800×600、`data-ready=true`、错误文本为空。
+- 严格边界：目前页面没有敌方 actor 的原 Shape/UnitMC/AI 运行、头顶状态条、命中特效/声音、`Unit.die()`、尸体 `PhysActor`、计分/经验、反弹/反射子弹、换弹、重生、过场/胜负或原 SWF 同输入逐帧截图。因此它仅把**不可见的 source actor 数值状态**接进 USP2 命中，绝不是“已完成战斗”“第一关可玩”或“游戏 1:1 已完成”。下一步应从 `Unit.die`、`PhysWorld.createCorpse`、AI EnterFrame 与对应 UnitMC/Gun Display List 建立下一条可回归纵切。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

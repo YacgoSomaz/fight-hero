@@ -108,6 +108,30 @@ function definitions(bytes) {
   return found;
 }
 
+// DefineSprite 669 is UnitMC's root animation. FrameLabel tags are the
+// authoritative source for its playable state boundaries; the ActionScript
+// frame callbacks only describe what happens at selected endpoints.
+export function extractUnitMCRootTimeline() {
+  const bytes = decompressSwf(swfPath);
+  const sprite = definitions(bytes).get(669);
+  if (!sprite || sprite.code !== 39) throw new Error('original UnitMC DefineSprite 669 is unavailable');
+  const labels = [];
+  let frame = 1;
+  let offset = sprite.body + 4;
+  while (offset < sprite.next) {
+    const tag = readTag(bytes, offset);
+    if (tag.code === 0) break;
+    if (tag.code === 43) {
+      const end = bytes.indexOf(0, tag.body);
+      if (end < tag.body || end >= tag.next) throw new Error(`original UnitMC FrameLabel at ${frame} is malformed`);
+      labels.push([frame, bytes.subarray(tag.body, end).toString()]);
+    }
+    if (tag.code === 1) frame += 1;
+    offset = tag.next;
+  }
+  return { frameCount: bytes.readUInt16LE(sprite.body + 2), labels };
+}
+
 function firstFrameDisplayList(bytes, sprite) {
   const placed = new Map();
   let offset = sprite.body + 4;

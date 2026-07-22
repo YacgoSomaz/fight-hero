@@ -31,7 +31,13 @@ export function renderFoundryForegroundDomLayer(container, layers) {
   for (let index = 0; index < layers.length; index += 1) {
     const layer = layers[index];
     const image = images[index];
-    if (image.src !== layer.source) image.src = layer.source;
+    // HTMLImageElement.src is normalized to an absolute URL by the browser;
+    // compare the authored source token retained on the node so a stationary
+    // source frame does not reload every render tick.
+    if (image.dataset.sourceUrl !== layer.source) {
+      image.src = layer.source;
+      image.dataset.sourceUrl = layer.source;
+    }
     image.dataset.sourceDepth = String(layer.depth);
     image.dataset.sourceCharacter = String(layer.character);
     image.dataset.sourceFrame = String(layer.frame);

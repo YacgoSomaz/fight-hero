@@ -3,6 +3,7 @@ import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
+import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
 import { advanceTutorialStatusFrame, createTutorialStatus } from './tutorial-status-damage-runtime.mjs';
@@ -20,6 +21,7 @@ function activateSourceActor(actor, aiArena, random) {
   // Unit.unitSpawn() resets Movement and restores the Unit's visible/alive
   // state before it invokes setClass() and Status.reset().
   actor.movement = { xVelocity: 0, yVelocity: 0 };
+  actor.movementState = createTutorialMovementState({ noJump: actor.noJump });
   actor.skinFrame = actor.skin;
   actor.dead = null;
   actor.visible = true;
@@ -201,6 +203,42 @@ export function advanceCampaignOneSessionAi(session, { wall, gameStarted = true,
     actor.aiShouldShoot = decision.shouldShoot;
     actor.aim = { x: decision.state.aimX, y: decision.state.aimY };
     results.push({ id: actor.id, keys: decision.keys, jumpRequested: decision.jumpRequested, shouldShoot: decision.shouldShoot, targetId: decision.state.targetId, aim: { ...actor.aim } });
+  }
+  return results;
+}
+
+// AI.as expresses locomotion exclusively as Key flags plus a one-frame jump
+// request.  Feed those fields into the already source-derived Movement.as
+// adapter: this deliberately avoids a second NPC steering/collision model.
+// The returned UnitMC command is consumed by the scene layer in the same way
+// that player Movement.nextAnim is consumed.
+export function advanceCampaignOneSessionAiMovement(session, { wall } = {}) {
+  if (!session?.actors) throw new TypeError('Campaign AI Movement requires source session actors');
+  const results = [];
+  for (const actor of session.actors) {
+    if (actor.human || !actor.spawned || !actor.status || actor.dead) continue;
+    let movementState = createTutorialMovementState({ ...actor.movementState, noJump: actor.noJump });
+    let movedActor = { ...actor, position: actor.position && { ...actor.position }, flip: actor.scaleX < 0 };
+    if (!movedActor.position) throw new Error(`Campaign AI Movement requires source position for ${actor.id}`);
+    const jump = actor.aiJumpRequested
+      ? beginTutorialMovementJump({ state: movementState, actor: movedActor })
+      : { actor: movedActor, state: movementState, nextAnim: null };
+    const movement = stepTutorialMovement({
+      state: jump.state,
+      actor: jump.actor,
+      wall,
+      keys: actor.aiKeys ?? 0,
+    });
+    actor.position = { ...movement.actor.position };
+    actor.movementState = movement.state;
+    actor.movement = { ...actor.movement, xVelocity: movement.state.xVel, yVelocity: movement.state.yVel };
+    actor.crouching = movement.state.crouching;
+    results.push({
+      id: actor.id,
+      jumped: Boolean(jump.nextAnim),
+      nextAnim: movement.nextAnim,
+      position: { ...actor.position },
+    });
   }
   return results;
 }

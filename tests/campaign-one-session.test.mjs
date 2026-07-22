@@ -48,3 +48,22 @@ test('Campaign 1 session consumes the original frame-zero tutorial equipment eff
   assert.deepEqual(session.actors[0].guns, { primary: 'none', secondary: 'none', active: 'none' });
   assert.deepEqual(session.runtime, { state: 1, frame: 1 });
 });
+
+test('Campaign 1 creates source Unit.setClass/Status state only for actors whose original constructor spawned', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const snapshot = session.actors.map((actor) => ({
+    id: actor.id,
+    level: actor.level,
+    unitInfo: actor.unitInfo && { id: actor.unitInfo.id, hp: actor.unitInfo.hp, crit: actor.unitInfo.crit, aim: actor.unitInfo.aim, skill: actor.unitInfo.skill },
+    status: actor.status && { hpCur: actor.status.hpCur, hpMax: actor.status.hpMax, sSpawn: actor.status.sSpawn },
+    currentGun: actor.gun?.curGun?.id ?? null,
+  }));
+
+  assert.deepEqual(snapshot, [
+    { id: 'unit0', level: 1, unitInfo: { id: 'medic', hp: 85, crit: 0.06, aim: 0.7000000000000001, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 85, hpMax: 85, sSpawn: 0 }, currentGun: 'M4' },
+    { id: 'unit1', level: 1, unitInfo: { id: 'tank', hp: 130, crit: 0.02, aim: 0.55, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 130, hpMax: 130, sSpawn: 15 }, currentGun: 'Beretta' },
+    { id: 'unit2', level: 1, unitInfo: { id: 'soldier', hp: 100, crit: 0.04, aim: 0.6, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 100, hpMax: 100, sSpawn: 15 }, currentGun: 'Socom' },
+    { id: 'unit3', level: 1, unitInfo: { id: 'medic', hp: 85, crit: 0.06, aim: 0.7000000000000001, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 85, hpMax: 85, sSpawn: 15 }, currentGun: 'USP' },
+    { id: 'unit4', level: 18, unitInfo: null, status: null, currentGun: null },
+  ]);
+});

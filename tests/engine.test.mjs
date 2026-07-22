@@ -507,6 +507,23 @@ test('firing creates a brief original-muzzle event independently from its tracer
   assert.ok(world.bullets.length > 0);
 });
 
+// User journey: a level-1 Medic holding the source M4 gets the same dynamic
+// recoil modifier that Player.as uses to expand the original Aimer.
+test('the local M4 applies the extracted Guns.as dynamic recoil and stance modifiers', () => {
+  const world = createWorld({ bots: false });
+  const p1 = world.players[0];
+
+  assert.equal(p1.dynRecoil, 4, 'Stats_Guns M4 recoil');
+  assert.equal(p1.classAim, .7, 'Stats_Classes level-1 Medic aim after Unit.as normalisation');
+  step(world, { p1: { fire: true } }, 1 / 30);
+  assert.equal(p1.dynRecoil, 4.3, 'Guns.shoot adds .3 until 1.7× base recoil');
+  assert.equal(p1.dynRecoilMod, 5.59, 'idle: dynRecoil × (2 - aim)');
+
+  step(world, { p1: { down: true } }, 1 / 30);
+  assert.equal(p1.dynRecoil, 4.25, 'Guns.EnterFrame drains .05 at 30fps');
+  assert.equal(p1.dynRecoilMod, 3.315, 'crouching applies the source .6 modifier');
+});
+
 test('rifle shots start at the decoded arm-canvas barrel tip', () => {
   const world = createWorld({ bots: false });
   const p1 = world.players[0];

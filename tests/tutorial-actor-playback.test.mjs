@@ -60,6 +60,19 @@ test('Campaign Tutorial USP2 switch reuses pistol frames 3-8 and the source done
   });
 });
 
+test('a USP2 fire action preserves its original MuzzleFlash_317 random frame for exactly the authored first pistol-fire frame', () => {
+  let state = synchronizeTutorialActorWeapon(createTutorialActorPlayback(player), 'USP2');
+  state = beginTutorialActorGunAction(state, 'fire', { random: () => 0.999 });
+  const first = sampleTutorialActorPlayback(state, source);
+  assert.deepEqual(first.pose.muzzleParts.map(({ rootId, character, frame, local }) => ({ rootId, character, frame, local })), [{
+    rootId: 'arm1', character: 394, frame: 8,
+    local: { x: 41.8, y: -12.3, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0 },
+  }]);
+  state = advanceTutorialActorPlayback(state, source);
+  assert.equal(state.actionState.muzzleFrame, undefined);
+  assert.deepEqual(sampleTutorialActorPlayback(state, source).pose.muzzleParts, []);
+});
+
 test('Tutorial actor playback refuses a Campaign actor that has not spawned', () => {
   assert.throws(() => createTutorialActorPlayback(unspawned), /has not spawned/);
 });

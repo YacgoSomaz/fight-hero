@@ -34,6 +34,12 @@ const KEY_BITS = Object.freeze({
   ArrowRight: TUTORIAL_MOVEMENT_KEYS.RIGHT,
 });
 
+function reportTutorialSceneFailure(reason) {
+  error.textContent = reason instanceof Error ? reason.message : String(reason);
+  canvas.dataset.ready = 'false';
+  window.tutorialSceneReady = false;
+}
+
 function loadImage(source) {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -248,6 +254,7 @@ try {
   }
 
   function frame(now) {
+    try {
     accumulated += Math.min(now - previous, 250);
     previous = now;
     while (accumulated >= TICK_MS) {
@@ -387,6 +394,9 @@ try {
     }
     render();
     requestAnimationFrame(frame);
+    } catch (reason) {
+      reportTutorialSceneFailure(reason);
+    }
   }
 
   render();
@@ -429,7 +439,5 @@ try {
   window.tutorialSceneReady = true;
   requestAnimationFrame(frame);
 } catch (reason) {
-  error.textContent = reason.message;
-  canvas.dataset.ready = 'false';
-  window.tutorialSceneReady = false;
+  reportTutorialSceneFailure(reason);
 }

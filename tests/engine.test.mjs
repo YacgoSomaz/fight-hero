@@ -523,7 +523,7 @@ test('the local M4 applies the extracted Guns.as dynamic recoil and stance modif
   step(world, { p1: { down: true } }, 1 / 30);
   assert.equal(p1.aimerDynRecoilMod, 5.525, 'the newly calculated modifier is used on the following Player frame');
   assert.equal(p1.dynRecoil, 4.2, 'source decay remains .05 per native frame');
-  assert.equal(p1.dynRecoilMod, 3.276, 'crouching applies the source .6 modifier');
+  assert.ok(Math.abs(p1.dynRecoilMod - 3.276) < 1e-12, 'crouching applies the source .6 modifier');
 });
 
 test('rifle shots start at the decoded arm-canvas barrel tip', () => {

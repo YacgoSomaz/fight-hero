@@ -178,6 +178,14 @@ npm start
 
 **下一位唯一正确步骤**：先为浏览器加载写 RED：从 `public/assets/original-swf/wall-tut-1378/1..16.png` 全部加载，调用同一 `decodeFlashWallImage` 形成带 `colorAt` 的 `TutorialWallSet`，然后构造 `TutorialWorld`；任一帧失败或解码结果没有 ARGB surface 时拒绝。之后才将该世界与原始 Tutorial actor/输入适配器逐项接入，禁止把它替换成当前通用 `createWorld({mapId:'tut'})`。
 
+## 2026-07-22：浏览器 Tutorial 原墙体加载器（仍不可启动）
+
+- TDD：`8eeb588` 是缺浏览器加载器的 RED；`6989476` 为 GREEN。`tests/tutorial-world-loader.test.mjs` 验证浏览器构造边界逐一请求 `tutorial-wall-source.mjs` 的 16 个公开原 PNG、全部加载后才传入 ARGB 解码器，并生成 `map='tut' / wallFrame=1` 的 `TutorialWorld`。
+- 承载：`src/tutorial-world-loader.mjs` 仅组合 `loadSourceWallFrames`、`createTutorialWallSet`、`decodeFlashWallImage` 和 `createTutorialWorld`；默认路径无手写地图、颜色、NodePhysBox 或 Foundry 图像。某帧加载失败时 Promise 拒绝，不能产生可进入的空白 Tutorial。
+- 严格边界：此模块尚未由 `main.mjs` 调用；原因不是遗漏入口，而是 Campaign 1 仍缺原角色、完整 Movement/Bullet、HUD、Cutscene、死亡/分数/结算。不能为了演示加载器而放开任务入口。
+
+**下一位唯一正确步骤**：先建立从 Campaign 1 原 actor 定义到 Tutorial 专用输入/物理 actor 的一对一适配层，并针对 Scientist 初始禁瞄准/无枪、Unit 1–4 的出生/未出生、`noJump` 等写 RED。不得把 `engine.mjs` 当前 Medic/M4 quick-match actor 重新命名成 Scientist 后接入。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

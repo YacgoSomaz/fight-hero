@@ -46,3 +46,22 @@ test('a wall loading failure rejects before a partial map world is returned', as
     /wall image missing/,
   );
 });
+
+test('a source map world retains every predecoded wallMC frame for same-tick visual timeline swaps', async () => {
+  const result = await prepareSourceMapWorld({
+    options: { mapId: 'foundry' },
+    createWorld: () => ({ wall: null }),
+    getMapVisual: () => ({ sky: './sky.png', background: './background.png', terrain: './terrain.png' }),
+    getMapLayerCrop: () => ({ x: 0, y: 0, width: 1, height: 1 }),
+    loadMapLayers: async () => ({ sky: {}, map: {}, terrain: {} }),
+    loadSourceWallMask: async () => ({
+      source: { characterId: 1261 }, frame: 1, mask: { id: 'one' },
+      masks: [{ frame: 1, mask: { id: 'one' } }, { frame: 2, mask: { id: 'two' } }],
+    }),
+  });
+
+  assert.deepEqual(result.world.wallFrames, [
+    { frame: 1, mask: { id: 'one' } },
+    { frame: 2, mask: { id: 'two' } },
+  ]);
+});

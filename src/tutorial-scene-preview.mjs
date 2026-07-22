@@ -14,6 +14,7 @@ import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
 import { getTutorialUnitOverheadHud } from './tutorial-unit-overhead-hud.mjs';
+import { getTutorialUnitOverheadLabels, TUTORIAL_UNIT_OVERHEAD_FONT } from './tutorial-unit-overhead-labels.mjs';
 import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
@@ -49,6 +50,18 @@ function loadImage(source) {
   });
 }
 
+async function loadOriginalUnitOverheadFont() {
+  if (typeof FontFace !== 'function' || !document.fonts) {
+    throw new Error('original Unit 683 font cannot be loaded in this browser');
+  }
+  const font = await new FontFace(
+    TUTORIAL_UNIT_OVERHEAD_FONT.fontFamily,
+    `url(${TUTORIAL_UNIT_OVERHEAD_FONT.assetSrc})`,
+  ).load();
+  document.fonts.add(font);
+  return font;
+}
+
 function drawParallax(image, crop, arenaPosition, wall) {
   const position = getTutorialParallaxLayerPosition(arenaPosition, wall, crop, STAGE);
   context.drawImage(image, position.x, position.y);
@@ -69,6 +82,7 @@ try {
     loadTutorialUnitPoseAssets({ loadImage }),
     loadTutorialWorld(),
     loadImage('./public/assets/original-swf/unit-bar-670.png'),
+    loadOriginalUnitOverheadFont(),
   ]);
   const skyCrop = getMapLayerCrop(visual.sky);
   const backgroundCrop = getMapLayerCrop(visual.background);
@@ -216,6 +230,21 @@ try {
     }
   }
 
+  function renderTutorialUnitOverheadLabels(unit) {
+    if (!unit.status || !unit.position) return;
+    const labels = getTutorialUnitOverheadLabels(unit, worldToTutorialScreen(unit.position, arenaPosition));
+    for (const label of labels) {
+      context.save();
+      context.font = `${label.fontSize}px "${label.fontFamily}"`;
+      context.textAlign = 'left';
+      context.textBaseline = 'top';
+      context.globalAlpha = label.alpha;
+      context.fillStyle = label.colour;
+      context.fillText(label.text, label.x, label.y);
+      context.restore();
+    }
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -233,7 +262,10 @@ try {
     drawTutorialUnitPose(context, pose, assets);
     context.restore();
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
-    if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) renderTutorialUnitOverheadBar(sourcePlayer);
+    if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) {
+      renderTutorialUnitOverheadBar(sourcePlayer);
+      renderTutorialUnitOverheadLabels(sourcePlayer);
+    }
     // Game.units owns this authored order. Only live, visible source Units
     // receive an original UnitMC pose; a dead Unit is intentionally absent
     // until PhysActor rendering is separately ported.
@@ -248,6 +280,7 @@ try {
       drawTutorialUnitPose(context, actorSample.pose, assets);
       context.restore();
       renderTutorialUnitOverheadBar(sourceActor);
+      renderTutorialUnitOverheadLabels(sourceActor);
     }
     // Game creates lineCont after unitCont within Arena.midCont, then clears
     // it once per source frame. Draw the same source trace above this frame's

@@ -1,6 +1,6 @@
 import { ARENA_SOURCE_LAYOUTS } from './arena-source-layouts.mjs';
 import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
-import { applyCampaignOneSurfaceContact, createCampaignOneRuntime } from './campaign-one-runtime.mjs';
+import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime } from './campaign-one-runtime.mjs';
 
 function sourceActor(id, definition) {
   const spawn = definition.extra?.spawn ?? null;
@@ -65,6 +65,12 @@ export function createCampaignOneSession() {
 
 export function applyCampaignOneSessionSurfaceContact(session, contact) {
   const effects = applyCampaignOneSurfaceContact(session.runtime, contact);
+  applySourceEffects(session, effects);
+  return effects;
+}
+
+export function applyCampaignOneSessionBulletEnvironmentHit(session, hitObject) {
+  const effects = applyCampaignOneBulletEnvironmentHit(session.runtime, hitObject);
   applySourceEffects(session, effects);
   return effects;
 }

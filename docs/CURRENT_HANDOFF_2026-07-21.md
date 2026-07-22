@@ -105,6 +105,25 @@ npm start
 
 之后只选一个纵向切片：M4 开火/换弹时间轴、下一张地图 wallMC 掩码，或一个完整战役关的节点/结束条件。不要同时改地图、物理和 AI。
 
+## 2026-07-22：Hud 1540 文本与 Aimer Canvas 崩溃修复
+
+### Hud 1540 文本（仅当前 Medic + M4 纵切）
+
+- 原始证据：Hud 1540 frame 1 的 TextField placements 1442/1441/1438/1439/1440，以及 `Status.as` 的 `Math.ceil(hp) + " Hp"`。字体 979（`QTypeSquare-Bold_12pt_st`）和 981（`QTypeSquare-Bold_10pt_st`）为原 SWF 直接导出物。
+- 网页承载：`src/hud-text-source.mjs` 按原 twips→800×600 坐标、文本矩形、对齐和 alpha 生成五个字段；`src/main.mjs` 加载两种原字体并消费该表；`engine.mjs` 的当前 Medic/M4 状态提供实际值。禁止回退成硬编码 system-ui 标签。
+- TDD：`faea139` 为有效 RED（`hud-text-source.mjs` 缺失），`cfe7343` 为 GREEN。`tests/hud-text-source.test.mjs` 锁定原字段数据和运行时消费关系。
+- 验证边界：浏览器进入快速对战后能显示文本，但尚未完成与原 SWF 相同状态截图的逐像素叠图；动态经验填充、换枪、其它兵种/枪械不能标为完成。
+
+### Aimer 1431 四参数矩阵崩溃
+
+- 现场复现：重新加载网页进入快速对战时，浏览器状态报错 `Failed to execute 'transform' on 'CanvasRenderingContext2D': 6 arguments required, but only 4 present.`，导致 `render()` 在准心处中断。
+- 原因与原始关系：symbol 1431 的子项 matrix 仅保存 Flash 的线性 `a,b,c,d`，其 `x,y` 是父级 Display List placement；Canvas 的 `transform()` 必须接收 `a,b,c,d,e,f`。
+- 修复：保留先前的 `ctx.translate(part.x, part.y)`，再调用 `ctx.transform(...part.matrix, 0, 0)`。这不是补画准心，也没有改变原矩阵/注册点。
+- TDD：`e0e6587` 是实际 RED（运行时代码仍为无效四参数调用），`d229469` 是 GREEN。全量 `npm test` 132/132 通过，`npm run test:coverage` 为 99.09% 行、87.34% 分支、93.81% 函数。
+- 浏览器验收：重新加载 → 快速对战 → 原始菜单内“开始游戏”；菜单隐藏，`canvas=[800,600]`，无启动失败状态，Foundry 地图、原部件角色、原素材 Aimer 与 HUD 均可见。
+
+**仍不得写成“1:1 已完成”**：上述为两个有证据的局部纵切和一个运行时阻塞修复；完整角色状态、全部地图 wallMC/任务、81 把枪、五种模式完整生命周期、15 战役/15 挑战、音频/特效、存档和逐帧像素差分仍处于未完成状态。总计划的最终完成门槛不变。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

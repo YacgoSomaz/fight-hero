@@ -48,6 +48,11 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /synchronizeTutorialActorWeapon/);
   assert.match(script, /player\.guns\.active === 'USP2'/);
   assert.match(script, /drawTutorialUnitPose/);
+  assert.match(script, /sceneActorStates/);
+  assert.match(script, /createTutorialActorPlayback\(binding\)/);
+  assert.match(script, /sourceActor\.visible/);
+  assert.match(script, /sourceActor\.dead/);
+  assert.match(script, /advanceTutorialActorPlayback\(sceneActorState, source\)/);
   assert.match(script, /canvas\.dataset\.ready = 'true'/);
   assert.doesNotMatch(script, /main\.mjs|engine\.mjs|createWorld|foundry/);
 });

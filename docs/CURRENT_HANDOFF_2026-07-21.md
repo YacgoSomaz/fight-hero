@@ -290,6 +290,13 @@ npm start
 
 **下一位唯一正确步骤**：继续从 `Guns.as`、枪械 stats 和 arm Sprite timeline 建立原 `shootDelay`/reload 完结到 action index 的逐帧时钟，并和 UnitMC 根 30fps 状态帧一起在 Tutorial 专用 actor 中回放。每个时钟转移均须先有原 SWF 实机帧或 AS3 证据与 RED；没有可靠原版截图叠图前，不能开放 Tutorial 菜单入口、更不能声明 1:1 完成。
 
+## 2026-07-22：Tutorial M4 arm 回调机械提取（仍不可启动）
+
+- 原始证据：`Guns.as` 将 `shootDelay` 声明为 `uint`，并在射击后赋值 `curGun.shootDelay * 30`；M4 的 source stat 是 `0.15`，因此原 AS3 的 uint 写入为 4 个 tick。原 `arm_gun_316.as` 的 `addFrameScript` 以零起始索引注册时间线回调：可见 frame 80 调 `doneShoot`，81 调 `reloadSound`，115 调 `doneReload`。`UnitMC` 的同名方法才会切回 idle/补充弹药。
+- 承载：`private-assets/parse-arm-gun-callbacks.mjs` 机械读取原 `addFrameScript` 对并追踪对应 ActionScript handler 中对 parent 的调用；`tutorial-m4-action-playback.mjs` 必须接收该回调表，然后以 M4 runtime 的原实际帧返回 callback。它没有写入猜测的动画长度或完成时机。
+- TDD：`93ea60e` 为缺提取器/播放边界的 RED；`91ca95f` 与 `d0e70b6` 为 GREEN 并确保解析器被版本控制。全量 `npm test`/`npm run test:coverage` 为 **188/188 通过**，99.25% 行、86.46% 分支、95.97% 函数。
+- 严格边界：播放模块目前仅是纯数据边界，未被浏览器 actor 消费。`doneShoot`/`doneReload` 的真实动作尚未和原 UnitMC 根身体状态、输入、弹药、物理、镜头或可见画面共同回放，故不得称为可玩 Tutorial 或 1:1。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

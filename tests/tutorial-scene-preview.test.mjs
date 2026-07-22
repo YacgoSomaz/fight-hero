@@ -13,6 +13,10 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /applyCampaignOneSessionFrame/);
   assert.match(script, /applyTutorialFootContact/);
   assert.match(script, /stepTutorialMovement/);
+  assert.match(script, /canvas\.addEventListener\('mouseup'/);
+  assert.match(script, /tutorialPlayerMouseDown\(gunState/);
+  assert.match(script, /tutorialPlayerMouseUp\(gunState\)/);
+  assert.match(script, /advanceTutorialGunRuntime\(gunState/);
   assert.match(script, /canvas\.addEventListener\('mousedown'/);
   assert.match(script, /beginTutorialActorGunAction\(actorState, 'fire'\)/);
   assert.match(script, /requestTutorialActorMotion/);
@@ -21,6 +25,10 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /advanceTutorialArenaPosition/);
   assert.match(script, /createTutorialActorPlayback/);
   assert.match(script, /beginTutorialActorGunAction/);
+  assert.match(script, /createTutorialGunRuntime/);
+  assert.match(script, /advanceTutorialGunRuntime/);
+  assert.match(script, /tutorialPlayerMouseDown/);
+  assert.match(script, /tutorialPlayerMouseUp/);
   assert.match(script, /synchronizeTutorialActorWeapon/);
   assert.match(script, /player\.guns\.active === 'USP2'/);
   assert.match(script, /drawTutorialUnitPose/);

@@ -45,3 +45,20 @@ test('Unit.setClass honors Campaign extra.hp only when the original truthy overr
   assert.equal(profile.hp, 240);
   assert.equal(profile.regen, 0.24);
 });
+
+test('Unit.setClass applies every remaining source skill branch without inventing class stats', () => {
+  const critical = createTutorialUnitProfile({ soldier: 'sniper', level: 1, skin: 1, skill: 'critical', primary: 'USP', secondary: 'USP', extra: {} });
+  const combat = createTutorialUnitProfile({ soldier: 'medic', level: 1, skin: 1, skill: 'combat', primary: 'M4', secondary: 'USP', extra: {} });
+  const vital = createTutorialUnitProfile({ soldier: 'sniper', level: 1, skin: 1, skill: 'vital', primary: 'USP', secondary: 'USP', extra: {} });
+  const ammo = createTutorialUnitProfile({ soldier: 'soldier', level: 1, skin: 1, skill: 'ammo', primary: 'Saw', secondary: 'USP', extra: {} });
+
+  assert.deepEqual({ crit: critical.crit, aim: critical.aim }, { crit: 0.15000000000000002, aim: 0.8500000000000001 });
+  assert.deepEqual({ hp: combat.hp, crit: combat.crit, aim: combat.aim, ammo: combat.ammo }, { hp: 95, crit: 0.09, aim: 0.7300000000000001, ammo: 1 });
+  assert.deepEqual({ headBonus: vital.headBonus, critBonus: vital.critBonus }, { headBonus: 1.7, critBonus: 1.6 });
+  assert.equal(ammo.ammo, 1.5);
+});
+
+test('Unit.setClass refuses missing original class or skill records instead of falling back', () => {
+  assert.throws(() => createTutorialUnitProfile({ soldier: 'robot', level: 1, skin: 1, skill: 'none', primary: 'USP', secondary: 'USP' }), /Stats_Classes/);
+  assert.throws(() => createTutorialUnitProfile({ soldier: 'medic', level: 1, skin: 1, skill: 'laser', primary: 'USP', secondary: 'USP' }), /Stats_Skills/);
+});

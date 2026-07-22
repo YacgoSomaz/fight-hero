@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **308/308 通过**，覆盖率为 **98.99% 行、83.44% 分支、96.18% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **311/311 通过**，覆盖率为 **98.98% 行、83.41% 分支、96.19% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -80,6 +80,12 @@ npm start
 - 网页承载：`src/source-wall-catalog.mjs` 是 15 个可启动 map ID 到原 character/frame/公开 PNG 的唯一目录；`src/source-wall-loader.mjs` 先加载完整 source timeline，再只解码指定帧；`src/source-map-world.mjs` 以 `Promise.all` 等待三层地图图像与 wall mask 全部成功后才创建并发布 `world`。`main.mjs` 已删除 `assets/reverse/foundry-wall/**` 与 Foundry-only late swap，所有快速对战/重开/本地房间均走同一入口。
 - TDD：`90238f5→010a6b8`（public resource catalog）、`9ae6a41→3a7244a`（frame-bound mask loader）、`183c120→8b9c80c`（原子世界）、`c474b88→c72ef8a`（浏览器入口去除 Foundry 私有特例）。`tests/source-wall-catalog.test.mjs`、`source-wall-loader.test.mjs`、`source-map-world.test.mjs` 与 `main-source-wall-integration.test.mjs` 防止重回私有路径、静默帧回退或部分世界发布。
 - 严格边界：这证明 **资源路径、symbol/frame 对应和启动时的统一 wall authority**，并不证明每张地图的原始 wall timeline 何时切帧、所有彩色触发、注册点、镜头边界、风/震屏、AI 路线和所有边缘碰撞都已与原版逐帧对照。当前环境没有可连接的 Chrome Canvas 截图通道，仍缺真正浏览器/原 SWF 输入录像差分；因此不得称“全部地图修好”或“游戏 1:1 完成”。
+
+#### Foundry `pot_203` 的后续阻断项（不得只切隐形碰撞）
+
+- 继续解包已确认：Foundry Arena frame 的 depth 7 放置 `MBFZ_fla.pot_203` / symbol **1258**，矩阵平移为 `(1046.4,-65.05)`；该 MovieClip 共 **306** 帧。其源码 `addFrameScript(31, frame32, 53, frame54)` 分别在可见第 32 / 54 帧调用 `Arena.changeWallFrame(2)` / `(1)`。`src/source-wall-timeline.mjs` 与 `tests/source-wall-timeline.test.mjs` 已锁定这份 30fps、306 帧循环关系，且明确不为其他地图虚构帧切换。
+- 当前 `public/assets/maps/foundry-foreground.png` 是包含 pot 第 1 帧的完整 Arena 平面导出；1258 的 306 帧原 PNG 约 23.7 MB，尚未进入公开运行时，也尚未从该平面图拆出。若仅让 `world.wall` 切到 1261 frame 2，用户会遇到视觉仍为第 1 帧而碰撞已经改变的错误，因此主页面**暂时保持 Foundry 初始 frame 1**。
+- 下一位只能采用来源驱动的两种路径之一：按 Arena Display List 用原 child 素材重建可叠加的 Foundry 前景，或以原层级重导出不含 1258 的底图并叠加 1258 的逐帧导出。完成前不得把 `source-wall-timeline.mjs` 接到 `main.mjs`，不得称 Foundry 动态墙体已迁移。
 
 ## 解包关系：可直接复用的证据
 

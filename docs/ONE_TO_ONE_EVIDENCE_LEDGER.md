@@ -86,7 +86,7 @@ Main.as（输入/屏幕切换）
 
 | 子项 | 原始证据 | 当前网页承载 | 自动证据 | 状态 / 禁止的错误做法 |
 | --- | --- | --- | --- | --- |
-| 活人墙体 | `Arena.as` 先绘制当前 `wallMC`，`Movement.hitTest()` 读取 alpha 255 | `source-wall-catalog.mjs`、`source-wall-loader.mjs`、`source-map-world.mjs`、`wall-mask.mjs`、`main.mjs` | `source-wall-catalog.test.mjs`、`source-wall-loader.test.mjs`、`source-map-world.test.mjs`、`main-source-wall-integration.test.mjs`、既有 Movement/Foundry wall 测试 | `已接入（所有 map ID 的原 wall resource + 启动期统一 authority）`；尚未逐图证明 source wall frame 切换、边缘/坡/坑、彩色触发、AI 路线或镜头与原版一致，不能写为全地图碰撞完成。 |
+| 活人墙体 | `Arena.as` 先绘制当前 `wallMC`，`Movement.hitTest()` 读取 alpha 255；Foundry child `pot_203` 的第 32/54 帧调用 `changeWallFrame(2/1)` | `source-wall-catalog.mjs`、`source-wall-loader.mjs`、`source-map-world.mjs`、`source-wall-timeline.mjs`、`wall-mask.mjs`、`main.mjs` | `source-wall-catalog.test.mjs`、`source-wall-loader.test.mjs`、`source-map-world.test.mjs`、`source-wall-timeline.test.mjs`、`main-source-wall-integration.test.mjs`、既有 Movement/Foundry wall 测试 | `已接入（所有 map ID 的原 wall resource + 启动期 frame 1 authority）`；Foundry 第 2 帧虽已解出回调，但未接入主页面，因前景平面图烘焙了 pot 第 1 帧，不能仅切隐形碰撞。尚未逐图证明 timeline、边缘/坡/坑、彩色触发、AI 路线或镜头与原版一致，不能写为全地图碰撞完成。 |
 | 碰撞盒/节点资料 | `Arena` 的 NodeSpawn/Waypoint/AiAction/Pickup/CTF/Holdpoint/PhysBox | `arena-source-layouts.mjs`、`foundry-layout.mjs`、`engine.mjs` | `map-porting.test.mjs` | `已接入部分`；节点数据存在不等于逐个功能在模式中已消费。 |
 | 出生/CTF/DOM | `NodeSpawn`、`NodeCtfFlag`、`NodeHoldpoint` | `engine.mjs` | `map-porting.test.mjs`、`objective-visuals.test.mjs` | Foundry 坐标和基础目标已回归；其余地图和完整得分/返回规则需逐项对照。 |
 | 镜头 | `Game`/Arena 本地坐标与原 SWF 画面 | `camera.mjs`、`dom-map-layer.mjs` | `dom-map-layer.test.mjs`、`scene-presentation.test.mjs` | `已接入`；每图注册点、边界、震屏尚未实机验收。 |

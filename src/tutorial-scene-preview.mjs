@@ -1,5 +1,5 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
-import { advanceTutorialActorPlayback, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback } from './tutorial-actor-playback.mjs';
+import { advanceTutorialActorPlayback, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
 import { applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
@@ -80,6 +80,13 @@ try {
       noJump: sourcePlayer.noJump,
       guns: { ...sourcePlayer.guns },
     };
+    // Campaign 1 state eight calls setGuns('USP2', 'none').  Only the two
+    // source weapon arm spans currently decoded here may become visible.
+    if (player.guns.active === 'USP2' && actorState.weaponId !== 'USP2') {
+      actorState = synchronizeTutorialActorWeapon(actorState, 'USP2');
+    } else if (player.guns.active === 'M4' && actorState.weaponId !== 'M4') {
+      actorState = synchronizeTutorialActorWeapon(actorState, 'M4');
+    }
     movementState = { ...movementState, noJump: player.noJump };
   }
 
@@ -90,10 +97,9 @@ try {
     drawArena(layers.terrain, terrainCrop, arenaPosition);
     const screen = worldToTutorialScreen(player.position, arenaPosition);
     const sample = sampleTutorialActorPlayback(actorState, source);
-    // Campaign 1 source frame zero removes the initial M4.  The USP2 source
-    // arm Sprite has not yet been migrated, so omit the M4 gun Display List
-    // rather than rendering it as an incorrect substitute for none/USP2.
-    const pose = player.guns.active === 'M4'
+    // `none` and later weapons outside this decoded source subset must remain
+    // invisible rather than borrowing M4 or USP2 art.
+    const pose = player.guns.active === actorState.weaponId
       ? sample.pose
       : { ...sample.pose, gunParts: [] };
     context.save();

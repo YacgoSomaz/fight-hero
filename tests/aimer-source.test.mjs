@@ -26,3 +26,15 @@ test('the running game draws the extracted Aimer sprite at its original centre a
   assert.doesNotMatch(aimerDraw, /ctx\.arc\(/, 'the original Aimer must not be replaced by a drawn circle');
   assert.doesNotMatch(aimerDraw, /aimerCircleSprite|aimerCenterSprite/, 'obsolete empty placeholders must not control the visible crosshair');
 });
+
+test('the running game upgrades the original Aimer to its source line/circle Display List using the Player.as recoil snapshot', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const main = await readFile(new URL('../src/main.mjs', import.meta.url), 'utf8');
+  const aimerDraw = main.match(/function drawAimer\(player\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+
+  assert.match(main, /import\s*\{\s*getOriginalAimerRig\s*\}\s*from\s*'\.\/aimer-rig\.mjs'/);
+  assert.match(main, /getOriginalAimerRig\(\{[\s\S]*dynRecoilMod:\s*player\.aimerDynRecoilMod/);
+  assert.match(aimerDraw, /getAimPivot\(player\)/, 'Player.as measures target distance from MC.arm1');
+  assert.match(aimerDraw, /ctx\.transform\(\.\.\.part\.matrix\)/, 'source line rotations must remain their decoded matrices');
+  assert.match(aimerDraw, /ctx\.drawImage\(sprite,\s*-part\.origin\.x,\s*-part\.origin\.y\)/, 'source registration points must anchor the extracted images');
+});

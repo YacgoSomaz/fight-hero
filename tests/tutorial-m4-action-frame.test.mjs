@@ -31,7 +31,9 @@ test('Tutorial M4 action resolver passes the exact original nested arm lists int
   assert.equal(action.frame, 79);
   assert.deepEqual(
     pose.gunParts.map(({ rootId, character, frame, local }) => ({ rootId, character, frame, local })),
-    action.rearAction.filter(({ name }) => name === 'gun').map(({ character, ...local }) => ({ rootId: 'arm1', character, frame: 20, local })),
+    action.rearAction.filter(({ name }) => name === 'gun').map(({ character, x, y, scaleX, scaleY, rotateSkew0, rotateSkew1 }) => ({
+      rootId: 'arm1', character, frame: 20, local: { x, y, scaleX, scaleY, skewX: rotateSkew0, skewY: rotateSkew1 },
+    })),
   );
 });
 

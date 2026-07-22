@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **300/300 通过**，覆盖率为 **98.99% 行、83.50% 分支、96.14% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **308/308 通过**，覆盖率为 **98.99% 行、83.44% 分支、96.18% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -46,9 +46,11 @@ npm start
   ├─ map-loader.mjs                   sky/background/terrain 原子加载
   ├─ map-visuals.mjs                  地图 ID、图层、裁剪关系
   ├─ dom-map-layer.mjs                原图裁剪与相机 CSS 布局
+  ├─ source-wall-catalog/loader.mjs   原 Arena wallMC 的 map→symbol/frame→像素墙资源链
+  ├─ source-map-world.mjs             地图三层与同一原始 wallMC 的原子发布
   ├─ main.mjs                         输入、HUD、角色 Canvas、地图图层装配
   ├─ engine.mjs                       物理、攀爬、武器、AI、模式、得分
-  └─ wall-mask.mjs                    Foundry 原始 wallMC 的不透明像素判定
+  └─ wall-mask.mjs                    原 Arena wallMC 的不透明像素判定
 ```
 
 ### 地图空白问题与修复
@@ -67,10 +69,17 @@ npm start
 
 ### 2026-07-22：全关卡运行时资源审计
 
-- 所有 14 个可启动地图 ID（教程、11 张快速对战图、Dropship、Missile 及夜间变体）均改为只引用 `public/assets/maps/**`；运行时不再读取被 `.gitignore` 忽略的 `private-assets/*export`。
+- 所有 15 个可启动地图 ID（教程、11 张快速对战图、Dropship、Missile 及夜间变体）均改为只引用 `public/assets/maps/**`；运行时不再读取被 `.gitignore` 忽略的 `private-assets/*export`。
 - 新增的地图资源测试会逐张读取 sky/background/terrain 的 PNG 头，验证三层均存在、均有可用裁切，且裁切矩形不越出图像实际尺寸。
 - 该测试还暴露并修正了三类会造成空白或错位的问题：Foundry 两层缺失裁切（原先为隐式 `0×0`）、BgSky 导出实际比记录少 3 像素高、Train 背景和宽天空导出实际少 2–3 像素宽。
 - 浏览器人工启动已复核：Facility、Foundry、Speeding Train、Caverns、战役第 13 关 Boarding Action、战役第 14 关 One Final Effort；前四张能显示相应的原始地图图层，两个战役专用图也能完成三层加载。Dropship/Missile 的精确场景注册点、碰撞与任务流程仍需逐图对照原版，不能据此宣称像素级完成。
+
+### 2026-07-22：全地图 `wallMC` 资源与原子加载（不是全地图 1:1 验收）
+
+- 原始证据：`Arena.as` 在每次地图切换后对当前 `wallMC` 调用 `BitmapData.draw()`，随后隐藏 MovieClip；活人 `Movement`、子弹与 AI 视线读取的是该 BitmapData 的 alpha，而不是 `NodePhysBox`。已由 FFDec 26.1.0 直接导出 symbol 1261 Foundry（2 帧）、1308 Train、1323 Plane、1342 Swamp、1350 Cave、1378 Tutorial（16 帧）、1406 Dropship 与 1411 Missile 的 PNG。昼夜变体明确复用同一物理 wall symbol，不复制一份近似碰撞图。
+- 网页承载：`src/source-wall-catalog.mjs` 是 15 个可启动 map ID 到原 character/frame/公开 PNG 的唯一目录；`src/source-wall-loader.mjs` 先加载完整 source timeline，再只解码指定帧；`src/source-map-world.mjs` 以 `Promise.all` 等待三层地图图像与 wall mask 全部成功后才创建并发布 `world`。`main.mjs` 已删除 `assets/reverse/foundry-wall/**` 与 Foundry-only late swap，所有快速对战/重开/本地房间均走同一入口。
+- TDD：`90238f5→010a6b8`（public resource catalog）、`9ae6a41→3a7244a`（frame-bound mask loader）、`183c120→8b9c80c`（原子世界）、`c474b88→c72ef8a`（浏览器入口去除 Foundry 私有特例）。`tests/source-wall-catalog.test.mjs`、`source-wall-loader.test.mjs`、`source-map-world.test.mjs` 与 `main-source-wall-integration.test.mjs` 防止重回私有路径、静默帧回退或部分世界发布。
+- 严格边界：这证明 **资源路径、symbol/frame 对应和启动时的统一 wall authority**，并不证明每张地图的原始 wall timeline 何时切帧、所有彩色触发、注册点、镜头边界、风/震屏、AI 路线和所有边缘碰撞都已与原版逐帧对照。当前环境没有可连接的 Chrome Canvas 截图通道，仍缺真正浏览器/原 SWF 输入录像差分；因此不得称“全部地图修好”或“游戏 1:1 完成”。
 
 ## 解包关系：可直接复用的证据
 
@@ -79,7 +88,7 @@ npm start
 | UnitMC 669 | 449 帧离散显示列表；头和双臂必须使用 holder 对齐。 | `unitmc-timeline.json`、深度报告 |
 | M4 | 501 后臂、668 前臂；`rifle=77`、`rifle_fire=78–80`、`rifle_reload=81–115`。 | 深度报告 §13–14 |
 | Arena 节点 | 出生、waypoint、AI action、pickup、CTF、DOM、`NodePhysBox` 是逻辑节点，不是装饰。 | `arena-source-layouts.mjs` |
-| Foundry 墙体 | Flash 先将 wallMC 画入 BitmapData 后隐藏；可用时角色/子弹/AI 应共用同一掩码。 | `wall-mask.mjs`、`Arena.as` |
+| Arena 墙体 | Flash 先将当前 map 的 wallMC 画入 BitmapData 后隐藏；角色/子弹/AI 必须共用同一掩码。 | `source-wall-catalog.mjs`、`source-wall-loader.mjs`、`wall-mask.mjs`、`Arena.as` |
 | AI | 选敌、墙体视线、路径/动作框、难度开火来自不同逻辑层。 | `AI.as`、`engine.mjs` |
 | 武器表 | `Stats_Guns.addGun` 已具备结构化解析及关系索引。 | `parse-stats-guns.mjs` |
 
@@ -90,12 +99,12 @@ npm start
 ### 已有自动化覆盖
 
 - 原始菜单帧、可点击菜单区域、快速对战循环、战役/挑战目录；
-- 14 个可启动地图的原始三层运行时资源、裁切边界自动审计；教程、Foundry、Train、Caverns 与 Boarding Action 的人工可见性验收；
+- 15 个可启动地图的原始三层运行时资源、裁切边界自动审计；九类物理 Arena wallMC 的公开资源、map→symbol/frame 对应与原子加载回归；教程、Foundry、Train、Caverns 与 Boarding Action 的人工可见性验收；
 - Foundry/Train 等已登记地图的节点、出生、路径和规则数据；
 - 移动、跳跃、蹲伏释放、坡面、攀爬、弹道、换弹、伤害、复活、相机；
 - UnitMC 部件矩阵回放、鼠标瞄准、M4 枪口/弹道共同坐标；
 - CTF、DOM、Juggernaut、本地基础 AI；
-- Foundry wallMC alpha 掩码解析。
+- 所有已登记 Arena wallMC 的 alpha 掩码解析与启动期统一装配（逐图行为尚未验收）。
 
 ### 仍不得写成“已完成”
 
@@ -112,14 +121,14 @@ npm start
 2. 不要为修视觉移动 `NodePhysBox`、wall mask、玩家脚底或枪口 pivot。
 3. 缺素材优先回到解包目录和关系报告找原始导出/时间轴，不手画替代素材。
 4. 地图三层必须成组替换；不能只换 terrain。
-5. Foundry wall mask 不能误用在其他地图；各地图必须导出自己的 wallMC。
+5. 不得将任一地图 wall mask 误用到另一地图；必须通过 `source-wall-catalog.mjs` 的原 character/frame 关系装配。
 6. 当前仓库含原始/派生资料；任何再次公开或分发前需重新核对授权和可见性。
 
 ## 下一步建议
 
 先独立复现并修正“某些实际页面角色 Canvas 仅显示 HUD、地图已显示”的问题。测试矩阵：教程图/Foundry 各一次，静止、左右走、跳、蹲起、贴墙跳、攀爬、鼠标瞄准、左键射击。
 
-之后只选一个纵向切片：M4 开火/换弹时间轴、下一张地图 wallMC 掩码，或一个完整战役关的节点/结束条件。不要同时改地图、物理和 AI。
+之后只选一个纵向切片：一个地图的原 wallMC 切帧/触发/边缘回放、M4 开火/换弹时间轴，或一个完整战役关的节点/结束条件。不要同时改地图、物理和 AI。
 
 ## 2026-07-22：Hud 1540 文本与 Aimer Canvas 崩溃修复
 

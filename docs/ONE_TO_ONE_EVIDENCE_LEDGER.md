@@ -24,11 +24,11 @@
 
 ## 2. 总体结论（当前，不是目标）
 
-当前工程拥有一条可启动的网页验证路径，也已把原 SWF 的主要运行时类、14 个地图的视觉资源关系、UnitMC 时间轴、M4 关系和枪表入口定位出来。但它仍是**迁移中的验证工程**：没有任何一个完整模式、战役或全角色/全武器组合达到本台账的“完成”条件。
+当前工程拥有一条可启动的网页验证路径，也已把原 SWF 的主要运行时类、15 个可启动地图的视觉资源关系、九类 Arena `wallMC`、UnitMC 时间轴、M4 关系和枪表入口定位出来。但它仍是**迁移中的验证工程**：没有任何一个完整模式、战役或全角色/全武器组合达到本台账的“完成”条件。
 
 尤其不得把下列事实混为一谈：
 
-- 14 个地图都能从 `public/assets/maps/` 找到三层图像，**不等于**14 个地图的墙体、镜头、触发器和任务都已复刻；
+- 15 个地图都能从 `public/assets/maps/` 找到三层图像，且都能经 `source-wall-catalog.mjs` 解析到原 `wallMC` PNG，**不等于**15 个地图的墙体时间轴、镜头、触发器和任务都已复刻；
 - `UnitMC` 的 449 帧及其部件矩阵已导出，**不等于**当前浏览器已经逐帧显示所有肢体/枪械状态；
 - `Stats_Guns` 已定位 81 把枪的原始资料入口，**不等于**81 把枪已经可用；
 - 菜单图、命中区和目录可点，**不等于**所有页面行为、解锁、存档和任务脚本已经还原；
@@ -86,7 +86,7 @@ Main.as（输入/屏幕切换）
 
 | 子项 | 原始证据 | 当前网页承载 | 自动证据 | 状态 / 禁止的错误做法 |
 | --- | --- | --- | --- | --- |
-| 活人墙体 | `Arena.as` 先绘制 `wallMC`，`Movement.hitTest()` 读取 alpha 255 | `wall-mask.mjs`（Foundry）；`engine.mjs` | `engine.test.mjs`、Foundry wall 测试 | `已接入（仅 Foundry 原始 mask）`；其余地图不能拿可见图或 Foundry mask 代替。 |
+| 活人墙体 | `Arena.as` 先绘制当前 `wallMC`，`Movement.hitTest()` 读取 alpha 255 | `source-wall-catalog.mjs`、`source-wall-loader.mjs`、`source-map-world.mjs`、`wall-mask.mjs`、`main.mjs` | `source-wall-catalog.test.mjs`、`source-wall-loader.test.mjs`、`source-map-world.test.mjs`、`main-source-wall-integration.test.mjs`、既有 Movement/Foundry wall 测试 | `已接入（所有 map ID 的原 wall resource + 启动期统一 authority）`；尚未逐图证明 source wall frame 切换、边缘/坡/坑、彩色触发、AI 路线或镜头与原版一致，不能写为全地图碰撞完成。 |
 | 碰撞盒/节点资料 | `Arena` 的 NodeSpawn/Waypoint/AiAction/Pickup/CTF/Holdpoint/PhysBox | `arena-source-layouts.mjs`、`foundry-layout.mjs`、`engine.mjs` | `map-porting.test.mjs` | `已接入部分`；节点数据存在不等于逐个功能在模式中已消费。 |
 | 出生/CTF/DOM | `NodeSpawn`、`NodeCtfFlag`、`NodeHoldpoint` | `engine.mjs` | `map-porting.test.mjs`、`objective-visuals.test.mjs` | Foundry 坐标和基础目标已回归；其余地图和完整得分/返回规则需逐项对照。 |
 | 镜头 | `Game`/Arena 本地坐标与原 SWF 画面 | `camera.mjs`、`dom-map-layer.mjs` | `dom-map-layer.test.mjs`、`scene-presentation.test.mjs` | `已接入`；每图注册点、边界、震屏尚未实机验收。 |

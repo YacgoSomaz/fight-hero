@@ -17,7 +17,7 @@ const source = {
   m4Runtime,
   armCallbacks: extractArmGunCallbacks(armSource),
 };
-const [player, , , , unspawned] = createTutorialActorBindings(createCampaignOneSession()).actors;
+const [player, tank, soldier, medic, unspawned] = createTutorialActorBindings(createCampaignOneSession()).actors;
 
 test('a Tutorial actor starts with its own Campaign binding and samples the source idle pose', () => {
   const state = createTutorialActorPlayback(player);
@@ -26,6 +26,19 @@ test('a Tutorial actor starts with its own Campaign binding and samples the sour
     { actorId: sample.actorId, skinFrame: sample.skinFrame, rootFrame: sample.rootFrame, armFrame: sample.arm.frame },
     { actorId: 'unit0', skinFrame: 57, rootFrame: 1, armFrame: 77 },
   );
+});
+
+test('Campaign Tutorial NPCs resolve their original Stats_Guns sprite through the authored pistol arm label', () => {
+  const samples = [tank, soldier, medic].map((actor) => {
+    const sample = sampleTutorialActorPlayback(createTutorialActorPlayback(actor), source);
+    return { id: actor.id, gunId: sample.arm.gunId, armFrame: sample.arm.frame, gunFrame: sample.pose.gunParts[0]?.frame };
+  });
+
+  assert.deepEqual(samples, [
+    { id: 'unit1', gunId: 'Beretta', armFrame: 2, gunFrame: 3 },
+    { id: 'unit2', gunId: 'Socom', armFrame: 2, gunFrame: 4 },
+    { id: 'unit3', gunId: 'USP', armFrame: 2, gunFrame: 2 },
+  ]);
 });
 
 test('a source M4 fire action exposes frames 78/79/80 and only returns to idle on UnitMC doneShoot', () => {

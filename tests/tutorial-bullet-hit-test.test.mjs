@@ -35,3 +35,10 @@ test('Tutorial Bullet.hitTestAll skips same teams, dead or blurred units, then t
     type: 'corpse', color: null, target: corpse, extra: {},
   });
 });
+
+test('Tutorial Bullet.hitTestAll reads the real Status.sBlur field once a source actor has one', () => {
+  const blurredByStatus = { ...standingEnemy, status: { sBlur: 60 } };
+  assert.deepEqual(hitTestTutorialBullet({ point: { x: 100, y: 70 }, shooter, wall: { isSolid: () => false, colorAt: () => '' }, units: [shooter, blurredByStatus] }), {
+    type: '', color: null, target: null, extra: {},
+  });
+});

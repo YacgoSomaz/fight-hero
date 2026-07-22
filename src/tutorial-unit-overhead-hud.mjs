@@ -13,6 +13,14 @@ export const TUTORIAL_UNIT_BAR = Object.freeze({
   scaleY: 0.61224365234375,
 });
 
+// The second Unit symbol 687 placement is the same original symbol 670 at
+// depth 6. Its author-time CXFORMWITHALPHA is RGB add (249,0,0) with alpha
+// multiplier 128/256. Status.setBars() subsequently overwrites its x/width.
+export const TUTORIAL_UNIT_HURT_BAR = Object.freeze({
+  colour: '#f90000',
+  alpha: 0.5,
+});
+
 // Exact ColorTransform.color values from Unit.as constructor / setTeam().
 const TEAM_BAR_COLOURS = Object.freeze({
   0: Object.freeze({ human: 3407667, bot: 39168 }),
@@ -41,5 +49,24 @@ export function getTutorialUnitOverheadBar(unit, screen) {
     width: unit.status.barHpWidth,
     height: TUTORIAL_UNIT_BAR.sourceHeight * TUTORIAL_UNIT_BAR.scaleY,
     colour: sourceColourToHex(colour),
+  };
+}
+
+export function getTutorialUnitOverheadHud(unit, screen) {
+  const hp = getTutorialUnitOverheadBar(unit, screen);
+  return {
+    hp,
+    hurt: {
+      assetSrc: TUTORIAL_UNIT_BAR.assetSrc,
+      symbolId: TUTORIAL_UNIT_BAR.symbolId,
+      sourceWidth: TUTORIAL_UNIT_BAR.sourceWidth,
+      sourceHeight: TUTORIAL_UNIT_BAR.sourceHeight,
+      x: screen.x + TUTORIAL_UNIT_BAR.localX + unit.status.barHurtX,
+      y: hp.y,
+      width: unit.status.barHurtWidth,
+      height: hp.height,
+      colour: TUTORIAL_UNIT_HURT_BAR.colour,
+      alpha: TUTORIAL_UNIT_HURT_BAR.alpha,
+    },
   };
 }

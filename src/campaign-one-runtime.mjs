@@ -63,3 +63,15 @@ export function applyCampaignOneGunSwap(runtime) {
   const afterDoor = doorIndex < 0 ? [] : transition.effects.slice(doorIndex);
   return [...copyEffects(beforeDoor), changeWall(transition), ...copyEffects(afterDoor)];
 }
+
+export function applyCampaignOneBulletEnvironmentHit(runtime, hitObject) {
+  const transition = SOURCE_CAMPAIGN_ONE_SCRIPT.bulletTransition;
+  if (runtime.state !== transition.requiredState || hitObject !== transition.hitObject) return [];
+  runtime.state = transition.nextState;
+  // Bullet.as changes the wall immediately after clearing clip/spare ammo;
+  // elevator playback and arrow hiding occur only afterwards.
+  const elevatorIndex = transition.effects.findIndex((effect) => effect.type === 'elevatorFrame');
+  const beforeElevator = transition.effects.slice(0, elevatorIndex < 0 ? transition.effects.length : elevatorIndex);
+  const afterElevator = elevatorIndex < 0 ? [] : transition.effects.slice(elevatorIndex);
+  return [...copyEffects(beforeElevator), changeWall(transition), ...copyEffects(afterElevator)];
+}

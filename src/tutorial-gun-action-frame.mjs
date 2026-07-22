@@ -75,7 +75,7 @@ export function tutorialGunActionFrameAtLabel(runtime, gunId, label, actionIndex
   return sourceActionFrame(runtime, gunId, source, command, label, actionIndex);
 }
 
-export function createTutorialUnitPoseAtGunAction({ rootFrame, runtime, gunId, command, actionIndex, skinFrame, muzzleFrame } = {}) {
+export function createTutorialUnitPoseAtGunAction({ rootFrame, runtime, gunId, command, actionIndex, skinFrame, muzzleFrame, aim } = {}) {
   const action = tutorialGunActionFrame(runtime, gunId, command, actionIndex);
   return createTutorialUnitPosePlan({
     rootFrame,
@@ -84,6 +84,7 @@ export function createTutorialUnitPoseAtGunAction({ rootFrame, runtime, gunId, c
     skinFrame,
     gunFrame: action.gunFrame,
     muzzleFrame,
+    aim,
   });
 }
 

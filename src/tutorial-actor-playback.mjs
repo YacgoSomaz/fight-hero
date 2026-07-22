@@ -78,7 +78,7 @@ export function requestTutorialActorMotion(state, requested) {
   };
 }
 
-export function sampleTutorialActorPlayback(state, source) {
+export function sampleTutorialActorPlayback(state, source, { aim } = {}) {
   requiredState(state);
   return createTutorialActorRenderPlan({
     actor: state.actor,
@@ -87,6 +87,7 @@ export function sampleTutorialActorPlayback(state, source) {
     weaponId: state.weaponId,
     unitTimeline: source?.unitTimeline,
     m4Runtime: source?.m4Runtime,
+    aim,
   });
 }
 

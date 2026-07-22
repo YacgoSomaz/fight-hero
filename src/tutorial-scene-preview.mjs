@@ -6,6 +6,7 @@ import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
 import { advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
+import { advanceTutorialPlayerAim, canvasPointToTutorialStage, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
@@ -70,8 +71,17 @@ try {
   let movementState = createTutorialMovementState({ noJump: player.noJump });
   let movementKeys = 0;
   let arenaPosition = { x: 0, y: 0 };
+  let stageMouse = { x: STAGE.width * 0.5, y: STAGE.height * 0.5 };
+  let aimState = { aimX: player.position.x + 200, aimY: player.position.y - 50, aimRotation: 0, reloadRotation: 0 };
   let previous = performance.now();
   let accumulated = 0;
+
+  function sourceArmHolder() {
+    const rootFrame = unitTimeline.frames[actorState.rootState.frame - 1];
+    const holder = rootFrame?.find(([id]) => id === 'arm1hold');
+    if (!holder) throw new Error(`original UnitMC arm holder is unavailable: ${actorState.rootState.frame}`);
+    return { x: holder[1], y: holder[2] };
+  }
 
   function syncPlayerRestrictionsFromSourceSession() {
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
@@ -106,7 +116,7 @@ try {
     drawParallax(layers.map, backgroundCrop, arenaPosition, wall);
     drawArena(layers.terrain, terrainCrop, arenaPosition);
     const screen = worldToTutorialScreen(player.position, arenaPosition);
-    const sample = sampleTutorialActorPlayback(actorState, source);
+    const sample = sampleTutorialActorPlayback(actorState, source, { aim: aimState });
     // `none` and later weapons outside this decoded source subset must remain
     // invisible rather than borrowing M4 or USP2 art.
     const pose = player.guns.active === actorState.weaponId
@@ -124,6 +134,17 @@ try {
     while (accumulated >= TICK_MS) {
       applyCampaignOneSessionFrame(session);
       syncPlayerRestrictionsFromSourceSession();
+      aimState = advanceTutorialPlayerAim(aimState, {
+        actor: player,
+        arenaMouse: tutorialArenaPointer(stageMouse, arenaPosition),
+        armHolder: sourceArmHolder(),
+        mcRotation: movementState.rotation,
+        jumping: movementState.jumping,
+        noAim: player.noAim,
+        reloading: gunState?.reloading ?? false,
+        stageMouse,
+      });
+      player = { ...player, flip: aimState.flip, aim: { x: aimState.aimX, y: aimState.aimY } };
       let gunTick = { fired: false };
       if (gunState) {
         gunTick = advanceTutorialGunRuntime(gunState, { human: player.human });
@@ -145,7 +166,7 @@ try {
       });
       syncPlayerRestrictionsFromSourceSession();
       actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
-      if (movement.aim) player.aim = movement.aim;
+      if (movement.aim) aimState = { ...aimState, aimX: movement.aim.x, aimY: movement.aim.y };
       arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);
       actorState = advanceTutorialActorPlayback(actorState, source, { advanceArm: !gunTick.fired });
       accumulated -= TICK_MS;
@@ -155,9 +176,13 @@ try {
   }
 
   render();
+  canvas.addEventListener('mousemove', (event) => {
+    stageMouse = canvasPointToTutorialStage(event, canvas.getBoundingClientRect());
+  });
   canvas.addEventListener('mousedown', (event) => {
     if (event.button !== 0 || !gunState) return;
     event.preventDefault();
+    stageMouse = canvasPointToTutorialStage(event, canvas.getBoundingClientRect());
     // Player.MouseDown() changes only mDown; the subsequent source tick owns
     // Guns.shoot(), shotPressed and uint shootDelay.
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');

@@ -29,8 +29,13 @@ function drawGun(context, gun, drawGunPart) {
 
 export function drawTutorialUnitPose(context, pose, { imageFor, drawGun: drawGunPart, drawMuzzle: drawMuzzlePart } = {}) {
   if (typeof imageFor !== 'function') throw new Error('original Tutorial Shape image resolver is required');
+  if (pose.flip) {
+    context.save();
+    context.transform(-1, 0, 0, 1, 0, 0);
+  }
   for (const part of [...pose.staticParts, ...pose.armParts]) drawShape(context, part, imageFor);
   for (const gun of pose.gunParts) drawGun(context, gun, drawGunPart);
   if (pose.muzzleParts?.length && typeof drawMuzzlePart !== 'function') throw new Error('original Tutorial USP2 muzzle renderer is required');
   for (const muzzle of pose.muzzleParts ?? []) drawGun(context, muzzle, drawMuzzlePart);
+  if (pose.flip) context.restore();
 }

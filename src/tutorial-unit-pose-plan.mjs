@@ -34,8 +34,26 @@ function enterFrameRoot(roots, id) {
   return holder ? { ...root, x: holder.x, y: holder.y } : root;
 }
 
-function planArm(rootId, action, skinFrame, roots, gunFrame, muzzleFrame) {
-  const root = enterFrameRoot(roots, rootId);
+// Assigning DisplayObject.rotation in Flash preserves its decomposed scale but
+// replaces the matrix's rotation/skew. Unit.as does that to arm1/arm2/head
+// after UnitMC.EnterFrame has moved their x/y to the hidden holders.
+function applyFlashRotation(root, degrees) {
+  if (!Number.isFinite(degrees)) return root;
+  const scaleX = Math.hypot(root.scaleX, root.skewX);
+  const scaleY = (root.scaleX * root.scaleY - root.skewX * root.skewY) / scaleX;
+  const radians = degrees * Math.PI / 180;
+  const clean = (value) => Math.abs(value) < 1e-14 ? 0 : value;
+  return {
+    ...root,
+    scaleX: clean(Math.cos(radians) * scaleX),
+    skewX: clean(Math.sin(radians) * scaleX),
+    skewY: clean(-Math.sin(radians) * scaleY),
+    scaleY: clean(Math.cos(radians) * scaleY),
+  };
+}
+
+function planArm(rootId, action, skinFrame, roots, gunFrame, muzzleFrame, armRotation) {
+  const root = applyFlashRotation(enterFrameRoot(roots, rootId), armRotation);
   if (!root || !Array.isArray(action)) throw new Error(`UnitMC ${rootId} root/action data is required`);
   const childFrames = m4SkinChildFrames(skinFrame);
   const armParts = [];
@@ -72,7 +90,7 @@ function planArm(rootId, action, skinFrame, roots, gunFrame, muzzleFrame) {
 
 // A source-only pose. It preserves the original root and nested action
 // matrices as two transforms; callers must not flatten/round these values.
-export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction, skinFrame, gunFrame, muzzleFrame } = {}) {
+export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction, skinFrame, gunFrame, muzzleFrame, aim } = {}) {
   if (gunFrame !== undefined && (!Number.isInteger(gunFrame) || gunFrame < 1)) throw new Error('original Tutorial gun Sprite frame is required');
   const roots = rootFrameItems(rootFrame);
   const staticParts = rootFrame
@@ -84,12 +102,15 @@ export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction,
         character: shape.character,
         source: shape.source,
         crop: tutorialSkinShapeBounds(id, skinFrame),
-        root: enterFrameRoot(roots, id),
+        root: id === 'head'
+          ? applyFlashRotation(enterFrameRoot(roots, id), aim?.headRotation)
+          : enterFrameRoot(roots, id),
       };
     });
-  const rear = planArm('arm1', rearAction, skinFrame, roots, gunFrame, muzzleFrame);
-  const front = planArm('arm2', frontAction, skinFrame, roots, gunFrame, muzzleFrame);
+  const rear = planArm('arm1', rearAction, skinFrame, roots, gunFrame, muzzleFrame, aim?.armRotation);
+  const front = planArm('arm2', frontAction, skinFrame, roots, gunFrame, muzzleFrame, aim?.armRotation);
   return {
+    flip: Boolean(aim?.flip),
     staticParts,
     armParts: [...rear.armParts, ...front.armParts],
     gunParts: [...rear.gunParts, ...front.gunParts],

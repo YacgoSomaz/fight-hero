@@ -17,7 +17,7 @@ test('Foundry foreground maps direct base and SVG child registrations into the s
     },
     {
       depth: 2, character: 1252, frame: 76, type: 'svg', source: './public/assets/original-swf/foundry-foreground-1252-svg/76.svg',
-      left: 158.02333374023438, top: 563.6, width: 301.979248046875, height: 97.35,
+      left: 158.02333374023442, top: 563.6, width: 301.9761657714844, height: 97.35,
     },
     {
       depth: 7, character: 1258, frame: 32, type: 'svg', source: './public/assets/original-swf/foundry-foreground-1258-svg/32.svg',

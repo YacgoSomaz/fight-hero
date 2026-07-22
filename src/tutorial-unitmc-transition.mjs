@@ -3,7 +3,9 @@
 // DefineSprite 669 FrameLabel timeline.
 export function transitionTutorialUnitMC({ current, requested, runType, force = false } = {}) {
   if (typeof current !== 'string' || typeof requested !== 'string') throw new Error('original UnitMC current and requested labels are required');
-  if (force) return { changed: current !== requested, animation: requested };
+  // UnitMC.goto(label, true) bypasses every guard and still calls
+  // gotoAndPlay(label), including when curAnim already equals label.
+  if (force) return { changed: true, animation: requested };
   let next = requested;
   if (current === next) return { changed: false, animation: current };
   if (current === 'climbsmall' || current === 'climbbig' || current === 'landhard') return { changed: false, animation: current };

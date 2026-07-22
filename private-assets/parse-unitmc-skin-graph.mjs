@@ -132,6 +132,44 @@ export function extractUnitMCRootTimeline() {
   return { frameCount: bytes.readUInt16LE(sprite.body + 2), labels };
 }
 
+function actionScriptFramePairs(source) {
+  const declaration = source.match(/addFrameScript\(([\s\S]*?)\);/);
+  if (!declaration) throw new Error('original UnitMC addFrameScript declaration is unavailable');
+  const tokens = declaration[1].split(',').map((token) => token.trim());
+  if (tokens.length % 2) throw new Error('original UnitMC addFrameScript pairs are malformed');
+  return Array.from({ length: tokens.length / 2 }, (_, index) => {
+    const frame = Number(tokens[index * 2]) + 1;
+    const handler = tokens[index * 2 + 1].match(/^this\.frame(\d+)$/)?.[1];
+    if (!Number.isInteger(frame) || !handler) throw new Error('original UnitMC frame callback is malformed');
+    return { frame, handler };
+  });
+}
+
+function rootFrameAction(source, handler) {
+  const start = source.indexOf(`internal function frame${handler}()`);
+  if (start < 0) throw new Error(`original UnitMC handler frame${handler} is unavailable`);
+  const next = source.indexOf('internal function ', start + 1);
+  const body = source.slice(start, next < 0 ? source.length : next);
+  const directPlay = body.match(/(?:^|\s)gotoAndPlay\("([^"]+)"\)/);
+  if (directPlay) return { type: 'play', label: directPlay[1] };
+  const goto = body.match(/this\.goto\("([^"]+)"(?:,(true|false))?\)/);
+  if (goto) return { type: 'goto', label: goto[1], force: goto[2] === 'true' };
+  if (/\bstop\(\)/.test(body)) return { type: 'stop' };
+  return null;
+}
+
+// UnitMC.as owns the endpoint commands on the root 669 timeline. Keep these
+// separate from FrameLabel extraction: a visible span and its end behaviour
+// are distinct SWF/AS3 facts.
+export function extractUnitMCRootFrameActions(source = fs.readFileSync(sourcePath, 'utf8')) {
+  if (typeof source !== 'string') throw new Error('original UnitMC ActionScript source is required');
+  return Object.freeze(Object.fromEntries(
+    actionScriptFramePairs(source)
+      .map(({ frame, handler }) => [frame, rootFrameAction(source, handler)])
+      .filter(([, action]) => action),
+  ));
+}
+
 function firstFrameDisplayList(bytes, sprite) {
   const placed = new Map();
   let offset = sprite.body + 4;

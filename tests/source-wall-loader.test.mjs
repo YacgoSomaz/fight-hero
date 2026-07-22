@@ -3,14 +3,25 @@ import test from 'node:test';
 
 import { loadSourceWallMask } from '../src/source-wall-loader.mjs';
 
+function loadedImageFactory(made) {
+  return () => {
+    const image = { complete: false, naturalWidth: 1, naturalHeight: 1, file: '' };
+    Object.defineProperty(image, 'src', {
+      set(file) {
+        image.file = file;
+        made.push(file);
+        image.onload();
+      },
+    });
+    return image;
+  };
+}
+
 test('wall loader decodes the requested original map wall frame rather than a Foundry singleton', async () => {
   const made = [];
   const decoded = [];
   const result = await loadSourceWallMask('plane2', {
-    makeImage: async (file) => {
-      made.push(file);
-      return { file };
-    },
+    makeImage: loadedImageFactory(made),
     decodeWallImage: (image) => {
       decoded.push(image.file);
       return { authority: image.file };
@@ -29,7 +40,7 @@ test('wall loader decodes the requested original map wall frame rather than a Fo
 test('wall loader keeps the selected source frame attached to its decoded mask', async () => {
   const result = await loadSourceWallMask('foundry', {
     frame: 2,
-    makeImage: async (file) => ({ file }),
+    makeImage: loadedImageFactory([]),
     decodeWallImage: (image) => ({ decoded: image.file }),
   });
 
@@ -41,8 +52,9 @@ test('wall loader keeps the selected source frame attached to its decoded mask',
 });
 
 test('wall loader refuses a nonexistent source frame instead of silently falling back', async () => {
+  const made = [];
   await assert.rejects(
-    loadSourceWallMask('plane', { frame: 2, makeImage: async () => ({}) }),
+    loadSourceWallMask('plane', { frame: 2, makeImage: loadedImageFactory(made) }),
     /frame 2 is unavailable/,
   );
 });

@@ -12,7 +12,9 @@ function bindSourceActor(actor, index) {
     team: actor.team,
     soldier: actor.soldier,
     skin: actor.skin,
-    unitFrame: profile.startFrame + actor.skin,
+    // UnitMC.setSkin() sends this value to head/body/limb child MovieClips.
+    // It must never be used as a UnitMC root timeline image/frame number.
+    skinFrame: profile.startFrame + actor.skin,
     runType: profile.runType,
     className: profile.name,
     classProfile: profile,

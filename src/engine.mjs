@@ -155,7 +155,7 @@ function makeActor(id, spawnX, spawnY, color, isBot = false, config = CONFIG, te
     aimX: spawnX + 100, aimY: spawnY - 47, aimAngle: 0,
     animation: 'idle', animationTime: 0, animationFrame: 1, animationBlend: 0, climb: null,
     crouching: false, crosshairRestSpread: 7, crosshairSpread: 7, recoil: 0,
-    classAim: SOURCE_MEDIC_LEVEL_ONE_AIM, dynRecoil: SOURCE_M4_RECOIL, dynRecoilMod: SOURCE_M4_RECOIL * (2 - SOURCE_MEDIC_LEVEL_ONE_AIM),
+    classAim: SOURCE_MEDIC_LEVEL_ONE_AIM, dynRecoil: SOURCE_M4_RECOIL, dynRecoilMod: SOURCE_M4_RECOIL * (2 - SOURCE_MEDIC_LEVEL_ONE_AIM), aimerDynRecoilMod: SOURCE_M4_RECOIL * (2 - SOURCE_MEDIC_LEVEL_ONE_AIM),
     grounded: true, alive: true, maxHp: 5, hp: 5, hitTimer: 0, deathTimer: 0,
     fireTimer: 0, weapon: { clip: 30, clipMax: 30, spare: 90, reloadRemaining: 0, reloadDuration: config.reloadDuration, range: 60, recoil: SOURCE_M4_RECOIL, shootDelay: 0.15 },
     color, team, carriedFlagId: null, isJug: false, isBot, ai: isBot ? {
@@ -639,7 +639,7 @@ function updateSourceDynamicRecoil(actor, dt) {
   actor.dynRecoilMod = actor.dynRecoil * stance * (2 - actor.classAim);
 }
 function updateActor(world, actor, input, dt) {
-  if (!actor.alive) { actor.deathTimer -= dt; if (actor.deathTimer <= 0) { actor.alive = true; actor.hp = actor.maxHp; actor.x = actor.spawnX; actor.y = actor.spawnY; actor.vx = actor.vy = 0; actor.weapon.clip = actor.weapon.clipMax; actor.weapon.spare = 90; actor.dynRecoil = actor.weapon.recoil; actor.dynRecoilMod = actor.dynRecoil * (2 - actor.classAim); } return; }
+  if (!actor.alive) { actor.deathTimer -= dt; if (actor.deathTimer <= 0) { actor.alive = true; actor.hp = actor.maxHp; actor.x = actor.spawnX; actor.y = actor.spawnY; actor.vx = actor.vy = 0; actor.weapon.clip = actor.weapon.clipMax; actor.weapon.spare = 90; actor.dynRecoil = actor.weapon.recoil; actor.dynRecoilMod = actor.dynRecoil * (2 - actor.classAim); actor.aimerDynRecoilMod = actor.dynRecoilMod; } return; }
   if (updateClimb(world, actor, dt)) return;
   updateCrouch(world, actor, input.down);
   const left = Boolean(input.left); const right = Boolean(input.right); actor.vx = ((right ? 1 : 0) - (left ? 1 : 0)) * (actor.crouching ? world.config.crouchSpeed : world.config.moveSpeed);
@@ -659,6 +659,9 @@ function updateActor(world, actor, input, dt) {
   }
   actor.fireTimer = Math.max(0, actor.fireTimer - dt); actor.hitTimer = Math.max(0, actor.hitTimer - dt); actor.crosshairSpread = Math.max(actor.crosshairRestSpread, actor.crosshairSpread - 26 * dt); actor.recoil = Math.max(0, actor.recoil - 7 * dt);
   if (actor.weapon.reloadRemaining) { actor.weapon.reloadRemaining -= dt; if (actor.weapon.reloadRemaining <= 0) completeReload(actor); }
+  // Player.EnterFrame uses the previous modifier to place the Aimer, then its
+  // trailing UnitEnterFrame calls Guns.EnterFrame to prepare the next frame.
+  actor.aimerDynRecoilMod = actor.dynRecoilMod;
   if (input.reload) reload(world, actor); if ((input.fire || input.firePressed) && !actor.weapon.reloadRemaining) spawnBullet(world, actor);
   updateSourceDynamicRecoil(actor, dt);
   const movingBackward = actor.vx * actor.facing < -1;

@@ -84,3 +84,23 @@ test('AI has no generic fallback for corpse/noSpawn/bad source records', () => {
   assert.throws(() => createTutorialAiState({ actor: actor({ position: null }), arena }), /finite source actor position/);
   assert.throws(() => createTutorialAiState({ actor: actor({ gun: { curGun: null } }), arena }), /active source gun stats/);
 });
+
+test('AI preserves original 120-frame closest-waypoint fallback and dead-unit return', () => {
+  const arena = compileTutorialAiArena({ nodes: [
+    { type: 'waypoint', name: 'a_b', x: 0, y: 0 }, { type: 'waypoint', name: 'b_a', x: 100, y: 0 },
+  ] });
+  const self = actor({ position: { x: 500, y: 1000, node: 'a' } });
+  const state = { ...createTutorialAiState({ actor: self, arena, random: () => 0 }), curWaypointId: 'a', nextWaypointId: 'b', wpTimer: 120, getTargetEvent: 12 };
+  const fallback = advanceTutorialAi({ state, actor: self, units: [self], arena, wall: transparentWall, gameStarted: false, random: () => .99 });
+  assert.equal(fallback.state.nextWaypointId, 'b');
+  const dead = actor({ dead: { id: 'corpse' } }); const deadState = createTutorialAiState({ actor: dead, arena: compileTutorialAiArena(ARENA_SOURCE_LAYOUTS.tut), random: () => 0 });
+  assert.deepEqual(advanceTutorialAi({ state: deadState, actor: dead, units: [dead], arena: compileTutorialAiArena(ARENA_SOURCE_LAYOUTS.tut), wall: transparentWall }), { state: { ...deadState, wpTimer: 1 }, keys: 0, jumpRequested: false, shouldShoot: false });
+});
+
+test('AI keeps a waypoint while source movement is jumping across a vertical gap', () => {
+  const arena = compileTutorialAiArena(ARENA_SOURCE_LAYOUTS.tut);
+  const self = actor({ position: { x: 330, y: 1400, node: 'a' }, movement: { xVelocity: 0, yVelocity: 0, jumping: true, crouching: false } });
+  const state = { ...createTutorialAiState({ actor: self, arena, random: () => 0 }), nextWaypointId: 'e', getTargetEvent: 12 };
+  const result = advanceTutorialAi({ state, actor: self, units: [self], arena, wall: transparentWall, gameStarted: false, random: () => .99 });
+  assert.equal(result.state.nextWaypointId, 'e');
+});

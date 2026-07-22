@@ -42,6 +42,8 @@ export function createTutorialMovementState(overrides = {}) {
     landHard: Boolean(overrides.landHard),
     noJump: Boolean(overrides.noJump),
     parachute: Boolean(overrides.parachute),
+    tiltL: number(overrides.tiltL, 0),
+    tiltR: number(overrides.tiltR, 0),
     rotation: number(overrides.rotation, 0),
     modSpeed: number(overrides.modSpeed, 1),
     modMax: number(overrides.modMax, 1),
@@ -190,6 +192,42 @@ function resolveTerminalFall({ state, position, wall, keys, nextAnim }) {
   return nextAnim;
 }
 
+function sourceRotation(x1, y1, x2, y2) {
+  const dx = x1 - x2;
+  const dy = y1 - y2;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  let radians = dy < 0 ? Math.PI * 2 - Math.acos(dx / distance) : Math.acos(dx / distance);
+  let degrees = radians * 180 / Math.PI - 90;
+  if (degrees > 180) degrees -= 360;
+  if (degrees < -180) degrees += 360;
+  return degrees;
+}
+
+function updateFloorTilt({ state, position, wall, keys, nextAnim }) {
+  let target = 0;
+  if (!state.jumping) {
+    state.tiltL = -10;
+    let samples = 0;
+    while (samples < 30 && !sourceHitTest(wall, position, -10, state.tiltL)) {
+      samples += 1;
+      state.tiltL += 1;
+    }
+    state.tiltR = -10;
+    samples = 0;
+    while (samples < 30 && !sourceHitTest(wall, position, 10, state.tiltR)) {
+      samples += 1;
+      state.tiltR += 1;
+    }
+    if (state.tiltL < 20 && state.tiltR < 20) {
+      target = sourceRotation(-10, state.tiltL, 10, state.tiltR) - 90;
+    }
+  }
+  state.rotation += (target - state.rotation) * 0.3;
+  if (state.crouching && !(keys & TUTORIAL_MOVEMENT_KEYS.LEFT) && !(keys & TUTORIAL_MOVEMENT_KEYS.RIGHT)) nextAnim = 'duck';
+  if (state.landHard) nextAnim = 'landhard';
+  return nextAnim;
+}
+
 // One ActionScript EnterFrame equivalent.  It does not invent an alternative
 // physics model: it returns the source's nextAnim command so UnitMC transition
 // handling can be connected separately to its original timeline guards.
@@ -238,6 +276,8 @@ export function stepTutorialMovement({ state: sourceState, actor: sourceActor, w
       nextAnim = resolveTerminalFall({ state, position, wall, keys, nextAnim });
     }
   }
+
+  nextAnim = updateFloorTilt({ state, position, wall, keys, nextAnim });
 
   return Object.freeze({
     actor: Object.freeze(actor),

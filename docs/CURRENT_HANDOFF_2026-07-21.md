@@ -161,6 +161,14 @@ npm start
 
 **下一位唯一正确步骤**：写一个 browser/runtime RED，要求 Campaign 1 会话加载的 `wallFrame=1` 读取 `wall-tut-1378/1.png`，状态 9 的 `9900ff` 命中切到 `10.png` 并刷新同一 wall mask；然后才把 `ff00ff` 人类脚底测试挂到该 mask。必须复用 `decodeFlashWallImage` 的 alpha-255 语义，不能缩放、裁切或改色。
 
+## 2026-07-22：Tutorial 原 Wall_tut 帧加载/选择基础设施（仍不可启动）
+
+- RED/GREEN：`499dfc4`→`8f47efd` 新增并通过“16 帧必须全部加载”的回归；`f28402c`→`cd2fcfc` 新增并通过“只按原帧号选择对应解码碰撞蒙版、缺第 16 帧即拒绝”的回归。测试没有伪造任何墙面、碰撞盒或地图图像。
+- 承载边界：`src/map-loader.mjs:loadSourceWallFrames` 仅把 `tutorial-wall-source.mjs` 的原 PNG 与其 frame 元数据配对；`src/tutorial-wall-runtime.mjs:createTutorialWallSet` 仅在全部 16 帧存在后调用既有的 `decodeFlashWallImage` 并以 frame 号取回 mask。它尚未导入 `main.mjs`，更没有解除 Campaign 1 的启动限制。
+- 验证：完整 `npm test` 为 153/153 通过；`npm run test:coverage` 为行 99.36%、分支 87.16%、函数 95.19%。
+
+**下一位唯一正确步骤**：在不改用通用 Foundry actor/NodePhysBox 的前提下，先建立 Tutorial 专用 world 的 RED：初始会话只能选择 `Wall_tut` frame 1；Campaign 1 的状态 9 环境子弹命中后，必须在同一个可碰撞 world 中原子替换成 frame 10 的 mask；失败或任一帧未加载时，关卡必须留在不可启动状态。随后再验证 `ff00ff` 的人类脚底触发。角色、Cutscene、胜负/解锁流程均未完成，入口继续关闭。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

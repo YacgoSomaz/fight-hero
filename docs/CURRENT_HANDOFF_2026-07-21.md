@@ -152,6 +152,15 @@ npm start
 
 **下一位唯一正确步骤**：从 `Wall_tut_240`/symbol 1378 导出每一个被 `changeWallFrame` 使用的原始 wall bitmap 与颜色，再写 RED：`ff00ff` 只有原触发像素能推进且 `9900ff` 只有原子弹环境命中能开电梯；之后才可把 `campaign-one-session` 接入专用 Tutorial World。不得用 NodePhysBox、可见前景或 Foundry mask 代替 `Wall_tut`。
 
+## 2026-07-22：Wall_tut 16 帧资源与会话效果落地（仍不可启动）
+
+- FFDec 26.1.0 以 `-format sprite:png -selectid 1378 -export sprite` 从原 SWF 导出 `Wall_tut_240` 的 **16** 帧；每帧为 2757×1541。原 PNG 已直接置于 `public/assets/original-swf/wall-tut-1378/`，不以 Foundry mask 或 NodePhysBox 代替。
+- `private-assets/analyze-wall-tut.py` 使用 PNG 原像素生成颜色审计，`tools/generate-tutorial-wall-source.mjs` 生成 `src/tutorial-wall-source.mjs`。已确认 `ff00ff` 在 frame 1–3、5–8、10–11、13 存在；`9900ff` **只**存在于 frame 9，bbox=`[2547,575,2572,698]`、像素数=3224。这与 `Bullet.as` 的 `sn==9` 分支和 `Arena.changeWallFrame()` 16 帧语义直接一致。
+- `campaign-one-session` 现在消费效果事件：`changeWallFrame` 改写会话 wallFrame，`spawn` 改写原 Unit 1–3 的位置和 spawned 标记，`setDiffStats`、枪械/禁瞄准/禁跳、门与电梯状态保留于会话。`c1c6a2a`→`f658c3e` 锁定状态 13 的精确三人重生和 wall frame 14；`3c75f82`→`867f7e9` 锁定 16 帧资产与关键颜色。全量为 150/150，覆盖率 99.36% 行、87.01% 分支、95.09% 函数。
+- **严格边界**：以上是资产、颜色与会话状态，不是网页碰撞已切换。`decodeFlashWallImage`/`engine.mjs` 只在当前通用 Foundry 路径消费像素 mask；还没有为 Tutorial 预加载 16 帧、按 `session.map.wallFrame` 替换 mask，也没有让玩家脚底或子弹在这些真实像素上触发。菜单入口继续关闭。
+
+**下一位唯一正确步骤**：写一个 browser/runtime RED，要求 Campaign 1 会话加载的 `wallFrame=1` 读取 `wall-tut-1378/1.png`，状态 9 的 `9900ff` 命中切到 `10.png` 并刷新同一 wall mask；然后才把 `ff00ff` 人类脚底测试挂到该 mask。必须复用 `decodeFlashWallImage` 的 alpha-255 语义，不能缩放、裁切或改色。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

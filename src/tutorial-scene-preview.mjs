@@ -99,11 +99,11 @@ try {
     } else if (player.guns.active === 'M4' && actorState.weaponId !== 'M4') {
       actorState = synchronizeTutorialActorWeapon(actorState, 'M4');
     }
-    // Campaign 1's Tutorial pistol is noAmmo:true, so its exact source shot
-    // gate is independent of the unknown saved-class ammo multiplier.  Do
-    // not fabricate a source ammo profile for later Campaign weapons here.
+    // `unitInfo.amm` is now the decoded initial SD save value. USP2 is
+    // noAmmo, but passing the original multiplier keeps this setGuns port
+    // valid when the decoded Campaign state changes weapon.
     if ((player.guns.active === 'USP2' || player.guns.active === 'none') && gunState?.gunId !== player.guns.active) {
-      gunState = createTutorialGunRuntime({ gunId: player.guns.active });
+      gunState = createTutorialGunRuntime({ gunId: player.guns.active, ammoMultiplier: player.sourcePlayerProfile.ammo });
     } else if (player.guns.active !== 'USP2' && player.guns.active !== 'none') {
       gunState = null;
     }
@@ -147,7 +147,18 @@ try {
       player = { ...player, flip: aimState.flip, aim: { x: aimState.aimX, y: aimState.aimY } };
       let gunTick = { fired: false };
       if (gunState) {
-        gunTick = advanceTutorialGunRuntime(gunState, { human: player.human });
+        gunTick = advanceTutorialGunRuntime(gunState, {
+          human: player.human,
+          unit: {
+            aim: player.sourcePlayerProfile.aim,
+            crouching: movementState.crouching,
+            jumping: movementState.jumping,
+            xVelocity: movementState.xVel,
+            // Guns.reflecting is false on original setGuns construction;
+            // no decoded Tutorial state has changed it yet.
+            reflecting: false,
+          },
+        });
         gunState = gunTick.state;
         if (gunTick.fired) actorState = beginTutorialActorGunAction(actorState, gunTick.action);
       }

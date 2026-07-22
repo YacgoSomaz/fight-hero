@@ -495,6 +495,13 @@ npm start
 - TDD：`926cd82` 是有效 RED（session 尚无 Score），`e1981b8` 是 GREEN。断言锁定 Lv.1 玩家击杀 Lv.1 Tank 的原结果：`ceil(min(9.6,5.4))=6`，以及 kills/headshots/killed4/multikill/spree/killtimer=105、TDM `1:0`、Medic save 的 `exp=6/funds=6`。完整 `npm test` 为 **334/334 通过**；`npm run test:coverage` 为 **98.94% 行、83.42% 分支、96.58% 函数**。
 - 严格边界：本轮没有把这份 session 状态接进 `tutorial-scene-preview` 或 `main.mjs` 的原 1462/1477 HUD，也没有击杀 feed、升级粒子/音效、杀连、吸血/护甲、友伤/自杀、其他模式、胜负画面或原 SWF 同输入截图差分。它只迁移并回归了第一关“普通人类击杀”的真实数值状态，不能称为 HUD、关卡、战役或游戏 1:1 完成。
 
+## 2026-07-22：Hud 1540 ScoreBar 1462 的原子素材与动态计划（尚未接入页面）
+
+- 原始证据：`Hud` symbol 1540 在 `(180,23)` 放置 ScoreBar **1462**。1462 的 depth 1/12 是两个 1458，矩阵分别为 `(1,0,0,.56756591796875,-149.4,-3.1)` 与 `(1,0,0,-.56756591796875,-149.4,19.8)`；1458 的 children 是 1444 底板、depth 2→9 的 1445 mask、命名 `bar` 的 1449、`barfade` 的 1454、`cap` 的 1456 和边框 1457。`Hud.setScoreBar()` 明确选择原色条帧、`bar.width=score/useScore*125`、`cap.x=bar.x+bar.width`，并写 `> score1`/`score2`。`Stats_Misc.getGameMode('tdm').name` 为 `Team Deathmatch`。
+- 承载：已用本地 FFDec 从 `4399-90433-25.swf` 直接导出并公开版本化 1444/1445、1449 四帧、1454 四帧、1456、1457；`hud-scorebar-render-plan.mjs` 固化每个原 child 的符号、原始 crop bounds、depth、mask clipDepth、矩阵、team→frame 关系、125px Flash width 与 cap 位移。它不是 CSS/Canvas 自画进度条，也不复用扁平 1462 截图作为动态状态。
+- TDD：`da30485→8942d4e` 是动态子素材缺失的 RED→GREEN；`bafc403→6a91ff4` 是 ScoreBar 显示列表计划缺失的 RED→GREEN。完整 `npm test` 为 **337/337 通过**，`npm run test:coverage` 为 **98.94% 行、83.35% 分支、96.60% 函数**。
+- 严格边界：这批资产与计划还**没有**由 `tutorial-scene-preview` 或 `main.mjs` 绘制，也没有获得原 SWF 的同输入截图来验证 FFDec crop/mask 的实际合成；更没有补齐原动态文字、全 HUD、胜负或全部模式。因此不能称为比分条、HUD、第一关或游戏 1:1 完成。后续接入必须消费此计划和这些原素材，保留 1445 的 mask/clipDepth，禁止退回扁平 1462 图或手绘条。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

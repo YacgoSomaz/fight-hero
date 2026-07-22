@@ -269,6 +269,16 @@ npm start
 
 **下一位唯一正确步骤**：为一个固定原 root 动画帧与一个 M4 action frame 写 RED，要求在每个原 child matrix 和 crop-origin bounds 下拼装 Shape，而非拼装 container PNG；之后用同一套计划驱动 run/jump/climb/aim/fire/reload。完成原版截图叠图前，不接入/开放 Campaign 1。
 
+## 2026-07-22：固定 Tutorial 姿势的原矩阵拼装计划（仍不可启动）
+
+- 裁切原点：`extractUnitMCSkinBaseShapeBounds()` 读取直接 Shape 的 SWF RECT，而不是 child Sprite 的视觉并集；浏览器生成物 `tutorial-skin-shape-bounds-source.mjs` 已覆盖五个 Tutorial skin frame。以 Scientist frame 57 为例，`legup2` 的正确 crop 是 `[-5.5,11.1]×[-2.95,13.55]`，而不是含枪层的 598 container 边界。
+- 姿势计划：`tutorial-unit-pose-plan.mjs` 不生成动画、不绘制替代图；它只将一个已解码 UnitMC root frame、一个原 M4 rear/front action frame 和一个 `skinFrame` 组合成三类原数据层：静态 head/body/leg/foot Shape、后/前臂 Shape 以及原 M4 gun sprite。根矩阵与 action local matrix 被保留为两个精确层级，禁止提前拍平或四舍五入。
+- 资源交付：此前被忽略的 13.88 MB `public/assets/m4-vector-runtime.local.json` 已进入版本控制；`tutorial-unit-pose-runtime.mjs` 只有在该源 JSON 成功加载且包含 501/668 的 rifle front/rear Display List 时才返回，不会换成手画枪臂。
+- TDD：`a687ded`→`69cd100`（直接 Shape bounds）；`a361541`→`d1f34cb`（浏览器 crop 来源）；`fbc1a23`→`b8e2183`（固定姿势：frame 1 + M4 rifle + skin 57）；`9cd12f0`→`6d4f8cc`（公开 M4 runtime loader）。全量为 175/175，覆盖率 99.27% 行、86.59% 分支、95.98% 函数。
+- 严格边界：这是**一帧的可审计拼装计划**，不是 Canvas/DOM actor，更不是完整跑、跳、攀爬、瞄准、开火状态机。没有原版截图叠图、浏览器渲染、玩家输入或 Campaign 1 启动路径，故不得标记为 1:1 完成。
+
+**下一位唯一正确步骤**：先为该静态计划添加一个不手绘的 Canvas/DOM source renderer，直接以每个 Shape PNG 的 crop RECT 和两级原矩阵绘制，并对同一原 SWF frame 截图做叠图验收；随后才按原 30fps root/M4 action 帧推进 run/jump/climb/aim/fire/reload。不要把这个计划接回当前 generic Medic quick-match renderer。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

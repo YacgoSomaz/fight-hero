@@ -2,6 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getMapLayerCrop, getMapVisual } from '../src/map-visuals.mjs';
 
+test('every launchable source map uses versioned runtime image layers rather than ignored extraction folders', () => {
+  for (const mapId of ['tut', 'foundry', 'foundry2', 'train', 'train2', 'plane', 'plane2', 'swamp', 'swamp2', 'cave', 'cave2', 'dropship', 'missile', 'missile2']) {
+    const visual = getMapVisual(mapId);
+    for (const source of [visual.sky, visual.background, visual.terrain]) {
+      assert.match(source, /^\.\/public\/assets\/maps\//, `${mapId} must not require a private runtime asset`);
+    }
+  }
+});
+
 test('Train draws the locally extracted original Arena terrain and Stats_Maps desert layers', () => {
   const visual = getMapVisual('train');
   assert.equal(visual.terrainMapId, 'train');

@@ -102,7 +102,7 @@ Main.as（输入/屏幕切换）
 | 瞄准与左键发射 | `Main.MouseDown → Game.MouseDown → Player.mDown → Guns.shoot`；鼠标转 Arena 坐标 | `main.mjs`、`engine.mjs`、`m4-action-selector.mjs` | `engine.test.mjs`、`m4-action-selector.test.mjs` | `已接入部分`；须验证鼠标反向、枪口 pivot、持枪姿势、射击帧和换弹帧。 |
 | 准星（普通 M4 动态帧） | `Aimer.as`；1431 frame 1：`line1–4`（1424）与 `circle`（1428）；`Player.as:83–94` 的距离/余弦展开公式；`Guns.as:269–305,522–525` 的动态后坐力；`Stats_Guns` M4 recoil=4；`Stats_Classes` Medic L1 aim=70→`Unit.as` 归一化=.70 | 原 1431 合成图仅作加载中回退；`aimer-rig.mjs`、`main.mjs`、`engine.mjs` 使用原 1424/1428 PNG、原矩阵、`MC.arm1` pivot、后坐力一帧快照 | `aimer-rig.test.mjs`、`aimer-source.test.mjs`、`engine.test.mjs` | `已接入+自动回归+浏览器对局确认（普通 M4）`；已删除几何准星，左键经原 `dynRecoil → dynRecoilMod → Player` 帧时序驱动 5 个原部件。浏览器确认菜单隐藏、3 图层入场、原 PNG 返回 200、鼠标/左键输入进入对局。**未完成**：1431 frame 2 狙击准星、反射状态、所有武器/兵种/技能倍率、原版逐帧叠图。 |
 | 头顶血条 / 底部 HUD | `Hud` symbol 1540、`Status`、`Unit.bar_hp/bar_hurt` 关系 | `main.mjs`、`unit-status.mjs`；单位条已有原 670 源图 | `unit-status.test.mjs` | `阻断`；顶部/底部仍有文字、矩形和固定数值，必须拆接 Hud 的职业、经验、弹药、备用弹药与模式元素。 |
-| 原始舞台坐标 | SWF header：800×600、30fps；HUD/Aimer 以此舞台坐标布局 | 当前为 `canvas 1280×720` 与 DOM 地图层 | 浏览器实测记录 | `阻断`；已确认原/网页纵横比不一致。不得把当前截图视为像素对齐，需先建立 800×600→响应式的统一坐标变换。 |
+| 原始舞台坐标 | SWF header：800×600、30fps；HUD/Aimer 以此舞台坐标布局 | `index.html` 的 800×600 canvas；`style.css` 4:3 地图/角色覆盖层 | `stage-format.test.mjs`；浏览器实测 | `已接入+浏览器确认（基线）`；浏览器确认内部像素 800×600、显示比 1.3333、3 地图层和两套 10 部件角色可见。**未完成**：Hud 1540 的原坐标/安全区/响应式缩放逐像素对照。 |
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

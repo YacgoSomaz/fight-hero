@@ -19,7 +19,7 @@
 - 从 SWF 标签组合的 Medic + M4 待机手臂组件，枪口、枪火与弹道共用同一坐标计算；
 - 弹药、换弹、命中、复活、计分、AI、菜单音乐/本地存档和私有房间原型；
 - 14 个可启动地图的原始三层资源已随仓库交付；每张地图的文件存在性与裁切边界均有自动回归校验；
-- `npm run test:coverage` 当前为 **122/122 通过**（99.08% 行、88.19% 分支、93.61% 函数；覆盖率门槛在脚本中强制）。
+- `npm run test:coverage` 当前为 **123/123 通过**（99.08% 行、88.19% 分支、93.61% 函数；覆盖率门槛在脚本中强制）。
 
 它仍是迁移验证，**不是**像素级完整复刻。上述清单中凡未在证据台账标作“完成”的内容，一律不得对外称为已 1:1。下一位接手者必须先阅读 [1:1 复刻总计划](docs/ONE_TO_ONE_MASTER_PLAN.md)、[1:1 证据台账](docs/ONE_TO_ONE_EVIDENCE_LEDGER.md)、[当前交接与验证日志](docs/CURRENT_HANDOFF_2026-07-21.md)、[AI 交接报告](docs/AI_HANDOFF.md)、[运行时关系总表](docs/SWF_RUNTIME_RELATION_INDEX.md) 和 [迁移状态](docs/MIGRATION_STATUS.md)。
 

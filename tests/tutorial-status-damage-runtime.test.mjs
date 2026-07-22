@@ -199,3 +199,37 @@ test('Status.EnterFrame reproduces Shadow Blend delay and opacity progression wi
   advanceTutorialStatusFrame(target);
   assert.equal(target.status.sInvis, 0.2);
 });
+
+test('Status.EnterFrame emits source timer events for surge, reflect, fire, rapid healing and human blood', () => {
+  const target = unit({ human: true, hp: 100 });
+  target.status.hpCur = 20;
+  target.status.fc = 9;
+  target.status.sSurge = 1;
+  target.status.sReflect = 1;
+  target.status.sBlur = 1;
+  target.status.sFire = 1;
+  target.status.sRapidHeal = 1;
+  target.unitInfo.streak = { id: 'fire' };
+  target.streakInProgress = true;
+  const frame = advanceTutorialStatusFrame(target);
+
+  assert.deepEqual(frame, { events: ['endSurge', 'endReflect', 'fireBullet', 'endFire'], bloodAlpha: 0.6345999999999999 });
+  assert.deepEqual({ surge: target.status.sSurge, reflect: target.status.sReflect, blur: target.status.sBlur, fire: target.status.sFire, rapid: target.status.sRapidHeal, hp: target.status.hpCur }, { surge: 0, reflect: 0, blur: 0, fire: 0, rapid: 0, hp: 20.3 });
+
+  const rapid = unit({ hp: 100 });
+  rapid.status.hpCur = 95;
+  rapid.status.sRapidHeal = 1;
+  rapid.unitInfo.streak = { id: 'rapid' };
+  rapid.streakInProgress = true;
+  assert.deepEqual(advanceTutorialStatusFrame(rapid), { events: ['endRapid'], bloodAlpha: null });
+});
+
+test('Status.EnterFrame keeps source Shadow Blend standing reset and clamps invisibility at zero', () => {
+  const target = unit({ hp: 100, skill: { id: 'shadow', value: 0.5 } });
+  target.crouching = false;
+  target.status.stealthDelay = 0;
+  target.status.sInvis = 0.05;
+
+  advanceTutorialStatusFrame(target);
+  assert.deepEqual({ delay: target.status.stealthDelay, invis: target.status.sInvis }, { delay: 59, invis: 0 });
+});

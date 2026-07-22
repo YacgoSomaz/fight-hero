@@ -3,7 +3,7 @@ import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
-import { createTutorialStatus } from './tutorial-status-damage-runtime.mjs';
+import { advanceTutorialStatusFrame, createTutorialStatus } from './tutorial-status-damage-runtime.mjs';
 import { createTutorialUnitProfile, getTutorialAiLevel } from './tutorial-unit-profile.mjs';
 
 const GUN_BY_ID = new Map(SOURCE_GUNS.map((gun) => [gun.id, gun]));
@@ -140,6 +140,16 @@ export function applyCampaignOneSessionFrame(session) {
   const effects = runCampaignOneFrame(session.runtime);
   applySourceEffects(session, effects);
   return effects;
+}
+
+// Game.EnterFrame() evaluates Campaign.runScripts before it walks Game.units;
+// Unit.EnterFrame() then calls Status.EnterFrame before Guns and Movement.
+// This adapter preserves that distinct phase and skips constructor-held
+// extra.noSpawn units which have not yet reached Unit.unitSpawn().
+export function advanceCampaignOneSessionUnits(session) {
+  return session.actors
+    .filter((actor) => actor.spawned && actor.status)
+    .map((actor) => ({ id: actor.id, ...advanceTutorialStatusFrame(actor) }));
 }
 
 export function applyCampaignOneSessionBulletEnvironmentHit(session, hitObject) {

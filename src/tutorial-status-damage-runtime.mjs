@@ -148,3 +148,74 @@ export function applyTutorialStatusDamage(target, attacker, gun, extra, rawDamag
   setBars(status);
   return { applied: true, reason: null, damage, died, events };
 }
+
+// Numeric/timer port of Status.EnterFrame():309-570. Flash visual effects,
+// sound and particle calls are returned as source-named events for their
+// dedicated render/audio consumers; this function never invents a visual.
+export function advanceTutorialStatusFrame(unit) {
+  const status = unit.status;
+  const skill = skillOf(unit);
+  const events = [];
+  let bloodAlpha = null;
+  status.fc += 1;
+  if (status.bigSkillCooldown) status.bigSkillCooldown -= 1;
+  if (unit.unitInfo.extra?.permaSurge) status.sSurge = 99;
+
+  if (status.sSurge) {
+    if (status.sSurge === 1) events.push('endSurge');
+    status.sSurge -= 1;
+  }
+  if (status.sReflect) {
+    if (status.sReflect === 1) events.push('endReflect');
+    status.sReflect -= 1;
+  }
+  if (status.sBlur) status.sBlur -= 1;
+  if (status.sFire) {
+    if (status.fc % 10 === 0) events.push('fireBullet');
+    if (unit.unitInfo.streak?.id === 'fire' && unit.streakInProgress && status.sFire === 1) events.push('endFire');
+    status.sFire -= 1;
+  }
+  if (status.sSpawn) status.sSpawn -= 1;
+
+  if (status.barHurtWidth > 0) status.barHurtWidth += (0 - status.barHurtWidth) * 0.1;
+  else status.barHurtWidth = 0;
+
+  if (skill.id === 'shadow') {
+    if (!unit.crouching || unit.hasFlag) status.stealthDelay = 60;
+    if (status.stealthDelay) {
+      status.stealthDelay -= 1;
+      status.sInvis -= 0.1;
+      if (status.sInvis < 0) status.sInvis = 0;
+    } else {
+      status.sInvis += 0.05;
+      if (status.sInvis > 1) status.sInvis = 1;
+    }
+  } else if (skill.id === 'shadow2') {
+    if (unit.hasFlag) status.stealthDelay = 60;
+    if (status.stealthDelay) {
+      status.stealthDelay -= 1;
+      status.sInvis -= 0.1;
+      if (status.sInvis < 0) status.sInvis = 0;
+    } else {
+      status.sInvis += 0.1;
+      if (status.sInvis > 1) status.sInvis = 1;
+    }
+  }
+
+  if (status.sRapidHeal) {
+    heal(status, status.hpMax * 0.003);
+    if (unit.unitInfo.streak?.id === 'rapid' && unit.streakInProgress && status.sRapidHeal === 1) events.push('endRapid');
+    status.sRapidHeal -= 1;
+  } else if (status.regenDelay) {
+    status.regenDelay -= 1;
+  } else {
+    heal(status, unit.unitInfo.regen);
+    if (status.hpCur < status.hpMax) events.push(skill.id === 'adren' ? 'regenRed' : 'regen');
+  }
+
+  if (unit.human) {
+    const ratio = status.hpCur / status.hpMax;
+    bloodAlpha = ratio > 0.5 ? 0 : 1 - ratio * 1.8;
+  }
+  return { events, bloodAlpha };
+}

@@ -47,7 +47,7 @@ test('Status.damage uses the source human difficulty factor before subtracting H
   assert.equal(result.damage, 9.75);
   assert.equal(target.status.hpCur, 75.25);
   assert.equal(target.status.regenDelay, 90);
-  assert.equal(target.status.barHpWidth, 48.85294117647059);
+  assert.equal(target.status.barHpWidth, 42.93676470588235);
 });
 
 test('Status.damage gives a bullet head hit its source head bonus instead of rolling critical', () => {

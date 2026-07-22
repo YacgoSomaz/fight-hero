@@ -1,6 +1,10 @@
-const ARENA = './private-assets/arena-clean-art-export/DefineSprite_1413_Arena';
-const BG = './private-assets/background-export/DefineSprite_1210_Bg';
-const SKY = './private-assets/background-export/DefineSprite_1187_BgSky';
+// Byte-for-byte originals copied from the local SWF export.  These must live
+// under public/ so a fresh clone can launch every registered map rather than
+// silently depending on an ignored extraction workspace.
+const SOURCE = './public/assets/maps/source';
+const ARENA = `${SOURCE}/arena`;
+const BG = `${SOURCE}/background`;
+const SKY = `${SOURCE}/sky`;
 const TUTORIAL = './public/assets/maps/tut';
 const CROP = Object.freeze({
   [`${BG}/2.png`]: [1336, 184, 2400, 856], [`${BG}/6.png`]: [1336, 584, 2584, 292], [`${BG}/8.png`]: [1336, 184, 1296, 692],

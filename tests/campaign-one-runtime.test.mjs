@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCampaignOneScore, createCampaignOneRuntime, runCampaignOneFrame } from '../src/campaign-one-runtime.mjs';
+import { applyCampaignOneGunSwap, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from '../src/campaign-one-runtime.mjs';
 
 // User journey: when the original tutorial opens, its script starts at sn=1,
 // fc=0 and immediately removes the authored starting guns before later frame
@@ -30,4 +30,37 @@ test('Campaign 1 score transitions advance only at their source state and score'
     type: 'message', target: 'unit4', text: 'Hehehah, take some of this!', seconds: 5, force: true, voice: 'V_Ca1_15',
   }]);
   assert.deepEqual(runtime, { state: 15, frame: 360 });
+});
+
+// User journey: the tutorial's coloured floor marker only advances a human
+// actor.  Its state-eight contact unlocks the original USP2, points to the
+// current down-arrow and then changes the Arena wall to state nine.
+test('Campaign 1 applies the source human foot-contact transition', () => {
+  const runtime = createCampaignOneRuntime({ state: 8, frame: 46 });
+
+  assert.deepEqual(applyCampaignOneSurfaceContact(runtime, { surface: 'ff00ff', human: false }), []);
+  assert.deepEqual(runtime, { state: 8, frame: 46 });
+  assert.deepEqual(applyCampaignOneSurfaceContact(runtime, { surface: 'ff00ff', human: true }), [
+    { type: 'hudFrame', frameLabel: 'tutshoot' },
+    { type: 'message', target: 'player', text: "Oh, a pistol... I'm a little rusty.", seconds: 4, force: true, voice: 'V_Ca1_6' },
+    { type: 'setGuns', target: 'player', primary: 'USP2', secondary: 'none' },
+    { type: 'setNoAim', target: 'player', value: false },
+    { type: 'showDownArrows', state: 8 },
+    { type: 'changeWallFrame', frameLabel: 9 },
+  ]);
+  assert.deepEqual(runtime, { state: 9, frame: 0 });
+});
+
+// User journey: pressing the original swap-guns control at sn=12 opens the
+// authored door only after it has pointed to the matching down-arrow.
+test('Campaign 1 applies the source gun-swap transition at state twelve only', () => {
+  const runtime = createCampaignOneRuntime({ state: 12, frame: 10 });
+
+  assert.deepEqual(applyCampaignOneGunSwap(runtime), [
+    { type: 'hudFrame', frameLabel: 'idle' },
+    { type: 'showDownArrows', state: 12 },
+    { type: 'changeWallFrame', frameLabel: 13 },
+    { type: 'doorFrame', frameLabel: 'open' },
+  ]);
+  assert.deepEqual(runtime, { state: 13, frame: 10 });
 });

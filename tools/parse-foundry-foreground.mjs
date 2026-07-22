@@ -59,6 +59,17 @@ function readMatrix(bytes, offset) {
   return { a, b, c, d, x: bits.signed(count) / 20, y: bits.signed(count) / 20, next: bits.end() };
 }
 
+function readRect(bytes, offset) {
+  const bits = bitReader(bytes, offset);
+  const count = bits.unsigned(5);
+  return {
+    xMin: bits.signed(count) / 20,
+    xMax: bits.signed(count) / 20,
+    yMin: bits.signed(count) / 20,
+    yMax: bits.signed(count) / 20,
+  };
+}
+
 function skipColorTransform(bytes, offset) {
   const bits = bitReader(bytes, offset);
   const hasAdd = bits.unsigned(1);
@@ -125,6 +136,58 @@ function displayListFrames(bytes, sprite) {
   return frames;
 }
 
+function directBounds(bytes, definition) {
+  return definition && [2, 22, 32, 83].includes(definition.code)
+    ? readRect(bytes, definition.body + 2)
+    : null;
+}
+
+function combineBounds(left, right) {
+  if (!left) return right;
+  if (!right) return left;
+  return {
+    xMin: Math.min(left.xMin, right.xMin), xMax: Math.max(left.xMax, right.xMax),
+    yMin: Math.min(left.yMin, right.yMin), yMax: Math.max(left.yMax, right.yMax),
+  };
+}
+
+function transformBounds(bounds, matrix = { a: 1, b: 0, c: 0, d: 1, x: 0, y: 0 }) {
+  const points = [
+    [bounds.xMin, bounds.yMin], [bounds.xMin, bounds.yMax],
+    [bounds.xMax, bounds.yMin], [bounds.xMax, bounds.yMax],
+  ].map(([x, y]) => ({ x: matrix.a * x + matrix.c * y + matrix.x, y: matrix.b * x + matrix.d * y + matrix.y }));
+  return {
+    xMin: Math.min(...points.map(({ x }) => x)), xMax: Math.max(...points.map(({ x }) => x)),
+    yMin: Math.min(...points.map(({ y }) => y)), yMax: Math.max(...points.map(({ y }) => y)),
+  };
+}
+
+function visualBounds(bytes, defs, character, frame, seen = new Set()) {
+  if (seen.has(character)) return null;
+  const definition = defs.get(character);
+  const direct = directBounds(bytes, definition);
+  if (direct) return direct;
+  if (!definition || definition.code !== 39) return null;
+  const ownFrame = Math.min(Math.max(1, frame), bytes.readUInt16LE(definition.body + 2));
+  const branch = new Set(seen); branch.add(character);
+  return displayListFrames(bytes, definition)[ownFrame - 1].items.reduce((result, item) => {
+    if (!item.character) return result;
+    const child = visualBounds(bytes, defs, item.character, ownFrame, branch);
+    return combineBounds(result, child && transformBounds(child, item.matrix));
+  }, null);
+}
+
+function timelineBounds(bytes, defs, character) {
+  const definition = defs.get(character);
+  const direct = directBounds(bytes, definition);
+  if (direct) return { frames: 1, bounds: direct };
+  if (!definition || definition.code !== 39) return null;
+  const frames = bytes.readUInt16LE(definition.body + 2);
+  const bounds = Array.from({ length: frames }, (_, index) => visualBounds(bytes, defs, character, index + 1))
+    .reduce((result, frameBounds) => combineBounds(result, frameBounds), null);
+  return bounds && { frames, bounds };
+}
+
 /**
  * Arena's Display List is the authority for reassembling Foundry's dynamic
  * foreground.  This deliberately excludes wallMC and Node* authoring data.
@@ -154,4 +217,25 @@ export function extractFoundryForegroundDisplayList({ swf = defaultSwf } = {}) {
 
   if (layers.length !== FOREGROUND_CHILDREN.size) throw new Error('original Foundry foreground Display List is incomplete');
   return Object.freeze({ arenaCharacter: ARENA, frame: index + 1, label: frames[index].label, layers: Object.freeze(layers) });
+}
+
+// FFDec's PNG canvas is an export artifact.  Return the recursively decoded
+// Flash coordinates that a runtime must use to register that canvas instead.
+export function extractFoundryForegroundRegistration({ swf = defaultSwf } = {}) {
+  const bytes = decompressSwf(swf);
+  const defs = definitionMap(bytes);
+  const arena = defs.get(ARENA);
+  if (!arena || arena.code !== 39) throw new Error('original Arena symbol 1413 is unavailable');
+  const frame = displayListFrames(bytes, arena).find(({ label }) => label === 'foundry');
+  if (!frame) throw new Error('original Arena Foundry frame label is unavailable');
+  const records = frame.items
+    .filter(({ character }) => FOREGROUND_CHILDREN.has(character))
+    .sort((left, right) => left.depth - right.depth)
+    .map(({ character }) => {
+      const registration = timelineBounds(bytes, defs, character);
+      if (!registration) throw new Error(`original Foundry child ${character} has no drawable source bounds`);
+      return Object.freeze({ character, frames: registration.frames, bounds: Object.freeze(registration.bounds) });
+    });
+  if (records.length !== FOREGROUND_CHILDREN.size) throw new Error('original Foundry foreground registration is incomplete');
+  return Object.freeze(records);
 }

@@ -23,6 +23,7 @@ import { ORIGINAL_AIMER } from './aimer-source.mjs';
 import { getOriginalAimerRig } from './aimer-rig.mjs';
 import { getHudAmmoBoxes } from './hud-ammo.mjs';
 import { getHudTextFields } from './hud-text-source.mjs';
+import { getHudExperienceRenderPlan } from './hud-experience-render-plan.mjs';
 import { getFoundryForegroundRuntimePlan } from './foundry-foreground-runtime.mjs';
 import { createFoundryForegroundDomLayer, renderFoundryForegroundDomLayer } from './foundry-foreground-dom.mjs';
 import { advanceFoundryWorldTimeline, createFoundryWorldTimeline } from './foundry-world-timeline.mjs';
@@ -124,7 +125,9 @@ const hudM4MenuSprite = image('./public/assets/original-swf/hud-gunsmenu-724-m4-
 // Direct FFDec exports of Hud 1540 children. Their positions below are the
 // original 800x600 Hud Display List anchors, not a responsive redesign.
 const hudScorebarSprite = image('./public/assets/original-swf/hud-scorebar-1462.png');
-const hudExpHolderSprite = image('./public/assets/original-swf/hud-expholder-1477.png');
+const hudExpBaseSprite = image('./public/assets/original-swf/hud-exp-base-1474.svg');
+const hudExpGreenSprite = image('./public/assets/original-swf/hud-exp-green-1475.svg');
+const hudExpFillSprite = image('./public/assets/original-swf/hud-exp-fill-699-source.svg');
 // DefineFont3 979/981 were directly exported from the SWF. Do not substitute
 // system-ui for QTypeSquare-Bold_12pt_st or QTypeSquare-Bold_10pt_st.
 if (typeof FontFace === 'function' && document.fonts) {
@@ -434,9 +437,32 @@ function drawBottomHud() {
   ctx.globalAlpha = 1;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  if (hudExpHolderSprite.complete && hudExpHolderSprite.naturalWidth) {
-    ctx.drawImage(hudExpHolderSprite, 201, 588);
+  const experience = getHudExperienceRenderPlan({ level: player.level, exp: player.exp });
+  ctx.save();
+  ctx.translate(experience.holder.x, experience.holder.y);
+  if (hudExpBaseSprite.complete && hudExpBaseSprite.naturalWidth) ctx.drawImage(hudExpBaseSprite, experience.base.x, experience.base.y);
+  if (hudExpGreenSprite.complete && hudExpGreenSprite.naturalWidth) ctx.drawImage(hudExpGreenSprite, experience.green.x, experience.green.y);
+  if (hudExpFillSprite.complete && hudExpFillSprite.naturalWidth) {
+    // Flash changes bar_exp.width.  Scale the entire source x-axis before the
+    // nested 918 matrix so the source skew, 699 geometry and width semantics
+    // remain coupled instead of clipping a flattened 1477 image.
+    ctx.save();
+    ctx.scale(experience.bar.scaleX, 1);
+    ctx.transform(experience.bar.matrix.a, experience.bar.matrix.b, experience.bar.matrix.c, experience.bar.matrix.d, experience.bar.matrix.x, experience.bar.matrix.y);
+    ctx.drawImage(hudExpFillSprite, 0, 0);
+    ctx.globalCompositeOperation = 'source-in';
+    ctx.globalAlpha = experience.bar.color.alpha;
+    ctx.fillStyle = `rgb(${experience.bar.color.red}, ${experience.bar.color.green}, ${experience.bar.color.blue})`;
+    ctx.fillRect(0, 0, experience.bar.sourceBounds.width, experience.bar.sourceBounds.height);
+    ctx.restore();
   }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.font = `${experience.text.fontPx}px "${experience.text.fontFamily}"`;
+  ctx.fillText(experience.text.text, experience.text.x, experience.text.y);
+  ctx.restore();
   ctx.restore();
 }
 

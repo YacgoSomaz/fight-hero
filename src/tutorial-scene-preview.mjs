@@ -1,6 +1,6 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -302,6 +302,36 @@ try {
       // then run the shared Status phase and consume keys with Movement.as.
       // This keeps AI collision out of the old generic browser controller.
       advanceCampaignOneSessionAi(session, { wall: tutorialWorld.wall, gameStarted: true });
+      const aiGuns = advanceCampaignOneSessionAiGuns(session);
+      for (const gun of aiGuns) {
+        if (!gun.fired || !gun.bullet) continue;
+        const sourceActor = session.actors.find(({ id }) => id === gun.id);
+        const sceneActorState = sceneActorStates.get(gun.id);
+        if (!sourceActor || !sceneActorState) continue;
+        sceneActorStates.set(gun.id, beginTutorialActorGunAction(sceneActorState, gun.action));
+        Object.assign(sourceActor, {
+          dynRecoil: gun.bullet.dynRecoil,
+          dynRecoilMod: gun.bullet.dynRecoilMod,
+        });
+        const trace = traceTutorialLineBullet({
+          gunId: gun.bullet.gunId,
+          shooter: sourceActor,
+          wall: tutorialWorld.wall,
+          units: session.actors,
+          corpses: session.corpses,
+        });
+        sourceLineTraces.push(trace);
+        if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
+        else if (trace.hit) {
+          const hitOutcome = applyTutorialLineBulletHit({ trace, shooter: sourceActor });
+          if (hitOutcome.died) applyCampaignOneSessionDeath(session, {
+            target: trace.hit.target,
+            attacker: sourceActor,
+            gun: sourceActor.gun.curGun,
+            extra: hitOutcome.extra,
+          });
+        }
+      }
       advanceCampaignOneSessionUnits(session);
       const aiMovements = advanceCampaignOneSessionAiMovement(session, { wall: tutorialWorld.wall });
       syncSceneActorStates();

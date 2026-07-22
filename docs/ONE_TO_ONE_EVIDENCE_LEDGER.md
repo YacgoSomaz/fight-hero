@@ -154,6 +154,23 @@ Main.as（输入/屏幕切换）
 - 可重现导出：使用 FFDec 26.1.0（本机 `private-assets/tools/ffdec_26.1.0/ffdec-cli.jar`，不纳入运行时仓库资源）执行 `-selectid 724 -select '724:1-' -ignorebackground -export sprite private-assets/hud-gun-export assets/reverse/4399-90433-25.swf`；将 `DefineSprite_724_MBFZ_fla.GunsMenu_176/20.png` 机械复制为版本控制的 `public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png`（87×36）。
 - 网页承载与 TDD：`73c8954` 为 RED，要求原路径、原 frame 和原 Hud matrix；`d999f96` 为 GREEN，`main.mjs` 以 `ctx.transform(a,b,c,d,674.2,568)` 后直接绘制该 PNG，删除旧 `hudRifleSprite` 假占位和 `filter` 改色。`tests/hud-gun-source.test.mjs` 阻止这三项关系回退。
 - 验证边界：只完成当前 M4 `curgun`。`nextgun` 的 `(649.4,580.7,.6141357421875)` placement、81 枪的各自标签、换枪事件和原文本部件仍未完成；绝不可将“724 第 20 帧已显示”写为“全枪 HUD 完成”。
+
+#### 6.1.4 1477 `expholder.bar_exp` 的完整拆解（待按原矩阵接入）
+
+这项已经从“只有整张 1477 截图”推进到可重建的原子层级，但尚未放入网页运行时；以下数据是下一次实现的唯一依据。
+
+| depth | character / 名称 | 原始局部 transform | 原色/颜色变换 | 作用与网页处理要求 |
+| --- | --- | --- | --- | --- |
+| 1 | 1474 | identity | 1474 SVG 是 `#cbcbcb`、alpha `0.29803923` 的 396.15×6.25 斜纹形状 | 固定底纹；不得把它和当前进度填充烘焙成同一张截图 |
+| 2 | 1475 | identity | 1475 SVG 是 `#00ff00` 的同尺寸斜纹形状 | 固定绿色层；必须保持原斜纹/透明关系 |
+| 3 | 918 / `bar_exp` | `a=3.1491546630859375,b=0,c=.6520538330078125,d=-.5157470703125,tx=-1.4,ty=8.4` | PlaceObject2 color transform：mult=`[0,0,0,77]`、add=`[255,255,0,0]`，即源白矩形变为半透明黄（alpha `77/256`） | **真正被 `Hud.as` 改宽的对象**；必须保留 source 699、矩阵和 ColorTransform，不可缩放整张 1477 PNG |
+| 6 | 1476 / `txt_exp` | `(78,-2)` | 原动态 TextField | `addExp` 写 `Exp {exp} / {nextExp}`，50 级写 `Level Maxed`；字体/文本矩形未接入前不能伪装成原字体 |
+
+- 918 的内部 Display List 只有 depth 1 的 character **699**。FFDec 导出的 `699.svg` 是 123.2×12.2 的纯白矩形；它之所以在原游戏中呈黄绿色进度效果，是上表 depth 3 的颜色变换，而不是一个独立截图颜色。
+- 1477 使用 PlaceObject2：depth 3 的 flags 为 `0x2e`（character、matrix、ColorTransform、name），**没有** `clipDepth` 标志。因此 `bar_exp.width` 是实际改变该 MovieClip 宽度，不是靠通用遮罩裁切任意图片。
+- `Stats_Classes.getNextExp(level)` 的精确公式为 `level * level * 3 + 40`。`Hud.addExp` 先写 `width = exp / nextExp * 420`；level 50 则强制 `width=420` 和 `Level Maxed`；达到阈值后将 exp 清零、level 加一并递归调用自身刷新显示。
+- 本机可重现导出命令：`ffdec-cli.jar -selectid 918,1474,1475,1476 -select '918:1,1474:1,1475:1,1476:1' -ignorebackground -export sprite,shape private-assets/hud-exp-export assets/reverse/4399-90433-25.swf`，随后额外导出 `-selectid 699 -export shape ...`。这些私有导出物不等于网页已接入。
+- **下一次实现门槛**：须将 1474、1475、699 的原 SVG/PNG 及 depth 3 的 matrix/ColorTransform 分层渲染；`bar_exp.width` 要按 Flash 的 bounding width 语义而不是随手裁剪；1476 字体与 TextField 对齐也要有原始证据。完成前保留当前“1477 静态图已接入”的低等级状态，不能标成动态经验已完成。
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

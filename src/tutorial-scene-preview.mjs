@@ -1,5 +1,5 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
-import { advanceTutorialActorPlayback, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
+import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
 import { applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
@@ -101,7 +101,7 @@ try {
     // invisible rather than borrowing M4 or USP2 art.
     const pose = player.guns.active === actorState.weaponId
       ? sample.pose
-      : { ...sample.pose, gunParts: [] };
+      : { ...sample.pose, gunParts: [], muzzleParts: [] };
     context.save();
     context.translate(screen.x, screen.y);
     drawTutorialUnitPose(context, pose, assets);
@@ -139,6 +139,14 @@ try {
   }
 
   render();
+  canvas.addEventListener('mousedown', (event) => {
+    // Player.MouseDown() starts the Guns.shoot route.  This narrow preview
+    // has no source gun object until Campaign 1 calls setGuns(USP2, none),
+    // so do not fabricate a shot or substitute a weapon before that state.
+    if (event.button !== 0 || player.guns.active === 'none' || player.guns.active !== actorState.weaponId) return;
+    event.preventDefault();
+    actorState = beginTutorialActorGunAction(actorState, 'fire');
+  });
   window.addEventListener('keydown', (event) => {
     const bit = KEY_BITS[event.code];
     if (!bit) return;

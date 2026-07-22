@@ -20,6 +20,25 @@ export function createFlashWallMask({ width, height, data }) {
   });
 }
 
+// The original Arena wall is an ARGB BitmapData.  Movement uses alpha ff as
+// collision, while Unit/Bullet also retain the RGB suffix for tutorial and
+// environment triggers.  Do not collapse this source data to a boolean mask.
+export function createFlashWallSurface({ width, height, data }) {
+  const mask = createFlashWallMask({ width, height, data });
+  return Object.freeze({
+    ...mask,
+    colorAt(x, y) {
+      const pixelX = Math.floor(x);
+      const pixelY = Math.floor(y);
+      if (pixelX < 0 || pixelY < 0 || pixelX >= width || pixelY >= height) return '';
+      const offset = (pixelY * width + pixelX) * 4;
+      if (data[offset + 3] !== 255) return '';
+      return [data[offset], data[offset + 1], data[offset + 2]]
+        .map((value) => value.toString(16).padStart(2, '0')).join('');
+    },
+  });
+}
+
 export function decodeFlashWallImage(image, documentRef = globalThis.document) {
   if (!image?.naturalWidth || !image?.naturalHeight) throw new TypeError('wall image must be loaded');
   const canvas = documentRef.createElement('canvas');
@@ -27,5 +46,5 @@ export function decodeFlashWallImage(image, documentRef = globalThis.document) {
   canvas.height = image.naturalHeight;
   const context = canvas.getContext('2d', { willReadFrequently: true });
   context.drawImage(image, 0, 0);
-  return createFlashWallMask(context.getImageData(0, 0, canvas.width, canvas.height));
+  return createFlashWallSurface(context.getImageData(0, 0, canvas.width, canvas.height));
 }

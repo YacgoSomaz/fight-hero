@@ -39,10 +39,16 @@ test('selecting an extracted mission keeps its authored score instead of replaci
   );
 });
 
-test('every extracted campaign and challenge mission has a launchable local source-map runtime', () => {
-  for (const mission of [...CAMPAIGN_MISSIONS, ...CHALLENGE_MISSIONS]) {
-    assert.equal(isPlayableSelection(createMatchSelection(mission)), true, `${mission.title} should be launchable`);
-  }
+test('source campaign and challenge records do not masquerade as ordinary quick matches before their full script runtime is migrated', () => {
+  const sourceMission = createMatchSelection(CAMPAIGN_MISSIONS[0]);
+  const sourceChallenge = createMatchSelection(CHALLENGE_MISSIONS[8]);
+
+  assert.equal(isPlayableSelection(sourceMission), false);
+  assert.equal(isPlayableSelection(sourceChallenge), false);
+  assert.deepEqual(getQuickMatchStatus(sourceMission), {
+    canLaunch: false,
+    message: '该原始任务的角色、脚本、过场或胜负流程尚未完整迁移，不能伪装为快速对战。',
+  });
 });
 
 test('every source Arena map can launch the migrated local deathmatch and team deathmatch rules', () => {

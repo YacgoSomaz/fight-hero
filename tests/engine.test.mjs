@@ -516,12 +516,14 @@ test('the local M4 applies the extracted Guns.as dynamic recoil and stance modif
   assert.equal(p1.dynRecoil, 4, 'Stats_Guns M4 recoil');
   assert.equal(p1.classAim, .7, 'Stats_Classes level-1 Medic aim after Unit.as normalisation');
   step(world, { p1: { fire: true } }, 1 / 30);
-  assert.equal(p1.dynRecoil, 4.3, 'Guns.shoot adds .3 until 1.7× base recoil');
-  assert.equal(p1.dynRecoilMod, 5.59, 'idle: dynRecoil × (2 - aim)');
+  assert.equal(p1.aimerDynRecoilMod, 5.2, 'Player.as paints this frame with the previous Guns.EnterFrame modifier');
+  assert.equal(p1.dynRecoil, 4.25, 'Guns.shoot adds .3 then Guns.EnterFrame drains .05 at 30fps');
+  assert.equal(p1.dynRecoilMod, 5.525, 'next frame idle modifier: dynRecoil × (2 - aim)');
 
   step(world, { p1: { down: true } }, 1 / 30);
-  assert.equal(p1.dynRecoil, 4.25, 'Guns.EnterFrame drains .05 at 30fps');
-  assert.equal(p1.dynRecoilMod, 3.315, 'crouching applies the source .6 modifier');
+  assert.equal(p1.aimerDynRecoilMod, 5.525, 'the newly calculated modifier is used on the following Player frame');
+  assert.equal(p1.dynRecoil, 4.2, 'source decay remains .05 per native frame');
+  assert.equal(p1.dynRecoilMod, 3.276, 'crouching applies the source .6 modifier');
 });
 
 test('rifle shots start at the decoded arm-canvas barrel tip', () => {

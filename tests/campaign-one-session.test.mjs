@@ -60,7 +60,7 @@ test('Campaign 1 creates source Unit.setClass/Status state only for actors whose
   }));
 
   assert.deepEqual(snapshot, [
-    { id: 'unit0', level: 1, unitInfo: { id: 'medic', hp: 85, crit: 0.06, aim: 0.7000000000000001, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 85, hpMax: 85, sSpawn: 0 }, currentGun: 'M4' },
+    { id: 'unit0', level: 1, unitInfo: { id: 'medic', hp: 85, crit: 0.06, aim: 0.7000000000000001, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 85, hpMax: 85, sSpawn: 75 }, currentGun: 'M4' },
     { id: 'unit1', level: 1, unitInfo: { id: 'tank', hp: 130, crit: 0.02, aim: 0.55, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 130, hpMax: 130, sSpawn: 15 }, currentGun: 'Beretta' },
     { id: 'unit2', level: 1, unitInfo: { id: 'soldier', hp: 100, crit: 0.04, aim: 0.6, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 100, hpMax: 100, sSpawn: 15 }, currentGun: 'Socom' },
     { id: 'unit3', level: 1, unitInfo: { id: 'medic', hp: 85, crit: 0.06, aim: 0.7000000000000001, skill: { id: 'none', sprite: 'none', value: -1 } }, status: { hpCur: 85, hpMax: 85, sSpawn: 15 }, currentGun: 'USP' },
@@ -79,7 +79,7 @@ test('Campaign 1 advances spawned Unit Status after its source runScripts frame 
     { id: 'unit3', events: [], bloodAlpha: null },
   ]);
   assert.deepEqual(session.actors.map(({ id, status }) => ({ id, statusFrame: status?.fc ?? null, spawn: status?.sSpawn ?? null })), [
-    { id: 'unit0', statusFrame: 1, spawn: 0 },
+    { id: 'unit0', statusFrame: 1, spawn: 74 },
     { id: 'unit1', statusFrame: 1, spawn: 14 },
     { id: 'unit2', statusFrame: 1, spawn: 14 },
     { id: 'unit3', statusFrame: 1, spawn: 14 },

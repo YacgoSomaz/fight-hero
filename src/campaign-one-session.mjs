@@ -44,9 +44,11 @@ function activateSourceActor(actor, aiArena, random) {
     curGun: sourceGun(actor.guns.active),
   };
   if (!actor.human) actor.gunRuntime = createTutorialGunRuntime({ gunId: actor.guns.active, ammoMultiplier: actor.unitInfo.amm });
-  // AI.spawn(), unlike Unit.spawn(), explicitly applies this half-second
-  // protection after Unit.unitSpawn() has reset Status.
-  if (!actor.human) actor.status.sSpawn = 0.5 * 30;
+  // Player.spawn() applies 2.5 seconds after Unit.unitSpawn(); AI.spawn()
+  // applies its own half-second protection after the same reset.  Keep this
+  // in the shared activation path so initial construction and a later source
+  // respawn cannot disagree about a live actor's Status state.
+  actor.status.sSpawn = (actor.human ? 2.5 : 0.5) * 30;
   if (!actor.human) {
     actor.ai = createTutorialAiState({ actor, arena: aiArena, random });
     actor.aiKeys = 0;
@@ -54,6 +56,31 @@ function activateSourceActor(actor, aiArena, random) {
     actor.aiShouldShoot = false;
     actor.aim = { x: actor.ai.aimX, y: actor.ai.aimY };
   }
+}
+
+function sourceSpawnNode(session) {
+  const spawns = session.map.nodes.filter((node) => node.type === 'spawn');
+  if (!spawns.length) throw new Error(`Campaign source Arena has no NodeSpawn records: ${session.map.id}`);
+  const selected = spawns[Math.floor(session.random() * spawns.length)];
+  // Arena names each NodeSpawn as waypoint_team (for example `a_1`).
+  // Unit.unitSpawn() passes the NodeSpawn.waypoint into AI.getNextWaypoint(),
+  // so retain the authored waypoint name rather than inventing a route.
+  const node = selected.name.split('_')[0];
+  if (!session.map.aiArena.waypoints[node]) throw new Error(`Campaign source NodeSpawn has no waypoint: ${selected.name}`);
+  return { x: selected.x, y: selected.y, node };
+}
+
+function respawnSourceActor(session, actor) {
+  // Player.spawn()/AI.spawn() call Unit.unitSpawn() without explicit
+  // coordinates after a normal death. Unit.setClass() restores the authored
+  // primary/secondary guns before Status.reset(), then each subclass applies
+  // its own aim and spawn-protection setup.
+  actor.position = sourceSpawnNode(session);
+  actor.guns = { primary: actor.primary, secondary: actor.secondary, active: actor.primary };
+  activateSourceActor(actor, session.map.aiArena, session.random);
+  actor.aim = actor.human
+    ? { x: actor.position.x + 200, y: actor.position.y - 50 }
+    : { x: actor.ai.aimX, y: actor.ai.aimY };
 }
 
 function setActorGuns(actor, primary, secondary, active = primary) {
@@ -182,9 +209,20 @@ export function applyCampaignOneSessionFrame(session) {
 // This adapter preserves that distinct phase and skips constructor-held
 // extra.noSpawn units which have not yet reached Unit.unitSpawn().
 export function advanceCampaignOneSessionUnits(session) {
-  const units = session.actors
-    .filter((actor) => actor.spawned && actor.status && !actor.dead)
-    .map((actor) => ({ id: actor.id, ...advanceTutorialStatusFrame(actor) }));
+  const units = [];
+  for (const actor of session.actors) {
+    if (!actor.spawned || !actor.status) continue;
+    // Player.as:55-70 and AI.as:368-381 both decrement the unsigned timer
+    // while dead and invoke spawn() only once it is already zero.  A newly
+    // spawned Unit returns from this frame; its first Status.EnterFrame is on
+    // the next original 30fps tick.
+    if (actor.dead) {
+      if (actor.respawnTimer) actor.respawnTimer -= 1;
+      else respawnSourceActor(session, actor);
+      continue;
+    }
+    units.push({ id: actor.id, ...advanceTutorialStatusFrame(actor) });
+  }
   for (const corpse of session.corpses) advanceTutorialCorpseFrame(corpse);
   session.corpses = session.corpses.filter((corpse) => !corpse.removed);
   return units;

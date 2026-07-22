@@ -169,6 +169,15 @@ npm start
 
 **下一位唯一正确步骤**：在不改用通用 Foundry actor/NodePhysBox 的前提下，先建立 Tutorial 专用 world 的 RED：初始会话只能选择 `Wall_tut` frame 1；Campaign 1 的状态 9 环境子弹命中后，必须在同一个可碰撞 world 中原子替换成 frame 10 的 mask；失败或任一帧未加载时，关卡必须留在不可启动状态。随后再验证 `ff00ff` 的人类脚底触发。角色、Cutscene、胜负/解锁流程均未完成，入口继续关闭。
 
+## 2026-07-22：Tutorial ARGB 表面与 Campaign 1 原触发切换（仍不可启动）
+
+- 原始关系：`Movement.hitTest()`、`Unit.getPixel(0,1)` 和 `Bullet.hitTestAll()` 都调用 `arena.wall.getPixel32()`。只有 ARGB 的 alpha 前缀为 `ff` 时是物理墙；`Unit` 使用 RGB 后缀 `ff00ff` 识别教程脚底；`Bullet` 使用 RGB 后缀 `9900ff` 进入状态 9 电梯分支。
+- 网页承载：`createFlashWallSurface` 不再把原图压扁成 boolean，仅在 alpha=255 时提供 `isSolid(x,y)` 与六位小写 `colorAt(x,y)`。`tutorial-world.mjs` 只消费 `CampaignOneSession + Wall_tut`，不依赖通用 Foundry quick-match engine。其脚底/子弹入口读取**当前**帧的 `colorAt`，先运行原状态机，再在 `changeWallFrame` 效果存在时同步替换整个 ARGB 碰撞表面。
+- TDD：`0e8c2c6`→`882d241` 锁 alpha 与 `ff00ff/9900ff` RGB；`41cebae`→`e86ebc8` 锁状态 9 的命中、状态、会话帧和主动碰撞表面共同切到 frame 10；`29607cc`→`af4f4e3` 锁第 1 帧的人类脚底 `ff00ff` 切至 frame 2。全量为 157/157，覆盖率为行 99.36%、分支 87.42%、函数 95.35%。
+- 严格边界：该 world 是经单元回归验证的数据/碰撞承载，尚未被 `main.mjs` 解码/渲染，未接入原 Scientist/敌人 Unit、Movement 完整 30fps、Bullet 飞行、Hud/Cutscene、分数、死亡、结算或解锁。Campaign 1 菜单入口必须继续拒绝启动。
+
+**下一位唯一正确步骤**：先为浏览器加载写 RED：从 `public/assets/original-swf/wall-tut-1378/1..16.png` 全部加载，调用同一 `decodeFlashWallImage` 形成带 `colorAt` 的 `TutorialWallSet`，然后构造 `TutorialWorld`；任一帧失败或解码结果没有 ARGB surface 时拒绝。之后才将该世界与原始 Tutorial actor/输入适配器逐项接入，禁止把它替换成当前通用 `createWorld({mapId:'tut'})`。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

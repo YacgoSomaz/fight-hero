@@ -21,5 +21,6 @@ export async function prepareSourceMapWorld({
   const world = createWorld(options);
   world.wall = wall.mask;
   world.wallSource = Object.freeze({ characterId: wall.source.characterId, frame: wall.frame });
+  world.wallFrames = Object.freeze(wall.masks ?? [Object.freeze({ frame: wall.frame, mask: wall.mask })]);
   return Object.freeze({ mapId, visual, layers, wall, world });
 }

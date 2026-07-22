@@ -201,6 +201,14 @@ npm start
 - 处理：`401540c` 是将语义改成 `skinFrame` 的有效 RED；`445799f` 为 GREEN，改名 binding 字段且删除 `tutorial-actor-render-plan.mjs` 与其错误的根 PNG 映射。此前 `8741264`→`e293af5` 已被该修复明确废止，不能作为渲染完成证据。
 - 严格边界：当前只保留正确的角色身份/skin index，尚无 Tutorial 可视 actor。下一步必须从原 SWF 的嵌套 skin Display List 导出子部件，而不是搜索同号根帧 PNG。
 
+## 2026-07-22：UnitMC 嵌套 skin 图谱已可重跑（仍不可启动）
+
+- 机械提取：`private-assets/parse-unitmc-skin-graph.mjs` 同时读取原始 SWF 的 Display List 与 `UnitMC.as:setSkin()`，得到根动画 `669`（449 帧）和 14 个实际 skin target：头 `666`（200 帧）、躯干 `631`、上下腿 `598/568`、脚 `538`、以及双臂内的上臂 `298`、下臂 `266`、手 `385`（其余均 201 帧）。这证明 `57/105/151/155` 应当送入这些子 Sprite，绝不是根动画帧。
+- TDD：`52c915c` 在缺少提取器时确认 RED；`e64034f` 完成原 SWF/AS3 联合解析并 GREEN。`tests/unitmc-skin-graph.test.mjs` 同时锁定完整 target 顺序、角色根时间轴与最小可用皮肤帧范围；完整回归为 163/163，覆盖率行 99.38%、分支 87.20%、函数 95.73%。
+- 严格边界：本工作只建立可审计导出图谱；尚未导出/组合目标皮肤位图，也未将 Campaign 1 actor 接入网页、输入、枪械动作或碰撞。不得据此开放 Tutorial 关卡或宣称角色迁移完成。
+
+**下一位唯一正确步骤**：用图谱导出 Campaign 1 的 `55/57/105/151/155` 每个原始子 Sprite，并从 `arm1`/`arm2` 的枪型时间轴提取对应的局部矩阵；先以一个固定原始根动画帧 + 一个皮肤 index 做像素/矩阵组合 RED→GREEN，再接入连续状态机。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

@@ -26,7 +26,7 @@ npm run test:coverage
 npm start
 ```
 
-本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **316/316 通过**，覆盖率为 **99.01% 行、83.48% 分支、96.41% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
+本地入口：<http://127.0.0.1:4173>。当前基线：`npm test` **319/319 通过**，覆盖率为 **99.01% 行、83.53% 分支、96.45% 函数**，高于 80% 门槛。历史段落中保留的旧计数是各自提交时的快照，不能拿来表示当前基线。
 
 最低人工验收路径：主页 → **快速对战** → **Previous map**（摘要为 `Facility · Deathmatch`）→ **开始游戏**。2026-07-21 已实际跑通，原始设施场景已显示，不再出现 `#111827` 空白画布。
 
@@ -89,6 +89,8 @@ npm start
 - 可复现提取：`tools/parse-foundry-foreground.mjs` 直接解压原 SWF、读取 Arena symbol 1413 的 ShowFrame/PlaceObject Display List，并只返回 Foundry frame 2 中真正可绘制的 `1242@depth1`、`1252@depth2`、`1258@depth7`；每项带原矩阵和 symbol 帧数。`tests/foundry-foreground-source.test.mjs` 的 `4317b40→b939fe8` 是该规则的 RED→GREEN，防止把 `wallMC`（1261）或 `Node*` 编辑器对象混入可见前景，也防止按 PNG alpha 猜注册点。此工具现已受版本控制，新的 clone 可以复验。
 - 公开资源：`07be8f4` 将 FFDec 从原 SWF 直接导出的 `1242/1`、`1252/1–76`、`1258/1–306` PNG 共 383 帧置于 `public/assets/original-swf/foundry-foreground-*`，并由 `src/foundry-foreground-source.mjs` 以原 depth/matrix/frameCount 公开记录；`105dee0→07be8f4` 的回归会逐帧检查完整序列和首/末帧 PNG 尺寸。该步骤只让新 clone 拥有原素材，并未接入 DOM/Canvas。进一步以 FFDec SVG 复核发现 PNG 画布并非 frame 的可见范围（1252 PNG `313×98`，SVG visible `312.15×97.35`），故下一步必须从 SWF RECT/嵌套 Display List 解析注册边界，禁止 alpha 或画布边缘对齐。
 - 几何审计：`c06e525→aef49e5` 让 `extractFoundryForegroundRegistration()` 对每个 child 的完整 timeline 递归合并 SWF 的 Shape RECT 与 PlaceObject matrix；1252 的 76 帧原绘制几何是 `x=-2.284375..309.912210.., y=-53.8..38.042253..`，1258 的 306 帧为 `x=-15.4..535.55, y=-55..849.357928..`。这解释了 PNG 画布为什么不能直接当坐标，但也只包含当前 parser 能表达的 Shape/Sprite 几何，尚未涵盖 FFDec 导出中的滤镜/Morph 扩张；因此**不得把这些数值直接写进运行时 CSS**，下一步应建立“SWF 几何→FFDec PNG canvas”可证明的映射并做像素对照。
+- SVG 注册点与布局计划：`25f723f→0073707` 将 FFDec 从原 SWF 直接导出的 1252 全部 76 帧与 1258 全部 306 帧 SVG 置入公开运行时资源；每帧的 SVG root viewport 和第一个 Display List group 的平移均受测试锁定。1252 的 viewport/注册点是 `312.15×97.35`、`(-2.25,-59.35)`；1258 为 `550.95×904.35`、`(-15.4,-55)`。`4649900→e398bf1` 将 root Arena placement、SVG 注册点、相机 source rect 和 800×600 stage 统一为 `getFoundryForegroundLayout()`，并拒绝越界帧而不暗中回绕。这份布局计划可直接产生原 child 的屏幕 left/top/width/height，取代先前不能可靠定位的 PNG canvas 尺寸。
+- 严格边界：SVG 与布局计划**尚未接入 `main.mjs` 的 DOM 前景**，当前网页仍在使用扁平的 `foundry-foreground.png`，也还没有把 1252/1258 的原帧推进与 `wallMC` 1261 的 32/54 帧切换原子地绑定。因此这只是可复核的迁移前证据，不是 Foundry 场景、动态墙体或游戏 1:1 已完成。下一步必须先以 RED 测试约束 DOM 图层的原 source layout，然后以同一时间轴同时替换可见 child 与 collision wall，并做原 SWF/网页的同输入帧对照。
 - 下一位只能按 Arena Display List 用上述原 child 素材重建可叠加的 Foundry 前景，再以 1258/1252 的原时间轴复合。完成前不得把 `source-wall-timeline.mjs` 接到 `main.mjs`，不得称 Foundry 动态墙体已迁移。
 
 ## 解包关系：可直接复用的证据

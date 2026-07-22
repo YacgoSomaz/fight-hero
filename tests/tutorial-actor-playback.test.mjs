@@ -5,7 +5,7 @@ import { extractArmGunCallbacks } from '../private-assets/parse-arm-gun-callback
 import { extractUnitMCRootFrameActions } from '../private-assets/parse-unitmc-skin-graph.mjs';
 import { createCampaignOneSession } from '../src/campaign-one-session.mjs';
 import { createTutorialActorBindings } from '../src/tutorial-actor-bindings.mjs';
-import { beginTutorialActorGunAction, createTutorialActorPlayback, sampleTutorialActorPlayback, advanceTutorialActorPlayback, requestTutorialActorMotion } from '../src/tutorial-actor-playback.mjs';
+import { beginTutorialActorGunAction, createTutorialActorPlayback, sampleTutorialActorPlayback, advanceTutorialActorPlayback, requestTutorialActorMotion, synchronizeTutorialActorWeapon } from '../src/tutorial-actor-playback.mjs';
 
 const unitTimeline = JSON.parse(fs.readFileSync(new URL('../public/assets/unitmc-timeline.json', import.meta.url), 'utf8'));
 const m4Runtime = JSON.parse(fs.readFileSync(new URL('../public/assets/m4-vector-runtime.local.json', import.meta.url), 'utf8'));
@@ -40,6 +40,24 @@ test('a source M4 fire action exposes frames 78/79/80 and only returns to idle o
     { rootFrame: state.rootState.frame, action: state.actionState, events: state.events },
     { rootFrame: 4, action: { label: 'rifle', index: 0 }, events: ['doneShoot'] },
   );
+});
+
+test('Campaign Tutorial USP2 switch reuses pistol frames 3-8 and the source doneShoot callback at frame 8', () => {
+  let state = synchronizeTutorialActorWeapon(createTutorialActorPlayback(player), 'USP2');
+  state = beginTutorialActorGunAction(state, 'fire');
+  const frames = [];
+  for (let tick = 0; tick < 6; tick += 1) {
+    const sample = sampleTutorialActorPlayback(state, source);
+    frames.push({ armFrame: sample.arm.frame, gunFrame: sample.pose.gunParts[0]?.frame });
+    state = advanceTutorialActorPlayback(state, source);
+  }
+  assert.deepEqual(frames, [
+    { armFrame: 3, gunFrame: 2 }, { armFrame: 4, gunFrame: 2 }, { armFrame: 5, gunFrame: 2 },
+    { armFrame: 6, gunFrame: 2 }, { armFrame: 7, gunFrame: 2 }, { armFrame: 8, gunFrame: 2 },
+  ]);
+  assert.deepEqual({ weaponId: state.weaponId, action: state.actionState, events: state.events }, {
+    weaponId: 'USP2', action: { label: 'pistol', index: 0 }, events: ['doneShoot'],
+  });
 });
 
 test('Tutorial actor playback refuses a Campaign actor that has not spawned', () => {

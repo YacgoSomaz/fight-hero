@@ -27,7 +27,7 @@ export function hitTestTutorialBullet({ point, shooter, wall, units = [], corpse
     return result('wall', null, String(wall.colorAt(point.x, point.y)));
   }
   for (const target of units) {
-    if (target === shooter || target?.dead || target?.blurred) continue;
+    if (target === shooter || target?.dead || target?.blurred || target?.status?.sBlur) continue;
     const targetPosition = sourcePosition(target, 'unit');
     if (shooter.team && shooter.team === target.team) continue;
     const crouching = Boolean(target.crouching);

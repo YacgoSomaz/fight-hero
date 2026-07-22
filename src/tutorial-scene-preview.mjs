@@ -1,11 +1,12 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
+import { advanceCampaignOneSessionUnits, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
 import { traceTutorialLineBullet } from './tutorial-bullet-line-runtime.mjs';
+import { applyTutorialLineBulletHit } from './tutorial-bullet-hit-effects.mjs';
 import { renderTutorialLineBullet } from './tutorial-bullet-line-renderer.mjs';
 import { advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { advanceTutorialPlayerAim, canvasPointToTutorialStage, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
@@ -184,26 +185,30 @@ try {
         gunState = gunTick.state;
         if (gunTick.fired) {
           actorState = beginTutorialActorGunAction(actorState, gunTick.action);
+          const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+          if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable for Bullet.doHitEffect');
+          Object.assign(sourcePlayer, {
+            aimRotation: aimState.aimRotation,
+            mcRotation: movementState.rotation,
+            armY: armHolder.y,
+            dynRecoil: gunTick.bullet.dynRecoil,
+            dynRecoilMod: gunTick.bullet.dynRecoilMod,
+          });
           const trace = traceTutorialLineBullet({
             gunId: gunTick.bullet.gunId,
-            shooter: {
-              id: player.id,
-              team: player.team,
-              position: player.position,
-              aimRotation: aimState.aimRotation,
-              mcRotation: movementState.rotation,
-              armY: armHolder.y,
-              scaleX: aimState.flip ? -1 : 1,
-              dynRecoil: gunTick.bullet.dynRecoil,
-              dynRecoilMod: gunTick.bullet.dynRecoilMod,
-            },
+            shooter: sourcePlayer,
             wall: tutorialWorld.wall,
             units: session.actors,
           });
           sourceLineTraces.push(trace);
           if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
+          else applyTutorialLineBulletHit({ trace, shooter: sourcePlayer });
         }
       }
+      // Player.EnterFrame fires before UnitEnterFrame; Status is then first
+      // inside UnitEnterFrame. Keep the same post-shot phase so an AI spawn
+      // shield cannot disappear before the source bullet tests it.
+      advanceCampaignOneSessionUnits(session);
       const movement = stepTutorialMovement({
         state: movementState,
         actor: player,

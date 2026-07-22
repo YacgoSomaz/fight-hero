@@ -9,6 +9,7 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(page, /src="src\/tutorial-scene-preview\.mjs"/);
   assert.match(script, /getMapVisual\('tut'\)/);
   assert.match(script, /loadMapLayers/);
+  assert.match(script, /loadTutorialWorld/);
   assert.match(script, /advanceTutorialArenaPosition/);
   assert.match(script, /createTutorialActorPlayback/);
   assert.match(script, /drawTutorialUnitPose/);

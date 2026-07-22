@@ -5,12 +5,14 @@ import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldTo
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
+import { traceTutorialLineBullet } from './tutorial-bullet-line-runtime.mjs';
+import { renderTutorialLineBullet } from './tutorial-bullet-line-renderer.mjs';
 import { advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { advanceTutorialPlayerAim, canvasPointToTutorialStage, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
 import { drawTutorialUnitPose } from './tutorial-unit-pose-renderer.mjs';
-import { applyTutorialFootContact } from './tutorial-world.mjs';
+import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
 
@@ -73,6 +75,7 @@ try {
   let arenaPosition = { x: 0, y: 0 };
   let stageMouse = { x: STAGE.width * 0.5, y: STAGE.height * 0.5 };
   let aimState = { aimX: player.position.x + 200, aimY: player.position.y - 50, aimRotation: 0, reloadRotation: 0 };
+  let sourceLineTraces = [];
   let previous = performance.now();
   let accumulated = 0;
 
@@ -126,18 +129,28 @@ try {
     context.translate(screen.x, screen.y);
     drawTutorialUnitPose(context, pose, assets);
     context.restore();
+    // Game creates lineCont after unitCont within Arena.midCont, then clears
+    // it once per source frame. Draw the same source trace above this frame's
+    // unit layers using Arena's x/y translation.
+    for (const trace of sourceLineTraces) {
+      renderTutorialLineBullet(context, trace, (point) => worldToTutorialScreen(point, arenaPosition));
+    }
   }
 
   function frame(now) {
     accumulated += Math.min(now - previous, 250);
     previous = now;
     while (accumulated >= TICK_MS) {
+      // Game.EnterFrame clears lineCont before Player/Guns may add a fresh
+      // Bullet_Line_Basic trace in this source frame.
+      sourceLineTraces = [];
       applyCampaignOneSessionFrame(session);
       syncPlayerRestrictionsFromSourceSession();
+      const armHolder = sourceArmHolder();
       aimState = advanceTutorialPlayerAim(aimState, {
         actor: player,
         arenaMouse: tutorialArenaPointer(stageMouse, arenaPosition),
-        armHolder: sourceArmHolder(),
+        armHolder,
         mcRotation: movementState.rotation,
         jumping: movementState.jumping,
         noAim: player.noAim,
@@ -160,7 +173,24 @@ try {
           },
         });
         gunState = gunTick.state;
-        if (gunTick.fired) actorState = beginTutorialActorGunAction(actorState, gunTick.action);
+        if (gunTick.fired) {
+          actorState = beginTutorialActorGunAction(actorState, gunTick.action);
+          const trace = traceTutorialLineBullet({
+            gunId: gunTick.bullet.gunId,
+            shooter: {
+              position: player.position,
+              aimRotation: aimState.aimRotation,
+              mcRotation: movementState.rotation,
+              armY: armHolder.y,
+              scaleX: aimState.flip ? -1 : 1,
+              dynRecoil: gunTick.bullet.dynRecoil,
+              dynRecoilMod: gunTick.bullet.dynRecoilMod,
+            },
+            wall: tutorialWorld.wall,
+          });
+          sourceLineTraces.push(trace);
+          if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
+        }
       }
       const movement = stepTutorialMovement({
         state: movementState,

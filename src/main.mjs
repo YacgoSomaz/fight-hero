@@ -20,6 +20,7 @@ import { getUnitDomRigFrame } from './unit-dom-rig.mjs';
 import { decodeFlashWallImage } from './wall-mask.mjs';
 import { ORIGINAL_AIMER } from './aimer-source.mjs';
 import { getOriginalAimerRig } from './aimer-rig.mjs';
+import { getHudAmmoBoxes } from './hud-ammo.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -373,16 +374,24 @@ function drawBottomHud() {
   const ammo = world.players[0].weapon.spare;
   const clip = world.players[0].weapon.clip;
 
-  // These boxes follow the original Hud.setAmmoImage "arifle" layout: 2px gap,
-  // 2px width and 10px height, enlarged for the 1280px canvas.
+  const ammoBoxes = getHudAmmoBoxes({ clip, clipMax: world.players[0].weapon.clipMax, type: world.players[0].weapon.ammoType });
+  // Hud 1540.bulletCont (character 954) is placed at (664.3,571.3) with
+  // both axes inverted. Its local drawBox coordinates therefore grow left/up
+  // on the original 800x600 screen.
   ctx.save();
-  ctx.strokeStyle = 'rgba(255, 255, 255, .72)';
-  ctx.fillStyle = 'rgba(255, 255, 255, .22)';
-  for (let index = 0; index < world.players[0].weapon.clipMax; index += 1) {
-    const x = ammoX + index * 7;
-    if (index < clip) ctx.fillRect(x, hudY - 48, 5, 25);
-    ctx.strokeRect(x + 0.5, hudY - 47.5, 4, 24);
+  ctx.translate(664.3, 571.3);
+  ctx.scale(-1, -1);
+  ctx.lineWidth = 0.5;
+  for (const box of ammoBoxes) {
+    const alpha = box.filled ? 1 : 0.2;
+    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+    ctx.strokeStyle = `rgba(255, 255, 255, ${box.filled ? 1 : 0.4})`;
+    ctx.fillRect(box.x, box.y, box.width, box.height);
+    ctx.strokeRect(box.x, box.y, box.width, box.height);
   }
+  ctx.restore();
+
+  ctx.save();
   ctx.fillStyle = '#f4f2ea';
   ctx.font = '700 17px system-ui';
   ctx.fillText(String(ammo), ammoX + 226, hudY - 27);

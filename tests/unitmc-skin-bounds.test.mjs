@@ -14,6 +14,8 @@ test('each original UnitMC skin child exposes its own source registration bounds
   for (const { bounds: box } of bounds) {
     assert.ok(box.xMax > box.xMin && box.yMax > box.yMin, 'a source skin component must retain a non-empty local registration box');
   }
+  assert.deepEqual(bounds.find(({ path }) => path === 'head').bounds, { xMin: -6.65, xMax: 15.45, yMin: -20.2, yMax: 3.75 });
+  assert.deepEqual(bounds.find(({ path }) => path === 'body').bounds, { xMin: -12.3, xMax: 12, yMin: -17.05, yMax: 12.8 });
   assert.notDeepEqual(
     bounds.find(({ path }) => path === 'body').bounds,
     extractUnitMCSkinFrameBounds(55).find(({ path }) => path === 'body').bounds,

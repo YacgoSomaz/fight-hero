@@ -55,6 +55,23 @@ function skipMatrix(bytes, offset) {
   return bits.end();
 }
 
+function readMatrix(bytes, offset) {
+  const bits = bitReader(bytes, offset);
+  let a = 1; let b = 0; let c = 0; let d = 1;
+  if (bits.unsigned(1)) {
+    const count = bits.unsigned(5);
+    a = bits.signed(count) / 65536;
+    d = bits.signed(count) / 65536;
+  }
+  if (bits.unsigned(1)) {
+    const count = bits.unsigned(5);
+    b = bits.signed(count) / 65536;
+    c = bits.signed(count) / 65536;
+  }
+  const count = bits.unsigned(5);
+  return { a, b, c, d, x: bits.signed(count) / 20, y: bits.signed(count) / 20, next: bits.end() };
+}
+
 function skipColorTransform(bytes, offset) {
   const bits = bitReader(bytes, offset);
   const hasAdd = bits.unsigned(1);
@@ -63,6 +80,17 @@ function skipColorTransform(bytes, offset) {
   if (hasMultiply) for (let index = 0; index < 4; index += 1) bits.signed(count);
   if (hasAdd) for (let index = 0; index < 4; index += 1) bits.signed(count);
   return bits.end();
+}
+
+function readRect(bytes, offset) {
+  const bits = bitReader(bytes, offset);
+  const count = bits.unsigned(5);
+  return {
+    xMin: bits.signed(count) / 20,
+    xMax: bits.signed(count) / 20,
+    yMin: bits.signed(count) / 20,
+    yMax: bits.signed(count) / 20,
+  };
 }
 
 function definitions(bytes) {
@@ -94,7 +122,11 @@ function firstFrameDisplayList(bytes, sprite) {
       const item = { ...(placed.get(depth) ?? {}), depth };
       if (tag.code === 70 && ((flags2 & 8) || ((flags2 & 16) && (flags & 2)))) cursor = bytes.indexOf(0, cursor) + 1;
       if (flags & 2) { item.character = bytes.readUInt16LE(cursor); cursor += 2; }
-      if (flags & 4) cursor = skipMatrix(bytes, cursor);
+      if (flags & 4) {
+        const matrix = readMatrix(bytes, cursor);
+        item.matrix = matrix;
+        cursor = matrix.next;
+      }
       if (flags & 8) cursor = skipColorTransform(bytes, cursor);
       if (flags & 16) cursor += 2;
       if (flags & 32) {
@@ -106,6 +138,96 @@ function firstFrameDisplayList(bytes, sprite) {
     offset = tag.next;
   }
   return [...placed.values()];
+}
+
+function displayListAtFrame(bytes, sprite, targetFrame) {
+  const placed = new Map();
+  let offset = sprite.body + 4;
+  let frame = 1;
+  while (offset < sprite.next) {
+    const tag = readTag(bytes, offset);
+    if (tag.code === 0) break;
+    if (tag.code === 1) {
+      if (frame === targetFrame) return [...placed.values()];
+      frame += 1;
+      offset = tag.next;
+      continue;
+    }
+    if (tag.code === 26 || tag.code === 70) {
+      let cursor = tag.body;
+      const flags = bytes[cursor++];
+      const flags2 = tag.code === 70 ? bytes[cursor++] : 0;
+      const depth = bytes.readUInt16LE(cursor); cursor += 2;
+      const item = { ...(placed.get(depth) ?? {}), depth };
+      if (tag.code === 70 && ((flags2 & 8) || ((flags2 & 16) && (flags & 2)))) cursor = bytes.indexOf(0, cursor) + 1;
+      if (flags & 2) { item.character = bytes.readUInt16LE(cursor); cursor += 2; }
+      if (flags & 4) {
+        const matrix = readMatrix(bytes, cursor);
+        item.matrix = matrix;
+        cursor = matrix.next;
+      }
+      if (flags & 8) cursor = skipColorTransform(bytes, cursor);
+      if (flags & 16) cursor += 2;
+      if (flags & 32) {
+        const end = bytes.indexOf(0, cursor);
+        item.name = bytes.subarray(cursor, end).toString();
+      }
+      placed.set(depth, item);
+    } else if (tag.code === 28) {
+      placed.delete(bytes.readUInt16LE(tag.body));
+    } else if (tag.code === 5) {
+      placed.delete(bytes.readUInt16LE(tag.body + 2));
+    }
+    offset = tag.next;
+  }
+  throw new Error(`Sprite ${bytes.readUInt16LE(sprite.body)} does not have frame ${targetFrame}`);
+}
+
+function transformBounds(bounds, item) {
+  // Bounds are only used for the registration origin. The item matrix is
+  // decoded by the display-list reader above, so retain the same SWF a/b/c/d
+  // convention as the browser renderer.
+  const matrix = readPlacedMatrix(item);
+  const points = [
+    [bounds.xMin, bounds.yMin], [bounds.xMin, bounds.yMax],
+    [bounds.xMax, bounds.yMin], [bounds.xMax, bounds.yMax],
+  ].map(([x, y]) => ({ x: matrix.a * x + matrix.c * y + matrix.x, y: matrix.b * x + matrix.d * y + matrix.y }));
+  return {
+    xMin: Math.min(...points.map(({ x }) => x)), xMax: Math.max(...points.map(({ x }) => x)),
+    yMin: Math.min(...points.map(({ y }) => y)), yMax: Math.max(...points.map(({ y }) => y)),
+  };
+}
+
+function readPlacedMatrix(item) {
+  return item.matrix ?? { a: 1, b: 0, c: 0, d: 1, x: 0, y: 0 };
+}
+
+function combineBounds(left, right) {
+  if (!left) return right;
+  if (!right) return left;
+  return {
+    xMin: Math.min(left.xMin, right.xMin), xMax: Math.max(left.xMax, right.xMax),
+    yMin: Math.min(left.yMin, right.yMin), yMax: Math.max(left.yMax, right.yMax),
+  };
+}
+
+function directBounds(bytes, tag) {
+  return tag && [2, 22, 32, 83].includes(tag.code) ? readRect(bytes, tag.body + 2) : null;
+}
+
+function visualBounds(bytes, defs, character, frame, seen = new Set()) {
+  if (seen.has(character)) return null;
+  const direct = directBounds(bytes, defs.get(character));
+  if (direct) return direct;
+  const sprite = defs.get(character);
+  if (!sprite || sprite.code !== 39) return null;
+  const ownFrame = Math.min(Math.max(1, frame), bytes.readUInt16LE(sprite.body + 2));
+  const branch = new Set(seen); branch.add(character);
+  return displayListAtFrame(bytes, sprite, ownFrame).reduce((result, item) => {
+    if (!item.character) return result;
+    const child = visualBounds(bytes, defs, item.character, ownFrame, branch);
+    return combineBounds(result, child && transformBounds(child, item));
+  }, null);
 }
 
 function setSkinPaths(source) {
@@ -141,4 +263,20 @@ export function extractUnitMCSkinGraph({ swf = swfPath, unitSource = sourcePath 
     rootAnimationFrames: bytes.readUInt16LE(root.body + 2),
     targets,
   };
+}
+
+// FFDec crops each exported PNG to this source rectangle. Keeping it lets a
+// browser put the crop back at the original Flash registration point.
+export function extractUnitMCSkinFrameBounds(skinFrame, { swf = swfPath, unitSource = sourcePath } = {}) {
+  const graph = extractUnitMCSkinGraph({ swf, unitSource });
+  if (!Number.isInteger(skinFrame) || skinFrame < 1 || skinFrame > Math.min(...graph.targets.map(([, , frames]) => frames))) {
+    throw new Error(`Skin frame ${skinFrame} is outside the original UnitMC skin child range`);
+  }
+  const bytes = decompressSwf(swf);
+  const defs = definitions(bytes);
+  return graph.targets.map(([path, character]) => ({
+    path,
+    character,
+    bounds: visualBounds(bytes, defs, character, skinFrame),
+  }));
 }

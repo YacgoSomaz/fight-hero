@@ -17,6 +17,9 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /tutorialPlayerMouseDown\(gunState/);
   assert.match(script, /tutorialPlayerMouseUp\(gunState\)/);
   assert.match(script, /advanceTutorialGunRuntime\(gunState/);
+  assert.match(script, /traceTutorialLineBullet/);
+  assert.match(script, /renderTutorialLineBullet/);
+  assert.match(script, /applyTutorialBulletEnvironmentHit/);
   assert.match(script, /unit:\s*\{\s*aim:\s*player\.sourcePlayerProfile\.aim/);
   assert.match(script, /ammoMultiplier:\s*player\.sourcePlayerProfile\.ammo/);
   assert.match(script, /canvasPointToTutorialStage/);

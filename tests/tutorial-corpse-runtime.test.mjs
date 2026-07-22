@@ -35,3 +35,17 @@ test('PhysActor.EnterFrame removes a corpse exactly on source frame 150', () => 
   assert.deepEqual(advanceTutorialCorpseFrame(corpse), { removed: true });
   assert.equal(corpse.removed, true);
 });
+
+test('PhysWorld.createCorpse preserves source sky9 splash force and source input requirements', () => {
+  const target = { id: 'unit2', position: { x: 0, y: 40 }, scaleX: -1, skinFrame: 5, movement: { xVelocity: 0, yVelocity: 0 } };
+  const extra = { hitX: 0, hitY: 40 };
+  const corpse = createTutorialCorpse({
+    target, attacker: { id: 'unit0', position: { x: 0, y: 40 } }, gun: { id: 'RPG', force: 2, splash: 100 }, extra, useMod: 'sky9', random: () => 0.5,
+  });
+
+  assert.deepEqual(corpse.parts.slice(0, 3).map(({ position }) => position), [{ x: -19, y: 8 }, { x: -11, y: 8 }, { x: -1, y: 1 }]);
+  assert.deepEqual(extra, { hitX: 0, hitY: 41 });
+  assert.deepEqual(corpse.bodyImpulses.at(-1), { x: 0, y: -6 });
+  assert.deepEqual(advanceTutorialCorpseFrame(corpse), { removed: false });
+  assert.throws(() => createTutorialCorpse({ target: { id: 'bad' }, attacker: { position: { x: 0, y: 0 } }, gun: { force: 0, splash: 0 }, extra: {} }), /PhysActor requires target/);
+});

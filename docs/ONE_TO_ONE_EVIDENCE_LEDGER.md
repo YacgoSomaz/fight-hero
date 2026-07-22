@@ -58,8 +58,8 @@ Main.as（输入/屏幕切换）
 | --- | --- | --- | --- | --- | --- |
 | 首页图与底部导航 | `Menu.as`；原菜单帧导出 | `public/assets/menu-source/`、`src/menu-assets.mjs`、`src/menu-ui.mjs` | `tests/menu-assets.test.mjs`、`tests/menu-ui.test.mjs` | 首页图与可点区需逐项重做原版并排 | `已接入+已回归`；按钮视觉和命中区存在，但还不能称完整菜单行为。 |
 | Play → 快速对战 | `Menu.as` 的屏幕动作；快速对战帧 | `menu-state.mjs`、`menu-ui.mjs`、`main.mjs` | `menu-state.test.mjs`、`menu-ui.test.mjs` | 已有本地开始游戏路径；仍需原版逐项参数对照 | `已接入+已回归`；模式、地图、分数、兵种、技能、连杀、modifier、难度每个循环需逐项核对。 |
-| Campaign 15 项 | `Stats_Campaign.setMatch(index,false)`，`Menu.as` 目录帧 | 菜单任务索引与启动路径 | `menu-ui.test.mjs`（15 个可见任务项） | 无完整 15 关启动/结算对照 | `已定位+部分接入`；目录可选不表示每关脚本/胜负已迁移。 |
-| Challenges 15 项 | `Stats_Campaign.setMatch(index,true)`、`runScripts(Game)` | 菜单任务索引与启动路径 | `menu-ui.test.mjs`（15 个可见任务项） | 无完整挑战回放 | `已定位+部分接入`；必须把每项帧脚本转成可测试事件表。 |
+| Campaign 15 项 | `Stats_Campaign.setMatch(index,false)`，`Menu.as` 目录帧 | `campaign-source.mjs` 为直接生成的完整 setMatch 记录；菜单项保留原角色/出生/过场/特殊字段 | `stats-campaign-parser.test.mjs`、`campaign-source-catalog.test.mjs`、`menu-state.test.mjs`、`menu-ui.test.mjs` | 浏览器：战役页第一关显示完整迁移缺口且不启动伪快速对战 | `已解包+目录证据已接入`；每一关的运行时脚本、胜负、过场仍未迁移，故全部保持不可启动。 |
+| Challenges 15 项 | `Stats_Campaign.setMatch(index,true)`、`runScripts(Game)` | 同上，包含 `randomTeam`、`jugDrain`、强制角色/枪械等原始 extra | `stats-campaign-parser.test.mjs`、`campaign-source-catalog.test.mjs`、`menu-state.test.mjs` | 无完整挑战回放 | `已解包+目录证据已接入`；必须把每项帧脚本转成可测试事件表后才可解除启动限制。 |
 | Soldiers | `Menu.as`、兵种/解锁相关 `Stats_*` | 当前为菜单页/命中区 | `menu-ui.test.mjs` | 未对照选择、预览、解锁 | `阻断`；不可把静态页称为士兵系统。 |
 | Options | `Menu.as`、声音/存档写入关系 | 当前为菜单页/命中区 | `menu-ui.test.mjs` | 未对照每项开关和持久化 | `阻断`；必须先找出原字段及副作用。 |
 | Medals / Tips / Version | `Menu.as` 与相应导出帧 | 当前为菜单页/命中区 | `menu-ui.test.mjs` | 未逐页对照 | `已接入外观入口`；内容、滚动、条件及返回流尚未验收。 |

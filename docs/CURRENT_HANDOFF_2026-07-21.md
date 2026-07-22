@@ -124,6 +124,16 @@ npm start
 
 **仍不得写成“1:1 已完成”**：上述为两个有证据的局部纵切和一个运行时阻塞修复；完整角色状态、全部地图 wallMC/任务、81 把枪、五种模式完整生命周期、15 战役/15 挑战、音频/特效、存档和逐帧像素差分仍处于未完成状态。总计划的最终完成门槛不变。
 
+## 2026-07-22：战役/挑战源目录机械迁移，取消伪可玩入口
+
+- 原始证据：`assets/reverse/ffdec-deep-20260720/scripts/Stats_Campaign.as:setMatch(stage, type)`。它不只给出菜单的地图/模式/分数，还逐关调用 `setCutscene`、`setLvl`、`setPlr`、`addBot`；例如 Campaign 1 的 Scientist、四个 bot、精确出生点、`noAim`、M4/USP、教程特殊文本和前/后过场帧都在同一源码块。
+- 可重现产物：`private-assets/parse-stats-campaign.mjs` 仅解析 literal ActionScript call，不执行 AS3；`npm run extract:campaign` 生成版本控制的 `src/campaign-source.mjs`。`campaign-source-catalog.test.mjs` 要求生成物与当前解包 AS3 完全深相等，防止手写简表漂移。
+- 菜单承载：`menu-state.mjs` 已删除手写 30 项数组，直接由上述 catalog 派生菜单任务，且每个项保留 `definition` 引用。`tests/stats-campaign-parser.test.mjs` 锁 15+15 数量、Campaign 1 全部角色/过场以及 Challenge 特殊规则；`menu-state.test.mjs` 锁菜单不会丢失原定义。
+- 诚实启动门槛：携带 `definition` 的任务在完整 actor/script/cutscene/end 流程迁移前必定被 `isPlayableSelection` 拒绝；`main.mjs` 在原菜单画面下方非美术边缘显示具体原因。浏览器复验为：主页 → 战役 → 第 1 关，`gameStage.hidden=true`、`sourceMenu.hidden=false`，并显示“角色、脚本、过场或胜负流程尚未完整迁移，不能伪装为快速对战。”
+- TDD 链：`cc6fee2`→`f311d4c`（AS3 解析器）；`98c9da4`→`a4f6612`（可交付生成目录）；`5fd14e0`→`3514479`（菜单消费原定义）；`d798069`→`7873944`（阻止伪快速对战）；`056bf34`→`de42592`（显示状态）。完整回归为 138/138，覆盖率 99.35% 行、87.70% 分支、94.12% 函数。
+
+**下一位的唯一正确续作**：不要解除任何任务的启动限制来“恢复可玩”。先选择 Campaign 1，将 `setPlr/addBot` 的 actor 创建、`runScripts` 的 `sn/fc` 状态、前后 Cutscene frame、胜利判定和解锁保存逐项建成可序列化运行时与原版输入/截图对照；只有该关从开始到结束无已知差异，才能单独解除第 1 关的限制。
+
 ## 2026-07-22：原 Aimer 静态资源接入记录
 
 本次完成的是一个边界明确的小纵切，不是“HUD 已完成”。

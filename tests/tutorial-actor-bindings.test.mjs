@@ -17,7 +17,7 @@ test('Tutorial actor bindings retain each Campaign 1 source class, skin frame an
     { id: 'unit1', human: false, soldier: 'tank', skin: 5, skinFrame: 105, spawned: true, noAim: false, position: { x: 1530, y: 695, node: 'a' } },
     { id: 'unit2', human: false, soldier: 'soldier', skin: 5, skinFrame: 155, spawned: true, noAim: false, position: { x: 1760, y: 695, node: 'a' } },
     { id: 'unit3', human: false, soldier: 'medic', skin: 5, skinFrame: 55, spawned: true, noAim: false, position: { x: 1790, y: 695, node: 'a' } },
-    { id: 'unit4', human: false, soldier: 'soldier', skin: 1, skinFrame: 151, spawned: false, noAim: false, position: null },
+    { id: 'unit4', human: false, soldier: 'soldier', skin: 1, skinFrame: 151, spawned: false, noAim: false, position: { x: -4000, y: -4000 } },
   ]);
   assert.deepEqual(bindings.actors[0].guns, { primary: 'M4', secondary: 'USP', active: 'M4' });
   assert.equal(bindings.actors[0].level, 1, 'the source first-run SD save supplies Campaign 1 player level one');

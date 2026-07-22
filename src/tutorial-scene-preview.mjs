@@ -113,6 +113,14 @@ try {
     movementState = { ...movementState, noJump: player.noJump };
   }
 
+  function syncPlayerCollisionState() {
+    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+    if (!sourcePlayer) throw new Error('Campaign 1 source player collision record is unavailable');
+    sourcePlayer.position = { ...player.position };
+    sourcePlayer.scaleX = aimState.flip ? -1 : 1;
+    sourcePlayer.crouching = movementState.crouching;
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -158,6 +166,7 @@ try {
         stageMouse,
       });
       player = { ...player, flip: aimState.flip, aim: { x: aimState.aimX, y: aimState.aimY } };
+      syncPlayerCollisionState();
       let gunTick = { fired: false };
       if (gunState) {
         gunTick = advanceTutorialGunRuntime(gunState, {
@@ -178,6 +187,8 @@ try {
           const trace = traceTutorialLineBullet({
             gunId: gunTick.bullet.gunId,
             shooter: {
+              id: player.id,
+              team: player.team,
               position: player.position,
               aimRotation: aimState.aimRotation,
               mcRotation: movementState.rotation,
@@ -187,6 +198,7 @@ try {
               dynRecoilMod: gunTick.bullet.dynRecoilMod,
             },
             wall: tutorialWorld.wall,
+            units: session.actors,
           });
           sourceLineTraces.push(trace);
           if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
@@ -200,6 +212,7 @@ try {
       });
       player = movement.actor;
       movementState = movement.state;
+      syncPlayerCollisionState();
       applyTutorialFootContact(tutorialWorld, {
         x: player.position.x,
         y: player.position.y + 1,

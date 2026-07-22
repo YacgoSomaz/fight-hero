@@ -17,9 +17,18 @@ function sourceActor(id, definition) {
     difficulty: definition.difficulty,
     spawned: !definition.extra?.noSpawn,
     spawn: spawn ? { ...spawn } : null,
-    position: spawn ? { ...spawn } : null,
+    // Unit's `extra.noSpawn` constructor path explicitly parks the object at
+    // -4000,-4000; retaining that position lets Bullet.hitTestAll include the
+    // same unit array without treating an absent position as a synthetic skip.
+    position: spawn ? { ...spawn } : definition.extra?.noSpawn ? { x: -4000, y: -4000 } : null,
     noAim: Boolean(definition.extra?.noAim),
     noJump: false,
+    // Unit/AI instances begin alive and standing. AI.spawn() is the one
+    // source path that flips an initial UnitMC for Campaign aimReverse.
+    dead: false,
+    blurred: false,
+    crouching: false,
+    scaleX: definition.extra?.aimReverse ? -1 : 1,
     guns: { primary: definition.primary, secondary: definition.secondary, active: definition.primary },
     definition,
   };

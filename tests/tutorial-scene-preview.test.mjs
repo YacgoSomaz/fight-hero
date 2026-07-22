@@ -11,6 +11,8 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /loadMapLayers/);
   assert.match(script, /loadTutorialWorld/);
   assert.match(script, /applyCampaignOneSessionFrame/);
+  assert.match(script, /advanceCampaignOneSessionAi/);
+  assert.match(script, /advanceCampaignOneSessionAiMovement/);
   assert.match(script, /applyTutorialFootContact/);
   assert.match(script, /stepTutorialMovement/);
   assert.match(script, /canvas\.addEventListener\('mouseup'/);
@@ -53,6 +55,7 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /sourceActor\.visible/);
   assert.match(script, /sourceActor\.dead/);
   assert.match(script, /advanceTutorialActorPlayback\(sceneActorState, source\)/);
+  assert.match(script, /requestTutorialActorMotion\(sceneActorState, movement\.nextAnim\)/);
   assert.match(script, /canvas\.dataset\.ready = 'true'/);
   assert.doesNotMatch(script, /main\.mjs|engine\.mjs|createWorld|foundry/);
 });

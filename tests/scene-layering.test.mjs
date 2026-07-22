@@ -2,8 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-test('the live Canvas layer is explicitly above original map images so actors cannot be hidden by terrain art', async () => {
+test('the original DOM map has a dedicated actor overlay above terrain art when Canvas compositing is unavailable', async () => {
   const css = await readFile(new URL('../style.css', import.meta.url), 'utf8');
-  assert.match(css, /#mapBackdrop\{[^}]*z-index:0/, 'original map layers must have an explicit lower stacking level');
-  assert.match(css, /canvas\s*\{[^}]*z-index:2/, 'live Canvas actors and HUD must be above original map layers');
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /id="actorOverlay"/, 'the source map needs an actor overlay container');
+  assert.match(css, /#mapBackdrop \.map-layer\{[^}]*z-index:1/, 'map art must stay below actor sprites');
+  assert.match(css, /#actorOverlay\{[^}]*z-index:2/, 'actor sprites must be above terrain art');
 });

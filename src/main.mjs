@@ -15,6 +15,7 @@ import { getDomMapLayerLayout } from './dom-map-layer.mjs';
 import { getObjectiveVisual } from './objective-visuals.mjs';
 import { SHOW_COLLISION_OVERLAYS, SHOW_PLAYER_PROBES } from './scene-presentation.mjs';
 import { getUnitOverheadHud } from './unit-status.mjs';
+import { getUnitRenderPlan } from './unit-render-plan.mjs';
 import { decodeFlashWallImage } from './wall-mask.mjs';
 
 const canvas = document.querySelector('#game');
@@ -35,6 +36,7 @@ const menuTranslation = document.querySelector('#menuTranslation');
 const sourceStatus = document.querySelector('#sourceStatus');
 const gameStage = document.querySelector('#gameStage');
 const mapBackdrop = document.querySelector('#mapBackdrop');
+const actorOverlay = document.querySelector('#actorOverlay');
 const leaveGame = document.querySelector('#leaveGame');
 const SAVE_KEY = 'fight-hero/private-foundry-v2';
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
@@ -42,6 +44,7 @@ const audio = new AudioBank({ muted: Boolean(saved.muted) });
 let sky = new Image();
 let map = new Image();
 let terrain = new Image();
+const actorSprites = new Map();
 async function loadMapVisual(mapId) {
   const visual = getMapVisual(mapId);
   const next = await loadMapLayers(visual);
@@ -445,7 +448,20 @@ function drawPlayer(player) {
   ctx.translate(screen.x, screen.y);
   ctx.scale(player.facing, 1);
   const frame = unitTimeline?.frames?.[player.animationFrame - 1];
-  if (frame && Object.values(unitParts).every((sprite) => sprite.complete && sprite.naturalWidth)) {
+  const renderPlan = getUnitRenderPlan({
+    alive: player.alive,
+    hasTimeline: Boolean(frame),
+    hasParts: Object.values(unitParts).every((sprite) => sprite.complete && sprite.naturalWidth),
+  });
+  // This complete source frame remains behind the optional rig. It prevents a
+  // partially decoded/vector arm frame from erasing the only visible unit.
+  if (unitSkin.complete && unitSkin.naturalWidth) {
+    ctx.drawImage(unitSkin, -37, -84, 75, 90);
+  } else {
+    ctx.fillStyle = '#838b59';
+    ctx.fillRect(-12, -56, 24, 56);
+  }
+  if (renderPlan.includes('timeline-rig')) {
     // This is the UnitMC root display list, not a synthetic walk cycle.  Each
     // row comes from the original SWF frame after Place/Remove tags have been
     // resolved.  The fixed Medic art is selected once (frame 51), while the
@@ -513,11 +529,6 @@ function drawPlayer(player) {
     drawPart('body', unitParts.body, -11.95, -15);
     drawPart('head', unitParts.head, -5.6, -18, .6);
     drawPart('arm2', unitParts.frontArm, -2, -5, 1);
-  } else if (unitSkin.complete && unitSkin.naturalWidth) {
-    ctx.drawImage(unitSkin, -37, -84, 75, 90);
-  } else {
-    ctx.fillStyle = '#838b59';
-    ctx.fillRect(-12, -56, 24, 56);
   }
   ctx.restore();
   if (player.hitTimer) {
@@ -545,6 +556,33 @@ function drawPlayer(player) {
     ctx.restore();
   }
   ctx.textAlign = 'left';
+}
+
+function renderActorOverlay() {
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (!width || !height) return;
+  const active = new Set();
+  for (const player of world.players) {
+    active.add(player.id);
+    let sprite = actorSprites.get(player.id);
+    if (!sprite) {
+      sprite = image('./public/assets/unit-parts/unit-idle.png');
+      sprite.className = 'actor-sprite';
+      actorSprites.set(player.id, sprite);
+      actorOverlay.append(sprite);
+    }
+    const screen = worldToScreen(player, camera, canvas.width, canvas.height);
+    sprite.hidden = !player.alive;
+    sprite.style.width = `${75 * width / canvas.width}px`;
+    sprite.style.height = `${90 * height / canvas.height}px`;
+    sprite.style.left = `${screen.x * width / canvas.width}px`;
+    sprite.style.top = `${screen.y * height / canvas.height}px`;
+    sprite.style.transform = `translate(-50%, -100%) scaleX(${player.facing})`;
+  }
+  for (const [id, sprite] of actorSprites) {
+    if (!active.has(id)) { sprite.remove(); actorSprites.delete(id); }
+  }
 }
 
 function drawPlayerCollider(player) {
@@ -655,6 +693,7 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const source = getMapSourceRect(camera, canvas.width, canvas.height);
   renderOriginalMapBackdrop(source);
+  renderActorOverlay();
   drawObjectives();
   if (SHOW_COLLISION_OVERLAYS) drawCollisionBoxes();
   for (const bullet of world.bullets) drawTracer(bullet);

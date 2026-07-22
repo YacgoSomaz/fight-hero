@@ -4,11 +4,18 @@
 
 ## 2026-07-22：原 AI 决策、Movement 与 Campaign 1 场景接入（仍未可玩）
 
+### 后续：Unit symbol 687 头顶当前生命条（仍未完成 HUD）
+
+- 原始证据：`Unit` 是 symbol 687，其 frame 1 Display List 将 `bar_hp`（symbol 670）以矩阵 `c9 45 3f 27 2f 0c de 4a 0b` 放在本地 `(-27,-76.25)`，纵向缩放 `0.61224365234375`；`Status.as:setBars()` 写 `bar_hp.width = hpCur / hpMax * (40 + hpMax / 10)`；`Unit.as:setTeam()` 提供三队的 ColorTransform 色值。
+- 网页承载：`src/tutorial-unit-overhead-hud.mjs` 仅返回这份原位置、原 670 PNG、`Status` 已计算的宽度及原 ColorTransform 颜色；`tutorial-scene-preview.mjs` 以 `source-in` 模拟 Flash 色变换，给活着的 source player/NPC 绘制。没有自制矩形、标签或位置估算。
+- TDD：`13ecb63→6a08394`（源 HUD 计划）与 `99e68d9→f9f3170`（场景承载）为 RED→GREEN；`0fa60dd→629502f` 使场景帧循环错误可见，而不是保留“ready 但黑屏”的假健康状态。
+- 严格边界：只接入了 **bar_hp**，没有原 `bar_hurt`、姓名/等级 TextField、图标、底部职业/生命/弹药/经验动态 UI，更没有原版截图对照；因此仍不得称“头顶 HUD 完成”或“Campaign 1 可玩”。
+
 - 原始证据：`assets/reverse/ffdec-deep-20260720/scripts/AI.as`、`Arena.as`、`NodeWaypoint.as`、`NodeAiAction.as` 与解包后的 `ARENA_SOURCE_LAYOUTS.tut`。`NodeAiAction` symbol 1268 的本地矩形为 69×69，网页按原 Display List matrix 得到实际 `width/height`，不以自制导航网格代替。
 - 网页承载：`src/tutorial-ai-runtime.mjs` 逐项保留 `AI.setDiffStats`、1–12 帧错峰扫描、450/枪射程上限、20px wall LOS、waypoint connector、`j/c/fc/fp/fd` action box、原瞄准平滑与开火概率；`src/campaign-one-session.mjs` 将这些决策写回真实 Campaign actor 的 `ai/aim/aiKeys/aiJumpRequested/aiShouldShoot`，并以 `advanceCampaignOneSessionAiMovement()` 将 key/jump 消费到同一份 `tutorial-movement.mjs`（`Movement.as`）状态。
 - 场景承载：`tutorial-scene-preview.mjs` 在原 AI 决策后、单位 Status 后消费原 wall surface，写回 actor 位置、蹲伏/跳跃状态，并把返回的 `nextAnim` 交给 `requestTutorialActorMotion()`；因此不再由旧通用 AI 控制 NPC 平移。
 - TDD：`9450a59→570cc91` 为 AI runtime 的 RED→GREEN；`b79626c→d181cce` 为 Campaign 会话决策接入；`48e3164→fd0c630` 为 Movement 消费；`f2fb52a→bb496ea` 为浏览器 UnitMC 动作接入。当前完整回归为 `npm test` **285/285**，全局覆盖率 **98.99% 行、83.29% 分支、96.08% 函数**。
-- 严格边界：NPC 的 **行动、arm/head 瞄准和第一条枪械/子弹纵切** 已接到原链路：`deriveTutorialUnitAim()` 直接复用 `Unit.as` 的 holder、前一帧 `aimRoation`、翻转及 reload 旋转关系；`aiShouldShoot` 经每个 NPC 独立的 `Guns.shoot() → Guns.EnterFrame()` 状态（含 AS3 `Number` 初值 `dynRecoilMod=0`）进入枪械 arm fire、`Bullet_Line_Basic` 与现有 Status/死亡会话。仍没有 AI 对战的原版逐帧截图、尸体视觉/Box2D、重生、头顶血条、音频或完整战役流程。因此不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应做原版输入/帧对照及可见战斗/重生/HUD 纵切。
+- 严格边界：NPC 的 **行动、arm/head 瞄准和第一条枪械/子弹纵切** 已接到原链路：`deriveTutorialUnitAim()` 直接复用 `Unit.as` 的 holder、前一帧 `aimRoation`、翻转及 reload 旋转关系；`aiShouldShoot` 经每个 NPC 独立的 `Guns.shoot() → Guns.EnterFrame()` 状态（含 AS3 `Number` 初值 `dynRecoilMod=0`）进入枪械 arm fire、`Bullet_Line_Basic` 与现有 Status/死亡会话。仍没有 AI 对战的原版逐帧截图、尸体视觉/Box2D、重生、头顶完整 HUD、音频或完整战役流程。因此不得称为“AI 已完成”或“Campaign 1 可玩”。下一步应做原版输入/帧对照及可见战斗/重生/HUD 纵切。
 
 ## 快速开始
 

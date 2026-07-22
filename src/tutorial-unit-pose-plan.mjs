@@ -34,7 +34,7 @@ function enterFrameRoot(roots, id) {
   return holder ? { ...root, x: holder.x, y: holder.y } : root;
 }
 
-function planArm(rootId, action, skinFrame, roots) {
+function planArm(rootId, action, skinFrame, roots, gunFrame) {
   const root = enterFrameRoot(roots, rootId);
   if (!root || !Array.isArray(action)) throw new Error(`UnitMC ${rootId} root/action data is required`);
   const childFrames = m4SkinChildFrames(skinFrame);
@@ -43,7 +43,7 @@ function planArm(rootId, action, skinFrame, roots) {
   for (const item of action) {
     const local = actionTransform(item);
     if (item.name === 'gun') {
-      gunParts.push({ rootId, character: item.character, frame: childFrames.gun, root, local });
+      gunParts.push({ rootId, character: item.character, frame: gunFrame ?? childFrames.gun, root, local });
       continue;
     }
     const path = ARM_PATH[`${rootId}:${item.name}`];
@@ -64,7 +64,8 @@ function planArm(rootId, action, skinFrame, roots) {
 
 // A source-only pose. It preserves the original root and nested action
 // matrices as two transforms; callers must not flatten/round these values.
-export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction, skinFrame } = {}) {
+export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction, skinFrame, gunFrame } = {}) {
+  if (gunFrame !== undefined && (!Number.isInteger(gunFrame) || gunFrame < 1)) throw new Error('original Tutorial gun Sprite frame is required');
   const roots = rootFrameItems(rootFrame);
   const staticParts = rootFrame
     .filter(([id]) => STATIC_ROOT_PARTS.has(id))
@@ -78,8 +79,8 @@ export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction,
         root: enterFrameRoot(roots, id),
       };
     });
-  const rear = planArm('arm1', rearAction, skinFrame, roots);
-  const front = planArm('arm2', frontAction, skinFrame, roots);
+  const rear = planArm('arm1', rearAction, skinFrame, roots, gunFrame);
+  const front = planArm('arm2', frontAction, skinFrame, roots, gunFrame);
   return {
     staticParts,
     armParts: [...rear.armParts, ...front.armParts],

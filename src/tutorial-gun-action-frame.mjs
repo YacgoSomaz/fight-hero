@@ -1,3 +1,5 @@
+import { createTutorialUnitPosePlan } from './tutorial-unit-pose-plan.mjs';
+
 // Source: Stats_Guns.as records M4 -> sprite M4 / rifle labels and
 // USP2 -> sprite USP / pistol labels.  The two arm roots are the original
 // arm_gun_316 (501) and arm_front_328 (668) display lists.
@@ -60,6 +62,17 @@ export function tutorialGunActionFrame(runtime, gunId, command, actionIndex) {
     rearAction: rear.items,
     frontAction: front.items,
   };
+}
+
+export function createTutorialUnitPoseAtGunAction({ rootFrame, runtime, gunId, command, actionIndex, skinFrame } = {}) {
+  const action = tutorialGunActionFrame(runtime, gunId, command, actionIndex);
+  return createTutorialUnitPosePlan({
+    rootFrame,
+    rearAction: action.rearAction,
+    frontAction: action.frontAction,
+    skinFrame,
+    gunFrame: action.gunFrame,
+  });
 }
 
 export function tutorialGunSource(gunId) {

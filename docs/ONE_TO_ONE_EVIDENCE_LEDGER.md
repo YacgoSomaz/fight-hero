@@ -111,6 +111,35 @@ Main.as（输入/屏幕切换）
 - 原 `ScoreBar` 1462 已导出为 184×45；原经验容器 1477 为 397×16。两者已机械复制为 `public/assets/original-swf/hud-scorebar-1462.png` 和 `public/assets/original-swf/hud-expholder-1477.png`，并由 `main.mjs` 直接在原 800×600 锚点 `(180,23)` 与 `(201,588)` 绘制。
 - TDD：`ea1db89` 是 RED，`aimer-source.test.mjs` 证明旧运行时代码并未读取这两个原图；`85054e1` 是 GREEN，要求运行时代码读取精确原路径并以两个精确 Hud 1540 坐标绘制。全量回归为 124/124，覆盖率为 99.08% 行、88.18% 分支、93.61% 函数。
 - **严格边界**：FFDec 导出的 1462/1477 是当前静态时间轴图像，不是 `Hud.as` 所有动态文本、计分、`bar_exp.width` 或 `setAmmoImage()` 的完整替身。本次已删除与 1477 重复的手画经验线，但仍保留的临时生命/弹药/职业绘制必须在找到相应原 symbol 与状态关系后逐项替换。
+
+#### 6.1.1 已从 `Hud.as` 逐项确认的动态契约（下一次 HUD 改动的唯一依据）
+
+| 原 Hud 1540 子项 | character / 原舞台 placement | 原 AS3 写入关系 | 网页当前状态 | 下一次正确迁移方式 |
+| --- | --- | --- | --- | --- |
+| 职业文字 `txt_classname` | 1442, `(2.95,530.60)` | 由当前 Player 的 `unitInfo`/职业资料写入 | 仍是临时 Canvas `Medic` | 先导出 1442 的字形/文本样式或确认运行时字体；从真实 Player 职业而非固定文案写值 |
+| 生命文字 `txt_hp` | 1441, `(70.60,560.25)` | 随 `Status` 当前 HP 更新 | 仍是固定 `85 Hp` | 连接 Player `hp/maxHp` 和原文本格式；同时接入 `Status` 头顶条，不可只改底栏 |
+| 等级 `txt_level` | 1438, `(63.15,580.75)` | `addExp` 升级后写 `"lvl: " + level` | 仍是固定 `lvl: 1` | 使用原格式、真实职业存档等级；等级上限 50 的分支也必须保留 |
+| 当前枪名 `txt_curgun` | 1439, `(633.95,530.60)` | `setGuns(first, second)` 写 `first.name` | 未接入 | 用 Stats_Guns 原 `name`；不要写武器别名或 CSS 图标 |
+| 当前枪图 `curgun` | 724, `(674.20,568.00)`, `scale=1.7536468505859375`, matrix `b=-0.5263671875,c=0.5263671875` | `setGuns` 执行 `curgun.gotoAndStop(first.sprite)` | 当前为另一路手绘/变色图逻辑，未与 Hud 724 对齐 | 先导出 724 的帧及枪 ID→`sprite` 映射；按该 matrix 绘制，不能以通用 M4 轮廓替代 |
+| 下一枪 `nextgun` | 724, `(649.40,580.70)`, `scale=.6141357421875` | `setGuns` 执行 `nextgun.gotoAndStop(second.sprite)` | 未接入 | 与 `curgun` 共用原 724 时间轴，但保留不同位置/缩放 |
+| 备用弹药 `txt_ammo` | 1440, `(667.60,559.25)` | `setAmmoImage(..., param4)` 写 `"" + param4` | 临时手画数字 | 由真实 `weapon.spare` 写入，采用原文本部件/样式 |
+| 弹匣容器 `bulletCont` | 954, `(664.30,571.30)`, `scaleX=-1,scaleY=-1` | `setAmmoImage(clip, clipMax, type, spare)` 清空 graphics 后以 `drawBox` 生成 | 当前矩形方向、尺寸和位置均为近似 | 保留原容器的双轴翻转；逐类型重建原 `drawBox` 参数，参数见下表 |
+| 经验容器 `expholder` | 1477, `(200.55,588.45)` | `bar_exp.width = exp / Stats_Classes.getNextExp(level) * 420`; level 50 强制 `420` 与 `Level Maxed` | 静态 1477 原图已接入；动态宽度/文本未接入 | 需要拆出 1477 内 `bar_exp` 与 `txt_exp`，保留宽度 420、等级上限和升级递归逻辑 |
+| 比分条 `scorebar` | 1462, `(180.45,23.00)` | 构造时写模式名；每帧由 MatchSettings 计分关系更新 | 静态 1462 原图已接入；模式/比分动态未接入 | 找到 1462 的嵌套文字/条元件及模式帧，再对接真实 MatchSettings，不得复用截图内的 17 分 |
+
+`Hud.setAmmoImage(clip, clipMax, type, spare)` 的原始弹匣盒参数如下；`drawBox(index, gap, width, height, filled, rowY=0)` 的横坐标为 `index * (gap + width)`，线框 alpha 为满弹 `1`/空弹 `.4`，填充 alpha 为满弹 `1`/空弹 `.2`：
+
+| `type` | 循环上限 | `drawBox` 参数 | 特殊规则 |
+| --- | --- | --- | --- |
+| `pistol` | `clipMax` | `(i,2,2,6,clip>i)` | 无 |
+| `magnum` | `clipMax` | `(i,3,3,7,clip>i)` | 无 |
+| `arifle` | `clipMax` | `(i,2,2,10,clip>i)` | 当前 M4 应走此分支 |
+| `sniper` | `clipMax` | `(i,3,20,5,clip>i)` | 无 |
+| `shotgun` | `clipMax` | `(i,2,5,8,clip>i)` | 无 |
+| `rocket` | `clipMax` | `(i,3,7,12,clip>i)` | 无 |
+| `machine` | 两行各 `clipMax/2` | `(i,2,2,5,clip>i)`；第二行 rowY=`7` | 先计算 `overflow=max(clip-clipMax/2,0)`，第一行 `clip -= overflow`，第二行用 `overflow>i` |
+
+这些数据直接来自 `assets/reverse/ffdec-deep-20260720/scripts/Hud.as` 的 `addExp`、`setAmmoImage`、`drawBox` 和 `setGuns`。下一项实现应优先选择 **954 的原容器翻转 + arifle 弹匣** 或 **1477 的动态 `bar_exp`** 中的一个，分别完成 RED→GREEN→原版对照；不可在同一提交顺手替换所有 HUD。
 | 兵种、皮肤、随机角色 | `Stats_Skills`、`Unit.setClass()`、Quickmatch bot profile | 部分 Medic 验证资产 | 无全覆盖 | `阻断`；不得用单一 Medic 演示取代完整角色系统。 |
 
 ## 7. 武器、子弹、伤害、音效与特效台账

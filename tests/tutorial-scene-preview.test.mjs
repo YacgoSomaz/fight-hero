@@ -36,10 +36,12 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /advanceTutorialPlayerAim/);
   assert.match(script, /deriveTutorialUnitAim/);
   assert.match(script, /getTutorialUnitOverheadBar/);
+  assert.match(script, /getTutorialUnitOverheadHud/);
   assert.match(script, /unit-bar-670\.png/);
   assert.match(script, /renderTutorialUnitOverheadBar\(sourcePlayer/);
   assert.match(script, /renderTutorialUnitOverheadBar\(sourceActor/);
   assert.match(script, /globalCompositeOperation = 'source-in'/);
+  assert.match(script, /globalAlpha = bar\.alpha/);
   assert.match(script, /canvas\.addEventListener\('mousemove'/);
   assert.match(script, /advanceTutorialActorPlayback\(actorState, source, \{ advanceArm: !gunTick\.fired \}\)/);
   assert.match(script, /canvas\.addEventListener\('mousedown'/);

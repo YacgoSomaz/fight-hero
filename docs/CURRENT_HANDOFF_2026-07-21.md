@@ -277,7 +277,9 @@ npm start
 - TDD：`a687ded`→`69cd100`（直接 Shape bounds）；`a361541`→`d1f34cb`（浏览器 crop 来源）；`fbc1a23`→`b8e2183`（固定姿势：frame 1 + M4 rifle + skin 57）；`9cd12f0`→`6d4f8cc`（公开 M4 runtime loader）。全量为 175/175，覆盖率 99.27% 行、86.59% 分支、95.98% 函数。
 - 严格边界：这是**一帧的可审计拼装计划**，不是 Canvas/DOM actor，更不是完整跑、跳、攀爬、瞄准、开火状态机。没有原版截图叠图、浏览器渲染、玩家输入或 Campaign 1 启动路径，故不得标记为 1:1 完成。
 
-**下一位唯一正确步骤**：先为该静态计划添加一个不手绘的 Canvas/DOM source renderer，直接以每个 Shape PNG 的 crop RECT 和两级原矩阵绘制，并对同一原 SWF frame 截图做叠图验收；随后才按原 30fps root/M4 action 帧推进 run/jump/climb/aim/fire/reload。不要把这个计划接回当前 generic Medic quick-match renderer。
+**后续已完成的承载边界**：`tutorial-unit-pose-renderer.mjs` 现在会按原 root matrix、action local matrix 与 Shape crop RECT 绘制，不含旧 Medic/整臂 PNG 回退；`tutorial-unit-gun-renderer.mjs` 递归画 M4 character 375 的原 frame 20；`tutorial-unit-pose-assets.mjs` 只加载 39 个直接 Shape 和版本控制的 M4 Display List。`tutorial-pose-preview.html` 可作为独立证据页打开。浏览器审计确认页面观测到 39 个 Shape、UnitMC JSON 和 M4 JSON，画布 `data-ready=true`、无错误；内嵌浏览器截图接口仅给出异常窄裁切，不能将其当作像素对照截图。
+
+**严格边界不变**：固定姿势浏览器承载不等于 Tutorial actor、原版截图叠图或任何可玩关卡。下一位应获取原 SWF 相同 skin+weapon+root/action frame 的可靠截图后进行像素叠图；再按原 30fps root/M4 action 帧推进 run/jump/climb/aim/fire/reload。不要把此渲染器接回当前 generic Medic quick-match renderer。
 
 ## 索引
 

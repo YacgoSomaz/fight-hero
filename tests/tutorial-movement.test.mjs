@@ -99,3 +99,20 @@ test('source Movement manual jump applies its authored boost and velocity only f
   assert.equal(result.state.jumping, true);
   assert.equal(result.nextAnim, 'jump');
 });
+
+test('source Movement derives its floor tilt from the original left/right ten-pixel wall probes', () => {
+  const result = stepTutorialMovement({
+    state: createTutorialMovementState(),
+    actor: actor(),
+    wall: wallAt([
+      [100, 101], // centre foot: grounded
+      [90, 100], // left (-10) probe first collision at offset 0
+      [110, 110], // right (+10) probe first collision at offset 10
+    ]),
+    keys: 0,
+  });
+
+  assert.equal(result.state.tiltL, 0);
+  assert.equal(result.state.tiltR, 10);
+  assert.ok(Math.abs(result.state.rotation - 7.9695) < 0.0001);
+});

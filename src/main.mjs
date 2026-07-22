@@ -18,6 +18,7 @@ import { getUnitOverheadHud } from './unit-status.mjs';
 import { getUnitRenderPlan } from './unit-render-plan.mjs';
 import { getUnitDomRigFrame } from './unit-dom-rig.mjs';
 import { decodeFlashWallImage } from './wall-mask.mjs';
+import { ORIGINAL_AIMER } from './aimer-source.mjs';
 
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
@@ -93,8 +94,9 @@ fetch('./public/assets/m4-vector-runtime.local.json').then((response) => {
   return response.json();
 }).then((data) => { m4VectorRuntime = data; saveStatus.textContent = '原 M4 矢量动作已加载（仅本机）'; }).catch(() => { m4VectorRuntime = null; });
 const muzzleFlashSprite = { complete: false, naturalWidth: 0 };
-const aimerCircleSprite = { complete: false, naturalWidth: 0 };
-const aimerCenterSprite = { complete: false, naturalWidth: 0 };
+// Direct crop of the original Aimer (symbol 1431, frame 1).  It deliberately
+// replaces the old Canvas circle/plus fallback rather than approximating it.
+const originalAimerSprite = image(ORIGINAL_AIMER.source);
 const hudRifleSprite = { complete: false, naturalWidth: 0 };
 const objectiveSprites = new Map();
 function getObjectiveSprite(mode, team) {
@@ -417,27 +419,8 @@ function drawBottomHud() {
 }
 
 function drawAimer(player) {
-  // Player.as changes the Aimer circle's width/height from recoil every frame.
-  // The previous fixed 40px export ignored that original behaviour.
-  const spread = player.crosshairSpread;
-  if (aimerCircleSprite.complete && aimerCircleSprite.naturalWidth) {
-    ctx.drawImage(aimerCircleSprite, pointer.x - spread, pointer.y - spread, spread * 2, spread * 2);
-  }
-  if (aimerCenterSprite.complete && aimerCenterSprite.naturalWidth) {
-    // The Aimer sprite exports at the original stage size; its centre is at 640,480.
-    ctx.drawImage(aimerCenterSprite, 600, 440, 80, 80, pointer.x - 40, pointer.y - 40, 80, 80);
-  }
-  if (!aimerCircleSprite.naturalWidth) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(243, 248, 205, .9)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(pointer.x, pointer.y, spread, 0, Math.PI * 2); ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(pointer.x - 6, pointer.y); ctx.lineTo(pointer.x + 6, pointer.y);
-    ctx.moveTo(pointer.x, pointer.y - 6); ctx.lineTo(pointer.x, pointer.y + 6);
-    ctx.stroke();
-    ctx.restore();
-  }
+  if (!originalAimerSprite.complete || !originalAimerSprite.naturalWidth) return;
+  ctx.drawImage(originalAimerSprite, pointer.x - ORIGINAL_AIMER.origin.x, pointer.y - ORIGINAL_AIMER.origin.y, ORIGINAL_AIMER.width, ORIGINAL_AIMER.height);
 }
 
 function drawPlayer(player) {

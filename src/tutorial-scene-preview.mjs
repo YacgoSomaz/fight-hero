@@ -124,8 +124,9 @@ try {
     while (accumulated >= TICK_MS) {
       applyCampaignOneSessionFrame(session);
       syncPlayerRestrictionsFromSourceSession();
+      let gunTick = { fired: false };
       if (gunState) {
-        const gunTick = advanceTutorialGunRuntime(gunState, { human: player.human });
+        gunTick = advanceTutorialGunRuntime(gunState, { human: player.human });
         gunState = gunTick.state;
         if (gunTick.fired) actorState = beginTutorialActorGunAction(actorState, gunTick.action);
       }
@@ -146,7 +147,7 @@ try {
       actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
       if (movement.aim) player.aim = movement.aim;
       arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);
-      actorState = advanceTutorialActorPlayback(actorState, source);
+      actorState = advanceTutorialActorPlayback(actorState, source, { advanceArm: !gunTick.fired });
       accumulated -= TICK_MS;
     }
     render();

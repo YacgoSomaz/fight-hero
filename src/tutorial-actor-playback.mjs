@@ -92,22 +92,25 @@ export function sampleTutorialActorPlayback(state, source) {
 
 // Advances one source 30fps tick. Non-idle arm timelines advance one decoded
 // discrete frame; the extracted arm callback is the only route back to idle.
-export function advanceTutorialActorPlayback(state, source) {
+export function advanceTutorialActorPlayback(state, source, { advanceArm = true } = {}) {
   requiredState(state);
   if (!source?.rootFrameActions || !source?.m4Runtime || !source?.armCallbacks) {
     throw new Error('original Tutorial playback sources are required');
   }
   const rootState = advanceTutorialUnitRootFrame(state.rootState, source.rootFrameActions);
-  const action = tutorialGunActionFrameAtLabel(source.m4Runtime, state.weaponId, state.actionState.label, state.actionState.index);
-  const callback = source.armCallbacks[action.frame] ?? null;
   let actionState = state.actionState;
-  const events = callback ? [...state.events, callback] : [...state.events];
-  if (callback === 'doneShoot' || callback === 'doneReload') {
-    actionState = { label: tutorialGunSource(state.weaponId).commands.idle, index: 0 };
-  } else if (state.actionState.label !== tutorialGunSource(state.weaponId).commands.idle) {
-    // Validate the next source frame rather than silently looping an action.
-    tutorialGunActionFrameAtLabel(source.m4Runtime, state.weaponId, state.actionState.label, state.actionState.index + 1);
-    actionState = { label: state.actionState.label, index: state.actionState.index + 1 };
+  let events = [...state.events];
+  if (advanceArm) {
+    const action = tutorialGunActionFrameAtLabel(source.m4Runtime, state.weaponId, state.actionState.label, state.actionState.index);
+    const callback = source.armCallbacks[action.frame] ?? null;
+    if (callback) events = [...events, callback];
+    if (callback === 'doneShoot' || callback === 'doneReload') {
+      actionState = { label: tutorialGunSource(state.weaponId).commands.idle, index: 0 };
+    } else if (state.actionState.label !== tutorialGunSource(state.weaponId).commands.idle) {
+      // Validate the next source frame rather than silently looping an action.
+      tutorialGunActionFrameAtLabel(source.m4Runtime, state.weaponId, state.actionState.label, state.actionState.index + 1);
+      actionState = { label: state.actionState.label, index: state.actionState.index + 1 };
+    }
   }
   return { ...state, rootState, actionState, events };
 }

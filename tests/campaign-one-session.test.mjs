@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -37,4 +37,14 @@ test('Campaign 1 session consumes source effects into actors and wall state', ()
     { id: 'unit2', spawned: true, spawn: { x: 1760, y: 695, node: 'a' }, position: { x: 750, y: 1130, node: 'h' }, difficulty: 1 },
     { id: 'unit3', spawned: true, spawn: { x: 1790, y: 695, node: 'a' }, position: { x: 270, y: 1470, node: 'a' }, difficulty: 1 },
   ]);
+});
+
+test('Campaign 1 session consumes the original frame-zero tutorial equipment effect instead of only logging it', () => {
+  const session = createCampaignOneSession();
+
+  const effects = applyCampaignOneSessionFrame(session);
+
+  assert.deepEqual(effects, [{ type: 'setGuns', target: 'player', primary: 'none', secondary: 'none' }]);
+  assert.deepEqual(session.actors[0].guns, { primary: 'none', secondary: 'none', active: 'none' });
+  assert.deepEqual(session.runtime, { state: 1, frame: 1 });
 });

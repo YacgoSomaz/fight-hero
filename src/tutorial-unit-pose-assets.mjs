@@ -1,6 +1,6 @@
 import { SOURCE_TUTORIAL_SKIN_SHAPES } from './tutorial-skin-shape-source.mjs';
-import { drawTutorialM4Gun } from './tutorial-unit-gun-renderer.mjs';
-import { loadTutorialM4PoseRuntime } from './tutorial-unit-pose-runtime.mjs';
+import { drawTutorialM4Gun, drawTutorialUsp2Muzzle } from './tutorial-unit-gun-renderer.mjs';
+import { loadTutorialM4PoseRuntime, loadTutorialUsp2MuzzleRuntime } from './tutorial-unit-pose-runtime.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 
 function sourceShapePaths() {
@@ -15,7 +15,13 @@ export async function loadTutorialUnitPoseAssets({ loadImage, fetchImpl } = {}) 
     if (!image) throw new Error(`original Tutorial Shape asset failed to load: ${source}`);
     return [source, image];
   }));
-  const runtime = await loadTutorialM4PoseRuntime(fetchImpl);
+  const [runtime, muzzleRuntime] = await Promise.all([loadTutorialM4PoseRuntime(fetchImpl), loadTutorialUsp2MuzzleRuntime(fetchImpl)]);
   const images = new Map(loaded);
-  return { imageFor: (source) => images.get(source), drawGun: (context, gun) => drawTutorialM4Gun(context, gun, runtime, drawRuntimeShape), runtime };
+  return {
+    imageFor: (source) => images.get(source),
+    drawGun: (context, gun) => drawTutorialM4Gun(context, gun, runtime, drawRuntimeShape),
+    drawMuzzle: (context, muzzle) => drawTutorialUsp2Muzzle(context, muzzle, muzzleRuntime, drawRuntimeShape),
+    runtime,
+    muzzleRuntime,
+  };
 }

@@ -19,10 +19,13 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /advanceTutorialGunRuntime\(gunState/);
   assert.match(script, /traceTutorialLineBullet/);
   assert.match(script, /applyTutorialLineBulletHit/);
+  assert.match(script, /applyCampaignOneSessionDeath/);
   assert.match(script, /renderTutorialLineBullet/);
   assert.match(script, /applyTutorialBulletEnvironmentHit/);
   assert.match(script, /units:\s*session\.actors/);
+  assert.match(script, /corpses:\s*session\.corpses/);
   assert.match(script, /shooter:\s*sourcePlayer/);
+  assert.match(script, /if \(hitOutcome\.died\) applyCampaignOneSessionDeath\(session/);
   assert.match(script, /unit:\s*\{\s*aim:\s*player\.sourcePlayerProfile\.aim/);
   assert.match(script, /ammoMultiplier:\s*player\.sourcePlayerProfile\.ammo/);
   assert.match(script, /canvasPointToTutorialStage/);

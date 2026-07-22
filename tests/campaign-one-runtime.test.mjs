@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCampaignOneGunSwap, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from '../src/campaign-one-runtime.mjs';
+import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneGunSwap, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from '../src/campaign-one-runtime.mjs';
 
 // User journey: when the original tutorial opens, its script starts at sn=1,
 // fc=0 and immediately removes the authored starting guns before later frame
@@ -63,4 +63,23 @@ test('Campaign 1 applies the source gun-swap transition at state twelve only', (
     { type: 'doorFrame', frameLabel: 'open' },
   ]);
   assert.deepEqual(runtime, { state: 13, frame: 10 });
+});
+
+// User journey: firing into the authored 9900ff environment marker at sn=9
+// removes the pistol ammunition, changes the wall first, then starts the
+// elevator and hides all tutorial arrows.
+test('Campaign 1 applies the source bullet/environment elevator transition', () => {
+  const runtime = createCampaignOneRuntime({ state: 9, frame: 23 });
+
+  assert.deepEqual(applyCampaignOneBulletEnvironmentHit(runtime, 'ff0000'), []);
+  assert.deepEqual(runtime, { state: 9, frame: 23 });
+  assert.deepEqual(applyCampaignOneBulletEnvironmentHit(runtime, '9900ff'), [
+    { type: 'hudFrame', frameLabel: 'idle' },
+    { type: 'message', target: 'player', text: "It looks like the elevator's out.. I'll have to jump.", seconds: 5, force: true, voice: 'V_Ca1_7' },
+    { type: 'setAmmo', target: 'player', clip: 0, spare: 0 },
+    { type: 'changeWallFrame', frameLabel: 10 },
+    { type: 'elevatorFrame', frameLabel: 'play' },
+    { type: 'hideDownArrows' },
+  ]);
+  assert.deepEqual(runtime, { state: 10, frame: 23 });
 });

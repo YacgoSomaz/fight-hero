@@ -28,7 +28,7 @@ test('a fixed Tutorial pose composes original root, M4 action and direct skin Sh
   assert.equal(pose.staticParts.some(({ character }) => character === 505), false);
 
   const rearUpper = pose.armParts.find(({ id }) => id === 'arm1.arm2up');
-  assert.deepEqual(rearUpper.root, { x: 65.65, y: -96.5, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0 });
+  assert.deepEqual(rearUpper.root, { x: 0.3, y: -42, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0 });
   assert.deepEqual(rearUpper.local, { x: 4.55, y: -0.15, scaleX: 0.314422607421875, scaleY: 0.314422607421875, skewX: 0.887176513671875, skewY: -0.887176513671875 });
   assert.equal(rearUpper.character, 279);
   assert.equal(rearUpper.source, './public/assets/original-swf/unit-skin-shapes/279.png');

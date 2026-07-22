@@ -25,7 +25,7 @@ test('Tutorial Shape renderer paints each original crop at its own root or neste
   ]);
   const rearUpperStart = context.calls.findIndex((call, index) => call[0] === 'drawImage' && call[1] === './public/assets/original-swf/unit-skin-shapes/279.png' && index > 30);
   assert.deepEqual(context.calls.slice(rearUpperStart - 5, rearUpperStart + 1), [
-    ['save'], ['translate', 65.65, -96.5], ['transform', 1, 0, 0, 1, 0, 0], ['translate', 4.55, -0.15], ['transform', 0.314422607421875, 0.887176513671875, -0.887176513671875, 0.314422607421875, 0, 0], ['drawImage', './public/assets/original-swf/unit-skin-shapes/279.png', -7.5, -4.6],
+    ['save'], ['translate', 0.3, -42], ['transform', 1, 0, 0, 1, 0, 0], ['translate', 4.55, -0.15], ['transform', 0.314422607421875, 0.887176513671875, -0.887176513671875, 0.314422607421875, 0, 0], ['drawImage', './public/assets/original-swf/unit-skin-shapes/279.png', -7.5, -4.6],
   ]);
   assert.deepEqual(guns.map(({ rootId, character, frame }) => ({ rootId, character, frame })), [{ rootId: 'arm1', character: 375, frame: 20 }]);
 });

@@ -25,8 +25,17 @@ function rootFrameItems(rootFrame) {
   return new Map(rootFrame.map((item) => [item[0], rootTransform(item)]));
 }
 
+// UnitMC.EnterFrame() replaces only x/y of these visible clips with their
+// authored hidden holder clips. Scale and skew remain on the visible child.
+function enterFrameRoot(roots, id) {
+  const root = roots.get(id);
+  const holder = id === 'head' ? roots.get('headhold') : (id === 'arm1' || id === 'arm2' ? roots.get('arm1hold') : null);
+  if (!root) return null;
+  return holder ? { ...root, x: holder.x, y: holder.y } : root;
+}
+
 function planArm(rootId, action, skinFrame, roots) {
-  const root = roots.get(rootId);
+  const root = enterFrameRoot(roots, rootId);
   if (!root || !Array.isArray(action)) throw new Error(`UnitMC ${rootId} root/action data is required`);
   const childFrames = m4SkinChildFrames(skinFrame);
   const armParts = [];
@@ -66,7 +75,7 @@ export function createTutorialUnitPosePlan({ rootFrame, rearAction, frontAction,
         character: shape.character,
         source: shape.source,
         crop: tutorialSkinShapeBounds(id, skinFrame),
-        root: roots.get(id),
+        root: enterFrameRoot(roots, id),
       };
     });
   const rear = planArm('arm1', rearAction, skinFrame, roots);

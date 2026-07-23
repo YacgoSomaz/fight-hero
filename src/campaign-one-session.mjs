@@ -10,6 +10,7 @@ import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
 import { advanceTutorialStatusFrame, applyTutorialStatusDamage, createTutorialStatus, healTutorialStatus } from './tutorial-status-damage-runtime.mjs';
 import { createTutorialUnitProfile, getTutorialAiLevel } from './tutorial-unit-profile.mjs';
+import { TUTORIAL_DOWN_ARROWS } from './tutorial-down-arrows-source.mjs';
 
 const GUN_BY_ID = new Map(SOURCE_GUNS.map((gun) => [gun.id, gun]));
 
@@ -299,8 +300,14 @@ function applySourceEffects(session, effects) {
     const actor = effect.target ? actorFor(session, effect.target) : null;
     if (effect.type === 'changeWallFrame') session.map.wallFrame = effect.frameLabel;
     else if (effect.type === 'hudFrame') session.hud.frame = effect.frameLabel;
-    else if (effect.type === 'showDownArrows') session.hud.downArrows = effect.state;
-    else if (effect.type === 'hideDownArrows') session.hud.downArrows = null;
+    else if (effect.type === 'showDownArrows') {
+      session.hud.downArrows = effect.state;
+      session.hud.arrows = session.hud.arrows.map((arrow) => ({ ...arrow, visible: Number(arrow.name.substring(9)) === effect.state }));
+    }
+    else if (effect.type === 'hideDownArrows') {
+      session.hud.downArrows = null;
+      session.hud.arrows = session.hud.arrows.map((arrow) => ({ ...arrow, visible: false }));
+    }
     else if (effect.type === 'message') {
       // Hud.setMsg rejects a non-forced line while a forced line is active.
       // Campaign dialogue uses force=true, so it replaces—not appends to—the
@@ -367,7 +374,7 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     runtime: createCampaignOneRuntime(),
     actors: [],
     match: { mode: definition.mode, scoreLimit: definition.score, team1score: 0, team2score: 0, ended: false },
-    hud: { frame: 'idle', downArrows: null, message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
+    hud: { frame: 'idle', downArrows: null, arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: false })), message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
     audio: [],
     classSaves,
     environment: { door: { frame: 1, playing: null }, elevator: { frame: 1, playing: false } },

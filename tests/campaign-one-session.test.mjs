@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { TUTORIAL_DOWN_ARROWS } from '../src/tutorial-down-arrows-source.mjs';
 import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionEnvironment, advanceCampaignOneSessionHud, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
@@ -252,6 +253,7 @@ test('Campaign 1 state ten consumes original Tutorial HUD, message, injury, soun
   assert.deepEqual(session.hud, {
     frame: 'tutclimb',
     downArrows: 10,
+    arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: arrow.name === 'downarrow10' })),
     message: {
       target: 'player',
       text: "Ahhh, my legs! I... I can't jump...",

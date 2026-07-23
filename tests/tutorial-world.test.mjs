@@ -86,3 +86,22 @@ test('Tutorial world drives Campaign 1 through the source Game tick and current 
   assert.equal(result.trace.at(0).phase, 'campaign');
   assert.equal(result.trace.at(-1).phase, 'match');
 });
+
+test('Tutorial world reads the human foot pixel inside the source Unit tail', () => {
+  const walls = sourceWallSet();
+  for (const wall of Object.values(walls.frames)) wall.isSolid = () => false;
+  const world = createTutorialWorld({ wallSet: walls, random: () => 0.999 });
+  for (const actor of world.session.actors) {
+    if (actor.status) actor.status.sSpawn = 0;
+  }
+
+  const result = advanceTutorialWorldGameTick(world);
+
+  const playerTail = result.trace.findIndex(({ phase, actorId }) => phase === 'unitTail' && actorId === 'unit0');
+  const surface = result.trace.findIndex(({ phase, actorId }) => phase === 'surface' && actorId === 'unit0');
+  const bot = result.trace.findIndex(({ phase, actorId }) => phase === 'ai' && actorId === 'unit1');
+  assert.ok(playerTail > -1 && surface > playerTail && bot > surface);
+  assert.deepEqual(world.session.runtime, { state: 2, frame: 0 });
+  assert.equal(world.session.map.wallFrame, 2);
+  assert.equal(world.wall, walls.frames.frame2);
+});

@@ -69,6 +69,39 @@ export function setTutorialAiDifficulty(state, { actor, difficulty } = {}) {
   return sourceStats({ ...state }, actor, difficulty);
 }
 
+function sourceWaypointPathDistance(path, waypoints) {
+  let dist = 0;
+  for (let index = 0; index < path.length - 1; index += 1) {
+    const from = waypoints[path.charAt(index)];
+    const to = waypoints[path.charAt(index + 1)];
+    dist += Math.hypot(from.x - to.x, from.y - to.y);
+  }
+  return dist;
+}
+
+// Direct port of AI.searchNode() + NodeWaypointPath + AI.pathFind(). Source
+// paths are strings of single-character NodeWaypoint ids; using a Set here
+// would alter the source's `path.indexOf(id)` cycle prevention semantics.
+function searchSourceWaypoint(nodeId, targetWaypointId, path, waypoints, results) {
+  const nextPath = path + nodeId;
+  if (nodeId === targetWaypointId) results.push({ path: nextPath, dist: sourceWaypointPathDistance(nextPath, waypoints) });
+  for (const connectedId of waypoints[nodeId].connects) {
+    if (nextPath.indexOf(connectedId) === -1) searchSourceWaypoint(connectedId, targetWaypointId, nextPath, waypoints, results);
+  }
+}
+
+export function findTutorialAiPath({ arena, currentWaypointId, targetWaypointId, choice = 0, random = Math.random } = {}) {
+  const waypoints = arena?.waypoints;
+  const current = waypoints?.[currentWaypointId];
+  if (!current || !waypoints?.[targetWaypointId]) throw new TypeError('original AI.pathFind requires available source waypoints');
+  const results = [];
+  for (const connectedId of current.connects) searchSourceWaypoint(connectedId, targetWaypointId, currentWaypointId, waypoints, results);
+  results.sort((a, b) => a.dist - b.dist);
+  if (!results.length) throw new Error(`unreachable source waypoint: ${targetWaypointId}`);
+  const maxChoice = Math.min(choice, results.length - 1);
+  return results[irand(random, 0, maxChoice)].path.substring(1);
+}
+
 function closest(state, actor, arena, random) {
   if (!state.diff) return state;
   const pos = positionOf(actor); const choices = Object.values(arena.waypoints).filter((wp) => Math.abs(pos.y - wp.y) < 100).map((wp) => ({ d: Math.abs(pos.x - wp.x), wp })).sort((a, b) => a.d - b.d);

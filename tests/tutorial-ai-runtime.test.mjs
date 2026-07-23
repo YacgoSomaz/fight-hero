@@ -81,6 +81,7 @@ test('AI.pathFind enumerates source waypoint paths, sorts by NodeWaypointPath di
     { type: 'waypoint', name: 'd_bf', x: 20, y: 0 },
     { type: 'waypoint', name: 'e_cf', x: 2, y: 0 },
     { type: 'waypoint', name: 'f_de', x: 3, y: 0 },
+    { type: 'waypoint', name: 'z_', x: 99, y: 0 },
   ] });
 
   assert.equal(findTutorialAiPath({ arena, currentWaypointId: 'a', targetWaypointId: 'f', choice: 0, random: () => 0 }), 'cef');

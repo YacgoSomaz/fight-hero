@@ -9,6 +9,9 @@ const root = fileURLToPath(new URL('./', import.meta.url));
 const extractedRoot = fileURLToPath(new URL('./public/assets/unit-parts/', import.meta.url));
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png' };
 const rooms = new Map();
+// Keep the historical local default while allowing a second checked-out copy
+// to run without terminating another project's development service.
+const port = Number(process.env.PORT ?? 4173);
 
 function roomSnapshot(world) {
   return {
@@ -81,4 +84,4 @@ http.createServer(async (request, response) => {
     response.writeHead(200, { 'Content-Type': mime[extname(target)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' });
     response.end(data);
   } catch { response.writeHead(404).end('Not found'); }
-}).listen(4173, () => console.log('Prototype ready: http://localhost:4173'));
+}).listen(port, () => console.log(`Prototype ready: http://localhost:${port}`));

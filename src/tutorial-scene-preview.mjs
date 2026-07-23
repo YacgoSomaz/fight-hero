@@ -216,6 +216,18 @@ try {
     canvas.dataset.sourcePlayerPosition = sourcePlayer?.position
       ? `${sourcePlayer.position.x},${sourcePlayer.position.y}`
       : '';
+    canvas.dataset.sourceMapLayerSizes = JSON.stringify({
+      sky: [layers.sky.naturalWidth, layers.sky.naturalHeight],
+      background: [layers.map.naturalWidth, layers.map.naturalHeight],
+      terrain: [layers.terrain.naturalWidth, layers.terrain.naturalHeight],
+    });
+    const skyPosition = getTutorialParallaxLayerPosition(arenaPosition, wall, skyCrop, STAGE);
+    const backgroundPosition = getTutorialParallaxLayerPosition(arenaPosition, wall, backgroundCrop, STAGE);
+    canvas.dataset.sourceMapDrawPositions = JSON.stringify({
+      sky: skyPosition,
+      background: backgroundPosition,
+      terrain: { x: arenaPosition.x - terrainCrop.x, y: arenaPosition.y - terrainCrop.y },
+    });
   }
 
   function sourceArmHolderFor(playbackState) {

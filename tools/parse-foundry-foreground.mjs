@@ -269,7 +269,11 @@ export function extractSymbolFrameDisplayList({ character, frame, swf = defaultS
   const bytes = decompressSwf(swf);
   const defs = definitionMap(bytes);
   const definition = defs.get(character);
-  if (!definition || definition.code !== 39) throw new Error(`original sprite is unavailable: ${character}`);
+  if (!definition) throw new Error(`original symbol is unavailable: ${character}`);
+  if (definition.code !== 39) {
+    if (!directBounds(bytes, definition)) throw new Error(`original visual symbol is unavailable: ${character}`);
+    return Object.freeze({ character, frame: 1, kind: 'shape', layers: Object.freeze([]) });
+  }
   const sourceFrame = Math.min(frame, bytes.readUInt16LE(definition.body + 2));
   const display = displayListFrames(bytes, definition)[sourceFrame - 1];
   if (!display) throw new Error(`original sprite frame is unavailable: ${character}/${sourceFrame}`);
@@ -282,7 +286,7 @@ export function extractSymbolFrameDisplayList({ character, frame, swf = defaultS
       ...(name ? { name } : {}),
       matrix: Object.freeze({ ...matrix }),
     }));
-  return Object.freeze({ character, frame: sourceFrame, layers: Object.freeze(layers) });
+  return Object.freeze({ character, frame: sourceFrame, kind: 'sprite', layers: Object.freeze(layers) });
 }
 
 /**

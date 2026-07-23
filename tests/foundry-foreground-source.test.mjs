@@ -75,14 +75,16 @@ test('recovers Tutorial Bg and BgSky bounds from their original source frames', 
   }
 });
 
-test('recovers the original Tutorial visible sprite child lists before flattening', () => {
+test('distinguishes the original Tutorial base Shape from its nested overlay sprite before flattening', () => {
   const base = extractSymbolFrameDisplayList({ character: 1353, frame: 1 });
   const overlay = extractSymbolFrameDisplayList({ character: 1358, frame: 1 });
 
   assert.equal(base.character, 1353);
+  assert.equal(base.kind, 'shape');
+  assert.deepEqual(base.layers, []);
   assert.equal(overlay.character, 1358);
-  assert.ok(base.layers.length > 0);
+  assert.equal(overlay.kind, 'sprite');
   assert.ok(overlay.layers.length > 0);
-  assert.ok(base.layers.every(({ character, matrix }) => Number.isInteger(character)
+  assert.ok(overlay.layers.every(({ character, matrix }) => Number.isInteger(character)
     && Number.isFinite(matrix.x) && Number.isFinite(matrix.y)));
 });

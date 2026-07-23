@@ -4,7 +4,7 @@
 
 本图只描述用户提供的新完整包，不从当前网页实现反推原版。
 
-- 根目录：`C:\Users\q2414\Documents\Codex\2026-07-22\new-chat\outputs\war-heroes_4399_90433_local`
+- 根目录：`D:\CodexSourcePackages\war-heroes_4399_90433_local`
 - 原件：`4399-90433-war-heroes-original.swf`
 - SHA-256：`BDC9216EDD31D8CF2B231182C7203655CFEF9A71F497E5708F9A649D8A40BD29`
 - 证据层级：`extracted/scripts/*.as` → 现有 FFDec P-code → `rabcdasm/war-heroes-4399-0/*.class.asasm`；显示列表/帧/矩阵只以 `swf-structure.xml` 为准。

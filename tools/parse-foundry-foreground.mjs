@@ -213,6 +213,32 @@ export function extractArenaFrameDisplayList({ label, swf = defaultSwf } = {}) {
   return Object.freeze({ arenaCharacter: ARENA, frame: index + 1, label, layers: Object.freeze(layers) });
 }
 
+// Returns source-space bounds after the exact Arena placement matrix.  This
+// deliberately operates on selected visible characters so Node/Wall authoring
+// objects cannot pollute a PNG registration decision.
+export function extractArenaFrameVisualBounds({ label, characters, swf = defaultSwf } = {}) {
+  if (!Array.isArray(characters) || !characters.length || !characters.every(Number.isInteger)) {
+    throw new TypeError('original Arena visual character ids are required');
+  }
+  const bytes = decompressSwf(swf);
+  const defs = definitionMap(bytes);
+  const arena = defs.get(ARENA);
+  if (!arena || arena.code !== 39) throw new Error('original Arena symbol 1413 is unavailable');
+  const frame = displayListFrames(bytes, arena).find((candidate) => candidate.label === label);
+  if (!frame) throw new Error(`original Arena frame label is unavailable: ${label}`);
+  const wanted = new Set(characters);
+  const layers = frame.items
+    .filter(({ character }) => wanted.has(character))
+    .sort((left, right) => left.depth - right.depth)
+    .map(({ depth, character, matrix = { a: 1, b: 0, c: 0, d: 1, x: 0, y: 0 } }) => {
+      const source = timelineBounds(bytes, defs, character);
+      if (!source) throw new Error(`original Arena visual bounds are unavailable: ${character}`);
+      return Object.freeze({ depth, character, matrix: Object.freeze({ ...matrix }), bounds: Object.freeze(transformBounds(source.bounds, matrix)) });
+    });
+  if (layers.length !== wanted.size) throw new Error(`original Arena visual layer selection is incomplete: ${label}`);
+  return Object.freeze({ arenaCharacter: ARENA, label, layers: Object.freeze(layers) });
+}
+
 /**
  * Arena's Display List is the authority for reassembling Foundry's dynamic
  * foreground.  This deliberately excludes wallMC and Node* authoring data.

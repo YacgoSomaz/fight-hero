@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  advanceCampaignOneGameTick,
   advanceCampaignOneSourceTick,
   createCampaignOneSourceTickRuntime,
   enqueueCampaignOneSourceInput,
@@ -54,4 +55,46 @@ test('Campaign 1 source tick applies the state-nine elevator ammo clear to the a
     elevator: 'play',
   });
   assert.deepEqual(tick.bulletEvents, [{ wallColor: '9900ff' }]);
+});
+
+// Game.EnterFrame does not batch every bot's AI, then every bot's gun and
+// then every Unit tail.  It walks Game.units once: Player.shoot -> player
+// UnitEnterFrame, then each AI decision/shoot -> that AI UnitEnterFrame.
+// Bullet_Line_Basic resolves its line hit synchronously inside shoot(), before
+// the firing Unit reaches its inherited tail.  This trace is the first guard
+// against a page loop silently reintroducing the old batch ordering.
+test('Campaign 1 Game tick keeps source actor, line-bullet and Unit-tail order', () => {
+  const runtime = createCampaignOneSourceTickRuntime({ random: () => 0.999 });
+  const player = runtime.session.actors[0];
+  runtime.session.runtime.state = 99; // avoid the authored frame-zero gun reset
+  for (const actor of runtime.session.actors) {
+    if (actor.status) actor.status.sSpawn = 0;
+  }
+  player.gunRuntime.mDown = true;
+
+  const trace = [];
+  const result = advanceCampaignOneGameTick(runtime, {
+    wall: { isSolid: () => false },
+    onLineBullet(event) { trace.push(`line:${event.actorId}:${event.bullet.gunId}`); },
+  });
+
+  assert.deepEqual(trace, ['line:unit0:M4']);
+  assert.deepEqual(result.trace.map(({ phase, actorId = null }) => `${phase}:${actorId ?? ''}`), [
+    'campaign:',
+    'playerGun:unit0',
+    'lineBullet:unit0',
+    'unitTail:unit0',
+    'ai:unit1',
+    'aiGun:unit1',
+    'unitTail:unit1',
+    'ai:unit2',
+    'aiGun:unit2',
+    'unitTail:unit2',
+    'ai:unit3',
+    'aiGun:unit3',
+    'unitTail:unit3',
+    'bullets:',
+    'match:',
+  ]);
+  assert.equal(runtime.session.actors[4].status, null);
 });

@@ -77,3 +77,16 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /catch \(reason\) \{\s*reportTutorialSceneFailure\(reason\);/);
   assert.doesNotMatch(script, /main\.mjs|engine\.mjs|createWorld|foundry/);
 });
+
+test('Tutorial scene uses the Campaign actor gun slots and original swap keys instead of a parallel browser weapon state', () => {
+  const script = fs.readFileSync(new URL('../src/tutorial-scene-preview.mjs', import.meta.url), 'utf8');
+
+  assert.match(script, /applyCampaignOneSessionPlayerGunSwap/);
+  assert.match(script, /gunState = sourcePlayer\.gunRuntime;/);
+  assert.match(script, /sourcePlayer\.gunRuntimes\[sourcePlayer\.gunSlot\] = gunState;/);
+  assert.match(script, /event\.code === 'KeyQ'/);
+  assert.match(script, /event\.code === 'ShiftLeft'/);
+  assert.match(script, /event\.code === 'ShiftRight'/);
+  assert.match(script, /applyCampaignOneSessionPlayerGunSwap\(session\)/);
+  assert.doesNotMatch(script, /createTutorialGunRuntime/);
+});

@@ -72,10 +72,10 @@ test('source Movement lands on the alpha wall at its original foot probe instead
 });
 
 // Movement.as:357–368 has a second `!hitTest(0, -1)` guard while it resolves
-// a foot collision.  Without it, a spawn partly overlapping its floor is
-// pushed through the entire platform and the Tutorial camera follows it into
-// empty map space.
-test('source Movement stops resolving an initial foot overlap once the original head probe reaches the platform', () => {
+// a foot collision. Its later unconditional side-probe phase then clears a
+// centre overlap by half a pixel, so an authored spawn is never pushed through
+// the entire platform and the Tutorial camera stays inside the source map.
+test('source Movement stops resolving an initial foot overlap before the source centre-clear phase', () => {
   const result = stepTutorialMovement({
     state: createTutorialMovementState(),
     actor: actor({ position: { x: 285, y: 705 }, noAim: true }),
@@ -83,7 +83,7 @@ test('source Movement stops resolving an initial foot overlap once the original 
     keys: 0,
   });
 
-  assert.equal(result.actor.position.y, 708);
+  assert.equal(result.actor.position.y, 706.5);
   assert.equal(result.state.jumping, false);
   assert.equal(result.state.yVel, 0);
 });

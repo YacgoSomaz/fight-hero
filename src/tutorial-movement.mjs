@@ -167,49 +167,55 @@ function updateCrouch(state, position, wall, keys) {
   }
 }
 
-function resolveTerminalFall({ state, position, wall, keys, nextAnim }) {
-  if (!sourceHitTest(wall, position, 0, -50)) {
-    let rightClimb = false;
-    if ((keys & TUTORIAL_MOVEMENT_KEYS.RIGHT) && sourceHitTest(wall, position, 17, -40) && !sourceHitTest(wall, position, 17, -55)) {
-      state.climbSize = 2;
-      rightClimb = true;
-    } else if ((keys & TUTORIAL_MOVEMENT_KEYS.RIGHT) && sourceHitTest(wall, position, 17, -20) && !sourceHitTest(wall, position, 17, -55)) {
-      state.climbSize = 1;
-      rightClimb = true;
-    }
-    displaceUntilFree(
-      position,
-      wall,
-      state.crouching ? [[17, -20], [17, -25], [17, -35]] : [[17, -20], [17, -25], [17, -35], [17, -45]],
-      -1,
-    );
-
-    let leftClimb = false;
-    if ((keys & TUTORIAL_MOVEMENT_KEYS.LEFT) && sourceHitTest(wall, position, -17, -40) && !sourceHitTest(wall, position, -17, -55)) {
-      state.climbSize = 2;
-      leftClimb = true;
-    } else if ((keys & TUTORIAL_MOVEMENT_KEYS.LEFT) && sourceHitTest(wall, position, -17, -20) && !sourceHitTest(wall, position, -17, -55)) {
-      state.climbSize = 1;
-      leftClimb = true;
-    }
-    displaceUntilFree(
-      position,
-      wall,
-      state.crouching ? [[-17, -20], [-17, -25], [-17, -35]] : [[-17, -20], [-17, -25], [-17, -35], [-17, -45]],
-      1,
-    );
-    let guard = 0;
-    while (sourceHitTest(wall, position, 0, 0)) {
-      position.y -= 0.5;
-      guard += 1;
-      if (guard > 4096) throw new RangeError('source Movement centre probe could not leave Wall_tut');
-    }
-    if (rightClimb) nextAnim = beginClimb(state, 1);
-    if (leftClimb) nextAnim = beginClimb(state, -1);
-  } else {
+function resolveTerminalFall({ state, position, wall }) {
+  if (sourceHitTest(wall, position, 0, -50)) {
     // This is the source's terminal-speed ceiling recovery loop.
     position.y += 1;
   }
+}
+
+// Movement.as:454–543 performs these side probes after *both* the grounded
+// and falling paths. They are not a terminal-fall-only feature: a grounded
+// Unit walking into a chest-high Wall_tut ledge must be pushed out and enter
+// its authored climb state in the same source frame.
+function resolveSourceSideClimb({ state, position, wall, keys, nextAnim }) {
+  let rightClimb = false;
+  if ((keys & TUTORIAL_MOVEMENT_KEYS.RIGHT) && sourceHitTest(wall, position, 17, -40) && !sourceHitTest(wall, position, 17, -55)) {
+    state.climbSize = 2;
+    rightClimb = true;
+  } else if ((keys & TUTORIAL_MOVEMENT_KEYS.RIGHT) && sourceHitTest(wall, position, 17, -20) && !sourceHitTest(wall, position, 17, -55)) {
+    state.climbSize = 1;
+    rightClimb = true;
+  }
+  displaceUntilFree(
+    position,
+    wall,
+    state.crouching ? [[17, -20], [17, -25], [17, -35]] : [[17, -20], [17, -25], [17, -35], [17, -45]],
+    -1,
+  );
+
+  let leftClimb = false;
+  if ((keys & TUTORIAL_MOVEMENT_KEYS.LEFT) && sourceHitTest(wall, position, -17, -40) && !sourceHitTest(wall, position, -17, -55)) {
+    state.climbSize = 2;
+    leftClimb = true;
+  } else if ((keys & TUTORIAL_MOVEMENT_KEYS.LEFT) && sourceHitTest(wall, position, -17, -20) && !sourceHitTest(wall, position, -17, -55)) {
+    state.climbSize = 1;
+    leftClimb = true;
+  }
+  displaceUntilFree(
+    position,
+    wall,
+    state.crouching ? [[-17, -20], [-17, -25], [-17, -35]] : [[-17, -20], [-17, -25], [-17, -35], [-17, -45]],
+    1,
+  );
+  let guard = 0;
+  while (sourceHitTest(wall, position, 0, 0)) {
+    position.y -= 0.5;
+    guard += 1;
+    if (guard > 4096) throw new RangeError('source Movement centre probe could not leave Wall_tut');
+  }
+  if (rightClimb) nextAnim = beginClimb(state, 1);
+  if (leftClimb) nextAnim = beginClimb(state, -1);
   return nextAnim;
 }
 
@@ -295,10 +301,11 @@ export function stepTutorialMovement({ state: sourceState, actor: sourceActor, w
     state.yVel += SOURCE.yGrav * state.modGrav;
     if (state.yVel > SOURCE.yMax * state.modGrav) {
       state.yVel = SOURCE.yMax * state.modGrav;
-      nextAnim = resolveTerminalFall({ state, position, wall, keys, nextAnim });
+      resolveTerminalFall({ state, position, wall });
     }
   }
 
+  nextAnim = resolveSourceSideClimb({ state, position, wall, keys, nextAnim });
   nextAnim = updateFloorTilt({ state, position, wall, keys, nextAnim, actor });
 
   return Object.freeze({

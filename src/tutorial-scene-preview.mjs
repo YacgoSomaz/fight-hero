@@ -205,6 +205,19 @@ try {
     throw new Error('original Speak portrait runtime is unavailable');
   }
 
+  // Verification-only mirror of the records that this renderer already
+  // consumes.  It deliberately adds no stage art or alternative physics: a
+  // browser test can compare the exact source-tick camera and Unit position
+  // to the visible 800×600 frame.
+  function publishTutorialSourceSnapshot() {
+    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+    canvas.dataset.sourceGameFrame = String(tutorialWorld.tickRuntime.gameFrame);
+    canvas.dataset.sourceArenaPosition = `${arenaPosition.x},${arenaPosition.y}`;
+    canvas.dataset.sourcePlayerPosition = sourcePlayer?.position
+      ? `${sourcePlayer.position.x},${sourcePlayer.position.y}`
+      : '';
+  }
+
   function sourceArmHolderFor(playbackState) {
     const rootFrame = unitTimeline.frames[playbackState.rootState.frame - 1];
     const holder = rootFrame?.find(([id]) => id === 'arm1hold');
@@ -569,6 +582,7 @@ try {
     }
     renderTutorialHud();
     renderTutorialSpeak();
+    publishTutorialSourceSnapshot();
   }
 
   function frame(now) {

@@ -9,6 +9,14 @@ export const TUTORIAL_MOVEMENT_KEYS = Object.freeze({
   RIGHT: 8,
 });
 
+// Movement.as addresses the live Unit's `unitInfo.runType`, assigned by
+// Unit.setClass().  Browser bindings also expose a convenient root runType,
+// but the authoritative Campaign actor only owns the former.
+function sourceRunType(actor) {
+  const runType = actor?.unitInfo?.runType ?? actor?.runType;
+  return Number.isInteger(runType) && runType > 0 ? runType : '';
+}
+
 const SOURCE = Object.freeze({
   xAcc: 1.8,
   xBrake: 1.7,
@@ -115,6 +123,7 @@ function updateHorizontal({ state, actor, position, keys }) {
   let nextAnim = 'idle';
   let aim = null;
   const back = 'back';
+  const runType = sourceRunType(actor);
   if ((keys & TUTORIAL_MOVEMENT_KEYS.LEFT) && !state.landHard) {
     if (actor.human && actor.noAim) aim = { x: position.x - 200, y: position.y };
     if (state.crouching) {
@@ -122,7 +131,7 @@ function updateHorizontal({ state, actor, position, keys }) {
       state.xVel += (state.jumping ? -SOURCE.xAirAcc : -SOURCE.xAcc) * state.modSpeed;
       state.xVel = Math.max(state.xVel, -SOURCE.xCrouchMax * state.modMax);
     } else {
-      nextAnim = `${actor.flip ? 'run' : `run${actor.noAim && actor.human ? '' : back}`}${actor.runType ?? ''}`;
+      nextAnim = `${actor.flip ? 'run' : `run${actor.noAim && actor.human ? '' : back}`}${runType}`;
       state.xVel += (state.jumping ? -SOURCE.xAirAcc : -SOURCE.xAcc) * state.modSpeed;
       state.xVel = Math.max(state.xVel, -SOURCE.xMax * state.modMax);
     }
@@ -133,7 +142,7 @@ function updateHorizontal({ state, actor, position, keys }) {
       state.xVel += (state.jumping ? SOURCE.xAirAcc : SOURCE.xAcc) * state.modSpeed;
       state.xVel = Math.min(state.xVel, SOURCE.xCrouchMax * state.modMax);
     } else {
-      nextAnim = `${actor.flip ? `run${actor.noAim && actor.human ? '' : back}` : 'run'}${actor.runType ?? ''}`;
+      nextAnim = `${actor.flip ? `run${actor.noAim && actor.human ? '' : back}` : 'run'}${runType}`;
       state.xVel += (state.jumping ? SOURCE.xAirAcc : SOURCE.xAcc) * state.modSpeed;
       state.xVel = Math.min(state.xVel, SOURCE.xMax * state.modMax);
     }
@@ -215,7 +224,7 @@ function sourceRotation(x1, y1, x2, y2) {
   return degrees;
 }
 
-function updateFloorTilt({ state, position, wall, keys, nextAnim }) {
+function updateFloorTilt({ state, position, wall, keys, nextAnim, actor }) {
   let target = 0;
   if (!state.jumping) {
     state.tiltL = -10;
@@ -269,8 +278,9 @@ export function stepTutorialMovement({ state: sourceState, actor: sourceActor, w
   if (sourceHitTest(wall, position, 0, 1)) {
     if (state.falltimer >= 1.3 * 30) state.landHard = true;
     if (state.yVel > 0) {
-      if (keys & TUTORIAL_MOVEMENT_KEYS.LEFT) nextAnim = `${actor.flip ? 'landrun' : 'landrunback'}${actor.runType ?? ''}`;
-      else if (keys & TUTORIAL_MOVEMENT_KEYS.RIGHT) nextAnim = `${actor.flip ? 'landrunback' : 'landrun'}${actor.runType ?? ''}`;
+      const runType = sourceRunType(actor);
+      if (keys & TUTORIAL_MOVEMENT_KEYS.LEFT) nextAnim = `${actor.flip ? 'landrun' : 'landrunback'}${runType}`;
+      else if (keys & TUTORIAL_MOVEMENT_KEYS.RIGHT) nextAnim = `${actor.flip ? 'landrunback' : 'landrun'}${runType}`;
       else nextAnim = 'land';
     }
     state.manualJump = false;
@@ -289,7 +299,7 @@ export function stepTutorialMovement({ state: sourceState, actor: sourceActor, w
     }
   }
 
-  nextAnim = updateFloorTilt({ state, position, wall, keys, nextAnim });
+  nextAnim = updateFloorTilt({ state, position, wall, keys, nextAnim, actor });
 
   return Object.freeze({
     actor: Object.freeze(actor),

@@ -39,9 +39,9 @@ function assertRuntime(runtime) {
   }
 }
 
-export function createCampaignOneSourceTickRuntime({ random = Math.random } = {}) {
+export function createCampaignOneSourceTickRuntime({ random = Math.random, session = null } = {}) {
   const runtime = {
-    session: createCampaignOneSession({ random }),
+    session: session ?? createCampaignOneSession({ random }),
     pendingInputs: [],
     tick: 0,
     gameFrame: 0,

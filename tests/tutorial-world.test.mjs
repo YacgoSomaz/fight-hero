@@ -66,6 +66,9 @@ test('Tutorial world advances its human foot trigger only from the current origi
 // replace wallMC inside the actor walk, before the next Unit sees collision.
 test('Tutorial world drives Campaign 1 through the source Game tick and current wall surface', () => {
   const walls = sourceWallSet();
+  // This tick-order fixture is not a collision fixture. A fully-solid fake
+  // wall would make Movement.as's escape probe intentionally throw.
+  for (const wall of Object.values(walls.frames)) wall.isSolid = () => false;
   const world = createTutorialWorld({ wallSet: walls, random: () => 0.999 });
   world.session.runtime.state = 99;
   for (const actor of world.session.actors) {

@@ -1,4 +1,5 @@
 import { applyCampaignOneSessionBulletEnvironmentHit, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from './campaign-one-session.mjs';
+import { advanceCampaignOneGameTick, createCampaignOneSourceTickRuntime } from './campaign-one-tick-runtime.mjs';
 
 function replaceSourceWall(world) {
   const frame = world.session.map.wallFrame;
@@ -10,11 +11,31 @@ function replaceSourceWall(world) {
 // This is deliberately not the generic quick-match engine.  It owns the
 // original Campaign 1 session and Wall_tut frame sequence until original unit,
 // cutscene and HUD behavior are migrated into the same world.
-export function createTutorialWorld({ wallSet, session = createCampaignOneSession() } = {}) {
+export function createTutorialWorld({ wallSet, session = null, random = Math.random } = {}) {
   if (!wallSet?.at) throw new TypeError('Tutorial requires a complete original Wall_tut frame set');
-  const world = { session, wallSet, wall: null };
+  const sourceSession = session ?? createCampaignOneSession({ random });
+  const tickRuntime = createCampaignOneSourceTickRuntime({ random, session: sourceSession });
+  const world = { session: tickRuntime.session, tickRuntime, wallSet, wall: null };
   replaceSourceWall(world);
   return world;
+}
+
+// One browser-facing Game.EnterFrame bridge.  It never caches a second wall:
+// the facade resolves `world.wall` on every source collision read, so a
+// state-nine bullet or a human pink trigger can replace the original wallMC
+// bitmap before the next actor in Game.units is processed.
+export function advanceTutorialWorldGameTick(world, { onLineBullet = null, playerKeys = 0, playerJumpRequested = false, gameStarted = true } = {}) {
+  if (!world?.tickRuntime || !world?.session || !world?.wall) throw new TypeError('Tutorial source world is required');
+  const wall = {
+    isSolid(x, y) { return world.wall.isSolid(x, y); },
+  };
+  return advanceCampaignOneGameTick(world.tickRuntime, {
+    wall,
+    playerKeys,
+    playerJumpRequested,
+    gameStarted,
+    onLineBullet,
+  });
 }
 
 export function applyTutorialBulletEnvironmentHit(world, { x, y }) {

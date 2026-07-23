@@ -5,6 +5,7 @@ const TWIPS = 20;
 const FIXED = 65536;
 const ENVIRONMENT_SYMBOLS = new Set([1361, 1388]);
 const SPEAK_SYMBOL = 1488;
+const SPEAK_HEAD_SYMBOL = 666;
 
 class BitReader {
   constructor(bytes, offset = 0) { this.bytes = bytes; this.byte = offset; this.bit = 0; }
@@ -191,6 +192,14 @@ export function extractTutorialEnvironmentTimelines(source) {
 export function extractTutorialSpeakTimeline(source) {
   const speak = extractTimelines(source, new Set([SPEAK_SYMBOL]), { includeName: true })[SPEAK_SYMBOL];
   return { symbolId: SPEAK_SYMBOL, ...speak };
+}
+
+// Speak_187.head is the original 200-frame portrait selector. Hud.setMsg()
+// drives it with Unit.unitInfo.frame, so keep its FrameLabel and Display List
+// records independent from the 33-frame container animation.
+export function extractTutorialSpeakPortraitTimeline(source) {
+  const portrait = extractTimelines(source, new Set([SPEAK_HEAD_SYMBOL]))[SPEAK_HEAD_SYMBOL];
+  return { symbolId: SPEAK_HEAD_SYMBOL, ...portrait };
 }
 
 if (process.argv[1] && new URL(`file://${process.argv[1].replaceAll('\\', '/')}`).href === import.meta.url) {

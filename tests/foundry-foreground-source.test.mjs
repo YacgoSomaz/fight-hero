@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { extractArenaFrameDisplayList, extractArenaFrameVisualBounds, extractFoundryForegroundDisplayList, extractSymbolFrameVisualBounds } from '../tools/parse-foundry-foreground.mjs';
+import { extractArenaFrameDisplayList, extractArenaFrameVisualBounds, extractFoundryForegroundDisplayList, extractSymbolFrameDisplayList, extractSymbolFrameVisualBounds } from '../tools/parse-foundry-foreground.mjs';
 
 test('extracts the original Foundry foreground children from Arena frame 2 without flattening them', () => {
   const source = extractFoundryForegroundDisplayList();
@@ -73,4 +73,16 @@ test('recovers Tutorial Bg and BgSky bounds from their original source frames', 
     assert.ok(Number.isFinite(source.bounds.xMin) && Number.isFinite(source.bounds.yMin));
     assert.ok(source.bounds.xMax > source.bounds.xMin && source.bounds.yMax > source.bounds.yMin);
   }
+});
+
+test('recovers the original Tutorial visible sprite child lists before flattening', () => {
+  const base = extractSymbolFrameDisplayList({ character: 1353, frame: 1 });
+  const overlay = extractSymbolFrameDisplayList({ character: 1358, frame: 1 });
+
+  assert.equal(base.character, 1353);
+  assert.equal(overlay.character, 1358);
+  assert.ok(base.layers.length > 0);
+  assert.ok(overlay.layers.length > 0);
+  assert.ok(base.layers.every(({ character, matrix }) => Number.isInteger(character)
+    && Number.isFinite(matrix.x) && Number.isFinite(matrix.y)));
 });

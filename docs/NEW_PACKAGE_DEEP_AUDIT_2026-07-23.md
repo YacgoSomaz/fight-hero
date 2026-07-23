@@ -132,7 +132,7 @@ Campaign.runScripts
 npm run test:coverage
 ```
 
-结果：370 pass、0 fail；总体覆盖率为 line 98.74%、branch 82.88%、function 96.53%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395，以及门/电梯原始时间轴和菜单可点击性。
+结果：371 pass、0 fail；总体覆盖率为 line 98.73%、branch 82.93%、function 96.53%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395，以及门/电梯原始时间轴和菜单可点击性。
 
 但当前测试体系存在以下不可替代的盲区：
 
@@ -140,6 +140,7 @@ npm run test:coverage
 2. 没有读取原 SWF 的录制/trace，并以同一输入 seed、同一 30 FPS 输入逐帧比较 actor、bullet、HUD、wall frame、score。
 3. 没有可重复截图差分，因此“素材来自原版”不等于“原矩阵、裁剪、滤镜、时间轴合成一致”。
 4. 覆盖率是代码执行率，不是原版状态空间覆盖率。特别是 Movement、aim、camera 的低分支覆盖已明确暴露此问题。
+5. 2026-07-23 的实际浏览器检查已确认页面到达 `canvas[data-ready=true]` 且没有 JS 错误；但内置浏览器截图仍为黑画布。该现象尚未得到原版对照或定位，必须继续检查地图图层/相机/画布可见性，**不得**将资源 HTTP 200 或 ready 标记写成第一关视觉可用。
 
 ## 6. 接下来必须先做的事情（按阻断性排序）
 

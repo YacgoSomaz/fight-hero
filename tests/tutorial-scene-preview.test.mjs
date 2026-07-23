@@ -128,3 +128,18 @@ test('Tutorial scene exposes its live source-tick camera and player coordinates 
   assert.match(script, /tutorialWorld\.tickRuntime\.gameFrame/);
   assert.match(script, /publishTutorialSourceSnapshot\(\);/);
 });
+
+// The visual acceptance check must distinguish a source-map load failure from
+// a Canvas draw failure.  These attributes report only the already-loaded
+// original image dimensions and the exact source crop/camera draw positions;
+// they do not add any diagnostic art to the stage.
+test('Tutorial scene exposes loaded original map dimensions and source draw positions for visual verification', () => {
+  const { script } = readPreview();
+  assert.match(script, /canvas\.dataset\.sourceMapLayerSizes/);
+  assert.match(script, /canvas\.dataset\.sourceMapDrawPositions/);
+  assert.match(script, /layers\.sky\.naturalWidth/);
+  assert.match(script, /layers\.map\.naturalWidth/);
+  assert.match(script, /layers\.terrain\.naturalWidth/);
+  assert.match(script, /getTutorialParallaxLayerPosition\(arenaPosition, wall, skyCrop, STAGE\)/);
+  assert.match(script, /getTutorialParallaxLayerPosition\(arenaPosition, wall, backgroundCrop, STAGE\)/);
+});

@@ -35,9 +35,17 @@ test('Tutorial scene preview consumes the source Game tick rather than browser p
   assert.match(script, /deriveTutorialUnitAim/);
   assert.match(script, /getTutorialUnitOverheadHud/);
   assert.match(script, /getTutorialDownArrowRenderPlan/);
+  assert.match(script, /getTutorialEnvironmentRenderPlan/);
+  assert.match(script, /drawTutorialEnvironment/);
   assert.match(script, /drawVectorRuntimeSprite/);
   assert.match(script, /tutorial-down-arrow-vector-runtime\.local\.json/);
+  assert.match(script, /tutorial-environment-timeline-runtime\.local\.json/);
+  assert.match(script, /tutorial-environment\/1359\.svg/);
+  assert.match(script, /tutorial-environment\/1360\.svg/);
+  assert.match(script, /tutorial-environment\/1387\.svg/);
   assert.match(script, /getTutorialDownArrowRenderPlan\(session\.hud\.arrows, tutorialWorld\.tickRuntime\.tick, arenaPosition\)/);
+  assert.match(script, /getTutorialEnvironmentRenderPlan\(session\.environment, environmentTimelineRuntime, arenaPosition\)/);
+  assert.match(script, /drawTutorialEnvironment\(context, environmentPlan, environmentAssets, \{ createCanvas/);
   assert.match(script, /drawVectorRuntimeSprite\(context, downArrowRuntime, 1395, arrow\.frame, drawRuntimeShape\)/);
   assert.match(script, /unit-bar-670\.png/);
   assert.match(script, /globalCompositeOperation = 'source-in'/);

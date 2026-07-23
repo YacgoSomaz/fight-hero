@@ -117,10 +117,10 @@ Campaign.runScripts
 | --- | --- | --- |
 | CA-01 | 已由 `campaign-one-tick-runtime` 的 source Game tick 关闭；仍需把剩余 Unit/HUD/MatchSettings 子对象纳入同一 trace | scripts、actor 顺序、line bullet 与人类脚底 trigger 已同 tick；不等于完整第一关。 |
 | CA-02 | `Hud.setMsg` 已迁移为单一 `msgForce + msgTimer + speak open/close`；仍未绘制 Speak_187 的原 Display List/文本合成 | 状态契约已测，不等于原字体、头像、开关动画或语音已完成。 |
-| CA-03 | DownArrow 1395 已按原 XML/Shape4/16 帧在试玩页绘制；Hud 1540 教程标签、Speak、HudInfo 尚未完整画出 | 仅这个独立教程 child 已可见，不能外推整个教程 HUD。 |
+| CA-03 | DownArrow 1395 已按原 XML/Shape4/16 帧在试玩页绘制；试玩页也已消费 Hud 1540 的 ScoreBar、经验条、M4 child、原字体和 `drawBox` 弹药布局 | 教程标签、Speak、HudInfo 尚未完整画出；没有原版截图叠图，不能外推为完整 HUD。 |
 | CA-04 | 声音只写 `session.audio` intent | `S_Mine1`、`S_Pan`、voice/music 没有按原 timing/output 播放。 |
 | CA-05 | 门/电梯已由原 SWF Display List 驱动：门 1361 的 Shape 1359 `clipDepth=3` 遮罩与 Shape 1360 面板，电梯 1388 的 Shape 1387；23/19 帧 matrix 与空第 19 帧均已运行时承载 | 已有时间轴/遮罩/资源回归；仍缺原版同输入截图叠图，不能宣称逐像素一致。 |
-| CA-06 | spawned AI、score、任务结束与 cutscene 没有 end-to-end source trace | 可以进 Tutorial，不代表能按原版从开始到结束。 |
+| CA-06 | spawned AI、score、任务结束与 cutscene 没有 end-to-end source trace；15 分 TDM 已写入 `Game.endGame` 等价的 `game.ended + hud.won + hud.timeline='end'` | 结局 HUD 时间轴/后 Cutscene/销毁仍未迁移，不能称通关完成。 |
 
 因此 Campaign 1 当前状态应称为：**“原任务定义和若干状态转换已接入的验证场景”**，而不是“战役第一关已做好”。
 
@@ -132,7 +132,7 @@ Campaign.runScripts
 npm run test:coverage
 ```
 
-结果：371 pass、0 fail；总体覆盖率为 line 98.73%、branch 82.93%、function 96.53%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395，以及门/电梯原始时间轴和菜单可点击性。
+结果：374 pass、0 fail；总体覆盖率为 line 98.75%、branch 82.82%、function 96.53%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395、门/电梯原始时间轴、Campaign 1 的 15 分 `endGame` 结果，以及试玩页 Hud 1540 来源资产绑定。
 
 但当前测试体系存在以下不可替代的盲区：
 

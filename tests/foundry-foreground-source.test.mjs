@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { extractArenaFrameDisplayList, extractArenaFrameVisualBounds, extractFoundryForegroundDisplayList } from '../tools/parse-foundry-foreground.mjs';
+import { extractArenaFrameDisplayList, extractArenaFrameVisualBounds, extractFoundryForegroundDisplayList, extractSymbolFrameVisualBounds } from '../tools/parse-foundry-foreground.mjs';
 
 test('extracts the original Foundry foreground children from Arena frame 2 without flattening them', () => {
   const source = extractFoundryForegroundDisplayList();
@@ -59,4 +59,18 @@ test('recovers Tutorial visible-child bounds from the original Arena display lis
   assert.deepEqual(source.layers.map(({ character }) => character), [1353, 1358]);
   assert.ok(source.layers.every(({ bounds }) => Number.isFinite(bounds.xMin)
     && Number.isFinite(bounds.yMin) && bounds.xMax > bounds.xMin && bounds.yMax > bounds.yMin));
+});
+
+test('recovers Tutorial Bg and BgSky bounds from their original source frames', () => {
+  const background = extractSymbolFrameVisualBounds({ character: 1210, frame: 18 });
+  const sky = extractSymbolFrameVisualBounds({ character: 1187, frame: 5 });
+
+  assert.equal(background.character, 1210);
+  assert.equal(background.frame, 18);
+  assert.equal(sky.character, 1187);
+  assert.equal(sky.frame, 5);
+  for (const source of [background, sky]) {
+    assert.ok(Number.isFinite(source.bounds.xMin) && Number.isFinite(source.bounds.yMin));
+    assert.ok(source.bounds.xMax > source.bounds.xMin && source.bounds.yMax > source.bounds.yMin);
+  }
 });

@@ -31,7 +31,7 @@
 
 - 阅读并交叉比对：`Main.as`、`Game.as`、`Arena.as`、`Player.as`、`AI.as`、`Unit.as`、`Movement.as`、`Guns.as`、`Bullet.as`、`Status.as`、`Hud.as`、`MatchSettings.as`、`Stats_Campaign.as` 与其 ASASM/XML 绑定。
 - 沿当前浏览器入口检查：`tutorial-scene-preview.mjs` → `campaign-one-session.mjs` → campaign / AI / movement / gun / status / timeline / render 模块。
-- 完整执行 `npm run test:coverage`：**363/363 通过**；总体 **98.77% 行、83.17% 分支、96.53% 函数**。
+- 完整执行 `npm test`：**364/364 通过**；覆盖率门槛的最近完整运行是 **98.77% 行、83.17% 分支、96.53% 函数**。
 - 没有把测试通过当作视觉验收；本轮也没有进行浏览器自动操作或人工截图对比。
 
 ## 2. 原版运行时与当前网页调度的直接对照
@@ -52,29 +52,29 @@ Campaign.runScripts
 
 `Player.EnterFrame` 在自己的 `UnitEnterFrame` 前处理 respawn、瞄准和 `mDown → gun.shoot`。`AI.EnterFrame` 在自己的 `UnitEnterFrame` 前处理 waypoint、等待、LOS、瞄准、开枪概率与 action box。两者不是浏览器循环外的独立“控制器”。
 
-### 2.2 当前 `tutorial-scene-preview.mjs` 的真实顺序
+### 2.2 当前 `tutorial-scene-preview.mjs` 的 source tick 顺序
 
 ```text
-clear line traces
+浏览器输入/aim 采样
 → Campaign 1 script/session effects
-→ 玩家 aim → 玩家 gun tick / 立即 line-bullet hit
-→ 所有 AI decision → 所有 AI gun tick / 立即 line-bullet hit
-→ 所有 Unit 的 Status（不含 Movement）
-→ 所有 AI 的 Movement
-→ 玩家 Movement
+→ Arena 环境时间轴（door/elevator）
+→ Hud.EnterFrame
+→ Player gun tick / 立即 line-bullet hit → Player Unit tail
+→ 每个 AI：decision → gun tick / 立即 line-bullet hit → AI Unit tail
+→ bullets 标记 → match 标记
 → render
 ```
 
-这不是原版排列，且有四项明确差异：
+该顺序已关闭原先的 Actor 批处理差异，但以下边界仍未闭合：
 
 | ID | 差异 | 可见/逻辑影响 | 判定 |
 | --- | --- | --- | --- |
-| RT-01 | 网页即时处理 `Bullet_Line_Basic` 命中本身符合其 constructor 行为；但没有保留“构造后仍在 bullets array、末尾 EnterFrame/清理”的统一生命周期 | 当前 line trace/hit 与 source bullet record 不同源，未来 projectile/reflect/splash 无法安全接入 | **阻断完整子弹系统** |
-| RT-02 | AI 的决策、枪械、Movement 分成三轮批处理；原版每个 AI 在同一次 `AI.EnterFrame` 内串联完成 | NPC 互相读取位置、枪械 delay、动画/碰撞时机可不同 | **阻断 1:1** |
-| RT-03 | 玩家 Movement 在所有 AI movement 后独立运行；原版按 `Game.units` 顺序运行 | 同 tick 追踪、碰撞、表面触发和镜头会不同 | **阻断 1:1** |
-| RT-04 | 当前 `advanceCampaignOneSessionUnits` 只推进 Status/corpse；它没有承担原 `UnitEnterFrame` 的完整 Guns/UnitMC/Movement/surface 分支 | `Unit` 仍被拆散到页面层与 session 层 | **阻断 1:1** |
+| RT-01 | line bullet 的即时命中顺序已在 actor walk 内；但没有完整 `Game.bullets` collection、移动 projectile、reflect/splash 的末尾生命周期 | 未来 projectile/reflect/splash 仍无法安全接入 | **阻断完整子弹系统** |
+| RT-02 | AI 的 decision、gun 与当前 Unit tail 已按每个 actor 串行；但 tail 仍只覆盖 Status/Guns/Movement/surface 的已移植子集 | 未移植的 UnitMC/mode/objective 分支仍可改变时机 | **部分关闭，仍阻断 1:1** |
+| RT-03 | Player tail 已排在 Player gun 后、AI 前；页面保留的 aim/pose 采样仍在 tick 外 | 视觉 root timeline 与原帧调度还未同一 trace | **部分关闭，仍阻断 1:1** |
+| RT-04 | `advanceCampaignOneSessionActorUnitTail` 已替代旧的 session units 批处理 | Unit tail 不是 `Unit.EnterFrame` 的完整逐分支移植 | **阻断完整 Unit 系统** |
 
-现有注释准确描述了“来源意图”，但注释不能改变运行顺序。必须建立一个 source tick orchestrator，再让页面只做输入采样和渲染。
+页面现已把战役脚本、Arena 时间轴、HUD 与 actor 顺序交由 source tick；仍必须继续把完整 Unit、bullets、pickup、effects、MatchSettings/Radar/Water 纳入同一可序列化 trace。
 
 ## 3. 已验证的模块状态
 
@@ -132,7 +132,7 @@ clear line traces
 npm run test:coverage
 ```
 
-结果：363 pass、0 fail；总体达到了项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395 时间轴和菜单可点击性。
+结果：364 pass、0 fail；总体达到了项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395 时间轴和菜单可点击性。
 
 但当前测试体系存在以下不可替代的盲区：
 

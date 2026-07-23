@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -167,6 +167,39 @@ test('Campaign 1 consumes an AI shoot decision through the original bot gun stat
   ]);
   assert.deepEqual({ gunId: bot.gunRuntime.gunId, delay: bot.gunRuntime.shootDelay, clip: bot.gunRuntime.ammo.clipCur }, {
     gunId: 'Beretta', delay: 6, clip: 11,
+  });
+});
+
+// Player.as does not keep an independent browser gun. Mouse state, the
+// one-frame Guns.shoot/Guns.EnterFrame result, and ammo all belong to unit0's
+// currently selected source slot so a later swap cannot lose its clip state.
+test('Campaign 1 consumes player mouse and firing through the active source gun slot', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const player = session.actors[0];
+  const before = player.gunRuntime.ammo.clipCur;
+
+  applyCampaignOneSessionPlayerMouseDown(session, { gameStarted: true });
+  const tick = advanceCampaignOneSessionPlayerGun(session, {
+    unit: { aim: player.unitInfo.aim, crouching: false, jumping: false, xVelocity: 0, reflecting: false },
+  });
+  applyCampaignOneSessionPlayerMouseUp(session);
+
+  assert.deepEqual({
+    gun: player.guns.active,
+    fired: tick.fired,
+    bullet: tick.bullet,
+    slotOwnsTick: player.gunRuntimes[player.gunSlot] === tick.state,
+    clip: player.gunRuntime.ammo.clipCur,
+    before,
+    mDown: player.gunRuntime.mDown,
+  }, {
+    gun: 'M4',
+    fired: true,
+    bullet: { gunId: 'M4', dynRecoil: 1.5, dynRecoilMod: 0 },
+    slotOwnsTick: true,
+    clip: before - 1,
+    before: 60,
+    mDown: false,
   });
 });
 

@@ -10,8 +10,12 @@ test('Speak_187 chrome and each original portrait Shape are shipped as direct so
     1483: './public/assets/original-swf/tutorial-speak/1483.svg',
     1484: './public/assets/original-swf/tutorial-speak/1484.svg',
   });
+  assert.deepEqual(TUTORIAL_SPEAK_SOURCE_ASSETS.fonts, {
+    name: './public/assets/original-swf/tutorial-speak/font-1485.ttf',
+    description: './public/assets/original-swf/tutorial-speak/font-800.ttf',
+  });
   assert.equal(Object.keys(TUTORIAL_SPEAK_SOURCE_ASSETS.portraits).length, 34);
-  for (const source of [...Object.values(TUTORIAL_SPEAK_SOURCE_ASSETS.chrome), ...Object.values(TUTORIAL_SPEAK_SOURCE_ASSETS.portraits)]) {
+  for (const source of [...Object.values(TUTORIAL_SPEAK_SOURCE_ASSETS.chrome), ...Object.values(TUTORIAL_SPEAK_SOURCE_ASSETS.portraits), ...Object.values(TUTORIAL_SPEAK_SOURCE_ASSETS.fonts)]) {
     const absolute = new URL(`..${source.slice(1)}`, import.meta.url);
     assert.equal(existsSync(absolute), true, `original Speak source SVG is missing: ${source}`);
     assert.match(readFileSync(absolute, 'utf8'), /<svg\b/i);

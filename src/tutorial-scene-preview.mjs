@@ -25,6 +25,10 @@ import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { createTutorialMovementState, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
 import { drawVectorRuntimeSprite } from './vector-runtime-renderer.mjs';
 import { drawRuntimeShape } from './vector-shape-canvas.mjs';
+import { getHudAmmoBoxes } from './hud-ammo.mjs';
+import { getHudExperienceRenderPlan } from './hud-experience-render-plan.mjs';
+import { getHudScorebarRenderPlan } from './hud-scorebar-render-plan.mjs';
+import { getHudTextFields } from './hud-text-source.mjs';
 
 const canvas = document.querySelector('#tutorialScene');
 const context = canvas.getContext('2d');
@@ -69,6 +73,18 @@ async function loadOriginalUnitOverheadFont() {
   return font;
 }
 
+async function loadOriginalHudFonts() {
+  if (typeof FontFace !== 'function' || !document.fonts) {
+    throw new Error('original Hud 1540 fonts cannot be loaded in this browser');
+  }
+  const fonts = await Promise.all([
+    new FontFace('QTypeSquare-Bold_12pt_st', 'url(./public/assets/original-swf/hud-font-979.ttf)').load(),
+    new FontFace('QTypeSquare-Bold_10pt_st', 'url(./public/assets/original-swf/hud-exp-font-981.ttf)').load(),
+  ]);
+  fonts.forEach((font) => document.fonts.add(font));
+  return fonts;
+}
+
 function drawParallax(image, crop, arenaPosition, wall) {
   const position = getTutorialParallaxLayerPosition(arenaPosition, wall, crop, STAGE);
   context.drawImage(image, position.x, position.y);
@@ -80,7 +96,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, originalUnitOverheadFont, environmentAssets] = await Promise.all([
+  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, originalUnitOverheadFont, environmentAssets, originalHudFonts, tutorialHudAssets] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
@@ -110,6 +126,14 @@ try {
       './public/assets/original-swf/tutorial-environment/1360.svg',
       './public/assets/original-swf/tutorial-environment/1387.svg',
     ].map(loadImage)).then(([doorMask, doorPanel, elevator]) => ({ doorMask, doorPanel, elevator })),
+    loadOriginalHudFonts(),
+    Promise.all([
+      './public/assets/original-swf/hud-scorebar-1462.png',
+      './public/assets/original-swf/hud-exp-base-1474.svg',
+      './public/assets/original-swf/hud-exp-green-1475.svg',
+      './public/assets/original-swf/hud-exp-fill-699-source.svg',
+      './public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png',
+    ].map(loadImage)).then(([scorebar, expBase, expGreen, expFill, m4]) => ({ scorebar, expBase, expGreen, expFill, m4 })),
   ]);
   const unitIcons = new Map(unitIconImages);
   const skyCrop = getMapLayerCrop(visual.sky);
@@ -334,6 +358,115 @@ try {
     });
   }
 
+  // Direct Canvas transcription of Hud.as:drawBox().  The box geometry,
+  // alpha and local -1/-1 bulletCont transform come from the original AS3;
+  // all other visible HUD artwork below is loaded from Hud 1540 exports.
+  function renderTutorialAmmo(gunRuntime, sourceGun) {
+    const boxes = getHudAmmoBoxes({
+      clip: gunRuntime.ammo.clipCur,
+      clipMax: gunRuntime.ammo.clipMax,
+      type: sourceGun.effect.hudBullet,
+    });
+    context.save();
+    context.translate(664.3, 571.3);
+    context.scale(-1, -1);
+    context.lineWidth = 0.5;
+    for (const box of boxes) {
+      const alpha = box.filled ? 1 : 0.2;
+      context.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      context.strokeStyle = `rgba(255, 255, 255, ${box.filled ? 1 : 0.4})`;
+      context.fillRect(box.x, box.y, box.width, box.height);
+      context.strokeRect(box.x, box.y, box.width, box.height);
+    }
+    context.restore();
+  }
+
+  function renderTutorialExperience(save) {
+    const experience = getHudExperienceRenderPlan({ level: save.level, exp: save.exp });
+    context.save();
+    context.translate(experience.holder.x, experience.holder.y);
+    context.drawImage(tutorialHudAssets.expBase, experience.base.x, experience.base.y);
+    context.drawImage(tutorialHudAssets.expGreen, experience.green.x, experience.green.y);
+    context.save();
+    context.scale(experience.bar.scaleX, 1);
+    context.transform(
+      experience.bar.matrix.a,
+      experience.bar.matrix.b,
+      experience.bar.matrix.c,
+      experience.bar.matrix.d,
+      experience.bar.matrix.x,
+      experience.bar.matrix.y,
+    );
+    context.drawImage(tutorialHudAssets.expFill, 0, 0);
+    context.globalCompositeOperation = 'source-in';
+    context.globalAlpha = experience.bar.color.alpha;
+    context.fillStyle = `rgb(${experience.bar.color.red}, ${experience.bar.color.green}, ${experience.bar.color.blue})`;
+    context.fillRect(0, 0, experience.bar.sourceBounds.width, experience.bar.sourceBounds.height);
+    context.restore();
+    context.globalAlpha = 1;
+    context.fillStyle = '#ffffff';
+    context.font = `${experience.text.fontPx}px "${experience.text.fontFamily}"`;
+    context.textAlign = 'left';
+    context.textBaseline = 'top';
+    context.fillText(experience.text.text, experience.text.x, experience.text.y);
+    context.restore();
+  }
+
+  // Hud 1540 has an authored ScoreBar child at (180,23), ammo holder 954 at
+  // (664.3,571.3), curgun 724 and expholder 1477.  Read all live values from
+  // the same Campaign session consumed by the source Game tick; this page
+  // intentionally has no independently designed HUD state.
+  function renderTutorialHud() {
+    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+    if (!sourcePlayer?.status || !sourcePlayer?.unitInfo || !sourcePlayer.gunRuntime || !sourcePlayer.gun?.curGun) return;
+    const sourceGun = sourcePlayer.gun.curGun;
+    const scorebar = getHudScorebarRenderPlan({
+      mode: session.match.mode,
+      team1: 1,
+      score1: session.match.team1score,
+      team2: 2,
+      score2: session.match.team2score,
+      scoreLimit: session.match.scoreLimit,
+    });
+    context.drawImage(tutorialHudAssets.scorebar, scorebar.holder.x, scorebar.holder.y);
+    context.save();
+    context.translate(scorebar.holder.x, scorebar.holder.y);
+    context.fillStyle = '#ffffff';
+    context.font = '10px "QTypeSquare-Bold_10pt_st"';
+    context.textAlign = 'left';
+    context.textBaseline = 'top';
+    for (const value of Object.values(scorebar.text)) {
+      context.fillText(value.text, value.matrix.x, value.matrix.y);
+    }
+    context.restore();
+
+    renderTutorialAmmo(sourcePlayer.gunRuntime, sourceGun);
+    if (sourceGun.id === 'M4') {
+      context.save();
+      context.transform(1.7536468505859375, -0.5263671875, 0.5263671875, 1.7536468505859375, 674.2, 568);
+      context.drawImage(tutorialHudAssets.m4, 0, 0);
+      context.restore();
+    }
+    const fields = getHudTextFields({
+      className: sourcePlayer.unitInfo.name,
+      hp: sourcePlayer.status.hpCur,
+      level: sourcePlayer.unitInfo.level,
+      weaponName: sourceGun.name,
+      spare: sourcePlayer.gunRuntime.ammo.spareCur,
+    });
+    context.save();
+    context.fillStyle = '#ffffff';
+    context.textBaseline = 'top';
+    for (const field of fields) {
+      context.globalAlpha = field.alpha;
+      context.textAlign = field.align;
+      context.font = `${field.fontPx}px "${field.fontFamily}"`;
+      context.fillText(field.text, field.x, field.y);
+    }
+    context.restore();
+    renderTutorialExperience(session.classSaves[sourcePlayer.unitInfo.number]);
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -377,6 +510,7 @@ try {
     for (const trace of sourceLineTraces) {
       renderTutorialLineBullet(context, trace, (point) => worldToTutorialScreen(point, arenaPosition));
     }
+    renderTutorialHud();
   }
 
   function frame(now) {

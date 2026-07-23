@@ -125,8 +125,12 @@ test('Tutorial scene exposes its live source-tick camera and player coordinates 
   const { script } = readPreview();
   assert.match(script, /function publishTutorialSourceSnapshot\(\)/);
   assert.match(script, /canvas\.dataset\.sourceGameFrame/);
+  assert.match(script, /canvas\.dataset\.sourceCampaignState/);
+  assert.match(script, /canvas\.dataset\.sourceWallFrame/);
   assert.match(script, /canvas\.dataset\.sourceArenaPosition/);
   assert.match(script, /canvas\.dataset\.sourcePlayerPosition/);
+  assert.match(script, /tutorialWorld\.session\.runtime\.state/);
+  assert.match(script, /tutorialWorld\.session\.map\.wallFrame/);
   assert.match(script, /tutorialWorld\.tickRuntime\.gameFrame/);
   assert.match(script, /publishTutorialSourceSnapshot\(\);/);
 });

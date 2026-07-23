@@ -204,6 +204,39 @@ test('Campaign 1 applies the source Unit.die corpse lifecycle and removes the Ph
   assert.deepEqual(session.corpses, []);
 });
 
+// User journey: reaching the original state-ten Tutorial floor must consume
+// every stateful Unit.as side effect into the Campaign session.  The page may
+// then render the real HUD cue/message/audio intent and injured no-jump state
+// from source records, rather than treating runScripts as a wall-frame log.
+test('Campaign 1 state ten consumes original Tutorial HUD, message, injury, sound and down-arrow effects', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  session.runtime.state = 10;
+  const player = session.actors[0];
+
+  applyCampaignOneSessionSurfaceContact(session, { surface: 'ff00ff', human: true });
+
+  assert.deepEqual(session.hud, {
+    frame: 'tutclimb',
+    downArrows: 10,
+    messages: [{
+      target: 'player',
+      text: "Ahhh, my legs! I... I can't jump...",
+      seconds: 5,
+      force: true,
+      voice: 'V_Ca1_8',
+    }],
+  });
+  assert.deepEqual(session.audio, [
+    { type: 'playSound', sound: 'S_Mine1' },
+    { type: 'playSound', sound: 'S_Pan' },
+  ]);
+  assert.deepEqual({ hpCur: player.status.hpCur, hpMax: player.status.hpMax, noJump: player.noJump }, {
+    hpCur: 17,
+    hpMax: 85,
+    noJump: true,
+  });
+});
+
 test('Campaign 1 keeps an AI aim update alive when its previously acquired player target becomes a source corpse', () => {
   const session = createCampaignOneSession({ random: () => 0 });
   const [player, bot] = session.actors;

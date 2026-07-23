@@ -60,6 +60,17 @@ function updateSourcePscore(session, actor) {
   }
 }
 
+// Game.endGame() is an idempotent source boundary: MatchSettings supplies the
+// winning team, Game stores the result and starts Hud's `end` timeline.  Keep
+// that state separately from the derived TDM totals so no consumer has to
+// infer a Campaign result from a score cap alone.
+function endSourceGame(session, won) {
+  if (session.game.ended) return;
+  session.game.ended = true;
+  session.hud.won = won;
+  session.hud.timeline = 'end';
+}
+
 function updateSourceTeamScores(session) {
   if (session.match.mode !== 'tdm') return;
   session.match.team1score = session.actors
@@ -71,9 +82,11 @@ function updateSourceTeamScores(session) {
   if (session.match.team1score >= session.match.scoreLimit) {
     session.match.team1score = session.match.scoreLimit;
     session.match.ended = true;
+    endSourceGame(session, true);
   } else if (session.match.team2score >= session.match.scoreLimit) {
     session.match.team2score = session.match.scoreLimit;
     session.match.ended = true;
+    endSourceGame(session, false);
   }
 }
 
@@ -373,8 +386,12 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     map: { id: definition.map, wallCharacter: arena.wallCharacter, wallFrame: 1, nodes: arena.nodes, aiArena },
     runtime: createCampaignOneRuntime(),
     actors: [],
+    // The playable Tutorial scene is constructed after the source Hud start
+    // sequence has invoked Game.startGame().  Preserve Game's own lifecycle
+    // record here rather than overloading the TDM score object with a result.
+    game: { started: true, ended: false },
     match: { mode: definition.mode, scoreLimit: definition.score, team1score: 0, team2score: 0, ended: false },
-    hud: { frame: 'idle', downArrows: null, arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: false })), message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
+    hud: { frame: 'idle', timeline: 'idle', won: false, downArrows: null, arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: false })), message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
     audio: [],
     classSaves,
     environment: { door: { frame: 1, playing: null }, elevator: { frame: 1, playing: false } },

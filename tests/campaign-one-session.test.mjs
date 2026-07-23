@@ -252,6 +252,8 @@ test('Campaign 1 state ten consumes original Tutorial HUD, message, injury, soun
 
   assert.deepEqual(session.hud, {
     frame: 'tutclimb',
+    timeline: 'idle',
+    won: false,
     downArrows: 10,
     arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: arrow.name === 'downarrow10' })),
     message: {

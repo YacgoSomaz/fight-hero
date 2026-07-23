@@ -11,9 +11,10 @@ test('draws serialized runtime fill contours on Canvas', () => {
 
 test('draws an extracted source line with its authored width and alpha', () => {
   const calls = [];
+  const alphaStack = [];
   const ctx = {
     globalAlpha: 1,
-    save() { calls.push('save'); }, restore() { calls.push('restore'); }, beginPath() { calls.push('beginPath'); },
+    save() { alphaStack.push(this.globalAlpha); calls.push('save'); }, restore() { this.globalAlpha = alphaStack.pop(); calls.push('restore'); }, beginPath() { calls.push('beginPath'); },
     moveTo(x, y) { calls.push(['moveTo', x, y]); }, lineTo(x, y) { calls.push(['lineTo', x, y]); },
     quadraticCurveTo() {}, closePath() { calls.push('closePath'); }, stroke() { calls.push('stroke'); },
     set strokeStyle(value) { calls.push(['strokeStyle', value]); }, set lineWidth(value) { calls.push(['lineWidth', value]); },

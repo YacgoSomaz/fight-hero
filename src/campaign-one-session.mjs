@@ -684,6 +684,31 @@ export function advanceCampaignOneSessionActorUnitTail(session, actorId, { wall,
     else respawnSourceActor(session, actor);
     return { id: actor.id, dead: true };
   }
+  // Unit.UnitEnterFrame(): an actor beyond the authored Arena's 0..2880
+  // bounds takes 9999 environment damage *before* Status/Guns/Movement.
+  // This is required for Tutorial pits: the original game creates a corpse
+  // and begins the normal five-second respawn, rather than allowing a hidden
+  // browser actor to fall indefinitely beyond Wall_tut.
+  if (actor.position && (actor.position.x < 0 || actor.position.y < 0 || actor.position.x > 2880 || actor.position.y > 2880)) {
+    const boundaryDamage = applyTutorialStatusDamage(
+      actor,
+      actor,
+      sourceGun('env'),
+      {},
+      9999,
+      { bypassProtection: true, random: session.random },
+    );
+    if (boundaryDamage.died) {
+      applyCampaignOneSessionDeath(session, {
+        target: actor,
+        attacker: actor,
+        gun: sourceGun('env'),
+        extra: {},
+        random: session.random,
+      });
+    }
+    return { id: actor.id, boundaryDeath: boundaryDamage.died, boundaryDamage };
+  }
   const status = advanceTutorialStatusFrame(actor);
   const gunRuntime = tutorialGunEnterFrame(ensureActorGunRuntime(actor), { unit: sourceGunUnitState(actor) });
   actor.gunRuntime = gunRuntime;

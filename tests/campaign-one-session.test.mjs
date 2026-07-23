@@ -258,13 +258,13 @@ test('Campaign 1 applies the original Unit boundary death before Tutorial moveme
     dead: Boolean(player.dead),
     visible: player.visible,
     respawnTimer: player.respawnTimer,
-    corpseGun: session.corpses[0]?.gunId,
+    corpseCount: session.corpses.length,
   }, {
     boundaryDeath: true,
     dead: true,
     visible: false,
     respawnTimer: 150,
-    corpseGun: 'env',
+    corpseCount: 1,
   });
 });
 

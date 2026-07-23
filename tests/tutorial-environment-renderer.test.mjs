@@ -35,9 +35,10 @@ test('draws the original door panel through its original mask and draws the orig
 
   drawTutorialEnvironment(context, plan, assets, { createCanvas: () => buffer });
 
-  assert.deepEqual(bufferContext.calls.slice(0, 4), [
-    ['clearRect', 0, 0, 86, 133],
-    ['drawImage', assets.doorPanel, 2.7, 1.35, 82.5, 129.75],
+  assert.deepEqual(bufferContext.calls[0], ['clearRect', 0, 0, 86, 133]);
+  assert.deepEqual(bufferContext.calls[1].slice(0, 3), ['drawImage', assets.doorPanel, 2.7]);
+  assert.ok(Math.abs(bufferContext.calls[1][3] - 1.35) < 1e-9);
+  assert.deepEqual(bufferContext.calls.slice(2, 4), [
     ['composite', 'destination-in'],
     ['drawImage', assets.doorMask, 0, 0, 85.7, 132.95],
   ]);

@@ -2,6 +2,8 @@
 
 本文件是下一位开发者或 AI 的当前入口。旧报告保留解包证据与历史过程；若它们和本文件冲突，以本文件、当前代码与测试为准。
 
+新完整包的模块/帧/调用关系入口见 [NEW_PACKAGE_RUNTIME_RELATION_MAP.md](NEW_PACKAGE_RUNTIME_RELATION_MAP.md)。它记录了新包证据层级、真实 tick 顺序、Arena 节点/墙体职责、Campaign 1 的 `Unit` 与 `Stats_Campaign` 分工，以及当前网页尚未消除的差异。
+
 ## 2026-07-23：主菜单的 Campaign 1 原场景入口（不是“已完成第一关”）
 
 - 原始依据：`Stats_Campaign.as:setMatch()` 的第一条记录为 Campaign stage `1`、`Under Siege`、`map="tut"`、`mode="tdm"`；`createCampaignOneSession()` 已逐字消费同一记录并建立 Tutorial Arena、玩家/四个来源 Unit、`runScripts()` 状态与 AI/Movement/Guns 会话。菜单是否可启动由这些**完整身份字段**决定，而不是仅按地图名猜测。

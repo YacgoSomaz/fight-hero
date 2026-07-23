@@ -6,6 +6,8 @@
 
 本次对“新包源码 ↔ 当前网页”的深度复验结论见 [NEW_PACKAGE_DEEP_AUDIT_2026-07-23.md](NEW_PACKAGE_DEEP_AUDIT_2026-07-23.md)：它明确记录了当前 page-level tick 与原 `Game.EnterFrame` 不等价、Campaign 1 尚未闭环、测试覆盖与原版一致性之间的边界，以及后续唯一可信的迁移顺序。
 
+若要真正实现第一关，先读 [CAMPAIGN_ONE_EXECUTION_SPEC.md](CAMPAIGN_ONE_EXECUTION_SPEC.md)。该文件将完整原包中的关卡快照、actor 顺序、逐 tick 调度、`sn/fc` 状态机、wall/door/elevator/arrow、枪械/子弹/伤害/TDM 结算链及当前硬不可达点写为实施与验收契约；它明确说明当前试玩页不能通关。
+
 ## 2026-07-23：主菜单的 Campaign 1 原场景入口（不是“已完成第一关”）
 
 - 原始依据：`Stats_Campaign.as:setMatch()` 的第一条记录为 Campaign stage `1`、`Under Siege`、`map="tut"`、`mode="tdm"`；`createCampaignOneSession()` 已逐字消费同一记录并建立 Tutorial Arena、玩家/四个来源 Unit、`runScripts()` 状态与 AI/Movement/Guns 会话。菜单是否可启动由这些**完整身份字段**决定，而不是仅按地图名猜测。

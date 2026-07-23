@@ -8,7 +8,7 @@
 
 1. **原包证据链可靠。** 用户提供的 `4399-90433-war-heroes-original.swf` 与仓库基线相同，SHA-256 是 `BDC9216EDD31D8CF2B231182C7203655CFEF9A71F497E5708F9A649D8A40BD29`；新包增加了可交叉验证的 500 个 AS3、1,064 个 ASASM 和完整 XML。
 2. **第一关的静态定义、Tutorial 墙、人物部件、基础移动/枪械/伤害的若干原始规则确实被消费。** 这不是自绘占位素材链。
-3. **当前试玩页面的帧调度不等价于 `Game.EnterFrame()`。** 它把玩家枪械、AI 决策/枪械、Status、AI Movement、玩家 Movement 和 bullet hit 拆开排列；原版则由每个 `Player/AI.EnterFrame → UnitEnterFrame` 先完成，然后才统一处理 Bullets。这是后续 1:1 的首要阻断项。
+3. **当前试玩页面的帧调度不等价于 `Game.EnterFrame()`。** 它把所有 AI 决策/枪械、Status、AI Movement、玩家 Movement 拆成批处理；原版则由每个 `Player/AI.EnterFrame → UnitEnterFrame` 串行完成。需特别区分：`Bullet_Line_Basic` 在 `Guns.shoot()` 构造时立即命中，移动 bullet 才在末尾的 bullets phase 更新。这是后续 1:1 的首要阻断项。
 4. **“测试全绿”不等于“原版一致”。** 当前 349 个测试主要是解析、纯状态和源码资产存在性断言；没有原 SWF 的同输入逐 tick trace，也没有可重复的截图/音频差分。
 
 本文件是审计和迁移台账，不是完成声明。
@@ -69,7 +69,7 @@ clear line traces
 
 | ID | 差异 | 可见/逻辑影响 | 判定 |
 | --- | --- | --- | --- |
-| RT-01 | Bullet 在网页中于 unit phase 前即时命中；原版在全体 Unit 之后统一运行 | 本帧命中对象的移动、无敌、死亡与 score 时机可不同 | **阻断 1:1** |
+| RT-01 | 网页即时处理 `Bullet_Line_Basic` 命中本身符合其 constructor 行为；但没有保留“构造后仍在 bullets array、末尾 EnterFrame/清理”的统一生命周期 | 当前 line trace/hit 与 source bullet record 不同源，未来 projectile/reflect/splash 无法安全接入 | **阻断完整子弹系统** |
 | RT-02 | AI 的决策、枪械、Movement 分成三轮批处理；原版每个 AI 在同一次 `AI.EnterFrame` 内串联完成 | NPC 互相读取位置、枪械 delay、动画/碰撞时机可不同 | **阻断 1:1** |
 | RT-03 | 玩家 Movement 在所有 AI movement 后独立运行；原版按 `Game.units` 顺序运行 | 同 tick 追踪、碰撞、表面触发和镜头会不同 | **阻断 1:1** |
 | RT-04 | 当前 `advanceCampaignOneSessionUnits` 只推进 Status/corpse；它没有承担原 `UnitEnterFrame` 的完整 Guns/UnitMC/Movement/surface 分支 | `Unit` 仍被拆散到页面层与 session 层 | **阻断 1:1** |

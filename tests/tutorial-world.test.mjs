@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact, createTutorialWorld } from '../src/tutorial-world.mjs';
+import { advanceTutorialWorldGameTick, applyTutorialBulletEnvironmentHit, applyTutorialFootContact, createTutorialWorld } from '../src/tutorial-world.mjs';
 
 function sourceWallSet() {
   const frame1 = { id: 'wall-1', isSolid: () => true, colorAt: () => 'ff00ff' };
@@ -59,4 +59,27 @@ test('Tutorial world advances its human foot trigger only from the current origi
   assert.deepEqual(world.session.runtime, { state: 2, frame: 0 });
   assert.equal(world.session.map.wallFrame, 2);
   assert.equal(world.wall, walls.frames.frame2);
+});
+
+// The browser world must hand its one session and its current decoded wall to
+// the Game.EnterFrame port.  In particular, a line bullet may atomically
+// replace wallMC inside the actor walk, before the next Unit sees collision.
+test('Tutorial world drives Campaign 1 through the source Game tick and current wall surface', () => {
+  const walls = sourceWallSet();
+  const world = createTutorialWorld({ wallSet: walls, random: () => 0.999 });
+  world.session.runtime.state = 99;
+  for (const actor of world.session.actors) {
+    if (actor.status) actor.status.sSpawn = 0;
+  }
+  world.session.actors[0].gunRuntime.mDown = true;
+  const bullets = [];
+
+  const result = advanceTutorialWorldGameTick(world, {
+    onLineBullet(event) { bullets.push(event); },
+  });
+
+  assert.equal(world.tickRuntime.session, world.session);
+  assert.deepEqual(bullets.map(({ actorId, bullet }) => `${actorId}:${bullet.gunId}`), ['unit0:M4']);
+  assert.equal(result.trace.at(0).phase, 'campaign');
+  assert.equal(result.trace.at(-1).phase, 'match');
 });

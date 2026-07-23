@@ -109,10 +109,9 @@ function applySourceDeathScore(session, { target, attacker, extra }) {
     target.score.suicides += 1;
     updateSourcePscore(session, target);
   } else if (extra.teamkill) {
-    // FFDec's decoded Unit.die() invokes `this.score.addBetrayal()` in this
-    // branch. Preserve that source receiver until a bytecode-level correction
-    // supplies contrary evidence; do not silently substitute a conventional
-    // attacker penalty.
+    // Unit.die() is now bytecode-confirmed against the original ASASM:
+    // getlocal0 (the dead target) → score → addBetrayal(). Do not substitute
+    // the conventional attacker penalty merely because it appears intuitive.
     target.score.betrayals += 1;
     updateSourcePscore(session, target);
   } else {

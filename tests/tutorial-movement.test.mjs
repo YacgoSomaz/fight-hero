@@ -105,6 +105,28 @@ test('source Movement begins the small right-hand climb only at the original ter
   assert.equal(result.nextAnim, 'climbsmall');
 });
 
+// User journey: the state-eight Tutorial route reaches a chest-high wall
+// while still grounded. Movement.as executes its +/-17 side probes after
+// *every* ground/fall resolution, not only at terminal fall; it must push
+// back from the wall and begin the original small climb rather than walk
+// through the Wall_tut alpha surface.
+test('source Movement begins a grounded right-hand climb from the normal side-probe phase', () => {
+  const result = stepTutorialMovement({
+    state: createTutorialMovementState(),
+    actor: actor({ position: { x: 100, y: 100 } }),
+    wall: wallAt([
+      [101, 101], // original (0,1) grounded foot after right acceleration
+      [118, 80], // original (+17,-20) chest-height right side probe
+    ]),
+    keys: TUTORIAL_MOVEMENT_KEYS.RIGHT,
+  });
+
+  assert.equal(result.state.climb, 1);
+  assert.equal(result.state.climbSize, 1);
+  assert.equal(result.state.yVel, -7);
+  assert.equal(result.nextAnim, 'climbsmall');
+});
+
 test('source Movement manual jump applies its authored boost and velocity only from a standing state', () => {
   const result = beginTutorialMovementJump({
     state: createTutorialMovementState(),

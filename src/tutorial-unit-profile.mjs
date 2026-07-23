@@ -66,6 +66,9 @@ export function createTutorialUnitProfile({ soldier, level, skin, skill, primary
     name: classProfile.name,
     startFrame: classProfile.startFrame,
     runType: classProfile.runType,
+    // Unit.setClass assigns this same class start-frame-plus-skin value to
+    // unitInfo.frame; Hud.setMsg later passes it directly to Speak.head.
+    frame: classProfile.startFrame + skin,
     skinFrame: classProfile.startFrame + skin,
     hp,
     crit,

@@ -140,7 +140,7 @@ npm run test:coverage
 2. 没有读取原 SWF 的录制/trace，并以同一输入 seed、同一 30 FPS 输入逐帧比较 actor、bullet、HUD、wall frame、score。
 3. 没有可重复截图差分，因此“素材来自原版”不等于“原矩阵、裁剪、滤镜、时间轴合成一致”。
 4. 覆盖率是代码执行率，不是原版状态空间覆盖率。特别是 Movement、aim、camera 的低分支覆盖已明确暴露此问题。
-5. 2026-07-23 的实际浏览器检查已确认页面到达 `canvas[data-ready=true]` 且没有 JS 错误；但截图显示地图层为黑底，仅 HUD／Speak 等 Canvas 后层可见。Tutorial foreground 的原 PNG 与 alpha bounds（526,509,2961×1730）已核对，故问题仍在地图绘制坐标、镜头或帧运行关系，**不得**将资源 HTTP 200 或 ready 标记写成第一关视觉可用。
+5. 2026-07-23 的实际浏览器检查已确认页面到达 `canvas[data-ready=true]` 且没有 JS 错误；但截图显示 Tutorial 起始镜头仍以黑区为主，不能视为第一关视觉验收。随后从新完整包与同 SHA 的原 SWF 直接读取 `Arena` symbol 1413：`tut` 是第 8 帧，基础画面为 depth 2 / **Shape 1353**，叠层为 depth 3 / Sprite 1358（原矩阵 `(1043.2,176.85)`），而不是“把扁平 PNG 的透明 Alpha 边缘当世界原点”。基础 Shape 1353 的原 SVG 已原样置入 `public/assets/original-swf/tutorial-arena/1353.svg`（SHA-256 `053C18FA445EB897CE5DE0F9B34C7FDFF099EFBD552BFE59C0ECE7AB13744D1E`），并按 Shape 的原始 `(-523.8,-559.9)` 注册点绘制；浏览器仍需要与原 cutscene/输入 trace 做截图比对，**不得**把资源加载成功、黑区出现或 ready 标记写成第一关视觉可用。
 
 ## 6. 接下来必须先做的事情（按阻断性排序）
 

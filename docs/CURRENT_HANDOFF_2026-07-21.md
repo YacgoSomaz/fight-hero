@@ -9,6 +9,13 @@
 - TDD：`42b1fc2`、`bdf1e11` 为有效 RED（路由模块和主菜单消费均缺失）；GREEN 覆盖任务身份、普通快速对战、其余战役/挑战拒绝，以及入口优先于 generic startup。当前完整回归为 **348/348 通过**，`npm run test:coverage` 为 **98.95% 行、83.51% 分支、96.63% 函数**。
 - 严格边界：该入口只让用户进入已存在的“原 Tutorial 场景承载”验证页，不能证明 cutscene、完整 mission flow、胜负、所有 HUD、所有声音、逐帧视觉一致或 Campaign 1 已通关；更不代表 1:1 完成。录屏仅在这些已有源码/时间轴迁移完成后的视觉节奏、合成与镜头验收阶段使用，当前不阻塞代码工作。
 
+## 2026-07-23：Campaign 1 state 10 的原任务效果消费（仍未可见呈现）
+
+- 原始依据：`Unit.as:1020–1026` 的 Campaign `sn==9` 分支依次调用 `hud.gotoAndStop("tutclimb")`、`hud.setMsg(...)`、`status.heal(hpMax,false,true)`、`status.damage(hpCur*.8,this,Stats_Guns.gunOb["env"],{},true)`、`mov.noJump=true`、`S_Mine1`、`S_Pan`。`Status.as:heal()` 的 max clamp 与 `setBars()`、`Status.as:damage()` 的 bypass-protection 参数均已有来源实现。
+- 网页承载：`campaign-one-session.mjs:applySourceEffects()` 现将所有已解出的 `hudFrame`、`show/hideDownArrows`、`message`、`playSound/playMusic` 写入来源 session 的 `hud/audio` 状态；`healToMax` 直接调用 `healTutorialStatus()`，伤害直接调用 source-shaped `applyTutorialStatusDamage()` 并使用原 `env` gun/`bypassProtection=true`。因此 state 10 的 Medic 从 85 恢复后精确落至 17 HP，且 `noJump=true`，不再只改变墙帧或打印 effect。
+- TDD：`7eb039e` 是有效 RED；GREEN 回归锁定 source `tutclimb`、台词/voice、两个声音意图、down-arrow state 10、HP `85→17` 和禁跳。当前完整回归为 **349/349 通过**，覆盖率 **98.96% 行、83.60% 分支、96.63% 函数**。
+- 严格边界：这只将原始效果写入可序列化会话状态，`tutorial-scene-preview.html` 尚未按 Hud 的原 Display List/时间轴绘制 `tutclimb`/箭头/台词，声音也尚未从这些 intent 播放；不可称“教程 UI/剧情/声音已完成”。
+
 ## 2026-07-22：原 AI 决策、Movement 与 Campaign 1 场景接入（仍未可玩）
 
 ### 后续：Unit symbol 687 头顶生命条、文字、职业图标与 Jug 标记（仍未完成 HUD）

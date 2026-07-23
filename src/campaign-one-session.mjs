@@ -8,7 +8,7 @@ import { advanceTutorialAiGunRuntime, createTutorialGunRuntime } from './tutoria
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
-import { advanceTutorialStatusFrame, createTutorialStatus } from './tutorial-status-damage-runtime.mjs';
+import { advanceTutorialStatusFrame, applyTutorialStatusDamage, createTutorialStatus, healTutorialStatus } from './tutorial-status-damage-runtime.mjs';
 import { createTutorialUnitProfile, getTutorialAiLevel } from './tutorial-unit-profile.mjs';
 
 const GUN_BY_ID = new Map(SOURCE_GUNS.map((gun) => [gun.id, gun]));
@@ -260,6 +260,14 @@ function applySourceEffects(session, effects) {
   for (const effect of effects) {
     const actor = effect.target ? actorFor(session, effect.target) : null;
     if (effect.type === 'changeWallFrame') session.map.wallFrame = effect.frameLabel;
+    else if (effect.type === 'hudFrame') session.hud.frame = effect.frameLabel;
+    else if (effect.type === 'showDownArrows') session.hud.downArrows = effect.state;
+    else if (effect.type === 'hideDownArrows') session.hud.downArrows = null;
+    else if (effect.type === 'message') {
+      const { type, ...message } = effect;
+      session.hud.messages.push(message);
+    }
+    else if (effect.type === 'playSound' || effect.type === 'playMusic') session.audio.push({ ...effect });
     else if (effect.type === 'spawn' && actor) {
       actor.spawned = true;
       actor.position = { x: effect.x, y: effect.y, node: effect.node };
@@ -271,6 +279,17 @@ function applySourceEffects(session, effects) {
     }
     else if (effect.type === 'setNoAim' && actor) actor.noAim = effect.value;
     else if (effect.type === 'setNoJump' && actor) actor.noJump = effect.value;
+    else if (effect.type === 'healToMax' && actor?.status) healTutorialStatus(actor.status, actor.status.hpMax);
+    else if (effect.type === 'damageCurrentHealthFraction' && actor?.status) {
+      applyTutorialStatusDamage(
+        actor,
+        actor,
+        sourceGun(effect.source),
+        { ...effect.extra },
+        actor.status.hpCur * effect.fraction,
+        { bypassProtection: true, random: session.random },
+      );
+    }
     else if (effect.type === 'setGuns' && actor) setActorGuns(actor, effect.primary, effect.secondary);
     else if (effect.type === 'swapGuns' && actor) setActorGuns(actor, actor.guns.primary, actor.guns.secondary, actor.guns.secondary);
     else if (effect.type === 'setAmmo' && actor) actor.ammo = { clip: effect.clip, spare: effect.spare };
@@ -295,6 +314,8 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     runtime: createCampaignOneRuntime(),
     actors: [],
     match: { mode: definition.mode, scoreLimit: definition.score, team1score: 0, team2score: 0, ended: false },
+    hud: { frame: 'idle', downArrows: null, messages: [] },
+    audio: [],
     classSaves,
     environment: { doorFrame: 'idle', elevatorFrame: 'idle' },
     effects: [],

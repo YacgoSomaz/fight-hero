@@ -10,7 +10,7 @@ function setBars(status) {
   status.barHurtX = status.barHpWidth;
 }
 
-function heal(status, amount) {
+export function healTutorialStatus(status, amount) {
   status.hpCur += amount;
   if (status.hpCur > status.hpMax) status.hpCur = status.hpMax;
   setBars(status);
@@ -44,7 +44,7 @@ export function createTutorialStatus({ hpMax, shield = 0 }) {
     fc: 0,
     bigSkillCooldown: 0,
   };
-  heal(status, hpMax);
+  healTutorialStatus(status, hpMax);
   return status;
 }
 
@@ -128,7 +128,7 @@ export function applyTutorialStatusDamage(target, attacker, gun, extra, rawDamag
   status.hpCur -= damage;
   if (!bypassProtection && status.hpCur <= 0 && targetSkill.id === 'operation' && !status.bigSkillCooldown) {
     status.bigSkillCooldown = targetSkill.value * 30;
-    heal(status, status.hpMax * 0.5);
+    healTutorialStatus(status, status.hpMax * 0.5);
     events.push('operation');
   }
 
@@ -203,13 +203,13 @@ export function advanceTutorialStatusFrame(unit) {
   }
 
   if (status.sRapidHeal) {
-    heal(status, status.hpMax * 0.003);
+    healTutorialStatus(status, status.hpMax * 0.003);
     if (unit.unitInfo.streak?.id === 'rapid' && unit.streakInProgress && status.sRapidHeal === 1) events.push('endRapid');
     status.sRapidHeal -= 1;
   } else if (status.regenDelay) {
     status.regenDelay -= 1;
   } else {
-    heal(status, unit.unitInfo.regen);
+    healTutorialStatus(status, unit.unitInfo.regen);
     if (status.hpCur < status.hpMax) events.push(skill.id === 'adren' ? 'regenRed' : 'regen');
   }
 

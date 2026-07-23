@@ -49,7 +49,9 @@ test('Tutorial scene preview consumes the source Game tick rather than browser p
   assert.match(script, /drawTutorialEnvironment\(context, environmentPlan, environmentAssets, \{\s*createCanvas/);
   assert.match(script, /drawVectorRuntimeSprite\(context, downArrowRuntime, 1395, arrow\.frame, drawRuntimeShape\)/);
   assert.match(script, /unit-bar-670\.png/);
-  assert.match(script, /globalCompositeOperation = 'source-in'/);
+  assert.match(script, /drawSourceTintedImage/);
+  assert.match(script, /createSourceTintedCanvas/);
+  assert.doesNotMatch(script, /context\.globalCompositeOperation = 'source-in'/);
   assert.match(script, /canvas\.dataset\.ready = 'true'/);
   assert.match(script, /function reportTutorialSceneFailure\(reason\)/);
   assert.doesNotMatch(script, /applyCampaignOneSessionFrame\(/);

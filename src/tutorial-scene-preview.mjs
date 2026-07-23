@@ -32,6 +32,7 @@ import { getHudTextFields } from './hud-text-source.mjs';
 import { getTutorialSpeakRenderPlan } from './tutorial-speak-render-plan.mjs';
 import { drawTutorialSpeak } from './tutorial-speak-renderer.mjs';
 import { TUTORIAL_SPEAK_SOURCE_ASSETS } from './tutorial-speak-source.mjs';
+import { createSourceTintedCanvas, drawSourceTintedImage } from './source-tinted-image-renderer.mjs';
 
 const canvas = document.querySelector('#tutorialScene');
 const context = canvas.getContext('2d');
@@ -343,25 +344,37 @@ try {
   // plan; Canvas only reproduces Flash's ColorTransform with source-in.
   function drawTutorialUnitOverheadBar(bar) {
     if (bar.width <= 0) return;
-    context.save();
-    context.drawImage(unitBarImage, 0, 0, bar.sourceWidth, bar.sourceHeight, bar.x, bar.y, bar.width, bar.height);
-    context.globalCompositeOperation = 'source-in';
-    context.globalAlpha = bar.alpha ?? 1;
-    context.fillStyle = bar.colour;
-    context.fillRect(bar.x, bar.y, bar.width, bar.height);
-    context.restore();
+    drawSourceTintedImage(context, {
+      image: unitBarImage,
+      source: { x: 0, y: 0, width: bar.sourceWidth, height: bar.sourceHeight },
+      destination: { x: bar.x, y: bar.y, width: bar.width, height: bar.height },
+      colour: bar.colour,
+      alpha: bar.alpha ?? 1,
+      createCanvas: (width, height) => {
+        const buffer = document.createElement('canvas');
+        buffer.width = width;
+        buffer.height = height;
+        return buffer;
+      },
+    });
   }
 
   function drawTutorialUnitOverheadIcon(icon) {
     const image = unitIcons.get(icon.assetSrc);
     if (!image) throw new Error(`original Unit icon image is unavailable for frame ${icon.frame}`);
-    context.save();
-    context.drawImage(image, 0, 0, icon.sourceWidth, icon.sourceHeight, icon.x, icon.y, icon.width, icon.height);
-    context.globalCompositeOperation = 'source-in';
-    context.globalAlpha = icon.alpha;
-    context.fillStyle = icon.colour;
-    context.fillRect(icon.x, icon.y, icon.width, icon.height);
-    context.restore();
+    drawSourceTintedImage(context, {
+      image,
+      source: { x: 0, y: 0, width: icon.sourceWidth, height: icon.sourceHeight },
+      destination: { x: icon.x, y: icon.y, width: icon.width, height: icon.height },
+      colour: icon.colour,
+      alpha: icon.alpha,
+      createCanvas: (width, height) => {
+        const buffer = document.createElement('canvas');
+        buffer.width = width;
+        buffer.height = height;
+        return buffer;
+      },
+    });
   }
 
   function drawTutorialUnitJugMarker(marker) {
@@ -460,11 +473,19 @@ try {
       experience.bar.matrix.x,
       experience.bar.matrix.y,
     );
-    context.drawImage(tutorialHudAssets.expFill, 0, 0);
-    context.globalCompositeOperation = 'source-in';
-    context.globalAlpha = experience.bar.color.alpha;
-    context.fillStyle = `rgb(${experience.bar.color.red}, ${experience.bar.color.green}, ${experience.bar.color.blue})`;
-    context.fillRect(0, 0, experience.bar.sourceBounds.width, experience.bar.sourceBounds.height);
+    const tintedExperience = createSourceTintedCanvas({
+      image: tutorialHudAssets.expFill,
+      source: { x: 0, y: 0, width: experience.bar.sourceBounds.width, height: experience.bar.sourceBounds.height },
+      colour: `rgb(${experience.bar.color.red}, ${experience.bar.color.green}, ${experience.bar.color.blue})`,
+      alpha: experience.bar.color.alpha,
+      createCanvas: (width, height) => {
+        const buffer = document.createElement('canvas');
+        buffer.width = width;
+        buffer.height = height;
+        return buffer;
+      },
+    });
+    context.drawImage(tintedExperience, 0, 0);
     context.restore();
     context.globalAlpha = 1;
     context.fillStyle = '#ffffff';

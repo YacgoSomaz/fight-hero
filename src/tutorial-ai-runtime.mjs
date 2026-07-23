@@ -132,7 +132,17 @@ export function advanceTutorialAi({ state: sourceState, actor, units, arena, wal
   const target = state.targetId ? units.find((unit) => unit.id === state.targetId) ?? null : null;
   if (!target) { state.focusX = pos.x + actor.scaleX * 50 + (actor.movement?.xVelocity ?? 0) * 10; state.focusY = pos.y - 40 + (actor.movement?.yVelocity ?? 0) * 8; state.aimX += (state.focusX - state.aimX) * .4; state.aimY += (state.focusY - state.aimY) * .3; }
   else if (!target.dead) { const other = positionOf(target); state.focusX = other.x; state.focusY = other.y - (target.movement?.crouching ? 20 : 40); state.aimX += (state.focusX - state.aimX) * state.aimSpeed; state.aimY += (state.focusY - state.aimY) * state.aimSpeed; }
-  else throw new Error('original AI corpse targeting requires migrated PhysActor body state');
+  else {
+    // AI.EnterFrame reads target.dead.rdBody.GetDefinition().userData and
+    // aims at its x/y+10. The source corpse adapter carries that same body
+    // as the PhysActor `body` part until Box2D is migrated.
+    const body = target.dead.parts?.find((part) => part.kind === 'body');
+    if (!Number.isFinite(body?.position?.x) || !Number.isFinite(body?.position?.y)) throw new TypeError('original AI corpse targeting requires a source PhysActor body position');
+    state.focusX = body.position.x;
+    state.focusY = body.position.y + 10;
+    state.aimX += (state.focusX - state.aimX) * state.aimSpeed;
+    state.aimY += (state.focusY - state.aimY) * state.aimSpeed;
+  }
   let shouldShoot = false; if (gameStarted && target && state.diff && !actor.status?.sSpawn) { const gun = activeGun(actor); shouldShoot = random() < (.05 + (1 - (gun.shootDelay <= .9 ? gun.shootDelay : .9)) * .2) * state.shotChance; }
   const actions = actionBoxes(state, actor, arena, keys, random); return { state: actions.state, keys: actions.keys, jumpRequested: actions.jumpRequested, shouldShoot };
 }

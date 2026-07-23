@@ -502,6 +502,13 @@ npm start
 - TDD：`da30485→8942d4e` 是动态子素材缺失的 RED→GREEN；`bafc403→6a91ff4` 是 ScoreBar 显示列表计划缺失的 RED→GREEN。完整 `npm test` 为 **337/337 通过**，`npm run test:coverage` 为 **98.94% 行、83.35% 分支、96.60% 函数**。
 - 严格边界：这批资产与计划还**没有**由 `tutorial-scene-preview` 或 `main.mjs` 绘制，也没有获得原 SWF 的同输入截图来验证 FFDec crop/mask 的实际合成；更没有补齐原动态文字、全 HUD、胜负或全部模式。因此不能称为比分条、HUD、第一关或游戏 1:1 完成。后续接入必须消费此计划和这些原素材，保留 1445 的 mask/clipDepth，禁止退回扁平 1462 图或手绘条。
 
+## 2026-07-23：新 ASASM 裁决的 AI 墙缘恢复与尸体瞄准（仍非完整 AI）
+
+- 原始证据：新包 `rabcdasm/war-heroes-4399-0/AI.class.asasm` 对 `AI.EnterFrame` 的控制流确认了与 FFDec `AI.as` 一致的两条行为：(1) AI 有 `crouch` 且正向左/右移动时，先执行 `mov.hitTest(-19,-20)` / `mov.hitTest(19,-20)`；命中即把 `crouch=0`，之后才决定是否写入 `DOWN`；(2) 已获取目标在重扫前死亡时，使用 `target.dead.rdBody.GetDefinition().userData.x/y`，瞄准 `(x,y+10)`，不应中断整个 AI tick。该包与当前 SWF 哈希同为 `BDC9216EDD31D8CF2B231182C7203655CFEF9A71F497E5708F9A649D8A40BD29`。
+- 网页承载：`tutorial-ai-runtime.mjs` 在 AI key 已确定后按两个原坐标探针读取同一 wall surface；命中边缘时取消蹲伏，避免继续发出 `DOWN` 而失去跳跃分支。其尸体适配只读取 `tutorial-corpse-runtime.mjs` 的原 `body` part 位置，并沿用原版 `body.y+10`。`campaign-one-session.mjs` 因而可以在玩家死亡、bot 仍保有上次 `targetId` 的短暂窗口继续处理 AI，而非抛异常。
+- TDD：`350798e` 是墙缘蹲伏 RED；`d9a43a0` 是其 GREEN。`9d1fc24` 是尸体 body aim RED；后续 GREEN 以 `tutorial-ai-runtime.test.mjs` 和 `campaign-one-session.test.mjs` 锁定纯 AI 与真实 Campaign actor 循环。全量 `npm test` 为 **345/345** 通过；覆盖率见本轮最终验证。
+- 严格边界：这不是 Box2D 尸体位移、可视尸体、AI 对尸体伤害、完整脱困、CTF/DOM 目标路径或原版输入/逐帧画面对照。当前 corpse body 仅保存 `PhysWorld.createCorpse` 的来源初始位置/冲量记录；在迁移 PhysActor 求解前，不能宣称尸体画面或后续移动与原版一致。
+
 ## 索引
 
 - [SWF 深度解包报告](SWF_DEEP_UNPACK_REPORT.md)

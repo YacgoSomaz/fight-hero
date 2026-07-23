@@ -204,6 +204,22 @@ test('Campaign 1 applies the source Unit.die corpse lifecycle and removes the Ph
   assert.deepEqual(session.corpses, []);
 });
 
+test('Campaign 1 keeps an AI aim update alive when its previously acquired player target becomes a source corpse', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const [player, bot] = session.actors;
+  for (const actor of session.actors.slice(1, 4)) actor.status.sSpawn = 0;
+  applyCampaignOneSessionDeath(session, { target: player, attacker: bot, gun: bot.gun.curGun });
+  bot.ai = { ...bot.ai, targetId: player.id, getTargetEvent: 12 };
+
+  const decision = advanceCampaignOneSessionAi(session, { wall: { isSolid: () => false }, gameStarted: false, random: () => .999 })
+    .find(({ id }) => id === bot.id);
+
+  // PhysWorld.createCorpse body starts at Unit.x, Unit.y - 40. AI.EnterFrame
+  // uses body.x/body.y + 10 until its next source target scan.
+  assert.equal(decision.targetId, 'unit0');
+  assert.deepEqual({ focusX: bot.ai.focusX, focusY: bot.ai.focusY }, { focusX: 285, focusY: 675 });
+});
+
 // User journey: in the original Under Siege TDM, a normal player kill does
 // not stop at corpse creation. Unit.die() updates both Score instances,
 // MatchSettings totals the authored teams and Hud.addExp() writes the

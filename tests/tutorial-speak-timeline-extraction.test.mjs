@@ -21,8 +21,8 @@ test('extracts original Speak_187 timeline, labels and dynamic child anchors', (
     last: speak.frames.at(-1).items.map(({ depth, character, name }) => ({ depth, character, name })),
   }, {
     symbolId: 1488,
-    frameCount: 16,
-    labels: { open: 2, close: 16 },
+    frameCount: 33,
+    labels: { open: 2, close: 17 },
     first: [
       { depth: 1, character: 1482, name: null, clipDepth: null },
       { depth: 2, character: 1483, name: null, clipDepth: 5 },

@@ -77,6 +77,18 @@ function displaceUntilFree(position, wall, probes, deltaX = 0, deltaY = 0) {
   }
 }
 
+function resolveSourceFootOverlap(position, wall, footOffset) {
+  let guard = 0;
+  // Movement.as:357/364 keeps this negative-one probe in the loop condition.
+  // It prevents a partially embedded spawn from being pushed all the way
+  // through its authored floor while resolving the eight-pixel foot probe.
+  while (sourceHitTest(wall, position, 0, footOffset) && !sourceHitTest(wall, position, 0, -1)) {
+    position.y += 0.5;
+    guard += 1;
+    if (guard > 4096) throw new RangeError('source Movement foot collision could not resolve');
+  }
+}
+
 function beginClimb(state, direction) {
   state.climb = direction;
   state.yVel = state.climbSize === 1 ? -7 : -10;
@@ -253,7 +265,7 @@ export function stepTutorialMovement({ state: sourceState, actor: sourceActor, w
   position.x += state.xVelSlide;
   position.y += state.yVel;
 
-  displaceUntilFree(position, wall, [[0, state.climb ? 6 : 8]], 0, 0.5);
+  resolveSourceFootOverlap(position, wall, state.climb ? 6 : 8);
   if (sourceHitTest(wall, position, 0, 1)) {
     if (state.falltimer >= 1.3 * 30) state.landHard = true;
     if (state.yVel > 0) {

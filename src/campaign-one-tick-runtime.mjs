@@ -1,6 +1,7 @@
 import {
   applyCampaignOneSessionBulletEnvironmentHit,
   applyCampaignOneSessionFrame,
+  advanceCampaignOneSessionEnvironment,
   advanceCampaignOneSessionHud,
   applyCampaignOneSessionPlayerMouseDown,
   applyCampaignOneSessionPlayerMouseUp,
@@ -96,10 +97,16 @@ export function advanceCampaignOneGameTick(runtime, {
   const { inputs, effects: inputEffects } = consumeQueuedInputs(runtime);
   runtime.gameFrame += 1;
   const trace = [];
-  const hud = advanceCampaignOneSessionHud(runtime.session);
-  trace.push({ phase: 'hud', gameFrame: runtime.gameFrame, hud });
   const scriptEffects = applyCampaignOneSessionFrame(runtime.session);
   trace.push({ phase: 'campaign', gameFrame: runtime.gameFrame, campaign: { ...runtime.session.runtime } });
+  // Game.EnterFrame runs Campaign first, then Arena/map display work, and
+  // only afterwards Hud. Door/elevator MovieClips therefore consume their
+  // original one-frame playback step in this Arena phase rather than being
+  // advanced by a browser renderer at an unrelated time.
+  const environment = advanceCampaignOneSessionEnvironment(runtime.session);
+  trace.push({ phase: 'environment', gameFrame: runtime.gameFrame, environment });
+  const hud = advanceCampaignOneSessionHud(runtime.session);
+  trace.push({ phase: 'hud', gameFrame: runtime.gameFrame, hud });
 
   const lineBullets = [];
   const actorResults = [];

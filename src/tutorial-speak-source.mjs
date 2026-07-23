@@ -18,6 +18,10 @@ const PORTRAIT_FRAME_RANGES = Object.freeze([
 export const TUTORIAL_SPEAK_SOURCE_ASSETS = Object.freeze({
   chrome: Object.freeze(Object.fromEntries(CHROME_IDS.map((id) => [id, sourcePath(id)]))),
   portraits: Object.freeze(Object.fromEntries(PORTRAIT_IDS.map((id) => [id, sourcePath(id, 'head/')]))),
+  fonts: Object.freeze({
+    name: './public/assets/original-swf/tutorial-speak/font-1485.ttf',
+    description: './public/assets/original-swf/tutorial-speak/font-800.ttf',
+  }),
 });
 
 export function getTutorialSpeakPortraitSource(frame) {

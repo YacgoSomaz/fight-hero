@@ -48,7 +48,8 @@ test('draws original Speak_187 chrome and clips its source portrait with Shape 1
   drawTutorialSpeak(context, plan, assets, { createCanvas: () => buffer });
 
   assert.ok(context.calls.some((call) => call[0] === 'drawImage' && call[1] === assets.chrome[1482]));
-  assert.ok(context.calls.some((call) => call[0] === 'drawImage' && call[1] === buffer && call[2] === 250 && call[3] === 15));
+  assert.ok(context.calls.some((call) => call[0] === 'translate' && call[1] === 250 && call[2] === 15));
+  assert.ok(context.calls.some((call) => call[0] === 'drawImage' && call[1] === buffer && call[2] === 0 && call[3] === 0));
   assert.ok(context.calls.some((call) => call[0] === 'drawImage' && call[1] === assets.chrome[1484]));
   assert.ok(bufferContext.calls.some((call) => call[0] === 'drawImage' && call[1] === assets.portraits[645]));
   assert.ok(bufferContext.calls.some((call) => call[0] === 'composite' && call[1] === 'destination-in'));

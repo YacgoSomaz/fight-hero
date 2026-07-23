@@ -258,6 +258,33 @@ export function extractSymbolFrameVisualBounds({ character, frame, swf = default
   return Object.freeze({ character, frame: sourceFrame, bounds: Object.freeze(bounds) });
 }
 
+// Keeps the child identities/matrices of a direct Tutorial visual sprite.
+// This is the evidence needed to replace a flattened FFDec canvas with the
+// original bitmap/vector children, without treating transparent padding as a
+// world-space transform.
+export function extractSymbolFrameDisplayList({ character, frame, swf = defaultSwf } = {}) {
+  if (!Number.isInteger(character) || !Number.isInteger(frame) || frame < 1) {
+    throw new TypeError('original symbol character and frame are required');
+  }
+  const bytes = decompressSwf(swf);
+  const defs = definitionMap(bytes);
+  const definition = defs.get(character);
+  if (!definition || definition.code !== 39) throw new Error(`original sprite is unavailable: ${character}`);
+  const sourceFrame = Math.min(frame, bytes.readUInt16LE(definition.body + 2));
+  const display = displayListFrames(bytes, definition)[sourceFrame - 1];
+  if (!display) throw new Error(`original sprite frame is unavailable: ${character}/${sourceFrame}`);
+  const layers = display.items
+    .filter(({ character: child }) => Number.isInteger(child))
+    .sort((left, right) => left.depth - right.depth)
+    .map(({ depth, character: child, name, matrix = { a: 1, b: 0, c: 0, d: 1, x: 0, y: 0 } }) => Object.freeze({
+      depth,
+      character: child,
+      ...(name ? { name } : {}),
+      matrix: Object.freeze({ ...matrix }),
+    }));
+  return Object.freeze({ character, frame: sourceFrame, layers: Object.freeze(layers) });
+}
+
 /**
  * Arena's Display List is the authority for reassembling Foundry's dynamic
  * foreground.  This deliberately excludes wallMC and Node* authoring data.

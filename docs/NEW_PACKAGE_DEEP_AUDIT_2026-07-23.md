@@ -8,8 +8,8 @@
 
 1. **原包证据链可靠。** 用户提供的 `4399-90433-war-heroes-original.swf` 与仓库基线相同，SHA-256 是 `BDC9216EDD31D8CF2B231182C7203655CFEF9A71F497E5708F9A649D8A40BD29`；新包增加了可交叉验证的 500 个 AS3、1,064 个 ASASM 和完整 XML。
 2. **第一关的静态定义、Tutorial 墙、人物部件、基础移动/枪械/伤害的若干原始规则确实被消费。** 这不是自绘占位素材链。
-3. **当前试玩页面的帧调度不等价于 `Game.EnterFrame()`。** 它把所有 AI 决策/枪械、Status、AI Movement、玩家 Movement 拆成批处理；原版则由每个 `Player/AI.EnterFrame → UnitEnterFrame` 串行完成。需特别区分：`Bullet_Line_Basic` 在 `Guns.shoot()` 构造时立即命中，移动 bullet 才在末尾的 bullets phase 更新。这是后续 1:1 的首要阻断项。
-4. **“测试全绿”不等于“原版一致”。** 当前 349 个测试主要是解析、纯状态和源码资产存在性断言；没有原 SWF 的同输入逐 tick trace，也没有可重复的截图/音频差分。
+3. **第一关已有一条受限的 `Game.EnterFrame` source tick。** 它已按 Player/AI 的 actor 顺序串行走枪械与 Unit tail，并保留 line bullet 的即时命中位置；剩余 `Arena/PhysWorld/MatchSettings/Hud` 子对象仍未纳入同一完整原版 trace，不能外推为完整帧调度。
+4. **“测试全绿”不等于“原版一致”。** 当前 363 个测试主要是解析、纯状态和源码资产存在性断言；没有原 SWF 的同输入逐 tick trace，也没有可重复的截图/音频差分。
 
 本文件是审计和迁移台账，不是完成声明。
 
@@ -31,7 +31,7 @@
 
 - 阅读并交叉比对：`Main.as`、`Game.as`、`Arena.as`、`Player.as`、`AI.as`、`Unit.as`、`Movement.as`、`Guns.as`、`Bullet.as`、`Status.as`、`Hud.as`、`MatchSettings.as`、`Stats_Campaign.as` 与其 ASASM/XML 绑定。
 - 沿当前浏览器入口检查：`tutorial-scene-preview.mjs` → `campaign-one-session.mjs` → campaign / AI / movement / gun / status / timeline / render 模块。
-- 完整执行 `npm run test:coverage`：**349/349 通过**；总体 **98.95% 行、83.64% 分支、96.63% 函数**。
+- 完整执行 `npm run test:coverage`：**363/363 通过**；总体 **98.77% 行、83.17% 分支、96.53% 函数**。
 - 没有把测试通过当作视觉验收；本轮也没有进行浏览器自动操作或人工截图对比。
 
 ## 2. 原版运行时与当前网页调度的直接对照
@@ -96,8 +96,8 @@ clear line traces
 | Guns | `Stats_Guns`、`Guns.as` | `gun-source.mjs`、`tutorial-gun-runtime.mjs` | P | M4/USP 等部分基本 delay、reload、recoil/arm action 已接入；武器表不等于所有 Bullet subclass、拾取、切枪、特殊效果均迁移。 |
 | Bullets / hit | `Bullet` subclasses、`Status.damage` | `tutorial-bullet-*`、status module | P/D | Line bullet、墙/Unit hit 与部分伤害有来源规则；RT-01 使时机错误，投射物、爆炸、反弹、跟踪、mine/splash 等不是完整迁移。 |
 | Damage / death / corpse | `Status.as`、`Unit.die`、`PhysWorld` | `tutorial-status-damage-runtime.mjs`、`tutorial-corpse-runtime.mjs` | P | shield、spawn protection、部分 modifier、respawn timer 有测试；Box2D fixture/joint corpse 仍缺，原尸体视觉/物理未完成。 |
-| Campaign 1 script | `Stats_Campaign.runScripts`、`Unit` surface switch | `campaign-one-*` | P | `sn/fc` 事件、pink wall contact、换枪和 bullet trigger 已解析/写入 session；状态终局、场景门/电梯实际时间轴、全对白/HUD/声音未闭环。 |
-| HUD / dialogue / audio | `Hud.as`、1540/1488/1504/1395 XML | HUD source/renderer modules、session fields | P/D | 下方 ammo/XP/scorebar 和头顶局部素材已有来源计划；Campaign 的 `hud.messages[]` 与原 **单一** `setMsg(msgForce,msgTimer)` 不等价，audio 只记录 intent 没有按 SH 播放。 |
+| Campaign 1 script | `Stats_Campaign.runScripts`、`Unit` surface switch | `campaign-one-*` | P | `sn/fc` 事件、pink wall contact、换枪和 bullet trigger 已解析/写入 session；门/电梯的 stop-frame 状态已运行，但对应 Arena child 视觉与完整终局仍未闭环。 |
+| HUD / dialogue / audio | `Hud.as`、1540/1488/1504/1395 XML | HUD source/renderer modules、session fields、Tutorial preview | P/D | `setMsg` 的单一 `msgForce/msgTimer/speak` 状态及 DownArrow 1395 原 Shape/16 帧已接入；教程 Hud/Speak Display List 和音频仍未完成。 |
 | Camera / background | `Arena.EnterFrame` | camera/map DOM modules | P | 原 crop 与墙坐标的若干关系已测；相机分支覆盖 **40%**，screen shake/parallax/timeline 完整性尚未证明。 |
 | Modes | `MatchSettings`、Score、flag/holdpoint nodes | engine/session | P | DM/TDM/DOM/CTF/Jug 有基础规则测试；Campaign/Challenge 逐任务规则、Zom、objective 表现、结算和菜单路径未验收。 |
 | 全地图 | `Stats_Maps`、Arena symbols/XML | map source/catalog/loader | P/U | 图层和 wall 资产可加载不等于地图逻辑完成；当前不能声称全部地图已修好。 |
@@ -116,10 +116,10 @@ clear line traces
 | ID | 缺口 | 为什么不能宣称第一关完成 |
 | --- | --- | --- |
 | CA-01 | 已由 `campaign-one-tick-runtime` 的 source Game tick 关闭；仍需把剩余 Unit/HUD/MatchSettings 子对象纳入同一 trace | scripts、actor 顺序、line bullet 与人类脚底 trigger 已同 tick；不等于完整第一关。 |
-| CA-02 | `Hud.setMsg` 未迁移为 `msgForce + msgTimer + speak open/close` | 当前消息数组会并存，原版只保留当前消息并有强制覆盖规则。 |
-| CA-03 | Hud timeline、DownArrow、Speak、HudInfo 没有按 XML Display List 在试玩页完整画出 | session 有 `hudFrame` 不等于可见教程 UI。 |
+| CA-02 | `Hud.setMsg` 已迁移为单一 `msgForce + msgTimer + speak open/close`；仍未绘制 Speak_187 的原 Display List/文本合成 | 状态契约已测，不等于原字体、头像、开关动画或语音已完成。 |
+| CA-03 | DownArrow 1395 已按原 XML/Shape4/16 帧在试玩页绘制；Hud 1540 教程标签、Speak、HudInfo 尚未完整画出 | 仅这个独立教程 child 已可见，不能外推整个教程 HUD。 |
 | CA-04 | 声音只写 `session.audio` intent | `S_Mine1`、`S_Pan`、voice/music 没有按原 timing/output 播放。 |
-| CA-05 | 门、电梯写入 `environment.*Frame`，但还不是 Arena child movieclip 的真实逐帧驱动 | 碰撞变化/视觉变化尚不可验证。 |
+| CA-05 | 门/电梯已运行原 stop-frame timeline 状态，但还不是 Arena child movieclip 的真实视觉 Display List | 碰撞变化/视觉变化尚不可验证。 |
 | CA-06 | spawned AI、score、任务结束与 cutscene 没有 end-to-end source trace | 可以进 Tutorial，不代表能按原版从开始到结束。 |
 
 因此 Campaign 1 当前状态应称为：**“原任务定义和若干状态转换已接入的验证场景”**，而不是“战役第一关已做好”。
@@ -132,7 +132,7 @@ clear line traces
 npm run test:coverage
 ```
 
-结果：349 pass、0 fail；总体达到了项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask 和菜单可点击性。
+结果：363 pass、0 fail；总体达到了项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395 时间轴和菜单可点击性。
 
 但当前测试体系存在以下不可替代的盲区：
 
@@ -186,15 +186,15 @@ start: sn=1, fc=0, player=Scientist(Medic skin 7), M4/USP 被 script 清空
 - `Player.as:352–395`：Q/Shift 的**先换枪、后 sn==12 开门**分支。
 - `MatchSettings.as:updateScores` + `Game.as:endGame`：15 分 TDM 的结束路径。
 
-### 8.2 当前试玩页的三个“硬不可达”问题
+### 8.2 已关闭的三项旧硬不可达问题（不构成第一关完成）
 
 | ID | 当前代码事实 | 原版要求 | 后果 |
 | --- | --- | --- | --- |
-| C1-RUN-01 | `tutorial-scene-preview.mjs` 的 `KEY_BITS` 只含 W/A/S/D/方向键；全仓库没有页面调用 `applyCampaignOneGunSwap()` 或 session 对应输入 API | `Player.KeyDown` 的 Q/Shift 会在 sn 12 使 sn→13、换 wall frame 13 并 `door.gotoAndPlay("open")` | 玩家到 sn 12 后**必定无法开门**，关卡不能到敌人出现阶段。 |
-| C1-RUN-02 | `syncPlayerRestrictionsFromSourceSession()` 遇到 active gun 为 M4 时将 `gunState = null`；鼠标事件也要求 `gunState` 存在才射击 | state 11 后 `M4` 是活跃枪；M4 的原 `Bullet_Line_Basic`、30 发弹匣、15 分 TDM 都需要它 | 即使人为绕过 C1-RUN-01，玩家也**无法用 M4 射击**，不能完成敌人/计分主线。 |
-| C1-RUN-03 | `setAmmo` 只写 `session.actors[].ammo`，没有写正在使用的 `gunState.ammo`；page 的即时 bullet 又先于原 Unit/Bullet phase | `Bullet.as` 在 state 9 命中后清的是 `player.gun.curAmmo.clipCur/spareCur`，后续 `Guns` 必须读取同一份 ammo；Bullet 应在所有 unit 后处理 | 电梯触发后的弹药、换枪和本帧命中时机不是同一份原状态，无法用当前页面证明准确。 |
+| C1-RUN-01 | `tutorial-scene-preview.mjs` 已将 Q/Shift 排入 `enqueueCampaignOneSourceInput(... swapGuns)`；source tick 在 state 12 同一会话切枪、换 wall 13 并写 door `playing='open'` | `Player.KeyDown` 的 Q/Shift 会在 sn 12 使 sn→13、换 wall frame 13 并 `door.gotoAndPlay("open")` | 该输入路径已有自动回归；门的原 Arena child 视觉仍未渲染。 |
+| C1-RUN-02 | active gun 已由 session 的 `gunRuntime` 唯一持有；页面对 M4/USP2 读取原 arm timeline，鼠标仅排入 source input | state 11 后 `M4` 是活跃枪；M4 的原 `Bullet_Line_Basic`、30 发弹匣、15 分 TDM 都需要它 | 不再因浏览器私有 `gunState` 失效；M4→完整 TDM/endGame 仍没有端到端 trace。 |
+| C1-RUN-03 | state 9 的 `setAmmo` 写入当前 `gunRuntime.ammo.clipCur/spareCur/total`，且 line bullet 发生于 actor Unit tail 前 | `Bullet.as` 在 state 9 命中后清的是 `player.gun.curAmmo.clipCur/spareCur`，后续 `Guns` 必须读取同一份 ammo；Bullet 应在所有 unit 后处理 | 该弹药所有权回归已关闭；完整 bullets phase、移动投射物与 endgame 仍未迁移。 |
 
-这三项说明先前“第一关入口/状态已经接入”的表述必须严格理解为**可审计的片段**，而非可完成任务。它们也提供了一个更具体的实现边界：在 source tick runtime 完成前，不应给试玩页添加零散 Q 键或 M4 特例；否则会继续把原来的单一 `Guns` 状态拆成页面私有状态。
+这三项已由 source tick/会话统一状态关闭；它们仍只说明第一关入口与局部状态可达，而非完整可通关任务。后续不得重新引入页面私有 gun/movement 状态，必须继续扩展同一 source tick。
 
 ### 8.3 还必须解到的原始 Display List / 时间轴数据
 
@@ -203,9 +203,9 @@ start: sn=1, fc=0, player=Scientist(Medic skin 7), M4/USP 被 script 清空
 | 对象 | 原标识 | 原行为 | 当前状态 |
 | --- | --- | --- | --- |
 | Tutorial 墙 | `wallMC` / character 1378，16 帧 | `Arena.changeWallFrame` 先 `gotoAndStop` 再 `BitmapData.draw`，同一刻替换碰撞颜色 | wall PNG 已有；对象/视觉时间轴尚非一个统一 runtime。 |
-| 门 | `MBFZ_fla.door_up_239` / symbol 1361 | `gotoAndPlay("open")` 与 `gotoAndPlay("close")`；类帧 1、12、23 均 stop | 当前只有 `environment.doorFrame` 文本。 |
-| 电梯 | `MBFZ_fla.elevator_242` / symbol 1388 | `play()`，到 frame 19 stop；其触发与 wall 10 同一 bullet 分支 | 当前只有 `environment.elevatorFrame='play'`。 |
-| 指示箭头 | `DownArrow` / symbol 1395，Arena children 名为 `downarrow3/7/8/10/12` | `Arena.Init` 全隐藏；Unit/Player 按 `name.substring(9) == sn` 单独显示 | 当前只保存一个数字，未保存每个 child 的矩阵、可见性和 16-frame playback。 |
+| 门 | `MBFZ_fla.door_up_239` / symbol 1361 | `gotoAndPlay("open")` 与 `gotoAndPlay("close")`；类帧 1、12、23 均 stop | session 保留 `frame/playing` 并按 1→12→23 停止；原 child Shape/显示列表仍未画出。 |
+| 电梯 | `MBFZ_fla.elevator_242` / symbol 1388 | `play()`，到 frame 19 stop；其触发与 wall 10 同一 bullet 分支 | session 保留 `frame/playing` 并按 1→19 停止；原 child Shape/显示列表仍未画出。 |
+| 指示箭头 | `DownArrow` / symbol 1395，Arena children 名为 `downarrow3/7/8/10/12` | `Arena.Init` 全隐藏；Unit/Player 按 `name.substring(9) == sn` 单独显示 | Arena child 深度/twip 矩阵、逐 child 可见性、1395→1394 Shape4（fill+line）和 16 帧位移已提取并由 Tutorial preview 直接绘制；缺原 SWF 截图叠图验收。 |
 | 教学 HUD | Hud symbol 1540；标签 `tutmove/tutjump/tutduck/tutshoot/tutclimb/tutswitch` | `gotoAndStop(label)` 与 `Hud.EnterFrame` 同 tick timer | 当前只保存 `hud.frame` 字符串。 |
 | 对话 | Speak_187 / symbol 1488；Hud 的 `setMsg` | 单一 `msgForce/msgTimer`、open/close、speaker skin/name/text/voice | 当前为消息数组和 audio intent。 |
 

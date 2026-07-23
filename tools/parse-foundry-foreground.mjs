@@ -188,6 +188,31 @@ function timelineBounds(bytes, defs, character) {
   return bounds && { frames, bounds };
 }
 
+// A flattened PNG's transparent padding is an FFDec export detail, not an
+// Arena coordinate.  Keep this generic reader alongside the Foundry helper
+// so every labelled Arena frame (especially Tutorial) can be inspected from
+// the original SWF Display List before a visible-layer registration changes.
+export function extractArenaFrameDisplayList({ label, swf = defaultSwf } = {}) {
+  if (typeof label !== 'string' || !label) throw new TypeError('original Arena frame label is required');
+  const bytes = decompressSwf(swf);
+  const defs = definitionMap(bytes);
+  const arena = defs.get(ARENA);
+  if (!arena || arena.code !== 39) throw new Error('original Arena symbol 1413 is unavailable');
+  const index = displayListFrames(bytes, arena).findIndex((frame) => frame.label === label);
+  if (index < 0) throw new Error(`original Arena frame label is unavailable: ${label}`);
+  const frame = displayListFrames(bytes, arena)[index];
+  const layers = frame.items
+    .filter(({ character }) => Number.isInteger(character))
+    .sort((left, right) => left.depth - right.depth)
+    .map(({ depth, character, name, matrix = { a: 1, b: 0, c: 0, d: 1, x: 0, y: 0 } }) => ({
+      depth,
+      character,
+      ...(name ? { name } : {}),
+      matrix: { ...matrix },
+    }));
+  return Object.freeze({ arenaCharacter: ARENA, frame: index + 1, label, layers: Object.freeze(layers) });
+}
+
 /**
  * Arena's Display List is the authority for reassembling Foundry's dynamic
  * foreground.  This deliberately excludes wallMC and Node* authoring data.

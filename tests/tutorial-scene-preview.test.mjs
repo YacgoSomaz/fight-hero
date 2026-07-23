@@ -43,6 +43,7 @@ test('Tutorial scene preview consumes the source Game tick rather than browser p
   assert.match(script, /tutorial-environment\/1359\.svg/);
   assert.match(script, /tutorial-environment\/1360\.svg/);
   assert.match(script, /tutorial-environment\/1387\.svg/);
+  assert.match(script, /unitJugMarkerImage, originalUnitOverheadFont, environmentAssets/);
   assert.match(script, /getTutorialDownArrowRenderPlan\(session\.hud\.arrows, tutorialWorld\.tickRuntime\.tick, arenaPosition\)/);
   assert.match(script, /getTutorialEnvironmentRenderPlan\(session\.environment, environmentTimelineRuntime, arenaPosition\)/);
   assert.match(script, /drawTutorialEnvironment\(context, environmentPlan, environmentAssets, \{\s*createCanvas/);

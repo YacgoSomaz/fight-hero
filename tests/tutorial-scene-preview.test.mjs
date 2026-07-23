@@ -105,9 +105,8 @@ test('Tutorial scene preview renders original Speak_187 assets from the live Cam
   assert.match(script, /drawTutorialSpeak/);
   assert.match(script, /tutorial-speak-timeline-runtime\.local\.json/);
   assert.match(script, /tutorial-speak-portrait-timeline-runtime\.local\.json/);
-  assert.match(script, /original-swf\/tutorial-speak\/1482\.svg/);
-  assert.match(script, /original-swf\/tutorial-speak\/1483\.svg/);
-  assert.match(script, /original-swf\/tutorial-speak\/1484\.svg/);
+  assert.match(script, /TUTORIAL_SPEAK_SOURCE_ASSETS\.chrome/);
+  assert.match(script, /TUTORIAL_SPEAK_SOURCE_ASSETS\.portraits/);
   assert.match(script, /font-1485\.ttf/);
   assert.match(script, /font-800\.ttf/);
   assert.match(script, /function renderTutorialSpeak\(\)/);

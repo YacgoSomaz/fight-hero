@@ -29,6 +29,9 @@ import { getHudAmmoBoxes } from './hud-ammo.mjs';
 import { getHudExperienceRenderPlan } from './hud-experience-render-plan.mjs';
 import { getHudScorebarRenderPlan } from './hud-scorebar-render-plan.mjs';
 import { getHudTextFields } from './hud-text-source.mjs';
+import { getTutorialSpeakRenderPlan } from './tutorial-speak-render-plan.mjs';
+import { drawTutorialSpeak } from './tutorial-speak-renderer.mjs';
+import { TUTORIAL_SPEAK_SOURCE_ASSETS } from './tutorial-speak-source.mjs';
 
 const canvas = document.querySelector('#tutorialScene');
 const context = canvas.getContext('2d');
@@ -85,6 +88,18 @@ async function loadOriginalHudFonts() {
   return fonts;
 }
 
+async function loadOriginalSpeakFonts() {
+  if (typeof FontFace !== 'function' || !document.fonts) {
+    throw new Error('original Speak_187 fonts cannot be loaded in this browser');
+  }
+  const fonts = await Promise.all([
+    new FontFace('QTypeSquare-Medium', 'url(./public/assets/original-swf/tutorial-speak/font-1485.ttf)').load(),
+    new FontFace('QTypeSquare-Book_10pt_st', 'url(./public/assets/original-swf/tutorial-speak/font-800.ttf)').load(),
+  ]);
+  fonts.forEach((font) => document.fonts.add(font));
+  return fonts;
+}
+
 function drawParallax(image, crop, arenaPosition, wall) {
   const position = getTutorialParallaxLayerPosition(arenaPosition, wall, crop, STAGE);
   context.drawImage(image, position.x, position.y);
@@ -96,7 +111,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, originalUnitOverheadFont, environmentAssets, originalHudFonts, tutorialHudAssets] = await Promise.all([
+  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, speakTimelineRuntime, speakPortraitTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, originalUnitOverheadFont, environmentAssets, originalHudFonts, originalSpeakFonts, tutorialHudAssets, tutorialSpeakAssets] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
@@ -108,6 +123,14 @@ try {
     }),
     fetch('./public/assets/tutorial-environment-timeline-runtime.local.json').then((response) => {
       if (!response.ok) throw new Error(`Tutorial environment runtime failed to load (${response.status})`);
+      return response.json();
+    }),
+    fetch('./public/assets/tutorial-speak-timeline-runtime.local.json').then((response) => {
+      if (!response.ok) throw new Error(`Tutorial Speak runtime failed to load (${response.status})`);
+      return response.json();
+    }),
+    fetch('./public/assets/tutorial-speak-portrait-timeline-runtime.local.json').then((response) => {
+      if (!response.ok) throw new Error(`Tutorial Speak portrait runtime failed to load (${response.status})`);
       return response.json();
     }),
     loadTutorialUnitPoseAssets({ loadImage }),
@@ -127,6 +150,7 @@ try {
       './public/assets/original-swf/tutorial-environment/1387.svg',
     ].map(loadImage)).then(([doorMask, doorPanel, elevator]) => ({ doorMask, doorPanel, elevator })),
     loadOriginalHudFonts(),
+    loadOriginalSpeakFonts(),
     Promise.all([
       './public/assets/original-swf/hud-scorebar-1462.png',
       './public/assets/original-swf/hud-exp-base-1474.svg',
@@ -134,6 +158,13 @@ try {
       './public/assets/original-swf/hud-exp-fill-699-source.svg',
       './public/assets/original-swf/hud-gunsmenu-724-m4-frame20.png',
     ].map(loadImage)).then(([scorebar, expBase, expGreen, expFill, m4]) => ({ scorebar, expBase, expGreen, expFill, m4 })),
+    Promise.all([
+      ...Object.entries(TUTORIAL_SPEAK_SOURCE_ASSETS.chrome).map(async ([character, source]) => ['chrome', Number(character), await loadImage(source)]),
+      ...Object.entries(TUTORIAL_SPEAK_SOURCE_ASSETS.portraits).map(async ([character, source]) => ['portraits', Number(character), await loadImage(source)]),
+    ]).then((records) => records.reduce((result, [kind, character, image]) => {
+      result[kind][character] = image;
+      return result;
+    }, { chrome: {}, portraits: {} })),
   ]);
   const unitIcons = new Map(unitIconImages);
   const skyCrop = getMapLayerCrop(visual.sky);
@@ -166,6 +197,13 @@ try {
   let sourceLineTraces = [];
   let previous = performance.now();
   let accumulated = 0;
+
+  // This companion source timeline documents the exact 200-frame head clip
+  // selected by Hud.setMsg().  Rendering still uses the same direct source
+  // Shape selected through that original frame number.
+  if (speakPortraitTimelineRuntime.symbolId !== 666 || originalSpeakFonts.length !== 2) {
+    throw new Error('original Speak portrait runtime is unavailable');
+  }
 
   function sourceArmHolderFor(playbackState) {
     const rootFrame = unitTimeline.frames[playbackState.rootState.frame - 1];
@@ -467,6 +505,25 @@ try {
     renderTutorialExperience(session.classSaves[sourcePlayer.unitInfo.number]);
   }
 
+  function renderTutorialSpeak() {
+    const target = session.hud.message?.target;
+    const speaker = target && session.actors.find((actor) => actor.id === (target === 'player' ? 'unit0' : target));
+    const speakPlan = getTutorialSpeakRenderPlan({
+      hud: session.hud,
+      speaker,
+      timeline: speakTimelineRuntime,
+    });
+    if (!speakPlan) return;
+    drawTutorialSpeak(context, speakPlan, tutorialSpeakAssets, {
+      createCanvas: (width, height) => {
+        const sourceCanvas = document.createElement('canvas');
+        sourceCanvas.width = width;
+        sourceCanvas.height = height;
+        return sourceCanvas;
+      },
+    });
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
@@ -511,6 +568,7 @@ try {
       renderTutorialLineBullet(context, trace, (point) => worldToTutorialScreen(point, arenaPosition));
     }
     renderTutorialHud();
+    renderTutorialSpeak();
   }
 
   function frame(now) {

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionHud, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionEnvironment, advanceCampaignOneSessionHud, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -302,6 +302,17 @@ test('Campaign 1 uses the original single forced HUD message timer and Speak clo
   advanceCampaignOneSessionHud(session);
   assert.deepEqual({ timer: session.hud.msgTimer, force: session.hud.msgForce, speak: session.hud.speak }, {
     timer: 0, force: false, speak: 'close',
+  });
+});
+
+test('Campaign 1 advances original door and elevator timelines to their source stop frames', () => {
+  const session = createCampaignOneSession();
+  session.environment.door = { frame: 1, playing: 'open' };
+  session.environment.elevator = { frame: 1, playing: true };
+  for (let frame = 0; frame < 22; frame += 1) advanceCampaignOneSessionEnvironment(session);
+  assert.deepEqual(session.environment, {
+    door: { frame: 23, playing: null },
+    elevator: { frame: 19, playing: false },
   });
 });
 

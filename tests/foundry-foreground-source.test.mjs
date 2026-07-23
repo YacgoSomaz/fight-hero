@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { extractArenaFrameDisplayList, extractFoundryForegroundDisplayList } from '../tools/parse-foundry-foreground.mjs';
+import { extractArenaFrameDisplayList, extractArenaFrameVisualBounds, extractFoundryForegroundDisplayList } from '../tools/parse-foundry-foreground.mjs';
 
 test('extracts the original Foundry foreground children from Arena frame 2 without flattening them', () => {
   const source = extractFoundryForegroundDisplayList();
@@ -50,4 +50,13 @@ test('extracts the complete original Tutorial Arena display list by its source l
   assert.ok(source.layers.length > 0);
   assert.ok(source.layers.every(({ character, matrix }) => Number.isInteger(character)
     && Number.isFinite(matrix.x) && Number.isFinite(matrix.y)));
+});
+
+test('recovers Tutorial visible-child bounds from the original Arena display list', () => {
+  const source = extractArenaFrameVisualBounds({ label: 'tut', characters: [1353, 1358] });
+
+  assert.equal(source.label, 'tut');
+  assert.deepEqual(source.layers.map(({ character }) => character), [1353, 1358]);
+  assert.ok(source.layers.every(({ bounds }) => Number.isFinite(bounds.xMin)
+    && Number.isFinite(bounds.yMin) && bounds.xMax > bounds.xMin && bounds.yMax > bounds.yMin));
 });

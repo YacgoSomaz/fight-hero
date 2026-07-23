@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { extractCutsceneTimeline } from '../tools/extract-cutscene-timeline.mjs';
+import { extractCutsceneAssetGraph, extractCutsceneTimeline } from '../tools/extract-cutscene-timeline.mjs';
 
 // User journey: selecting Campaign 1 first enters the original pre-cutscene.
 // The page needs the exact Cutscene 1890 display frames, not a browser-made
@@ -31,4 +31,15 @@ test('extracts the original Cutscene prelude frames used by Campaign 1', () => {
       { depth: 111, character: 1580, name: 'but_next' },
     ] },
   ]);
+});
+
+test('recovers every original Shape leaf reachable from the Campaign 1 prelude', () => {
+  const graph = extractCutsceneAssetGraph({ frames: [1, 2, 3] });
+
+  assert.deepEqual(graph.frames, [1, 2, 3]);
+  assert.deepEqual(graph.shapes, [
+    3, 1571, 1572, 1574, 1575, 1577, 1579, 1580, 1581, 1582,
+    1583, 1584, 1585, 1587, 1588, 1589, 1592, 1594, 1597,
+  ]);
+  assert.deepEqual(graph.sprites, [1573, 1586, 1591, 1593, 1596]);
 });

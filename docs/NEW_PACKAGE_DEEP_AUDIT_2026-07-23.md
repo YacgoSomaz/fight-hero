@@ -119,7 +119,7 @@ Campaign.runScripts
 | CA-02 | `Hud.setMsg` 已迁移为单一 `msgForce + msgTimer + speak open/close`；仍未绘制 Speak_187 的原 Display List/文本合成 | 状态契约已测，不等于原字体、头像、开关动画或语音已完成。 |
 | CA-03 | DownArrow 1395 已按原 XML/Shape4/16 帧在试玩页绘制；Hud 1540 教程标签、Speak、HudInfo 尚未完整画出 | 仅这个独立教程 child 已可见，不能外推整个教程 HUD。 |
 | CA-04 | 声音只写 `session.audio` intent | `S_Mine1`、`S_Pan`、voice/music 没有按原 timing/output 播放。 |
-| CA-05 | 门/电梯已运行原 stop-frame timeline 状态，但还不是 Arena child movieclip 的真实视觉 Display List | 碰撞变化/视觉变化尚不可验证。 |
+| CA-05 | 门/电梯已由原 SWF Display List 驱动：门 1361 的 Shape 1359 `clipDepth=3` 遮罩与 Shape 1360 面板，电梯 1388 的 Shape 1387；23/19 帧 matrix 与空第 19 帧均已运行时承载 | 已有时间轴/遮罩/资源回归；仍缺原版同输入截图叠图，不能宣称逐像素一致。 |
 | CA-06 | spawned AI、score、任务结束与 cutscene 没有 end-to-end source trace | 可以进 Tutorial，不代表能按原版从开始到结束。 |
 
 因此 Campaign 1 当前状态应称为：**“原任务定义和若干状态转换已接入的验证场景”**，而不是“战役第一关已做好”。
@@ -132,7 +132,7 @@ Campaign.runScripts
 npm run test:coverage
 ```
 
-结果：364 pass、0 fail；总体达到了项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395 时间轴和菜单可点击性。
+结果：370 pass、0 fail；总体覆盖率为 line 98.74%、branch 82.88%、function 96.53%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395，以及门/电梯原始时间轴和菜单可点击性。
 
 但当前测试体系存在以下不可替代的盲区：
 
@@ -190,7 +190,7 @@ start: sn=1, fc=0, player=Scientist(Medic skin 7), M4/USP 被 script 清空
 
 | ID | 当前代码事实 | 原版要求 | 后果 |
 | --- | --- | --- | --- |
-| C1-RUN-01 | `tutorial-scene-preview.mjs` 已将 Q/Shift 排入 `enqueueCampaignOneSourceInput(... swapGuns)`；source tick 在 state 12 同一会话切枪、换 wall 13 并写 door `playing='open'` | `Player.KeyDown` 的 Q/Shift 会在 sn 12 使 sn→13、换 wall frame 13 并 `door.gotoAndPlay("open")` | 该输入路径已有自动回归；门的原 Arena child 视觉仍未渲染。 |
+| C1-RUN-01 | `tutorial-scene-preview.mjs` 已将 Q/Shift 排入 `enqueueCampaignOneSourceInput(... swapGuns)`；source tick 在 state 12 同一会话切枪、换 wall 13 并写 door `playing='open'`；画布按 1361 的原 mask/panel 23 帧播放 | `Player.KeyDown` 的 Q/Shift 会在 sn 12 使 sn→13、换 wall frame 13 并 `door.gotoAndPlay("open")` | 输入、时间轴和原矢量资产已有自动回归；仍缺相同输入的原版截图叠图。 |
 | C1-RUN-02 | active gun 已由 session 的 `gunRuntime` 唯一持有；页面对 M4/USP2 读取原 arm timeline，鼠标仅排入 source input | state 11 后 `M4` 是活跃枪；M4 的原 `Bullet_Line_Basic`、30 发弹匣、15 分 TDM 都需要它 | 不再因浏览器私有 `gunState` 失效；M4→完整 TDM/endGame 仍没有端到端 trace。 |
 | C1-RUN-03 | state 9 的 `setAmmo` 写入当前 `gunRuntime.ammo.clipCur/spareCur/total`，且 line bullet 发生于 actor Unit tail 前 | `Bullet.as` 在 state 9 命中后清的是 `player.gun.curAmmo.clipCur/spareCur`，后续 `Guns` 必须读取同一份 ammo；Bullet 应在所有 unit 后处理 | 该弹药所有权回归已关闭；完整 bullets phase、移动投射物与 endgame 仍未迁移。 |
 
@@ -203,8 +203,8 @@ start: sn=1, fc=0, player=Scientist(Medic skin 7), M4/USP 被 script 清空
 | 对象 | 原标识 | 原行为 | 当前状态 |
 | --- | --- | --- | --- |
 | Tutorial 墙 | `wallMC` / character 1378，16 帧 | `Arena.changeWallFrame` 先 `gotoAndStop` 再 `BitmapData.draw`，同一刻替换碰撞颜色 | wall PNG 已有；对象/视觉时间轴尚非一个统一 runtime。 |
-| 门 | `MBFZ_fla.door_up_239` / symbol 1361 | `gotoAndPlay("open")` 与 `gotoAndPlay("close")`；类帧 1、12、23 均 stop | session 保留 `frame/playing` 并按 1→12→23 停止；原 child Shape/显示列表仍未画出。 |
-| 电梯 | `MBFZ_fla.elevator_242` / symbol 1388 | `play()`，到 frame 19 stop；其触发与 wall 10 同一 bullet 分支 | session 保留 `frame/playing` 并按 1→19 停止；原 child Shape/显示列表仍未画出。 |
+| 门 | `MBFZ_fla.door_up_239` / symbol 1361 | `gotoAndPlay("open")` 与 `gotoAndPlay("close")`；类帧 1、12、23 均 stop | 已直接接入 1359 遮罩、1360 面板、23 帧 display list 与 Arena matrix；等待原版截图对照。 |
+| 电梯 | `MBFZ_fla.elevator_242` / symbol 1388 | `play()`，到 frame 19 stop；其触发与 wall 10 同一 bullet 分支 | 已直接接入 1387、19 帧 matrix 和原第 19 帧的空 display list；等待原版截图对照。 |
 | 指示箭头 | `DownArrow` / symbol 1395，Arena children 名为 `downarrow3/7/8/10/12` | `Arena.Init` 全隐藏；Unit/Player 按 `name.substring(9) == sn` 单独显示 | Arena child 深度/twip 矩阵、逐 child 可见性、1395→1394 Shape4（fill+line）和 16 帧位移已提取并由 Tutorial preview 直接绘制；缺原 SWF 截图叠图验收。 |
 | 教学 HUD | Hud symbol 1540；标签 `tutmove/tutjump/tutduck/tutshoot/tutclimb/tutswitch` | `gotoAndStop(label)` 与 `Hud.EnterFrame` 同 tick timer | 当前只保存 `hud.frame` 字符串。 |
 | 对话 | Speak_187 / symbol 1488；Hud 的 `setMsg` | 单一 `msgForce/msgTimer`、open/close、speaker skin/name/text/voice | 当前为消息数组和 audio intent。 |

@@ -213,6 +213,8 @@ try {
   function publishTutorialSourceSnapshot() {
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
     canvas.dataset.sourceGameFrame = String(tutorialWorld.tickRuntime.gameFrame);
+    canvas.dataset.sourceCampaignState = String(tutorialWorld.session.runtime.state);
+    canvas.dataset.sourceWallFrame = String(tutorialWorld.session.map.wallFrame);
     canvas.dataset.sourceArenaPosition = `${arenaPosition.x},${arenaPosition.y}`;
     canvas.dataset.sourcePlayerPosition = sourcePlayer?.position
       ? `${sourcePlayer.position.x},${sourcePlayer.position.y}`

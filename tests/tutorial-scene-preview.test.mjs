@@ -75,3 +75,23 @@ test('Tutorial scene queues original mouse and swap inputs to the source runtime
   assert.doesNotMatch(script, /applyCampaignOneSessionPlayerGunSwap/);
   assert.doesNotMatch(script, /createTutorialGunRuntime/);
 });
+
+// User journey: Under Siege must expose its live score, weapon/ammo, class,
+// HP and experience through Hud 1540 source children.  The playable Tutorial
+// may not fall back to the previous prototype's handmade bars or fixed labels
+// merely because it has its own renderer entrypoint.
+test('Tutorial scene preview renders the Campaign 1 HUD from original Hud 1540 assets and plans', () => {
+  const { script } = readPreview();
+  assert.match(script, /getHudScorebarRenderPlan/);
+  assert.match(script, /getHudTextFields/);
+  assert.match(script, /getHudExperienceRenderPlan/);
+  assert.match(script, /getHudAmmoBoxes/);
+  assert.match(script, /function renderTutorialHud\(\)/);
+  assert.match(script, /hud-scorebar-1462\.png/);
+  assert.match(script, /hud-exp-base-1474\.svg/);
+  assert.match(script, /hud-exp-green-1475\.svg/);
+  assert.match(script, /hud-exp-fill-699-source\.svg/);
+  assert.match(script, /hud-gunsmenu-724-m4-frame20\.png/);
+  assert.match(script, /renderTutorialHud\(\);/);
+  assert.doesNotMatch(script, /P1\s+HP\s+\$\{/);
+});

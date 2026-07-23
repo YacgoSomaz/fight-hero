@@ -97,7 +97,7 @@ Campaign.runScripts
 | Bullets / hit | `Bullet` subclasses、`Status.damage` | `tutorial-bullet-*`、status module | P/D | Line bullet、墙/Unit hit 与部分伤害有来源规则；RT-01 使时机错误，投射物、爆炸、反弹、跟踪、mine/splash 等不是完整迁移。 |
 | Damage / death / corpse | `Status.as`、`Unit.die`、`PhysWorld` | `tutorial-status-damage-runtime.mjs`、`tutorial-corpse-runtime.mjs` | P | shield、spawn protection、部分 modifier、respawn timer 有测试；Box2D fixture/joint corpse 仍缺，原尸体视觉/物理未完成。 |
 | Campaign 1 script | `Stats_Campaign.runScripts`、`Unit` surface switch | `campaign-one-*` | P | `sn/fc` 事件、pink wall contact、换枪和 bullet trigger 已解析/写入 session；门/电梯的 stop-frame 状态已运行，但对应 Arena child 视觉与完整终局仍未闭环。 |
-| HUD / dialogue / audio | `Hud.as`、1540/1488/1504/1395 XML | HUD source/renderer modules、session fields、Tutorial preview | P/D | `setMsg` 的单一 `msgForce/msgTimer/speak` 状态及 DownArrow 1395 原 Shape/16 帧已接入；教程 Hud/Speak Display List 和音频仍未完成。 |
+| HUD / dialogue / audio | `Hud.as`、1540/1488/1504/1395 XML | HUD source/renderer modules、session fields、Tutorial preview | P/D | `setMsg` 的单一 `msgForce/msgTimer`、Speak_187 的 33 帧开关、200 帧头像选择、1482/1483/1484 原矢量（含 clipDepth 遮罩）和两套原字体已接入；音频、HudInfo、其余 HUD 时间轴及视觉对照仍未完成。 |
 | Camera / background | `Arena.EnterFrame` | camera/map DOM modules | P | 原 crop 与墙坐标的若干关系已测；相机分支覆盖 **40%**，screen shake/parallax/timeline 完整性尚未证明。 |
 | Modes | `MatchSettings`、Score、flag/holdpoint nodes | engine/session | P | DM/TDM/DOM/CTF/Jug 有基础规则测试；Campaign/Challenge 逐任务规则、Zom、objective 表现、结算和菜单路径未验收。 |
 | 全地图 | `Stats_Maps`、Arena symbols/XML | map source/catalog/loader | P/U | 图层和 wall 资产可加载不等于地图逻辑完成；当前不能声称全部地图已修好。 |
@@ -116,8 +116,8 @@ Campaign.runScripts
 | ID | 缺口 | 为什么不能宣称第一关完成 |
 | --- | --- | --- |
 | CA-01 | 已由 `campaign-one-tick-runtime` 的 source Game tick 关闭；仍需把剩余 Unit/HUD/MatchSettings 子对象纳入同一 trace | scripts、actor 顺序、line bullet 与人类脚底 trigger 已同 tick；不等于完整第一关。 |
-| CA-02 | `Hud.setMsg` 已迁移为单一 `msgForce + msgTimer + speak open/close`；仍未绘制 Speak_187 的原 Display List/文本合成 | 状态契约已测，不等于原字体、头像、开关动画或语音已完成。 |
-| CA-03 | DownArrow 1395 已按原 XML/Shape4/16 帧在试玩页绘制；试玩页也已消费 Hud 1540 的 ScoreBar、经验条、M4 child、原字体和 `drawBox` 弹药布局 | 教程标签、Speak、HudInfo 尚未完整画出；没有原版截图叠图，不能外推为完整 HUD。 |
+| CA-02 | `Hud.setMsg` 已迁移为单一 `msgForce + msgTimer`；Speak_187 已按原第 2→16 停止、17→33→1 关闭时间轴绘制原 Display List/文本合成，并按 `unitInfo.frame` 选择头像 | 仍没有原 SWF 同输入逐帧截图／录屏和语音输出，不能外推为视觉或节奏完成。 |
+| CA-03 | DownArrow 1395 已按原 XML/Shape4/16 帧在试玩页绘制；试玩页也已消费 Hud 1540 的 ScoreBar、经验条、M4 child、原字体、`drawBox` 弹药布局和 Speak_187 | 教程标签、HudInfo 尚未完整画出；没有原版截图叠图，不能外推为完整 HUD。 |
 | CA-04 | 声音只写 `session.audio` intent | `S_Mine1`、`S_Pan`、voice/music 没有按原 timing/output 播放。 |
 | CA-05 | 门/电梯已由原 SWF Display List 驱动：门 1361 的 Shape 1359 `clipDepth=3` 遮罩与 Shape 1360 面板，电梯 1388 的 Shape 1387；23/19 帧 matrix 与空第 19 帧均已运行时承载 | 已有时间轴/遮罩/资源回归；仍缺原版同输入截图叠图，不能宣称逐像素一致。 |
 | CA-06 | spawned AI、score、任务结束与 cutscene 没有 end-to-end source trace；15 分 TDM 已写入 `Game.endGame` 等价的 `game.ended + hud.won + hud.timeline='end'` | 结局 HUD 时间轴/后 Cutscene/销毁仍未迁移，不能称通关完成。 |
@@ -132,7 +132,7 @@ Campaign.runScripts
 npm run test:coverage
 ```
 
-结果：374 pass、0 fail；总体覆盖率为 line 98.75%、branch 82.82%、function 96.53%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395、门/电梯原始时间轴、Campaign 1 的 15 分 `endGame` 结果，以及试玩页 Hud 1540 来源资产绑定。
+结果：385 pass、0 fail；总体覆盖率为 line 98.76%、branch 82.88%、function 96.64%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395、门/电梯原始时间轴、Speak_187 原始播放/遮罩/头像/字体、Campaign 1 的 15 分 `endGame` 结果，以及试玩页 Hud 1540 来源资产绑定。
 
 但当前测试体系存在以下不可替代的盲区：
 
@@ -140,7 +140,7 @@ npm run test:coverage
 2. 没有读取原 SWF 的录制/trace，并以同一输入 seed、同一 30 FPS 输入逐帧比较 actor、bullet、HUD、wall frame、score。
 3. 没有可重复截图差分，因此“素材来自原版”不等于“原矩阵、裁剪、滤镜、时间轴合成一致”。
 4. 覆盖率是代码执行率，不是原版状态空间覆盖率。特别是 Movement、aim、camera 的低分支覆盖已明确暴露此问题。
-5. 2026-07-23 的实际浏览器检查已确认页面到达 `canvas[data-ready=true]` 且没有 JS 错误；但内置浏览器截图仍为黑画布。该现象尚未得到原版对照或定位，必须继续检查地图图层/相机/画布可见性，**不得**将资源 HTTP 200 或 ready 标记写成第一关视觉可用。
+5. 2026-07-23 的实际浏览器检查已确认页面到达 `canvas[data-ready=true]` 且没有 JS 错误；但截图显示地图层为黑底，仅 HUD／Speak 等 Canvas 后层可见。Tutorial foreground 的原 PNG 与 alpha bounds（526,509,2961×1730）已核对，故问题仍在地图绘制坐标、镜头或帧运行关系，**不得**将资源 HTTP 200 或 ready 标记写成第一关视觉可用。
 
 ## 6. 接下来必须先做的事情（按阻断性排序）
 
@@ -207,8 +207,8 @@ start: sn=1, fc=0, player=Scientist(Medic skin 7), M4/USP 被 script 清空
 | 门 | `MBFZ_fla.door_up_239` / symbol 1361 | `gotoAndPlay("open")` 与 `gotoAndPlay("close")`；类帧 1、12、23 均 stop | 已直接接入 1359 遮罩、1360 面板、23 帧 display list 与 Arena matrix；等待原版截图对照。 |
 | 电梯 | `MBFZ_fla.elevator_242` / symbol 1388 | `play()`，到 frame 19 stop；其触发与 wall 10 同一 bullet 分支 | 已直接接入 1387、19 帧 matrix 和原第 19 帧的空 display list；等待原版截图对照。 |
 | 指示箭头 | `DownArrow` / symbol 1395，Arena children 名为 `downarrow3/7/8/10/12` | `Arena.Init` 全隐藏；Unit/Player 按 `name.substring(9) == sn` 单独显示 | Arena child 深度/twip 矩阵、逐 child 可见性、1395→1394 Shape4（fill+line）和 16 帧位移已提取并由 Tutorial preview 直接绘制；缺原 SWF 截图叠图验收。 |
-| 教学 HUD | Hud symbol 1540；标签 `tutmove/tutjump/tutduck/tutshoot/tutclimb/tutswitch` | `gotoAndStop(label)` 与 `Hud.EnterFrame` 同 tick timer | 当前只保存 `hud.frame` 字符串。 |
-| 对话 | Speak_187 / symbol 1488；Hud 的 `setMsg` | 单一 `msgForce/msgTimer`、open/close、speaker skin/name/text/voice | 当前为消息数组和 audio intent。 |
+| 教学 HUD | Hud symbol 1540；标签 `tutmove/tutjump/tutduck/tutshoot/tutclimb/tutswitch` | `gotoAndStop(label)` 与 `Hud.EnterFrame` 同 tick timer | 当前只保存 `hud.frame` 字符串；标签 Display List 未迁移。 |
+| 对话 | Speak_187 / symbol 1488；Hud 的 `setMsg` | 单一 `msgForce/msgTimer`、open/close、speaker skin/name/text/voice | 已接 33 帧 Display List、`clipDepth=5` 头像遮罩、200 帧 UnitInfo portrait lookup、原两字体与文本框；voice 输出与原版视觉 trace 仍缺。 |
 
 ### 8.4 从“解清楚”到“能做出第一关”的最低验收件
 

@@ -346,8 +346,8 @@ function applySourceEffects(session, effects) {
         gunRuntime.ammo.total = effect.clip + effect.spare;
       }
     }
-    else if (effect.type === 'doorFrame') session.environment.doorFrame = effect.frameLabel;
-    else if (effect.type === 'elevatorFrame') session.environment.elevatorFrame = effect.frameLabel;
+    else if (effect.type === 'doorFrame') session.environment.door.playing = effect.frameLabel;
+    else if (effect.type === 'elevatorFrame') session.environment.elevator.playing = effect.frameLabel === 'play';
   }
   session.effects.push(...effects.map((effect) => ({ ...effect })));
 }
@@ -370,7 +370,7 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     hud: { frame: 'idle', downArrows: null, message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
     audio: [],
     classSaves,
-    environment: { doorFrame: 'idle', elevatorFrame: 'idle' },
+    environment: { door: { frame: 1, playing: null }, elevator: { frame: 1, playing: false } },
     effects: [],
     corpses: [],
     random,
@@ -518,6 +518,25 @@ export function advanceCampaignOneSessionHud(session) {
     msgTimer: session.hud.msgTimer,
     speak: session.hud.speak,
   };
+}
+
+// Original embedded MovieClips: door_up_239 stops on frames 1/12/23 and the
+// Tutorial elevator stops on 1/19. `gotoAndPlay("open"/"close")` starts from
+// the current stop and then advances one Flash frame per Game tick.
+export function advanceCampaignOneSessionEnvironment(session) {
+  const { door, elevator } = session.environment;
+  if (door.playing === 'open') {
+    door.frame += 1;
+    if (door.frame >= 12) { door.frame = 12; door.playing = null; }
+  } else if (door.playing === 'close') {
+    door.frame += 1;
+    if (door.frame >= 23) { door.frame = 23; door.playing = null; }
+  }
+  if (elevator.playing) {
+    elevator.frame += 1;
+    if (elevator.frame >= 19) { elevator.frame = 19; elevator.playing = false; }
+  }
+  return { door: { ...door }, elevator: { ...elevator } };
 }
 
 // One source AI.EnterFrame outer decision phase.  Game.EnterFrame calls this

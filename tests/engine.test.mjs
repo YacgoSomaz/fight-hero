@@ -507,10 +507,12 @@ test('firing creates a brief original-muzzle event independently from its tracer
   assert.ok(world.bullets.length > 0);
 });
 
-// Movement.as and Bullet.as both read the ARGB Wall_tut bitmap: a pixel is a
-// physical wall only when alpha is ff, and source triggers consume the RGB
-// suffix (e.g. ff00ff / 9900ff).  The web decoder must retain both facts.
-test('Flash tutorial wall surface retains exact opaque RGB trigger colours', () => {
+// Movement.as uses alpha ff for physical collision, while Unit.getPixel()
+// and Bullet's colour branch retain the RGB suffix independently. In the
+// original Tutorial frame 4, the ff00ff trigger is deliberately alpha 7f:
+// walk-through but still a Campaign node. The web decoder must keep both
+// semantics separate.
+test('Flash tutorial wall surface retains RGB trigger colours independently of physical alpha', () => {
   const surface = createFlashWallSurface({
     width: 3,
     height: 1,
@@ -522,7 +524,7 @@ test('Flash tutorial wall surface retains exact opaque RGB trigger colours', () 
   });
   assert.equal(surface.colorAt(0, 0), 'ff00ff');
   assert.equal(surface.colorAt(1.7, 0), '9900ff');
-  assert.equal(surface.colorAt(2, 0), '');
+  assert.equal(surface.colorAt(2, 0), 'ff00ff');
   assert.equal(surface.isSolid(2, 0), false);
 });
 

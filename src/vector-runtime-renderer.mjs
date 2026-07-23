@@ -2,7 +2,12 @@
 // extraction renderer and an eventual deployment-safe asset renderer can share
 // the exact same original matrices without sharing extraction code.
 export function drawVectorRuntimeSprite(context, runtime, symbolId, frameNumber, drawShape, options = {}) {
-  const sprite = runtime.sprites[symbolId];
+  // FFDec has two faithful export layouts: a graph with `sprites[id]`, and a
+  // direct root Sprite object carrying its own `symbolId`/frames. Both are
+  // original Display Lists; accepting the root form avoids manufacturing a
+  // second wrapper solely for a source asset such as DownArrow_1395.
+  const sprite = runtime?.sprites?.[symbolId]
+    ?? (runtime?.symbolId === symbolId ? runtime : null);
   if (!sprite) throw new Error(`Sprite ${symbolId} is not present in the vector runtime`);
   const frame = sprite.frames[(Math.max(1, frameNumber) - 1) % sprite.frameCount];
   drawVectorRuntimeFrame(context, runtime, frame.items, drawShape, options);

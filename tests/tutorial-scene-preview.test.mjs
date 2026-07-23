@@ -17,9 +17,9 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /applyTutorialFootContact/);
   assert.match(script, /stepTutorialMovement/);
   assert.match(script, /canvas\.addEventListener\('mouseup'/);
-  assert.match(script, /tutorialPlayerMouseDown\(gunState/);
-  assert.match(script, /tutorialPlayerMouseUp\(gunState\)/);
-  assert.match(script, /advanceTutorialGunRuntime\(gunState/);
+  assert.match(script, /applyCampaignOneSessionPlayerMouseDown\(session/);
+  assert.match(script, /applyCampaignOneSessionPlayerMouseUp\(session\)/);
+  assert.match(script, /advanceCampaignOneSessionPlayerGun\(session/);
   assert.match(script, /traceTutorialLineBullet/);
   assert.match(script, /applyTutorialLineBulletHit/);
   assert.match(script, /applyCampaignOneSessionDeath/);
@@ -54,9 +54,6 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /advanceTutorialArenaPosition/);
   assert.match(script, /createTutorialActorPlayback/);
   assert.match(script, /beginTutorialActorGunAction/);
-  assert.match(script, /advanceTutorialGunRuntime/);
-  assert.match(script, /tutorialPlayerMouseDown/);
-  assert.match(script, /tutorialPlayerMouseUp/);
   assert.match(script, /synchronizeTutorialActorWeapon/);
   assert.match(script, /drawTutorialUnitPose/);
   assert.match(script, /sceneActorStates/);
@@ -80,7 +77,6 @@ test('Tutorial scene uses the Campaign actor gun slots and original swap keys in
 
   assert.match(script, /applyCampaignOneSessionPlayerGunSwap/);
   assert.match(script, /gunState = sourcePlayer\.gunRuntime;/);
-  assert.match(script, /sourcePlayer\.gunRuntimes\[sourcePlayer\.gunSlot\] = gunState;/);
   assert.match(script, /event\.code === 'KeyQ'/);
   assert.match(script, /event\.code === 'ShiftLeft'/);
   assert.match(script, /event\.code === 'ShiftRight'/);

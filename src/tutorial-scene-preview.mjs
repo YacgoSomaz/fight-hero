@@ -1,6 +1,6 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerGunSwap } from './campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerGunSwap, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -8,7 +8,6 @@ import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
 import { traceTutorialLineBullet } from './tutorial-bullet-line-runtime.mjs';
 import { applyTutorialLineBulletHit } from './tutorial-bullet-hit-effects.mjs';
 import { renderTutorialLineBullet } from './tutorial-bullet-line-renderer.mjs';
-import { advanceTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { advanceTutorialPlayerAim, canvasPointToTutorialStage, deriveTutorialUnitAim, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
@@ -372,8 +371,7 @@ try {
       syncPlayerCollisionState();
       let gunTick = { fired: false };
       if (gunState) {
-        gunTick = advanceTutorialGunRuntime(gunState, {
-          human: player.human,
+        gunTick = advanceCampaignOneSessionPlayerGun(session, {
           unit: {
             aim: player.sourcePlayerProfile.aim,
             crouching: movementState.crouching,
@@ -384,11 +382,9 @@ try {
             reflecting: false,
           },
         });
-        gunState = gunTick.state;
         const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
         if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable for Guns state');
-        sourcePlayer.gunRuntimes[sourcePlayer.gunSlot] = gunState;
-        sourcePlayer.gunRuntime = gunState;
+        gunState = sourcePlayer.gunRuntime;
         if (gunTick.fired) {
           actorState = beginTutorialActorGunAction(actorState, gunTick.action);
           Object.assign(sourcePlayer, {
@@ -516,12 +512,11 @@ try {
     stageMouse = canvasPointToTutorialStage(event, canvas.getBoundingClientRect());
     // Player.MouseDown() changes only mDown; the subsequent source tick owns
     // Guns.shoot(), shotPressed and uint shootDelay.
-    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
-    gunState = tutorialPlayerMouseDown(gunState, { gameStarted: true, noShoot: Boolean(sourcePlayer?.definition?.extra?.noShoot) });
+    gunState = applyCampaignOneSessionPlayerMouseDown(session, { gameStarted: true });
   });
   canvas.addEventListener('mouseup', (event) => {
     if (event.button !== 0 || !gunState) return;
-    gunState = tutorialPlayerMouseUp(gunState);
+    gunState = applyCampaignOneSessionPlayerMouseUp(session);
   });
   window.addEventListener('keydown', (event) => {
     if (!event.repeat && (event.code === 'KeyQ' || event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {

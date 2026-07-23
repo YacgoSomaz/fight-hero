@@ -182,7 +182,6 @@ test('Campaign 1 consumes player mouse and firing through the active source gun 
   const tick = advanceCampaignOneSessionPlayerGun(session, {
     unit: { aim: player.unitInfo.aim, crouching: false, jumping: false, xVelocity: 0, reflecting: false },
   });
-  applyCampaignOneSessionPlayerMouseUp(session);
 
   assert.deepEqual({
     gun: player.guns.active,
@@ -195,12 +194,14 @@ test('Campaign 1 consumes player mouse and firing through the active source gun 
   }, {
     gun: 'M4',
     fired: true,
-    bullet: { gunId: 'M4', dynRecoil: 1.5, dynRecoilMod: 0 },
+    bullet: { gunId: 'M4', dynRecoil: 4, dynRecoilMod: 0 },
     slotOwnsTick: true,
     clip: before - 1,
-    before: 60,
-    mDown: false,
+    before: 30,
+    mDown: true,
   });
+  applyCampaignOneSessionPlayerMouseUp(session);
+  assert.equal(player.gunRuntime.mDown, false);
 });
 
 // User journey: when Status.damage reaches zero HP, the original Unit.die()

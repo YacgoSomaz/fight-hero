@@ -4,7 +4,7 @@ import { SOURCE_DEFAULT_CLASS_SAVES } from './sd-default-profile-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneGunSwap, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
-import { advanceTutorialAiGunRuntime, createTutorialGunRuntime } from './tutorial-gun-runtime.mjs';
+import { advanceTutorialAiGunRuntime, advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
@@ -391,6 +391,43 @@ export function applyCampaignOneSessionPlayerGunSwap(session) {
   const effects = applyCampaignOneGunSwap(session.runtime);
   applySourceEffects(session, effects);
   return effects;
+}
+
+function updatePlayerGunSlot(player, gunRuntime) {
+  const slot = activeGunSlot(player);
+  player.gunRuntimes[slot] = gunRuntime;
+  player.gunRuntime = gunRuntime;
+  return gunRuntime;
+}
+
+// Player.MouseDown/MouseUp only alter Player.mDown and Guns.releaseMouse;
+// keeping them on the source actor means an authored Q/Shift swap preserves
+// each slot's exact clip, spare, delay and shotPressed values.
+export function applyCampaignOneSessionPlayerMouseDown(session, { gameStarted = true } = {}) {
+  const player = actorFor(session, 'player');
+  if (!player?.spawned || player.dead) return null;
+  const gunRuntime = ensureActorGunRuntime(player);
+  return updatePlayerGunSlot(player, tutorialPlayerMouseDown(gunRuntime, {
+    gameStarted,
+    noShoot: Boolean(player.definition?.extra?.noShoot),
+  }));
+}
+
+export function applyCampaignOneSessionPlayerMouseUp(session) {
+  const player = actorFor(session, 'player');
+  if (!player?.spawned || player.dead) return null;
+  return updatePlayerGunSlot(player, tutorialPlayerMouseUp(ensureActorGunRuntime(player)));
+}
+
+// Player.EnterFrame invokes Guns.shoot() before inherited UnitEnterFrame
+// invokes Guns.EnterFrame.  The browser must request this one source phase,
+// never create an independent weapon object for its canvas loop.
+export function advanceCampaignOneSessionPlayerGun(session, { unit } = {}) {
+  const player = actorFor(session, 'player');
+  if (!player?.spawned || player.dead) return { state: null, fired: false, action: null, bullet: null };
+  const tick = advanceTutorialGunRuntime(ensureActorGunRuntime(player), { human: true, unit });
+  updatePlayerGunSlot(player, tick.state);
+  return tick;
 }
 
 // Stats_Campaign.runScripts() is evaluated on every source frame, and its

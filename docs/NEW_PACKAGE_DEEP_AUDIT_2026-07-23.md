@@ -157,3 +157,64 @@ npm run test:coverage
 - 新改动必须先补来源 trace 的 RED，再最小改动到 GREEN；每次重新跑全量测试和覆盖率。
 - 截图/录屏将用于后期视觉节奏和合成验收；当前没有它也可以继续源码驱动迁移，但不能凭记忆判定“像原版”。
 
+## 8. 第二层核验：为什么当前代码连 Campaign 1 的完整通关都做不到
+
+本节不是推测，而是沿着原 `Stats_Campaign → Unit → Player → Bullet → Arena` 和当前 `tutorial-scene-preview.mjs` 的实际调用做的可达性检查。结果：当前试玩页没有完整的第一关可达路径。
+
+### 8.1 原版第一关的最小可达序列
+
+```text
+start: sn=1, fc=0, player=Scientist(Medic skin 7), M4/USP 被 script 清空
+  └─ 多次 human-foot 像素 ff00ff：sn 1 → … → 9，墙帧同步 1 → … → 9
+       └─ sn=9 时用 USP2 命中墙色 9900ff
+            → sn=10、wallMC frame 10、电梯播放、USP2 弹药清零
+              └─ human-foot ff00ff：sn=10 → 11（受伤/禁跳）→ 12（获得并切至 M4）
+                   └─ Player.KeyDown(Q/Shift)：**先** gun.swapGuns，再于 sn==12
+                        → sn=13、wallMC frame 13、door.gotoAndPlay("open")
+                     └─ human-foot ff00ff：sn=13 → 14、wallMC frame 14、三名敌人 spawn、door.close
+                       └─ frame 150/360/450/600 对话与 unit4 spawn
+                         └─ Team 1 score 6 → 9 → 12 → 14 的剧情推进
+                           └─ TDM scoreLimit 15 → MatchSettings.updateScores → Game.endGame
+```
+
+原始来源分别是：
+
+- `Stats_Campaign.as:37–70`：关卡身份、5 名 Unit、score limit 15、前/后 Cutscene 记录。
+- `Stats_Campaign.as:486–543`：`sn==1 / sn==14` 帧事件与 score 对话。
+- `Unit.as:826–1094`：wall 像素分派及 sn 1–14 的 human-only 教学状态。
+- `Bullet.as:290–343`：`9900ff && sn==9` 的电梯分支。
+- `Player.as:352–395`：Q/Shift 的**先换枪、后 sn==12 开门**分支。
+- `MatchSettings.as:updateScores` + `Game.as:endGame`：15 分 TDM 的结束路径。
+
+### 8.2 当前试玩页的三个“硬不可达”问题
+
+| ID | 当前代码事实 | 原版要求 | 后果 |
+| --- | --- | --- | --- |
+| C1-RUN-01 | `tutorial-scene-preview.mjs` 的 `KEY_BITS` 只含 W/A/S/D/方向键；全仓库没有页面调用 `applyCampaignOneGunSwap()` 或 session 对应输入 API | `Player.KeyDown` 的 Q/Shift 会在 sn 12 使 sn→13、换 wall frame 13 并 `door.gotoAndPlay("open")` | 玩家到 sn 12 后**必定无法开门**，关卡不能到敌人出现阶段。 |
+| C1-RUN-02 | `syncPlayerRestrictionsFromSourceSession()` 遇到 active gun 为 M4 时将 `gunState = null`；鼠标事件也要求 `gunState` 存在才射击 | state 11 后 `M4` 是活跃枪；M4 的原 `Bullet_Line_Basic`、30 发弹匣、15 分 TDM 都需要它 | 即使人为绕过 C1-RUN-01，玩家也**无法用 M4 射击**，不能完成敌人/计分主线。 |
+| C1-RUN-03 | `setAmmo` 只写 `session.actors[].ammo`，没有写正在使用的 `gunState.ammo`；page 的即时 bullet 又先于原 Unit/Bullet phase | `Bullet.as` 在 state 9 命中后清的是 `player.gun.curAmmo.clipCur/spareCur`，后续 `Guns` 必须读取同一份 ammo；Bullet 应在所有 unit 后处理 | 电梯触发后的弹药、换枪和本帧命中时机不是同一份原状态，无法用当前页面证明准确。 |
+
+这三项说明先前“第一关入口/状态已经接入”的表述必须严格理解为**可审计的片段**，而非可完成任务。它们也提供了一个更具体的实现边界：在 source tick runtime 完成前，不应给试玩页添加零散 Q 键或 M4 特例；否则会继续把原来的单一 `Guns` 状态拆成页面私有状态。
+
+### 8.3 还必须解到的原始 Display List / 时间轴数据
+
+以下对象已在新包和旧导出中有明确 symbol 或 class，但当前仅存名称/状态，尚无可播放的原 timeline：
+
+| 对象 | 原标识 | 原行为 | 当前状态 |
+| --- | --- | --- | --- |
+| Tutorial 墙 | `wallMC` / character 1378，16 帧 | `Arena.changeWallFrame` 先 `gotoAndStop` 再 `BitmapData.draw`，同一刻替换碰撞颜色 | wall PNG 已有；对象/视觉时间轴尚非一个统一 runtime。 |
+| 门 | `MBFZ_fla.door_up_239` / symbol 1361 | `gotoAndPlay("open")` 与 `gotoAndPlay("close")`；类帧 1、12、23 均 stop | 当前只有 `environment.doorFrame` 文本。 |
+| 电梯 | `MBFZ_fla.elevator_242` / symbol 1388 | `play()`，到 frame 19 stop；其触发与 wall 10 同一 bullet 分支 | 当前只有 `environment.elevatorFrame='play'`。 |
+| 指示箭头 | `DownArrow` / symbol 1395，Arena children 名为 `downarrow3/7/8/10/12` | `Arena.Init` 全隐藏；Unit/Player 按 `name.substring(9) == sn` 单独显示 | 当前只保存一个数字，未保存每个 child 的矩阵、可见性和 16-frame playback。 |
+| 教学 HUD | Hud symbol 1540；标签 `tutmove/tutjump/tutduck/tutshoot/tutclimb/tutswitch` | `gotoAndStop(label)` 与 `Hud.EnterFrame` 同 tick timer | 当前只保存 `hud.frame` 字符串。 |
+| 对话 | Speak_187 / symbol 1488；Hud 的 `setMsg` | 单一 `msgForce/msgTimer`、open/close、speaker skin/name/text/voice | 当前为消息数组和 audio intent。 |
+
+### 8.4 从“解清楚”到“能做出第一关”的最低验收件
+
+在改页面前必须先产生以下来源工件；缺一项就无法宣称第一关可完成：
+
+1. `source-tick-runtime`：唯一拥有 player/AI/gun/ammo/bullets/wall/HUD/score 的状态；page 不再拥有第二份 `gunState`、movement 或即时 hit。
+2. 逐 tick JSON trace schema：输入前状态、`Game.fc`、Campaign `sn/fc`、所有 Unit 的顺序、bullet 创建/命中、wall frame、door/elevator timeline、HUD message/timer、score/endGame。
+3. Campaign 1 的可达性 RED：从固定 seed/输入驱动到 `sn=14`、M4 第一次开火、team score 15 和 endGame；测试必须验证事件顺序，而非只验证最终对象字段。
+4. Wall 1–16 与 door/elevator/down arrows/Hud 教学帧的原 Display List runtime；每次 `changeWallFrame` 都让视觉与碰撞共同替换。
+5. 固定原始随机序列和对照采样。录屏不是当前源码迁移的前置条件，但在这些 trace 通过后，它是镜头/合成/声音节奏验收的必要输入。

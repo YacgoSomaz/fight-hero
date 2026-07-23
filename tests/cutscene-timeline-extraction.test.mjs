@@ -33,13 +33,14 @@ test('extracts the original Cutscene prelude frames used by Campaign 1', () => {
   ]);
 });
 
-test('recovers every original Shape leaf reachable from the Campaign 1 prelude', () => {
+test('recovers every original artwork, text, and nested sprite reachable from the Campaign 1 prelude', () => {
   const graph = extractCutsceneAssetGraph({ frames: [1, 2, 3] });
 
   assert.deepEqual(graph.frames, [1, 2, 3]);
   assert.deepEqual(graph.shapes, [
-    3, 1571, 1572, 1574, 1575, 1577, 1579, 1580, 1581, 1582,
-    1583, 1584, 1585, 1587, 1588, 1589, 1592, 1594, 1597,
+    3, 1571, 1572, 1574, 1581, 1582, 1583, 1584, 1585, 1588,
+    1589, 1592, 1594,
   ]);
-  assert.deepEqual(graph.sprites, [1573, 1586, 1591, 1593, 1596]);
+  assert.deepEqual(graph.sprites, [1573, 1586, 1590, 1591, 1593, 1596]);
+  assert.deepEqual(graph.textFields, [1575, 1577, 1579, 1580, 1587, 1597]);
 });

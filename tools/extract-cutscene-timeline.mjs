@@ -28,6 +28,7 @@ export function extractCutsceneAssetGraph({ frames = [1, 2, 3], swf } = {}) {
   const roots = new Set(frames.flatMap((frame) => timeline.frames[frame - 1].layers.map(({ character }) => character)));
   const shapes = new Set();
   const sprites = new Set();
+  const textFields = new Set();
   const visited = new Set();
   const visit = (character) => {
     if (visited.has(character)) return;
@@ -35,6 +36,10 @@ export function extractCutsceneAssetGraph({ frames = [1, 2, 3], swf } = {}) {
     const source = extractSymbolFrameDisplayList({ character, frame: 1, ...(swf ? { swf } : {}) });
     if (source.kind === 'shape') {
       shapes.add(character);
+      return;
+    }
+    if (source.kind === 'text') {
+      textFields.add(character);
       return;
     }
     sprites.add(character);
@@ -46,5 +51,6 @@ export function extractCutsceneAssetGraph({ frames = [1, 2, 3], swf } = {}) {
     frames: Object.freeze([...frames]),
     shapes: Object.freeze([...shapes].sort((left, right) => left - right)),
     sprites: Object.freeze([...sprites].sort((left, right) => left - right)),
+    textFields: Object.freeze([...textFields].sort((left, right) => left - right)),
   });
 }

@@ -88,7 +88,11 @@ function definitionMap(bytes) {
   let offset = stage.end() + 4;
   while (offset < bytes.length) {
     const tag = readTag(bytes, offset);
-    if ([2, 22, 32, 39, 46, 83, 84].includes(tag.code)) result.set(bytes.readUInt16LE(tag.body), tag);
+    // DefineEditText (37) is a first-class Cutscene Display List child.  It
+    // has a character id and RECT immediately after the id, just like a
+    // direct shape for registration purposes, but it must never be mistaken
+    // for source artwork when packaging a scene.
+    if ([2, 11, 22, 32, 33, 37, 39, 46, 83, 84].includes(tag.code)) result.set(bytes.readUInt16LE(tag.body), tag);
     offset = tag.next;
   }
   return result;
@@ -137,7 +141,7 @@ function displayListFrames(bytes, sprite) {
 }
 
 function directBounds(bytes, definition) {
-  return definition && [2, 22, 32, 83].includes(definition.code)
+  return definition && [2, 11, 22, 32, 33, 37, 46, 83].includes(definition.code)
     ? readRect(bytes, definition.body + 2)
     : null;
 }
@@ -272,7 +276,7 @@ export function extractSymbolFrameDisplayList({ character, frame, swf = defaultS
   if (!definition) throw new Error(`original symbol is unavailable: ${character}`);
   if (definition.code !== 39) {
     if (!directBounds(bytes, definition)) throw new Error(`original visual symbol is unavailable: ${character}`);
-    return Object.freeze({ character, frame: 1, kind: 'shape', layers: Object.freeze([]) });
+    return Object.freeze({ character, frame: 1, kind: [11, 33, 37].includes(definition.code) ? 'text' : 'shape', layers: Object.freeze([]) });
   }
   const sourceFrame = Math.min(frame, bytes.readUInt16LE(definition.body + 2));
   const display = displayListFrames(bytes, definition)[sourceFrame - 1];

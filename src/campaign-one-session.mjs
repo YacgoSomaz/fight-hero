@@ -308,6 +308,25 @@ function actorFor(session, target) {
   return session.actors.find((actor) => actor.id === (target === 'player' ? 'unit0' : target));
 }
 
+function advanceSourceSpeakTimeline(timeline) {
+  if (!timeline?.playing) return;
+  if (timeline.playing === 'open') {
+    timeline.frame += 1;
+    if (timeline.frame >= 16) {
+      timeline.frame = 16;
+      timeline.playing = null;
+    }
+  } else if (timeline.playing === 'close') {
+    timeline.frame += 1;
+    // Speak_187 only stops at frames 1 and 16.  After the authored close
+    // frames 17–33, Flash wraps to frame 1 and executes its stop action.
+    if (timeline.frame > 33) {
+      timeline.frame = 1;
+      timeline.playing = null;
+    }
+  }
+}
+
 function applySourceEffects(session, effects) {
   for (const effect of effects) {
     const actor = effect.target ? actorFor(session, effect.target) : null;
@@ -331,6 +350,9 @@ function applySourceEffects(session, effects) {
       session.hud.msgForce = Boolean(message.force);
       session.hud.msgTimer = message.seconds * 30;
       session.hud.speak = 'open';
+      // Hud.setMsg() uses mc_speak.gotoAndPlay('open'); the source label is
+      // frame 2, and the clip advances independently of Hud.EnterFrame.
+      session.hud.speakTimeline = { frame: 2, playing: 'open' };
       if (message.voice) session.audio.push({ type: 'playVoice', voice: message.voice });
     }
     else if (effect.type === 'playSound' || effect.type === 'playMusic') session.audio.push({ ...effect });
@@ -391,7 +413,7 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     // record here rather than overloading the TDM score object with a result.
     game: { started: true, ended: false },
     match: { mode: definition.mode, scoreLimit: definition.score, team1score: 0, team2score: 0, ended: false },
-    hud: { frame: 'idle', timeline: 'idle', won: false, downArrows: null, arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: false })), message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
+    hud: { frame: 'idle', timeline: 'idle', won: false, downArrows: null, arrows: TUTORIAL_DOWN_ARROWS.map((arrow) => ({ ...arrow, visible: false })), message: null, msgForce: false, msgTimer: 0, speak: 'idle', speakTimeline: { frame: 1, playing: null } },
     audio: [],
     classSaves,
     environment: { door: { frame: 1, playing: null }, elevator: { frame: 1, playing: false } },
@@ -530,8 +552,12 @@ export function advanceCampaignOneSessionAi(session, { wall, gameStarted = true,
 // still 1, then decrement to zero in the same frame.
 export function advanceCampaignOneSessionHud(session) {
   if (!session?.hud) throw new TypeError('Campaign source Hud state is required');
+  advanceSourceSpeakTimeline(session.hud.speakTimeline);
   if (session.hud.msgTimer === 1) {
     session.hud.speak = 'close';
+    // Hud.EnterFrame invokes gotoAndPlay('close') after the previous clip
+    // frame has rendered; label `close` is source frame 17.
+    session.hud.speakTimeline = { frame: 17, playing: 'close' };
     session.hud.msgForce = false;
   }
   if (session.hud.msgTimer) session.hud.msgTimer -= 1;
@@ -541,6 +567,7 @@ export function advanceCampaignOneSessionHud(session) {
     msgForce: session.hud.msgForce,
     msgTimer: session.hud.msgTimer,
     speak: session.hud.speak,
+    speakTimeline: { ...session.hud.speakTimeline },
   };
 }
 

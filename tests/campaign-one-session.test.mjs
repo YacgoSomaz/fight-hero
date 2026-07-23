@@ -266,6 +266,7 @@ test('Campaign 1 state ten consumes original Tutorial HUD, message, injury, soun
     msgForce: true,
     msgTimer: 150,
     speak: 'open',
+    speakTimeline: { frame: 2, playing: 'open' },
   });
   assert.deepEqual(session.audio, [
     { type: 'playVoice', voice: 'V_Ca1_8' },

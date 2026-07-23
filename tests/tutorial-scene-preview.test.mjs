@@ -95,3 +95,23 @@ test('Tutorial scene preview renders the Campaign 1 HUD from original Hud 1540 a
   assert.match(script, /renderTutorialHud\(\);/);
   assert.doesNotMatch(script, /P1\s+HP\s+\$\{/);
 });
+
+// The Campaign 1 dialogue is not a browser toast. Hud.setMsg() owns
+// Speak_187, its original display list and actor portrait frame; the scene
+// must load and render those direct source records above the world.
+test('Tutorial scene preview renders original Speak_187 assets from the live Campaign HUD', () => {
+  const { script } = readPreview();
+  assert.match(script, /getTutorialSpeakRenderPlan/);
+  assert.match(script, /drawTutorialSpeak/);
+  assert.match(script, /tutorial-speak-timeline-runtime\.local\.json/);
+  assert.match(script, /tutorial-speak-portrait-timeline-runtime\.local\.json/);
+  assert.match(script, /original-swf\/tutorial-speak\/1482\.svg/);
+  assert.match(script, /original-swf\/tutorial-speak\/1483\.svg/);
+  assert.match(script, /original-swf\/tutorial-speak\/1484\.svg/);
+  assert.match(script, /font-1485\.ttf/);
+  assert.match(script, /font-800\.ttf/);
+  assert.match(script, /function renderTutorialSpeak\(\)/);
+  assert.match(script, /getTutorialSpeakRenderPlan\(\{\s*hud: session\.hud/);
+  assert.match(script, /drawTutorialSpeak\(context, speakPlan, tutorialSpeakAssets/);
+  assert.match(script, /renderTutorialSpeak\(\);/);
+});

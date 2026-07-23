@@ -99,14 +99,32 @@ function sourceShoot(state, { human }) {
   };
 }
 
+// Guns.shoot() happens in Player.EnterFrame / AI.EnterFrame, while the
+// inherited UnitEnterFrame reaches Guns.EnterFrame only after Status.  Keep
+// both calls public so the Game-level orchestrator can preserve that source
+// ordering instead of using the historical convenience wrapper below.
+export function tutorialGunShoot(state, { human = true } = {}) {
+  const result = state.mDown ? sourceShoot(state, { human }) : { state, fired: false, bullet: null };
+  return { state: result.state, fired: result.fired, action: result.fired ? 'fire' : null, bullet: result.bullet };
+}
+
+export function tutorialAiGunShoot(state, { shouldShoot = false } = {}) {
+  const result = shouldShoot ? sourceShoot(state, { human: false }) : { state, fired: false, bullet: null };
+  return { state: result.state, fired: result.fired, action: result.fired ? 'fire' : null, bullet: result.bullet };
+}
+
+export function tutorialGunEnterFrame(state, { unit } = {}) {
+  let nextState = state;
+  if (nextState.shootDelay) nextState = { ...nextState, shootDelay: nextState.shootDelay - 1 };
+  return sourceScatter(nextState, unit);
+}
+
 // One Player.EnterFrame followed by Unit.UnitEnterFrame's Guns.EnterFrame.
 // Guns.shoot occurs first; its just-written delay is decremented by the same
 // source tick afterwards.
 export function advanceTutorialGunRuntime(state, { human = true, unit } = {}) {
-  let result = state.mDown ? sourceShoot(state, { human }) : { state, fired: false, bullet: null };
-  let nextState = result.state;
-  if (nextState.shootDelay) nextState = { ...nextState, shootDelay: nextState.shootDelay - 1 };
-  nextState = sourceScatter(nextState, unit);
+  const result = tutorialGunShoot(state, { human });
+  const nextState = tutorialGunEnterFrame(result.state, { unit });
   return { state: nextState, fired: result.fired, action: result.fired ? 'fire' : null, bullet: result.bullet };
 }
 
@@ -114,9 +132,7 @@ export function advanceTutorialGunRuntime(state, { human = true, unit } = {}) {
 // gate. Unlike Player it has no mDown edge or non-auto shotPressed latch;
 // UnitEnterFrame still immediately runs Guns.EnterFrame afterwards.
 export function advanceTutorialAiGunRuntime(state, { shouldShoot = false, unit } = {}) {
-  const result = shouldShoot ? sourceShoot(state, { human: false }) : { state, fired: false, bullet: null };
-  let nextState = result.state;
-  if (nextState.shootDelay) nextState = { ...nextState, shootDelay: nextState.shootDelay - 1 };
-  nextState = sourceScatter(nextState, unit);
+  const result = tutorialAiGunShoot(state, { shouldShoot });
+  const nextState = tutorialGunEnterFrame(result.state, { unit });
   return { state: nextState, fired: result.fired, action: result.fired ? 'fire' : null, bullet: result.bullet };
 }

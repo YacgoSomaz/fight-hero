@@ -1,6 +1,10 @@
 import {
   applyCampaignOneSessionBulletEnvironmentHit,
   applyCampaignOneSessionFrame,
+  advanceCampaignOneSessionActorUnitTail,
+  advanceCampaignOneSessionAiActor,
+  advanceCampaignOneSessionAiActorShoot,
+  advanceCampaignOneSessionPlayerShoot,
   applyCampaignOneSessionPlayerGunSwap,
   applyCampaignOneSessionSurfaceContact,
   createCampaignOneSession,
@@ -40,9 +44,116 @@ export function createCampaignOneSourceTickRuntime({ random = Math.random } = {}
     session: createCampaignOneSession({ random }),
     pendingInputs: [],
     tick: 0,
+    gameFrame: 0,
   };
   synchronizePlayerGunRuntime(runtime);
   return runtime;
+}
+
+function sourceGunUnitState(actor) {
+  return {
+    aim: actor.unitInfo.aim,
+    crouching: Boolean(actor.crouching),
+    jumping: Boolean(actor.movementState?.jumping),
+    xVelocity: actor.movement?.xVelocity ?? 0,
+    reflecting: Boolean(actor.reflecting),
+  };
+}
+
+function consumeQueuedInputs(runtime) {
+  const inputs = runtime.pendingInputs.splice(0);
+  const effects = [];
+  for (const input of inputs) {
+    if (input.type === 'swapGuns') effects.push(...applyCampaignOneSessionPlayerGunSwap(runtime.session));
+  }
+  return { inputs, effects };
+}
+
+// Source-owned Game.EnterFrame slice.  Its essential contract is timing,
+// rather than presentation: Campaign scripts execute before the actor walk;
+// each Player/AI performs shoot and immediate line-hit before its own inherited
+// Unit tail; only then can the next actor run.  This is deliberately separate
+// from the old narrow transition helper below until every page consumer has
+// moved over to the one runtime.
+export function advanceCampaignOneGameTick(runtime, {
+  wall,
+  playerKeys = 0,
+  playerJumpRequested = false,
+  gameStarted = true,
+  onLineBullet = null,
+} = {}) {
+  assertRuntime(runtime);
+  if (typeof wall?.isSolid !== 'function') throw new TypeError('Campaign 1 Game tick requires decoded source Wall surface');
+  if (onLineBullet !== null && typeof onLineBullet !== 'function') throw new TypeError('Campaign 1 line bullet callback must be a function');
+
+  const { inputs, effects: inputEffects } = consumeQueuedInputs(runtime);
+  runtime.gameFrame += 1;
+  const trace = [];
+  const scriptEffects = applyCampaignOneSessionFrame(runtime.session);
+  trace.push({ phase: 'campaign', gameFrame: runtime.gameFrame, campaign: { ...runtime.session.runtime } });
+
+  const lineBullets = [];
+  const actorResults = [];
+  for (const actor of runtime.session.actors) {
+    if (!actor.spawned || !actor.status) continue;
+    if (actor.human) {
+      const shot = advanceCampaignOneSessionPlayerShoot(runtime.session);
+      trace.push({ phase: 'playerGun', actorId: actor.id, fired: shot.fired });
+      if (shot.fired && shot.bullet) {
+        const event = { actorId: actor.id, bullet: shot.bullet, gameFrame: runtime.gameFrame };
+        lineBullets.push(event);
+        trace.push({ phase: 'lineBullet', actorId: actor.id, gunId: shot.bullet.gunId });
+        if (onLineBullet) onLineBullet(event);
+      }
+      const tail = advanceCampaignOneSessionActorUnitTail(runtime.session, actor.id, {
+        wall,
+        keys: playerKeys,
+        jumpRequested: playerJumpRequested,
+      });
+      trace.push({ phase: 'unitTail', actorId: actor.id });
+      actorResults.push({ id: actor.id, shot, tail });
+      continue;
+    }
+
+    const ai = advanceCampaignOneSessionAiActor(runtime.session, actor.id, { wall, gameStarted, random: runtime.session.random });
+    trace.push({ phase: 'ai', actorId: actor.id, shouldShoot: ai?.shouldShoot ?? false });
+    const shot = advanceCampaignOneSessionAiActorShoot(runtime.session, actor.id);
+    trace.push({ phase: 'aiGun', actorId: actor.id, fired: shot.fired });
+    if (shot.fired && shot.bullet) {
+      const event = { actorId: actor.id, bullet: shot.bullet, gameFrame: runtime.gameFrame };
+      lineBullets.push(event);
+      trace.push({ phase: 'lineBullet', actorId: actor.id, gunId: shot.bullet.gunId });
+      if (onLineBullet) onLineBullet(event);
+    }
+    const tail = advanceCampaignOneSessionActorUnitTail(runtime.session, actor.id, {
+      wall,
+      keys: actor.aiKeys ?? 0,
+      jumpRequested: Boolean(actor.aiJumpRequested),
+    });
+    trace.push({ phase: 'unitTail', actorId: actor.id });
+    actorResults.push({ id: actor.id, ai, shot, tail });
+  }
+
+  // Bullet_Line_Basic instances are already removed by their constructor;
+  // this marker reserves the original Game.bullets cleanup position for the
+  // remaining moving projectile classes.
+  trace.push({ phase: 'bullets' });
+  // Campaign 1 is TDM.  Its score update/end-game phase belongs after all
+  // actor and projectile processing, even though current source work has no
+  // live moving projectile collection yet.
+  trace.push({ phase: 'match' });
+  synchronizePlayerGunRuntime(runtime);
+  runtime.tick += 1;
+  return {
+    tick: runtime.tick,
+    gameFrame: runtime.gameFrame,
+    inputs,
+    inputEffects,
+    scriptEffects,
+    lineBullets,
+    actorResults,
+    trace,
+  };
 }
 
 export function enqueueCampaignOneSourceInput(runtime, input) {
@@ -63,11 +174,7 @@ export function advanceCampaignOneSourceTick(runtime, {
   bulletWallColor = null,
 } = {}) {
   assertRuntime(runtime);
-  const inputs = runtime.pendingInputs.splice(0);
-  const inputEffects = [];
-  for (const input of inputs) {
-    if (input.type === 'swapGuns') inputEffects.push(...applyCampaignOneSessionPlayerGunSwap(runtime.session));
-  }
+  const { inputs, effects: inputEffects } = consumeQueuedInputs(runtime);
 
   const scriptEffects = applyCampaignOneSessionFrame(runtime.session);
   const bulletEvents = [];

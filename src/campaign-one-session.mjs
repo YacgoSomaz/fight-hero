@@ -4,7 +4,7 @@ import { SOURCE_DEFAULT_CLASS_SAVES } from './sd-default-profile-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
 import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneGunSwap, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
-import { advanceTutorialAiGunRuntime, advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
+import { advanceTutorialAiGunRuntime, advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialAiGunShoot, tutorialGunEnterFrame, tutorialGunShoot, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
 import { createTutorialPlayerProfile } from './tutorial-player-profile.mjs';
 import { advanceTutorialCorpseFrame, createTutorialCorpse } from './tutorial-corpse-runtime.mjs';
@@ -430,6 +430,17 @@ export function advanceCampaignOneSessionPlayerGun(session, { unit } = {}) {
   return tick;
 }
 
+// The Game-level port uses this half-step before Unit.UnitEnterFrame.  The
+// historical `advanceCampaignOneSessionPlayerGun` remains a compatibility
+// wrapper for callers which intentionally need both source calls together.
+export function advanceCampaignOneSessionPlayerShoot(session) {
+  const player = actorFor(session, 'player');
+  if (!player?.spawned || player.dead) return { state: null, fired: false, action: null, bullet: null };
+  const tick = tutorialGunShoot(ensureActorGunRuntime(player), { human: true });
+  updatePlayerGunSlot(player, tick.state);
+  return tick;
+}
+
 // Stats_Campaign.runScripts() is evaluated on every source frame, and its
 // effects mutate the same actor records that later surface/input transitions
 // use.  Keeping this in the session prevents a browser preview from merely
@@ -476,17 +487,27 @@ export function advanceCampaignOneSessionAi(session, { wall, gameStarted = true,
   if (!session?.map?.aiArena) throw new TypeError('Campaign AI requires source Arena nodes');
   const results = [];
   for (const actor of session.actors) {
-    if (actor.human || !actor.spawned || !actor.status || actor.dead) continue;
-    if (!actor.ai) actor.ai = createTutorialAiState({ actor, arena: session.map.aiArena, random });
-    const decision = advanceTutorialAi({ state: actor.ai, actor, units: session.actors, arena: session.map.aiArena, wall, gameStarted, random });
-    actor.ai = decision.state;
-    actor.aiKeys = decision.keys;
-    actor.aiJumpRequested = decision.jumpRequested;
-    actor.aiShouldShoot = decision.shouldShoot;
-    actor.aim = { x: decision.state.aimX, y: decision.state.aimY };
-    results.push({ id: actor.id, keys: decision.keys, jumpRequested: decision.jumpRequested, shouldShoot: decision.shouldShoot, targetId: decision.state.targetId, aim: { ...actor.aim } });
+    const decision = advanceCampaignOneSessionAiActor(session, actor.id, { wall, gameStarted, random });
+    if (decision) results.push(decision);
   }
   return results;
+}
+
+// One source AI.EnterFrame outer decision phase.  Game.EnterFrame calls this
+// and the following gun/tail phases for a single unit before it advances to
+// the next unit in Game.units; the plural adapter above is legacy tooling.
+export function advanceCampaignOneSessionAiActor(session, actorId, { wall, gameStarted = true, random = session?.random ?? Math.random } = {}) {
+  if (!session?.map?.aiArena) throw new TypeError('Campaign AI requires source Arena nodes');
+  const actor = actorFor(session, actorId);
+  if (!actor || actor.human || !actor.spawned || !actor.status || actor.dead) return null;
+  if (!actor.ai) actor.ai = createTutorialAiState({ actor, arena: session.map.aiArena, random });
+  const decision = advanceTutorialAi({ state: actor.ai, actor, units: session.actors, arena: session.map.aiArena, wall, gameStarted, random });
+  actor.ai = decision.state;
+  actor.aiKeys = decision.keys;
+  actor.aiJumpRequested = decision.jumpRequested;
+  actor.aiShouldShoot = decision.shouldShoot;
+  actor.aim = { x: decision.state.aimX, y: decision.state.aimY };
+  return { id: actor.id, keys: decision.keys, jumpRequested: decision.jumpRequested, shouldShoot: decision.shouldShoot, targetId: decision.state.targetId, aim: { ...actor.aim } };
 }
 
 // AI.as calls gun.shoot() after its target/probability branch; its inherited
@@ -514,6 +535,64 @@ export function advanceCampaignOneSessionAiGuns(session) {
     results.push({ id: actor.id, fired: tick.fired, action: tick.action, bullet: tick.bullet });
   }
   return results;
+}
+
+// The shoot portion of AI.EnterFrame is intentionally separate from
+// Guns.EnterFrame.  Unit.UnitEnterFrame must run Status first and only then
+// decrement recoil/delay in its Gun phase.
+export function advanceCampaignOneSessionAiActorShoot(session, actorId) {
+  const actor = actorFor(session, actorId);
+  if (!actor || actor.human || !actor.spawned || !actor.status || actor.dead) return { id: actorId, state: null, fired: false, action: null, bullet: null };
+  const tick = tutorialAiGunShoot(ensureActorGunRuntime(actor), { shouldShoot: actor.aiShouldShoot });
+  actor.gunRuntime = tick.state;
+  actor.gunRuntimes[activeGunSlot(actor)] = tick.state;
+  return { id: actor.id, ...tick };
+}
+
+function sourceGunUnitState(actor) {
+  return {
+    aim: actor.unitInfo.aim,
+    crouching: Boolean(actor.crouching),
+    jumping: Boolean(actor.movementState?.jumping),
+    xVelocity: actor.movement?.xVelocity ?? 0,
+    reflecting: Boolean(actor.reflecting),
+  };
+}
+
+function advanceSourceActorMovement(actor, { wall, keys = 0, jumpRequested = false } = {}) {
+  if (typeof wall?.isSolid !== 'function') throw new TypeError('Campaign Unit Movement requires decoded Wall surface');
+  let movementState = createTutorialMovementState({ ...actor.movementState, noJump: actor.noJump });
+  let movedActor = { ...actor, position: actor.position && { ...actor.position }, flip: actor.scaleX < 0 };
+  if (!movedActor.position) throw new Error(`Campaign Unit Movement requires source position for ${actor.id}`);
+  const jump = jumpRequested
+    ? beginTutorialMovementJump({ state: movementState, actor: movedActor })
+    : { actor: movedActor, state: movementState, nextAnim: null };
+  const movement = stepTutorialMovement({ state: jump.state, actor: jump.actor, wall, keys });
+  actor.position = { ...movement.actor.position };
+  actor.movementState = movement.state;
+  actor.movement = { ...actor.movement, xVelocity: movement.state.xVel, yVelocity: movement.state.yVel };
+  actor.crouching = movement.state.crouching;
+  return { jumped: Boolean(jump.nextAnim), nextAnim: movement.nextAnim, position: { ...actor.position } };
+}
+
+// Migrated numerical Unit.UnitEnterFrame tail.  The remaining visual UnitMC,
+// pickups/objectives and wall-pixel surface consumers are represented by
+// dedicated source ports, but the call position here is already fixed: every
+// unit completes this tail before the next Game.units actor begins.
+export function advanceCampaignOneSessionActorUnitTail(session, actorId, { wall, keys = 0, jumpRequested = false } = {}) {
+  const actor = actorFor(session, actorId);
+  if (!actor?.spawned || !actor.status) return null;
+  if (actor.dead) {
+    if (actor.respawnTimer) actor.respawnTimer -= 1;
+    else respawnSourceActor(session, actor);
+    return { id: actor.id, dead: true };
+  }
+  const status = advanceTutorialStatusFrame(actor);
+  const gunRuntime = tutorialGunEnterFrame(ensureActorGunRuntime(actor), { unit: sourceGunUnitState(actor) });
+  actor.gunRuntime = gunRuntime;
+  actor.gunRuntimes[activeGunSlot(actor)] = gunRuntime;
+  const movement = advanceSourceActorMovement(actor, { wall, keys, jumpRequested });
+  return { id: actor.id, status, gunRuntime, movement };
 }
 
 // AI.as expresses locomotion exclusively as Key flags plus a one-frame jump

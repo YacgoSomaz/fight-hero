@@ -117,6 +117,21 @@ test('source Movement manual jump applies its authored boost and velocity only f
   assert.equal(result.nextAnim, 'jump');
 });
 
+// Movement.as reads `unit.unitInfo.runType`, populated by Unit.setClass();
+// the live Campaign actor need not duplicate that field at its root.  Losing
+// this lookup emits synthetic `run` and makes UnitMC.goto() reject the
+// original label during a real D-key press.
+test('Campaign movement derives UnitMC run labels from the source unitInfo runType', () => {
+  const result = stepTutorialMovement({
+    state: createTutorialMovementState(),
+    actor: actor({ position: { x: 285, y: 708 }, noAim: true, unitInfo: { runType: 1 } }),
+    wall: { isSolid: (_x, y) => Math.floor(y) >= 709 },
+    keys: TUTORIAL_MOVEMENT_KEYS.RIGHT,
+  });
+
+  assert.equal(result.nextAnim, 'run1');
+});
+
 test('source Movement derives its floor tilt from the original left/right ten-pixel wall probes', () => {
   const result = stepTutorialMovement({
     state: createTutorialMovementState(),

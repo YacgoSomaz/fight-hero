@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionHud, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -268,6 +268,36 @@ test('Campaign 1 state ten consumes original Tutorial HUD, message, injury, soun
     hpCur: 17,
     hpMax: 85,
     noJump: true,
+  });
+});
+
+// User journey: an authored forced Campaign line is the only visible Hud
+// message; it opens the original Speak clip, holds for seconds*30 frames, and
+// Hud.EnterFrame closes it on the frame where its timer was one. The message
+// must be settled before Game walks the next Unit.
+test('Campaign 1 uses the original single forced HUD message timer and Speak close order', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  session.runtime.state = 10;
+  applyCampaignOneSessionSurfaceContact(session, { surface: 'ff00ff', human: true });
+
+  assert.deepEqual(session.hud.message, {
+    target: 'player',
+    text: "Ahhh, my legs! I... I can't jump...",
+    seconds: 5,
+    force: true,
+    voice: 'V_Ca1_8',
+  });
+  assert.deepEqual({ timer: session.hud.msgTimer, force: session.hud.msgForce, speak: session.hud.speak }, {
+    timer: 150, force: true, speak: 'open',
+  });
+
+  for (let frame = 0; frame < 149; frame += 1) advanceCampaignOneSessionHud(session);
+  assert.deepEqual({ timer: session.hud.msgTimer, force: session.hud.msgForce, speak: session.hud.speak }, {
+    timer: 1, force: true, speak: 'open',
+  });
+  advanceCampaignOneSessionHud(session);
+  assert.deepEqual({ timer: session.hud.msgTimer, force: session.hud.msgForce, speak: session.hud.speak }, {
+    timer: 0, force: false, speak: 'close',
   });
 });
 

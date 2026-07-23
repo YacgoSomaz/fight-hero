@@ -124,6 +124,12 @@ Campaign.runScripts
 
 因此 Campaign 1 当前状态应称为：**“原任务定义和若干状态转换已接入的验证场景”**，而不是“战役第一关已做好”。
 
+### 4.3 2026-07-23：第一关原开场页已接入，但不构成通关验收
+
+菜单的 `Under Siege` 入口现先进入原 `Cutscene`（symbol 1890），而非绕过原版开场直接载入 Tutorial。新完整包已提供并纳入：根帧 1/2/3 的 Display List、13 个直接图形、6 个嵌套 Sprite、6 个文字字段、原 `QTypeSquare-Book_16pt_st` 与 `Consolas` 字体。实际浏览器检查确认：第 1 页正常加载，右下点击按 `Cutscene.as` 的 `Next → Next → Start Game` 状态推进，末页才跳入 Tutorial。
+
+这些资源位于 `public/assets/original-swf/cutscene-1890/`；`src/campaign-one-cutscene-source.mjs` 只记录从源 SWF 读取的矩阵、层级与字段边界。它**不代表**动画、音频、后结局 Cutscene 或 Tutorial 本体已经逐帧一致。仍需将嵌套 Sprite 逐帧 timeline 与原音频一并纳入后续 trace/截图验收。
+
 ## 5. 测试审计：什么被验证，什么没有
 
 本轮实际命令：

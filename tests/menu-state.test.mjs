@@ -47,7 +47,7 @@ test('only Campaign 1 uses its dedicated source runtime; every remaining source 
   assert.equal(isPlayableSelection(sourceChallenge), false);
   assert.deepEqual(getQuickMatchStatus(sourceMission), {
     canLaunch: true,
-    message: '第 1 关已接入原 Tutorial 场景承载。 它仍处于逐项原版验证中，不代表战役或游戏已完成。',
+    message: '第 1 关将先播放原始开场页面。 它仍处于逐项原版验证中，不代表战役或游戏已完成。',
   });
   assert.deepEqual(getQuickMatchStatus(sourceChallenge), {
     canLaunch: false,

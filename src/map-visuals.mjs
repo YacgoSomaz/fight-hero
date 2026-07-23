@@ -6,6 +6,7 @@ const ARENA = `${SOURCE}/arena`;
 const BG = `${SOURCE}/background`;
 const SKY = `${SOURCE}/sky`;
 const TUTORIAL = './public/assets/maps/tut';
+const TUTORIAL_ARENA = './public/assets/original-swf/tutorial-arena';
 const CROP = Object.freeze({
   // Foundry was already exported without FFDec's full stage canvas.  Its
   // complete PNG bounds are therefore its authored viewport (not a 0×0
@@ -30,7 +31,10 @@ const CROP = Object.freeze({
   [`${ARENA}/8.png`]: [526, 509, 2961, 1730],
   [`${ARENA}/9.png`]: [1766, 1701, 521, 279],
   [`${ARENA}/10.png`]: [1133, 929, 1637, 1093],
-  [`${TUTORIAL}/foreground.png`]: [526, 509, 2961, 1730],
+  // Tutorial's base is Arena depth 2 / Shape 1353.  The original SVG carries
+  // its embedded bitmap fill and source-space bounds; its registration is
+  // (523.8,559.9), not the transparent-border offset of a flattened PNG.
+  [`${TUTORIAL_ARENA}/1353.svg`]: [523.8, 559.9, 3636, 2574],
 });
 
 // The labels and frame pairing come directly from Stats_Maps.as, Bg and
@@ -49,8 +53,9 @@ const VISUALS = Object.freeze({
   cave: { terrainMapId: 'cave', sky: `${SKY}/4.png`, background: `${BG}/18.png`, terrain: `${ARENA}/7.png` },
   cave2: { terrainMapId: 'cave', sky: `${SKY}/6.png`, background: `${BG}/19.png`, terrain: `${ARENA}/7.png` },
   // These are byte-for-byte local exports of BgSky frame 5, Bg frame 18 and
-  // Arena frame 8.  Runtime must not depend on an ignored extraction folder.
-  tut: { terrainMapId: 'tut', sky: `${TUTORIAL}/sky.png`, background: `${TUTORIAL}/background.png`, terrain: `${TUTORIAL}/foreground.png` },
+  // Arena depth-2 Shape 1353. Runtime must not depend on an ignored extraction
+  // folder or infer a coordinate from a flattened Arena canvas.
+  tut: { terrainMapId: 'tut', sky: `${TUTORIAL}/sky.png`, background: `${TUTORIAL}/background.png`, terrain: `${TUTORIAL_ARENA}/1353.svg` },
   dropship: { terrainMapId: 'dropship', sky: `${SKY}/4.png`, background: `${BG}/12.png`, terrain: `${ARENA}/9.png` },
   missile: { terrainMapId: 'missile', sky: `${SKY}/4.png`, background: `${BG}/12.png`, terrain: `${ARENA}/10.png` },
   missile2: { terrainMapId: 'missile', sky: `${SKY}/6.png`, background: `${BG}/12.png`, terrain: `${ARENA}/10.png` },

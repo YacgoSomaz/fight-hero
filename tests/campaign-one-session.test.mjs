@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TUTORIAL_DOWN_ARROWS } from '../src/tutorial-down-arrows-source.mjs';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionEnvironment, advanceCampaignOneSessionHud, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
+import { advanceCampaignOneSessionActorUnitTail, advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionEnvironment, advanceCampaignOneSessionHud, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp, applyCampaignOneSessionSurfaceContact, createCampaignOneSession } from '../src/campaign-one-session.mjs';
 
 // User journey: starting Under Siege must create its authored Tutorial map
 // session, not a generic quick-match.  The player and all four source units
@@ -237,6 +237,35 @@ test('Campaign 1 applies the source Unit.die corpse lifecycle and removes the Ph
 
   for (let frame = 0; frame < 150; frame += 1) advanceCampaignOneSessionUnits(session);
   assert.deepEqual(session.corpses, []);
+});
+
+// User journey: falling through the lower edge of Tutorial must not leave the
+// Scientist moving forever outside the original map. Unit.UnitEnterFrame()
+// performs its exact x/y 0..2880 guard before its regular Status/Gun/Movement
+// tail, using the source environment gun with bypass protection.
+test('Campaign 1 applies the original Unit boundary death before Tutorial movement can escape the map', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const player = session.actors[0];
+  player.status.sSpawn = 75;
+  player.position = { x: 285, y: 2881 };
+
+  const result = advanceCampaignOneSessionActorUnitTail(session, 'unit0', {
+    wall: { isSolid: () => false },
+  });
+
+  assert.deepEqual({
+    boundaryDeath: result.boundaryDeath,
+    dead: Boolean(player.dead),
+    visible: player.visible,
+    respawnTimer: player.respawnTimer,
+    corpseGun: session.corpses[0]?.gunId,
+  }, {
+    boundaryDeath: true,
+    dead: true,
+    visible: false,
+    respawnTimer: 150,
+    corpseGun: 'env',
+  });
 });
 
 // User journey: reaching the original state-ten Tutorial floor must consume

@@ -32,7 +32,10 @@ export function createFlashWallSurface({ width, height, data }) {
       const pixelY = Math.floor(y);
       if (pixelX < 0 || pixelY < 0 || pixelX >= width || pixelY >= height) return '';
       const offset = (pixelY * width + pixelX) * 4;
-      if (data[offset + 3] !== 255) return '';
+      // Unit.getPixel() and Bullet's environment-colour branch use the RGB
+      // value, not Movement's alpha-ff collision gate. Tutorial deliberately
+      // stores several ff00ff guide pixels at alpha 7f, so discarding their
+      // colour here would make a walk-through source trigger unreachable.
       return [data[offset], data[offset + 1], data[offset + 2]]
         .map((value) => value.toString(16).padStart(2, '0')).join('');
     },

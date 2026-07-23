@@ -25,5 +25,5 @@ test('extracts the original Campaign 1 door and elevator timelines from the cano
   assert.deepEqual(timelines[1388].labels, {});
   assert.equal(timelines[1388].frames[0].items[0].character, 1387);
   assert.equal(timelines[1388].frames[0].items[0].depth, 1);
-  assert.equal(timelines[1388].frames.at(-1).items[0].character, 1387);
+  assert.deepEqual(timelines[1388].frames.at(-1).items, []);
 });

@@ -7,7 +7,7 @@ import { createWorld, step } from './src/engine.mjs';
 
 const root = fileURLToPath(new URL('./', import.meta.url));
 const extractedRoot = fileURLToPath(new URL('./public/assets/unit-parts/', import.meta.url));
-const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png' };
+const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.json': 'application/json; charset=utf-8' };
 const rooms = new Map();
 // Keep the historical local default while allowing a second checked-out copy
 // to run without terminating another project's development service.

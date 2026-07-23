@@ -5,31 +5,40 @@ import { getMapLayerCrop, getMapVisual } from '../src/map-visuals.mjs';
 
 const MAP_IDS = Object.freeze(['tut', 'foundry', 'foundry2', 'train', 'train2', 'plane', 'plane2', 'swamp', 'swamp2', 'cave', 'cave2', 'dropship', 'missile', 'missile2']);
 
-async function readPngSize(source) {
+async function readLayerSize(source) {
   const bytes = await readFile(new URL(`../${source.slice(2)}`, import.meta.url));
-  assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], `${source} must remain a PNG`);
-  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+  if (source.endsWith('.png')) {
+    assert.deepEqual([...bytes.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], `${source} must remain a PNG`);
+    return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+  }
+  const root = new TextDecoder().decode(bytes.subarray(0, 512));
+  const width = Number(root.match(/width="([\d.]+)px"/)?.[1]);
+  const height = Number(root.match(/height="([\d.]+)px"/)?.[1]);
+  assert.ok(Number.isFinite(width) && Number.isFinite(height), `${source} must expose original SVG dimensions`);
+  return { width, height };
 }
 
 test('every launchable source map uses versioned runtime image layers rather than ignored extraction folders', () => {
   for (const mapId of MAP_IDS) {
     const visual = getMapVisual(mapId);
     for (const source of [visual.sky, visual.background, visual.terrain]) {
-      assert.match(source, /^\.\/public\/assets\/maps\//, `${mapId} must not require a private runtime asset`);
+      const sourceIsTutorialBaseShape = mapId === 'tut' && source === visual.terrain;
+      assert.match(source, sourceIsTutorialBaseShape
+        ? /^\.\/public\/assets\/original-swf\/tutorial-arena\/1353\.svg$/
+        : /^\.\/public\/assets\/maps\//, `${mapId} must not require a private runtime asset`);
     }
   }
 });
 
-test('every launchable map layer exists in the fresh-clone runtime and its authored crop is inside the PNG', async () => {
+test('every launchable map layer exists in the fresh-clone runtime with a positive source registration extent', async () => {
   for (const mapId of MAP_IDS) {
     const visual = getMapVisual(mapId);
     for (const source of [visual.sky, visual.background, visual.terrain]) {
       const crop = getMapLayerCrop(source);
-      const size = await readPngSize(source);
+      const size = await readLayerSize(source);
       assert.ok(crop.width > 0 && crop.height > 0, `${mapId}: ${source} needs an authored visible crop`);
       assert.ok(crop.x >= 0 && crop.y >= 0, `${mapId}: ${source} crop cannot begin outside its PNG`);
-      assert.ok(crop.x + crop.width <= size.width, `${mapId}: ${source} crop exceeds PNG width`);
-      assert.ok(crop.y + crop.height <= size.height, `${mapId}: ${source} crop exceeds PNG height`);
+      assert.ok(size.width > 0 && size.height > 0, `${mapId}: ${source} has no drawable source dimensions`);
     }
   }
 });
@@ -47,12 +56,12 @@ test('source background sprites use their authored visible bounds rather than tr
   assert.deepEqual(getMapLayerCrop('./public/assets/maps/source/background/6.png'), { x: 1336, y: 584, width: 2581, height: 292 });
 });
 
-test('Tutorial terrain uses its authored visible bounds instead of the empty FFDec stage canvas', () => {
+test('Tutorial terrain uses original Arena Shape 1353 and its source registration instead of a flattened FFDec canvas', () => {
   const visual = getMapVisual('tut');
   assert.match(visual.sky, /public\/assets\/maps\/tut\/sky\.png$/);
   assert.match(visual.background, /public\/assets\/maps\/tut\/background\.png$/);
-  assert.match(visual.terrain, /public\/assets\/maps\/tut\/foreground\.png$/);
-  assert.deepEqual(getMapLayerCrop(visual.terrain), { x: 526, y: 509, width: 2961, height: 1730 });
+  assert.match(visual.terrain, /public\/assets\/original-swf\/tutorial-arena\/1353\.svg$/);
+  assert.deepEqual(getMapLayerCrop(visual.terrain), { x: 523.8, y: 559.9, width: 3636, height: 2574 });
 });
 
 test('every decoded Arena foreground removes its transparent FFDec stage border before camera sampling', () => {

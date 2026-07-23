@@ -145,12 +145,12 @@ try {
       noJump: sourcePlayer.noJump,
       guns: { ...sourcePlayer.guns },
     };
-    // Campaign 1 state eight calls setGuns('USP2', 'none').  Only the two
-    // source weapon arm spans currently decoded here may become visible.
-    if (player.guns.active === 'USP2' && actorState.weaponId !== 'USP2') {
-      actorState = synchronizeTutorialActorWeapon(actorState, 'USP2');
-    } else if (player.guns.active === 'M4' && actorState.weaponId !== 'M4') {
-      actorState = synchronizeTutorialActorWeapon(actorState, 'M4');
+    // The decoded pistol arm timeline is shared by USP and USP2, and the M4
+    // has its own original rifle span.  Do not hide a source-selected weapon
+    // merely because the prior page bridge named only two IDs. `none` remains
+    // deliberately invisible until Campaign grants a real gun.
+    if (player.guns.active !== 'none' && actorState.weaponId !== player.guns.active) {
+      actorState = synchronizeTutorialActorWeapon(actorState, player.guns.active);
     }
     // There is exactly one Guns record per source actor slot.  Rendering may
     // support only a subset of arm timelines, but input and bullets still

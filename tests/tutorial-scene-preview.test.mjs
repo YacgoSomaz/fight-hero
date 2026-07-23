@@ -58,7 +58,6 @@ test('Tutorial scene preview mounts source map layers, source camera, and source
   assert.match(script, /tutorialPlayerMouseDown/);
   assert.match(script, /tutorialPlayerMouseUp/);
   assert.match(script, /synchronizeTutorialActorWeapon/);
-  assert.match(script, /player\.guns\.active === 'USP2'/);
   assert.match(script, /drawTutorialUnitPose/);
   assert.match(script, /sceneActorStates/);
   assert.match(script, /sceneActorAimStates/);
@@ -86,5 +85,7 @@ test('Tutorial scene uses the Campaign actor gun slots and original swap keys in
   assert.match(script, /event\.code === 'ShiftLeft'/);
   assert.match(script, /event\.code === 'ShiftRight'/);
   assert.match(script, /applyCampaignOneSessionPlayerGunSwap\(session\)/);
+  assert.match(script, /player\.guns\.active !== 'none' && actorState\.weaponId !== player\.guns\.active/);
+  assert.match(script, /synchronizeTutorialActorWeapon\(actorState, player\.guns\.active\)/);
   assert.doesNotMatch(script, /createTutorialGunRuntime/);
 });

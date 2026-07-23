@@ -26,12 +26,13 @@ test('Campaign 1 source tick performs state-twelve gun swap and door transition 
   enqueueCampaignOneSourceInput(runtime, { type: 'swapGuns' });
   const tick = advanceCampaignOneSourceTick(runtime);
 
-  assert.deepEqual({ state: runtime.session.runtime.state, wall: runtime.session.map.wallFrame, activeGun: player.guns.active, gunRuntime: player.gunRuntime.gunId, door: runtime.session.environment.doorFrame }, {
+  assert.deepEqual({ state: runtime.session.runtime.state, wall: runtime.session.map.wallFrame, activeGun: player.guns.active, gunRuntime: player.gunRuntime.gunId, doorFrame: runtime.session.environment.door.frame, doorPlaying: runtime.session.environment.door.playing }, {
     state: 13,
     wall: 13,
     activeGun: 'M4',
     gunRuntime: 'M4',
-    door: 'open',
+    doorFrame: 1,
+    doorPlaying: 'open',
   });
   assert.deepEqual(tick.inputs, [{ type: 'swapGuns' }]);
 });
@@ -47,12 +48,13 @@ test('Campaign 1 source tick applies the state-nine elevator ammo clear to the a
 
   const tick = advanceCampaignOneSourceTick(runtime, { bulletWallColor: '9900ff' });
 
-  assert.deepEqual({ state: runtime.session.runtime.state, wall: runtime.session.map.wallFrame, clip: player.gunRuntime.ammo.clipCur, spare: player.gunRuntime.ammo.spareCur, elevator: runtime.session.environment.elevatorFrame }, {
+  assert.deepEqual({ state: runtime.session.runtime.state, wall: runtime.session.map.wallFrame, clip: player.gunRuntime.ammo.clipCur, spare: player.gunRuntime.ammo.spareCur, elevatorFrame: runtime.session.environment.elevator.frame, elevatorPlaying: runtime.session.environment.elevator.playing }, {
     state: 10,
     wall: 10,
     clip: 0,
     spare: 0,
-    elevator: 'play',
+    elevatorFrame: 1,
+    elevatorPlaying: true,
   });
   assert.deepEqual(tick.bulletEvents, [{ wallColor: '9900ff' }]);
 });

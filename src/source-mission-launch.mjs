@@ -3,9 +3,9 @@
 // dedicated runtime page that consumes its original Arena/session pipeline.
 // Do not add a route here merely because a map image can be displayed.
 const CAMPAIGN_ONE_TUTORIAL = Object.freeze({
-  kind: 'campaign-one-tutorial',
-  href: './tutorial-scene-preview.html?source=campaign-1',
-  message: '第 1 关已接入原 Tutorial 场景承载。',
+  kind: 'campaign-one-pre-cutscene',
+  href: './campaign-one-cutscene.html?source=campaign-1',
+  message: '第 1 关将先播放原始开场页面。',
 });
 
 export function getSourceMissionLaunch(selection) {

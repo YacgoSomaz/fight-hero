@@ -1,6 +1,8 @@
 import {
   applyCampaignOneSessionBulletEnvironmentHit,
   applyCampaignOneSessionFrame,
+  applyCampaignOneSessionPlayerMouseDown,
+  applyCampaignOneSessionPlayerMouseUp,
   advanceCampaignOneSessionActorUnitTail,
   advanceCampaignOneSessionAiActor,
   advanceCampaignOneSessionAiActorShoot,
@@ -65,6 +67,8 @@ function consumeQueuedInputs(runtime) {
   const effects = [];
   for (const input of inputs) {
     if (input.type === 'swapGuns') effects.push(...applyCampaignOneSessionPlayerGunSwap(runtime.session));
+    else if (input.type === 'mouseDown') applyCampaignOneSessionPlayerMouseDown(runtime.session, { gameStarted: true });
+    else if (input.type === 'mouseUp') applyCampaignOneSessionPlayerMouseUp(runtime.session);
   }
   return { inputs, effects };
 }
@@ -168,10 +172,10 @@ export function advanceCampaignOneGameTick(runtime, {
 
 export function enqueueCampaignOneSourceInput(runtime, input) {
   assertRuntime(runtime);
-  if (!input || input.type !== 'swapGuns') {
-    throw new TypeError('Campaign 1 source input must be a swapGuns action');
+  if (!input || !['swapGuns', 'mouseDown', 'mouseUp'].includes(input.type)) {
+    throw new TypeError('Campaign 1 source input must be swapGuns, mouseDown, or mouseUp');
   }
-  runtime.pendingInputs.push({ type: 'swapGuns' });
+  runtime.pendingInputs.push({ type: input.type });
 }
 
 // Small source-faithful tick slice.  It establishes one authoritative order:

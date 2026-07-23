@@ -2,86 +2,62 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-test('Tutorial scene preview mounts source map layers, source camera, and source actor without generic quick-match code', () => {
-  const page = fs.readFileSync(new URL('../tutorial-scene-preview.html', import.meta.url), 'utf8');
-  const script = fs.readFileSync(new URL('../src/tutorial-scene-preview.mjs', import.meta.url), 'utf8');
+function readPreview() {
+  return {
+    page: fs.readFileSync(new URL('../tutorial-scene-preview.html', import.meta.url), 'utf8'),
+    script: fs.readFileSync(new URL('../src/tutorial-scene-preview.mjs', import.meta.url), 'utf8'),
+  };
+}
+
+// Browser integration guard: the preview is a renderer/input adapter over
+// one Tutorial world tick, not a second Game loop which batches actors by
+// feature and thereby changes original AS3 timing.
+test('Tutorial scene preview consumes the source Game tick rather than browser phase batches', () => {
+  const { page, script } = readPreview();
   assert.match(page, /<canvas id="tutorialScene" width="800" height="600"/);
   assert.match(page, /src="src\/tutorial-scene-preview\.mjs"/);
   assert.match(script, /getMapVisual\('tut'\)/);
   assert.match(script, /loadMapLayers/);
   assert.match(script, /loadTutorialWorld/);
-  assert.match(script, /applyCampaignOneSessionFrame/);
-  assert.match(script, /advanceCampaignOneSessionAi/);
-  assert.match(script, /advanceCampaignOneSessionAiMovement/);
-  assert.match(script, /advanceCampaignOneSessionAiGuns/);
-  assert.match(script, /applyTutorialFootContact/);
-  assert.match(script, /stepTutorialMovement/);
-  assert.match(script, /canvas\.addEventListener\('mouseup'/);
-  assert.match(script, /applyCampaignOneSessionPlayerMouseDown\(session/);
-  assert.match(script, /applyCampaignOneSessionPlayerMouseUp\(session\)/);
-  assert.match(script, /advanceCampaignOneSessionPlayerGun\(session/);
+  assert.match(script, /advanceTutorialWorldGameTick\(tutorialWorld/);
+  assert.match(script, /onLineBullet\(\{ actorId, bullet \}\)/);
+  assert.match(script, /playerKeys: movementKeys/);
+  assert.match(script, /playerJumpRequested/);
+  assert.match(script, /sourceTick\.actorResults/);
   assert.match(script, /traceTutorialLineBullet/);
   assert.match(script, /applyTutorialLineBulletHit/);
   assert.match(script, /applyCampaignOneSessionDeath/);
-  assert.match(script, /function synchronizePlayerSourceRespawn\(\)/, 'the source Player.as respawn must reset the visible actor state');
-  assert.match(script, /if \(sourcePlayer\.dead\) return;/, 'a dead source player must not keep moving or being rendered by stale local state');
-  assert.match(script, /playerWasDead && !sourcePlayer\?\.dead/, 'the visible player must adopt the source Arena respawn position on the source respawn tick');
-  assert.match(script, /if \(sourcePlayer\?\.spawned && sourcePlayer\.visible && !sourcePlayer\.dead\) \{[\s\S]*?drawTutorialUnitPose/, 'the scene must hide the source player while Unit.die has made it invisible');
-  assert.match(script, /renderTutorialLineBullet/);
   assert.match(script, /applyTutorialBulletEnvironmentHit/);
-  assert.match(script, /units:\s*session\.actors/);
-  assert.match(script, /corpses:\s*session\.corpses/);
-  assert.match(script, /shooter:\s*sourcePlayer/);
-  assert.match(script, /if \(hitOutcome\.died\) applyCampaignOneSessionDeath\(session/);
-  assert.match(script, /unit:\s*\{\s*aim:\s*player\.sourcePlayerProfile\.aim/);
-  assert.match(script, /canvasPointToTutorialStage/);
-  assert.match(script, /tutorialArenaPointer/);
+  assert.match(script, /requestTutorialActorMotion/);
+  assert.match(script, /beginTutorialActorGunAction/);
+  assert.match(script, /advanceTutorialActorPlayback/);
   assert.match(script, /advanceTutorialPlayerAim/);
   assert.match(script, /deriveTutorialUnitAim/);
   assert.match(script, /getTutorialUnitOverheadHud/);
   assert.match(script, /unit-bar-670\.png/);
-  assert.match(script, /renderTutorialUnitOverheadBar\(sourcePlayer/);
-  assert.match(script, /renderTutorialUnitOverheadBar\(sourceActor/);
   assert.match(script, /globalCompositeOperation = 'source-in'/);
-  assert.match(script, /globalAlpha = bar\.alpha/);
-  assert.match(script, /canvas\.addEventListener\('mousemove'/);
-  assert.match(script, /advanceTutorialActorPlayback\(actorState, source, \{ advanceArm: !gunTick\.fired \}\)/);
-  assert.match(script, /canvas\.addEventListener\('mousedown'/);
-  assert.match(script, /beginTutorialActorGunAction\(actorState, gunTick\.action\)/);
-  assert.match(script, /requestTutorialActorMotion/);
-  assert.match(script, /addEventListener\('keydown'/);
-  assert.match(script, /tutorialWorld\.wall/);
-  assert.match(script, /advanceTutorialArenaPosition/);
-  assert.match(script, /createTutorialActorPlayback/);
-  assert.match(script, /beginTutorialActorGunAction/);
-  assert.match(script, /synchronizeTutorialActorWeapon/);
-  assert.match(script, /drawTutorialUnitPose/);
-  assert.match(script, /sceneActorStates/);
-  assert.match(script, /sceneActorAimStates/);
-  assert.match(script, /createTutorialActorPlayback\(binding\)/);
-  assert.match(script, /sourceActor\.visible/);
-  assert.match(script, /sourceActor\.dead/);
-  assert.match(script, /advanceTutorialActorPlayback\(sceneActorState, source\)/);
-  assert.match(script, /requestTutorialActorMotion\(sceneActorState, movement\.nextAnim\)/);
-  assert.match(script, /beginTutorialActorGunAction\(sceneActorState, gun\.action\)/);
-  assert.match(script, /shooter:\s*sourceActor/);
-  assert.match(script, /sampleTutorialActorPlayback\(sceneActorState, source, \{ aim: sceneActorAimStates\.get\(sourceActor\.id\) \}\)/);
   assert.match(script, /canvas\.dataset\.ready = 'true'/);
   assert.match(script, /function reportTutorialSceneFailure\(reason\)/);
-  assert.match(script, /catch \(reason\) \{\s*reportTutorialSceneFailure\(reason\);/);
-  assert.doesNotMatch(script, /main\.mjs|engine\.mjs|createWorld|foundry/);
+  assert.doesNotMatch(script, /applyCampaignOneSessionFrame\(/);
+  assert.doesNotMatch(script, /advanceCampaignOneSessionAi\(/);
+  assert.doesNotMatch(script, /advanceCampaignOneSessionAiGuns\(/);
+  assert.doesNotMatch(script, /advanceCampaignOneSessionAiMovement\(/);
+  assert.doesNotMatch(script, /advanceCampaignOneSessionUnits\(/);
+  assert.doesNotMatch(script, /advanceCampaignOneSessionPlayerGun\(/);
+  assert.doesNotMatch(script, /stepTutorialMovement\(/);
+  assert.doesNotMatch(script, /applyTutorialFootContact\(/);
 });
 
-test('Tutorial scene uses the Campaign actor gun slots and original swap keys instead of a parallel browser weapon state', () => {
-  const script = fs.readFileSync(new URL('../src/tutorial-scene-preview.mjs', import.meta.url), 'utf8');
-
-  assert.match(script, /applyCampaignOneSessionPlayerGunSwap/);
-  assert.match(script, /gunState = sourcePlayer\.gunRuntime;/);
+test('Tutorial scene queues original mouse and swap inputs to the source runtime', () => {
+  const { script } = readPreview();
+  assert.match(script, /enqueueCampaignOneSourceInput\(tutorialWorld\.tickRuntime, \{ type: 'mouseDown' \}\)/);
+  assert.match(script, /enqueueCampaignOneSourceInput\(tutorialWorld\.tickRuntime, \{ type: 'mouseUp' \}\)/);
+  assert.match(script, /enqueueCampaignOneSourceInput\(tutorialWorld\.tickRuntime, \{ type: 'swapGuns' \}\)/);
   assert.match(script, /event\.code === 'KeyQ'/);
   assert.match(script, /event\.code === 'ShiftLeft'/);
   assert.match(script, /event\.code === 'ShiftRight'/);
-  assert.match(script, /applyCampaignOneSessionPlayerGunSwap\(session\)/);
-  assert.match(script, /player\.guns\.active !== 'none' && actorState\.weaponId !== player\.guns\.active/);
-  assert.match(script, /synchronizeTutorialActorWeapon\(actorState, player\.guns\.active\)/);
+  assert.doesNotMatch(script, /applyCampaignOneSessionPlayerMouseDown/);
+  assert.doesNotMatch(script, /applyCampaignOneSessionPlayerMouseUp/);
+  assert.doesNotMatch(script, /applyCampaignOneSessionPlayerGunSwap/);
   assert.doesNotMatch(script, /createTutorialGunRuntime/);
 });

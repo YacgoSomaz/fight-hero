@@ -1,6 +1,7 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionPlayerGun, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerGunSwap, applyCampaignOneSessionPlayerMouseDown, applyCampaignOneSessionPlayerMouseUp } from './campaign-one-session.mjs';
+import { applyCampaignOneSessionDeath } from './campaign-one-session.mjs';
+import { enqueueCampaignOneSourceInput } from './campaign-one-tick-runtime.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -16,9 +17,9 @@ import { getTutorialUnitOverheadHud } from './tutorial-unit-overhead-hud.mjs';
 import { getTutorialUnitOverheadIcon } from './tutorial-unit-overhead-icon.mjs';
 import { getTutorialUnitJugMarker } from './tutorial-unit-jug-marker.mjs';
 import { getTutorialUnitOverheadLabels, TUTORIAL_UNIT_OVERHEAD_FONT } from './tutorial-unit-overhead-labels.mjs';
-import { applyTutorialBulletEnvironmentHit, applyTutorialFootContact } from './tutorial-world.mjs';
+import { advanceTutorialWorldGameTick, applyTutorialBulletEnvironmentHit } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
-import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
+import { createTutorialMovementState, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
 
 const canvas = document.querySelector('#tutorialScene');
 const context = canvas.getContext('2d');
@@ -114,9 +115,9 @@ try {
       reloadRotation: 0,
       flip: actor.scaleX < 0,
     }]));
-  let gunState = null;
   let movementState = createTutorialMovementState({ noJump: player.noJump });
   let movementKeys = 0;
+  let playerJumpRequested = false;
   let arenaPosition = { x: 0, y: 0 };
   let stageMouse = { x: STAGE.width * 0.5, y: STAGE.height * 0.5 };
   let aimState = { aimX: player.position.x + 200, aimY: player.position.y - 50, aimRotation: 0, reloadRotation: 0 };
@@ -140,6 +141,8 @@ try {
     if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable');
     player = {
       ...player,
+      position: sourcePlayer.position ? { ...sourcePlayer.position } : player.position,
+      flip: sourcePlayer.scaleX < 0,
       noAim: sourcePlayer.noAim,
       noJump: sourcePlayer.noJump,
       guns: { ...sourcePlayer.guns },
@@ -155,20 +158,9 @@ try {
     // support only a subset of arm timelines, but input and bullets still
     // consume this authoritative record (including M4) rather than making a
     // browser-only USP state or disabling the weapon outright.
-    gunState = sourcePlayer.gunRuntime;
-    movementState = { ...movementState, noJump: player.noJump };
-  }
-
-  function syncPlayerCollisionState() {
-    const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
-    if (!sourcePlayer) throw new Error('Campaign 1 source player collision record is unavailable');
-    // Player.EnterFrame returns immediately while Unit.die() owns this actor.
-    // Never overwrite its corpse/respawn position with stale local input.
-    if (sourcePlayer.dead) return;
-    sourcePlayer.position = { ...player.position };
-    sourcePlayer.scaleX = aimState.flip ? -1 : 1;
-    sourcePlayer.crouching = movementState.crouching;
-    sourcePlayer.movement = { xVelocity: movementState.xVel, yVelocity: movementState.yVel };
+    movementState = sourcePlayer.movementState
+      ? { ...sourcePlayer.movementState, noJump: player.noJump }
+      : { ...movementState, noJump: player.noJump };
   }
 
   // Player.as calls unitSpawn() only after its dead-frame timer reaches zero.
@@ -189,7 +181,6 @@ try {
       aimRotation: 0,
       reloadRotation: 0,
     };
-    gunState = session.actors.find(({ id }) => id === 'unit0')?.gunRuntime ?? null;
   }
 
   // Campaign actors retain their own source UnitMC child skin and the weapon
@@ -353,9 +344,12 @@ try {
       // Game.EnterFrame clears lineCont before Player/Guns may add a fresh
       // Bullet_Line_Basic trace in this source frame.
       sourceLineTraces = [];
-      applyCampaignOneSessionFrame(session);
       syncPlayerRestrictionsFromSourceSession();
       syncSceneActorStates();
+      // UnitMC's previous-frame transform is what Bullet_Line_Basic sees if
+      // an AI shoots in this frame. The source Game tick below then updates
+      // each actor, rather than batching all NPC phases in the browser.
+      syncSceneActorAimStates();
       const armHolder = sourceArmHolder();
       aimState = advanceTutorialPlayerAim(aimState, {
         actor: player,
@@ -364,105 +358,66 @@ try {
         mcRotation: movementState.rotation,
         jumping: movementState.jumping,
         noAim: player.noAim,
-        reloading: gunState?.reloading ?? false,
+        reloading: session.actors.find(({ id }) => id === 'unit0')?.gunRuntime?.reloading ?? false,
         stageMouse,
       });
       player = { ...player, flip: aimState.flip, aim: { x: aimState.aimX, y: aimState.aimY } };
-      syncPlayerCollisionState();
-      let gunTick = { fired: false };
-      if (gunState) {
-        gunTick = advanceCampaignOneSessionPlayerGun(session, {
-          unit: {
-            aim: player.sourcePlayerProfile.aim,
-            crouching: movementState.crouching,
-            jumping: movementState.jumping,
-            xVelocity: movementState.xVel,
-            // Guns.reflecting is false on original setGuns construction;
-            // no decoded Tutorial state has changed it yet.
-            reflecting: false,
-          },
-        });
-        const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
-        if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable for Guns state');
-        gunState = sourcePlayer.gunRuntime;
-        if (gunTick.fired) {
-          actorState = beginTutorialActorGunAction(actorState, gunTick.action);
-          Object.assign(sourcePlayer, {
-            aimRotation: aimState.aimRotation,
-            mcRotation: movementState.rotation,
-            armY: armHolder.y,
-            dynRecoil: gunTick.bullet.dynRecoil,
-            dynRecoilMod: gunTick.bullet.dynRecoilMod,
-          });
+      const sourcePlayerBeforeUnits = session.actors.find(({ id }) => id === 'unit0');
+      const playerWasDead = Boolean(sourcePlayerBeforeUnits?.dead);
+      const sourcePlayerBeforeTick = session.actors.find(({ id }) => id === 'unit0');
+      if (!sourcePlayerBeforeTick) throw new Error('Campaign 1 source player is unavailable for Game tick');
+      Object.assign(sourcePlayerBeforeTick, {
+        scaleX: aimState.flip ? -1 : 1,
+        aimRotation: aimState.aimRotation,
+        mcRotation: movementState.rotation,
+        armY: armHolder.y,
+      });
+      const sourceTick = advanceTutorialWorldGameTick(tutorialWorld, {
+        playerKeys: movementKeys,
+        playerJumpRequested,
+        onLineBullet({ actorId, bullet }) {
+          const sourceActor = session.actors.find(({ id }) => id === actorId);
+          if (!sourceActor) throw new Error(`Campaign 1 line bullet has no source actor: ${actorId}`);
+          Object.assign(sourceActor, { dynRecoil: bullet.dynRecoil, dynRecoilMod: bullet.dynRecoilMod });
           const trace = traceTutorialLineBullet({
-            gunId: gunTick.bullet.gunId,
-            shooter: sourcePlayer,
+            gunId: bullet.gunId,
+            shooter: sourceActor,
             wall: tutorialWorld.wall,
             units: session.actors,
             corpses: session.corpses,
           });
           sourceLineTraces.push(trace);
           if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
-          else {
-            const hitOutcome = applyTutorialLineBulletHit({ trace, shooter: sourcePlayer });
+          else if (trace.hit) {
+            const hitOutcome = applyTutorialLineBulletHit({ trace, shooter: sourceActor });
             if (hitOutcome.died) applyCampaignOneSessionDeath(session, {
               target: trace.hit.target,
-              attacker: sourcePlayer,
-              gun: sourcePlayer.gun.curGun,
+              attacker: sourceActor,
+              gun: sourceActor.gun.curGun,
               extra: hitOutcome.extra,
             });
           }
-        }
-      }
-      // AI.EnterFrame decides its source key flags before its UnitEnterFrame
-      // tail calls Status/Guns/Movement.  First preserve those decisions,
-      // then run the shared Status phase and consume keys with Movement.as.
-      // This keeps AI collision out of the old generic browser controller.
-      advanceCampaignOneSessionAi(session, { wall: tutorialWorld.wall, gameStarted: true });
-      const aiGuns = advanceCampaignOneSessionAiGuns(session);
-      for (const gun of aiGuns) {
-        if (!gun.fired || !gun.bullet) continue;
-        const sourceActor = session.actors.find(({ id }) => id === gun.id);
-        const sceneActorState = sceneActorStates.get(gun.id);
-        if (!sourceActor || !sceneActorState) continue;
-        sceneActorStates.set(gun.id, beginTutorialActorGunAction(sceneActorState, gun.action));
-        Object.assign(sourceActor, {
-          dynRecoil: gun.bullet.dynRecoil,
-          dynRecoilMod: gun.bullet.dynRecoilMod,
-        });
-        const trace = traceTutorialLineBullet({
-          gunId: gun.bullet.gunId,
-          shooter: sourceActor,
-          wall: tutorialWorld.wall,
-          units: session.actors,
-          corpses: session.corpses,
-        });
-        sourceLineTraces.push(trace);
-        if (trace.hit?.type === 'wall') applyTutorialBulletEnvironmentHit(tutorialWorld, trace.impact);
-        else if (trace.hit) {
-          const hitOutcome = applyTutorialLineBulletHit({ trace, shooter: sourceActor });
-          if (hitOutcome.died) applyCampaignOneSessionDeath(session, {
-            target: trace.hit.target,
-            attacker: sourceActor,
-            gun: sourceActor.gun.curGun,
-            extra: hitOutcome.extra,
-          });
-        }
-      }
-      const sourcePlayerBeforeUnits = session.actors.find(({ id }) => id === 'unit0');
-      const playerWasDead = Boolean(sourcePlayerBeforeUnits?.dead);
-      advanceCampaignOneSessionUnits(session);
+        },
+      });
+      playerJumpRequested = false;
       const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
       const playerRespawned = Boolean(playerWasDead && !sourcePlayer?.dead);
       if (playerRespawned) {
         synchronizePlayerSourceRespawn();
-        syncPlayerRestrictionsFromSourceSession();
       }
-      const aiMovements = advanceCampaignOneSessionAiMovement(session, { wall: tutorialWorld.wall });
+      syncPlayerRestrictionsFromSourceSession();
       syncSceneActorStates();
-      for (const movement of aiMovements) {
-        const sceneActorState = sceneActorStates.get(movement.id);
-        if (sceneActorState) sceneActorStates.set(movement.id, requestTutorialActorMotion(sceneActorState, movement.nextAnim));
+      for (const result of sourceTick.actorResults) {
+        if (result.id === 'unit0') {
+          if (result.shot.fired) actorState = beginTutorialActorGunAction(actorState, result.shot.action);
+          if (result.tail?.movement) actorState = requestTutorialActorMotion(actorState, result.tail.movement.nextAnim);
+          continue;
+        }
+        let sceneActorState = sceneActorStates.get(result.id);
+        if (!sceneActorState) continue;
+        if (result.shot.fired) sceneActorState = beginTutorialActorGunAction(sceneActorState, result.shot.action);
+        if (result.tail?.movement) sceneActorState = requestTutorialActorMotion(sceneActorState, result.tail.movement.nextAnim);
+        sceneActorStates.set(result.id, sceneActorState);
       }
       syncSceneActorAimStates();
       for (const sourceActor of session.actors) {
@@ -471,27 +426,10 @@ try {
         if (sceneActorState) sceneActorStates.set(sourceActor.id, advanceTutorialActorPlayback(sceneActorState, source));
       }
       if (!sourcePlayer?.dead) {
-        const movement = stepTutorialMovement({
-          state: movementState,
-          actor: player,
-          wall: tutorialWorld.wall,
-          keys: movementKeys,
-        });
-        player = movement.actor;
-        movementState = movement.state;
-        syncPlayerCollisionState();
-        applyTutorialFootContact(tutorialWorld, {
-          x: player.position.x,
-          y: player.position.y + 1,
-          human: player.human,
-        });
-        syncPlayerRestrictionsFromSourceSession();
-        actorState = requestTutorialActorMotion(actorState, movement.nextAnim);
-        if (movement.aim) aimState = { ...aimState, aimX: movement.aim.x, aimY: movement.aim.y };
         arenaPosition = advanceTutorialArenaPosition(arenaPosition, player.position, wall, STAGE);
         // Player.spawn() returns immediately after UnitMC.goto('idle'), so a
         // fresh source actor must retain that frame for this tick.
-        if (!playerRespawned) actorState = advanceTutorialActorPlayback(actorState, source, { advanceArm: !gunTick.fired });
+        if (!playerRespawned) actorState = advanceTutorialActorPlayback(actorState, source, { advanceArm: !sourceTick.actorResults[0]?.shot?.fired });
       }
       accumulated -= TICK_MS;
     }
@@ -507,32 +445,26 @@ try {
     stageMouse = canvasPointToTutorialStage(event, canvas.getBoundingClientRect());
   });
   canvas.addEventListener('mousedown', (event) => {
-    if (event.button !== 0 || !gunState) return;
+    if (event.button !== 0) return;
     event.preventDefault();
     stageMouse = canvasPointToTutorialStage(event, canvas.getBoundingClientRect());
-    // Player.MouseDown() changes only mDown; the subsequent source tick owns
-    // Guns.shoot(), shotPressed and uint shootDelay.
-    gunState = applyCampaignOneSessionPlayerMouseDown(session, { gameStarted: true });
+    enqueueCampaignOneSourceInput(tutorialWorld.tickRuntime, { type: 'mouseDown' });
   });
   canvas.addEventListener('mouseup', (event) => {
-    if (event.button !== 0 || !gunState) return;
-    gunState = applyCampaignOneSessionPlayerMouseUp(session);
+    if (event.button !== 0) return;
+    enqueueCampaignOneSourceInput(tutorialWorld.tickRuntime, { type: 'mouseUp' });
   });
   window.addEventListener('keydown', (event) => {
     if (!event.repeat && (event.code === 'KeyQ' || event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
       event.preventDefault();
-      applyCampaignOneSessionPlayerGunSwap(session);
-      syncPlayerRestrictionsFromSourceSession();
+      enqueueCampaignOneSourceInput(tutorialWorld.tickRuntime, { type: 'swapGuns' });
       return;
     }
     const bit = KEY_BITS[event.code];
     if (!bit) return;
     event.preventDefault();
     if (bit === TUTORIAL_MOVEMENT_KEYS.UP && !event.repeat) {
-      const jump = beginTutorialMovementJump({ state: movementState, actor: player });
-      player = jump.actor;
-      movementState = jump.state;
-      if (jump.nextAnim) actorState = requestTutorialActorMotion(actorState, jump.nextAnim);
+      playerJumpRequested = true;
       return;
     }
     movementKeys |= bit;

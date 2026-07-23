@@ -115,7 +115,7 @@ clear line traces
 
 | ID | 缺口 | 为什么不能宣称第一关完成 |
 | --- | --- | --- |
-| CA-01 | `sn/fc` 没有被纳入同一原 tick orchestrator | 脚本与输入/表面/击中可能前后错帧。 |
+| CA-01 | 已由 `campaign-one-tick-runtime` 的 source Game tick 关闭；仍需把剩余 Unit/HUD/MatchSettings 子对象纳入同一 trace | scripts、actor 顺序、line bullet 与人类脚底 trigger 已同 tick；不等于完整第一关。 |
 | CA-02 | `Hud.setMsg` 未迁移为 `msgForce + msgTimer + speak open/close` | 当前消息数组会并存，原版只保留当前消息并有强制覆盖规则。 |
 | CA-03 | Hud timeline、DownArrow、Speak、HudInfo 没有按 XML Display List 在试玩页完整画出 | session 有 `hudFrame` 不等于可见教程 UI。 |
 | CA-04 | 声音只写 `session.audio` intent | `S_Mine1`、`S_Pan`、voice/music 没有按原 timing/output 播放。 |

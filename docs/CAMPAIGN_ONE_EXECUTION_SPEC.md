@@ -166,17 +166,39 @@ optional SH.playVoice(voice)
 
 教程 HUD labels `tutmove/tutjump/tutduck/tutshoot/tutclimb/tutswitch` 需要按 Hud symbol 1540 的 XML 帧与 child matrices 导出。Speak 为 symbol 1488，HudInfo 为 symbol 1504；它们既不能改用系统字体，也不能以普通 HTML 面板替代。
 
-## 8. 当前网页与本规格的已验证差异
+## 8. 2026-07-23 已接入的 source tick 与仍存差异
 
-以下是源代码可直接证明、而非视觉猜测的阻断项：
+### 8.1 已关闭的时序缺口
 
-1. **C1-RUN-01**：`tutorial-scene-preview.mjs` 没有 Q/Shift input，也没有调用 `applyCampaignOneGunSwap`，故 12→13/door open 不可达。
-2. **C1-RUN-02**：同文件将 M4 active 时的 `gunState` 设为 `null`；mousedown 只有 gunState 存在时才射击，故 M4 主战阶段不可达。
-3. **C1-RUN-03**：page 的即时 line-bullet hit 对 `Bullet_Line_Basic` 的构造时机本身是对的；错误在于它随后先集中处理其他 AI，再统一处理 Unit/Movement，而非让射手立刻完成自己的 `UnitEnterFrame`，且没有统一 source bullet lifecycle。
-4. **C1-RUN-04**：session 的 `setAmmo`、HUD message、door/elevator 只是记录 fields，分别没有连到同一 `Guns.curAmmo`、Hud timeline、Arena child timeline。
-5. **C1-RUN-05**：现在没有 `Game.endGame → Hud.InitEnd → Cutscene/Menu` 的 Campaign completion chain。
+`src/campaign-one-tick-runtime.mjs:advanceCampaignOneGameTick` 现在直接按新包
+`Game.as:176–352` 的 actor 顺序执行可迁移部分：
 
-因此不得以“当前试玩页可启动”来判断本关已完成。
+1. 输入队列（鼠标按下/抬起、Q/Shift）先改变 source Player/Guns；
+2. `Stats_Campaign.runScripts`；
+3. `unit0` 的 Player shoot、`Bullet_Line_Basic` 构造期回调、Unit tail；
+4. `unit1`、`unit2`、`unit3` 分别完成 AI decision、shoot、Unit tail；
+5. 预留 bullets 与 match 的源顺序锚点。
+
+`src/tutorial-world.mjs` 将此 runtime 与**同一份**当前 `Wall_tut` 解码图相连。每个 Unit
+tail 的 movement 后读取脚底像素；human 的 `ff00ff` 教学 transition 会在下一 actor 前原子替换
+wall frame。试玩页只排输入、提供源 Bullet hit 呈现并渲染 `actorResults`，不再自行调用
+`advanceCampaignOneSessionAi*`、`advanceCampaignOneSessionUnits`、`stepTutorialMovement` 或另一份枪状态。
+
+对应 RED→GREEN 回归：
+
+- `tests/campaign-one-tick-runtime.test.mjs` 固定 actor/line-bullet/Unit-tail 的严格 trace；
+- `tests/tutorial-world.test.mjs` 固定 source session、当前 wall 和 human foot trigger 的同 tick 顺序；
+- `tests/tutorial-scene-preview.test.mjs` 阻止页面重引入旧的 batch phase 或直接改枪输入。
+
+### 8.2 仍为阻断项（不能称第一关完成）
+
+1. **C1-RUN-04**：`Hud.setMsg` 仍以 `messages[]` 记录，未实现原 `msgForce/msgTimer`、Speak open/close、voice 的单一状态机。
+2. **C1-RUN-05**：door/elevator/downarrow/Hud tutorial 仍是 source state/素材片段；Arena child timeline、完整 Display List 与声音未随 tick 播放。
+3. **C1-RUN-06**：`Unit.UnitEnterFrame` 的 UnitMC、pickup/objective、flag/DOM、modifier reset 与全部 surface branches 没有完整 runtime；当前 tail 仅覆盖已迁移的 Status/Guns/Movement 及教学脚底回调。
+4. **C1-RUN-07**：移动 bullet/effect collection、原 `MatchSettings.EnterFrame` 的完整结算，以及 `Game.endGame → Hud.InitEnd → Cutscene/Menu` 仍未闭环。
+5. **C1-RUN-08**：没有同输入、同 30 FPS 的原 SWF trace/截图/音频差分，不能验证精确镜头、视觉 timeline 和最终胜负过程。
+
+因此当前状态只能称为：**“第一关 source tick 已开始接管试玩页，任务未完成”**。
 
 ## 9. 实施切片与验收（严格顺序）
 

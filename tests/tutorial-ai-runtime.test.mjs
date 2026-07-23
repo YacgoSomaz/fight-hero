@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { ARENA_SOURCE_LAYOUTS } from '../src/arena-source-layouts.mjs';
-import { TUTORIAL_AI_KEYS, advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from '../src/tutorial-ai-runtime.mjs';
+import { TUTORIAL_AI_KEYS, advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, findTutorialAiPath, setTutorialAiDifficulty } from '../src/tutorial-ai-runtime.mjs';
 
 function actor(overrides = {}) {
   return {
@@ -71,6 +71,21 @@ test('AI follows original path characters and emits the j/c/f action decisions',
   const jumper = actor({ position: { x: 330, y: 1400, node: 'a' } });
   const jumped = advanceTutorialAi({ state: { ...createTutorialAiState({ actor: jumper, arena: tut, random: () => 0 }), nextWaypointId: 'e', getTargetEvent: 12 }, actor: jumper, units: [jumper], arena: tut, wall: transparentWall, gameStarted: false, random: () => 0 });
   assert.deepEqual({ jump: jumped.jumpRequested, wait: jumped.state.wait, nowait: jumped.state.nowait }, { jump: true, wait: 0, nowait: 30 });
+});
+
+test('AI.pathFind enumerates source waypoint paths, sorts by NodeWaypointPath distance and samples its source choice range', () => {
+  const arena = compileTutorialAiArena({ nodes: [
+    { type: 'waypoint', name: 'a_bc', x: 0, y: 0 },
+    { type: 'waypoint', name: 'b_ad', x: 10, y: 0 },
+    { type: 'waypoint', name: 'c_ae', x: 1, y: 0 },
+    { type: 'waypoint', name: 'd_bf', x: 20, y: 0 },
+    { type: 'waypoint', name: 'e_cf', x: 2, y: 0 },
+    { type: 'waypoint', name: 'f_de', x: 3, y: 0 },
+  ] });
+
+  assert.equal(findTutorialAiPath({ arena, currentWaypointId: 'a', targetWaypointId: 'f', choice: 0, random: () => 0 }), 'cef');
+  assert.equal(findTutorialAiPath({ arena, currentWaypointId: 'a', targetWaypointId: 'f', choice: 1, random: () => .999 }), 'bdf');
+  assert.throws(() => findTutorialAiPath({ arena, currentWaypointId: 'a', targetWaypointId: 'z', random: () => 0 }), /unreachable source waypoint/i);
 });
 
 test('AI cancels crouch before movement when the original ±19,-20 probe reaches a wall', () => {

@@ -97,6 +97,30 @@ test('AI cancels crouch before movement when the original ±19,-20 probe reaches
   assert.deepEqual({ crouch: result.state.crouch, keys: result.keys }, { crouch: 0, keys: TUTORIAL_AI_KEYS.LEFT });
 });
 
+test('AI uses the mirrored right-side crouch recovery probe from AI.EnterFrame', () => {
+  const arena = compileTutorialAiArena({ nodes: [
+    { type: 'waypoint', name: 'a_b', x: 0, y: 0 },
+    { type: 'waypoint', name: 'b_a', x: 100, y: 0 },
+  ] });
+  const self = actor({ position: { x: 0, y: 50, node: 'a' } });
+  const state = {
+    ...createTutorialAiState({ actor: self, arena, random: () => .99 }),
+    nextWaypointId: 'b',
+    crouch: 5,
+    getTargetEvent: 12,
+  };
+  const result = advanceTutorialAi({
+    state,
+    actor: self,
+    units: [self],
+    arena,
+    wall: { isSolid: (x, y) => x === 19 && y === 30 },
+    gameStarted: false,
+    random: () => .99,
+  });
+  assert.deepEqual({ crouch: result.state.crouch, keys: result.keys }, { crouch: 0, keys: TUTORIAL_AI_KEYS.RIGHT });
+});
+
 test('AI has no generic fallback for corpse/noSpawn/bad source records', () => {
   const arena = compileTutorialAiArena(ARENA_SOURCE_LAYOUTS.tut);
   const self = actor(); const corpse = actor({ id: 'unit0', team: 1, dead: { id: 'corpse-unit0' } });

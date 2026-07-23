@@ -120,7 +120,14 @@ export function advanceTutorialAi({ state: sourceState, actor, units, arena, wal
   const oldTarget = state.targetId ? units.find((unit) => unit.id === state.targetId) ?? null : null;
   if (!state.wait && !state.nowait && !actor.movement?.jumping && random() < (oldTarget ? state.waitTarget : state.waitNormal) && !actor.status?.sSpawn) { state.wait = irand(random, 2, 6) * (state.diffRev * .1) * 30; state.nowait = state.wait + irand(random, 2, 6) * (state.diff * .1) * 30; }
   if (!state.crouch && random() < (oldTarget ? state.crouchTarget : 0) && !actor.status?.sSpawn) { state.crouch = irand(random, 2, 4) * (state.diffRev * .1) * 30; state.nocrouch = state.crouch / 2; }
-  if (state.wait) state.wait -= 1; if (state.nowait) state.nowait -= 1; if (state.crouch) { keys |= TUTORIAL_AI_KEYS.DOWN; state.crouch -= 1; }
+  if (state.wait) state.wait -= 1;
+  if (state.nowait) state.nowait -= 1;
+  // AI.EnterFrame checks these source Movement.hitTest probes before it
+  // writes DOWN. The check lets an AI leave a crouched wall edge and regain
+  // its jump branch instead of continuously driving into the obstruction.
+  if (state.crouch && (keys & TUTORIAL_AI_KEYS.LEFT) && wall.isSolid(pos.x - 19, pos.y - 20)) state.crouch = 0;
+  if (state.crouch && (keys & TUTORIAL_AI_KEYS.RIGHT) && wall.isSolid(pos.x + 19, pos.y - 20)) state.crouch = 0;
+  if (state.crouch && state.diff) { keys |= TUTORIAL_AI_KEYS.DOWN; state.crouch -= 1; }
   state.getTargetTimer += 1; if (state.getTargetTimer > 12) state.getTargetTimer = 0; if (state.getTargetTimer === state.getTargetEvent) state.targetId = scanTarget(actor, units, wall)?.id ?? null;
   const target = state.targetId ? units.find((unit) => unit.id === state.targetId) ?? null : null;
   if (!target) { state.focusX = pos.x + actor.scaleX * 50 + (actor.movement?.xVelocity ?? 0) * 10; state.focusY = pos.y - 40 + (actor.movement?.yVelocity ?? 0) * 8; state.aimX += (state.focusX - state.aimX) * .4; state.aimY += (state.focusY - state.aimY) * .3; }

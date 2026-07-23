@@ -1,6 +1,7 @@
 import {
   applyCampaignOneSessionBulletEnvironmentHit,
   applyCampaignOneSessionFrame,
+  advanceCampaignOneSessionHud,
   applyCampaignOneSessionPlayerMouseDown,
   applyCampaignOneSessionPlayerMouseUp,
   advanceCampaignOneSessionActorUnitTail,
@@ -95,6 +96,8 @@ export function advanceCampaignOneGameTick(runtime, {
   const { inputs, effects: inputEffects } = consumeQueuedInputs(runtime);
   runtime.gameFrame += 1;
   const trace = [];
+  const hud = advanceCampaignOneSessionHud(runtime.session);
+  trace.push({ phase: 'hud', gameFrame: runtime.gameFrame, hud });
   const scriptEffects = applyCampaignOneSessionFrame(runtime.session);
   trace.push({ phase: 'campaign', gameFrame: runtime.gameFrame, campaign: { ...runtime.session.runtime } });
 

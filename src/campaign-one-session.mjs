@@ -302,8 +302,16 @@ function applySourceEffects(session, effects) {
     else if (effect.type === 'showDownArrows') session.hud.downArrows = effect.state;
     else if (effect.type === 'hideDownArrows') session.hud.downArrows = null;
     else if (effect.type === 'message') {
+      // Hud.setMsg rejects a non-forced line while a forced line is active.
+      // Campaign dialogue uses force=true, so it replaces—not appends to—the
+      // prior Speak state and restarts the exact seconds*30 timer.
+      if (session.hud.msgForce && !effect.force) continue;
       const { type, ...message } = effect;
-      session.hud.messages.push(message);
+      session.hud.message = message;
+      session.hud.msgForce = Boolean(message.force);
+      session.hud.msgTimer = message.seconds * 30;
+      session.hud.speak = 'open';
+      if (message.voice) session.audio.push({ type: 'playVoice', voice: message.voice });
     }
     else if (effect.type === 'playSound' || effect.type === 'playMusic') session.audio.push({ ...effect });
     else if (effect.type === 'spawn' && actor) {
@@ -359,7 +367,7 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
     runtime: createCampaignOneRuntime(),
     actors: [],
     match: { mode: definition.mode, scoreLimit: definition.score, team1score: 0, team2score: 0, ended: false },
-    hud: { frame: 'idle', downArrows: null, messages: [] },
+    hud: { frame: 'idle', downArrows: null, message: null, msgForce: false, msgTimer: 0, speak: 'idle' },
     audio: [],
     classSaves,
     environment: { doorFrame: 'idle', elevatorFrame: 'idle' },
@@ -491,6 +499,25 @@ export function advanceCampaignOneSessionAi(session, { wall, gameStarted = true,
     if (decision) results.push(decision);
   }
   return results;
+}
+
+// Hud.EnterFrame precedes Game.units in every live source tick. Its message
+// timing is deliberately a separate phase: close/clear force while timer is
+// still 1, then decrement to zero in the same frame.
+export function advanceCampaignOneSessionHud(session) {
+  if (!session?.hud) throw new TypeError('Campaign source Hud state is required');
+  if (session.hud.msgTimer === 1) {
+    session.hud.speak = 'close';
+    session.hud.msgForce = false;
+  }
+  if (session.hud.msgTimer) session.hud.msgTimer -= 1;
+  return {
+    frame: session.hud.frame,
+    message: session.hud.message,
+    msgForce: session.hud.msgForce,
+    msgTimer: session.hud.msgTimer,
+    speak: session.hud.speak,
+  };
 }
 
 // One source AI.EnterFrame outer decision phase.  Game.EnterFrame calls this

@@ -252,15 +252,19 @@ test('Campaign 1 state ten consumes original Tutorial HUD, message, injury, soun
   assert.deepEqual(session.hud, {
     frame: 'tutclimb',
     downArrows: 10,
-    messages: [{
+    message: {
       target: 'player',
       text: "Ahhh, my legs! I... I can't jump...",
       seconds: 5,
       force: true,
       voice: 'V_Ca1_8',
-    }],
+    },
+    msgForce: true,
+    msgTimer: 150,
+    speak: 'open',
   });
   assert.deepEqual(session.audio, [
+    { type: 'playVoice', voice: 'V_Ca1_8' },
     { type: 'playSound', sound: 'S_Mine1' },
     { type: 'playSound', sound: 'S_Pan' },
   ]);

@@ -80,6 +80,7 @@ test('Campaign 1 Game tick keeps source actor, line-bullet and Unit-tail order',
 
   assert.deepEqual(trace, ['line:unit0:M4']);
   assert.deepEqual(result.trace.map(({ phase, actorId = null }) => `${phase}:${actorId ?? ''}`), [
+    'hud:',
     'campaign:',
     'playerGun:unit0',
     'lineBullet:unit0',

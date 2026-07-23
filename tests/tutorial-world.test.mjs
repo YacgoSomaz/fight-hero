@@ -83,8 +83,9 @@ test('Tutorial world drives Campaign 1 through the source Game tick and current 
 
   assert.equal(world.tickRuntime.session, world.session);
   assert.deepEqual(bullets.map(({ actorId, bullet }) => `${actorId}:${bullet.gunId}`), ['unit0:M4']);
-  assert.equal(result.trace.at(0).phase, 'hud');
-  assert.equal(result.trace.at(1).phase, 'campaign');
+  assert.equal(result.trace.at(0).phase, 'campaign');
+  assert.equal(result.trace.at(1).phase, 'environment');
+  assert.equal(result.trace.at(2).phase, 'hud');
   assert.equal(result.trace.at(-1).phase, 'match');
 });
 

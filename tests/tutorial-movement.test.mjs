@@ -71,6 +71,23 @@ test('source Movement lands on the alpha wall at its original foot probe instead
   assert.equal(result.nextAnim, 'land');
 });
 
+// Movement.as:357–368 has a second `!hitTest(0, -1)` guard while it resolves
+// a foot collision.  Without it, a spawn partly overlapping its floor is
+// pushed through the entire platform and the Tutorial camera follows it into
+// empty map space.
+test('source Movement stops resolving an initial foot overlap once the original head probe reaches the platform', () => {
+  const result = stepTutorialMovement({
+    state: createTutorialMovementState(),
+    actor: actor({ position: { x: 285, y: 705 }, noAim: true }),
+    wall: { isSolid: (_x, y) => Math.floor(y) >= 707 && Math.floor(y) <= 745 },
+    keys: 0,
+  });
+
+  assert.equal(result.actor.position.y, 708);
+  assert.equal(result.state.jumping, false);
+  assert.equal(result.state.yVel, 0);
+});
+
 test('source Movement begins the small right-hand climb only at the original terminal-fall side probes', () => {
   const state = createTutorialMovementState({ yVel: 19.8, jumping: true });
   const result = stepTutorialMovement({

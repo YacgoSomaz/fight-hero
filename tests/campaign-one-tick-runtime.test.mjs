@@ -65,7 +65,7 @@ test('Campaign 1 source tick applies the state-nine elevator ammo clear to the a
 // Bullet_Line_Basic resolves its line hit synchronously inside shoot(), before
 // the firing Unit reaches its inherited tail.  This trace is the first guard
 // against a page loop silently reintroducing the old batch ordering.
-test('Campaign 1 Game tick keeps source actor, line-bullet and Unit-tail order', () => {
+test('Campaign 1 Game tick keeps source Campaign, Arena timeline, HUD, actor, line-bullet and Unit-tail order', () => {
   const runtime = createCampaignOneSourceTickRuntime({ random: () => 0.999 });
   const player = runtime.session.actors[0];
   runtime.session.runtime.state = 99; // avoid the authored frame-zero gun reset
@@ -82,8 +82,9 @@ test('Campaign 1 Game tick keeps source actor, line-bullet and Unit-tail order',
 
   assert.deepEqual(trace, ['line:unit0:M4']);
   assert.deepEqual(result.trace.map(({ phase, actorId = null }) => `${phase}:${actorId ?? ''}`), [
-    'hud:',
     'campaign:',
+    'environment:',
+    'hud:',
     'playerGun:unit0',
     'lineBullet:unit0',
     'unitTail:unit0',
@@ -100,4 +101,15 @@ test('Campaign 1 Game tick keeps source actor, line-bullet and Unit-tail order',
     'match:',
   ]);
   assert.equal(runtime.session.actors[4].status, null);
+});
+
+test('Campaign 1 Game Arena phase advances an already-playing original door once before Hud', () => {
+  const runtime = createCampaignOneSourceTickRuntime({ random: () => 0 });
+  runtime.session.runtime.state = 99;
+  runtime.session.environment.door = { frame: 1, playing: 'open' };
+
+  const tick = advanceCampaignOneGameTick(runtime, { wall: { isSolid: () => false } });
+
+  assert.deepEqual(runtime.session.environment.door, { frame: 2, playing: 'open' });
+  assert.deepEqual(tick.trace.slice(0, 3).map(({ phase }) => phase), ['campaign', 'environment', 'hud']);
 });

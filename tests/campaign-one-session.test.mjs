@@ -310,8 +310,10 @@ test('Campaign 1 advances original door and elevator timelines to their source s
   session.environment.door = { frame: 1, playing: 'open' };
   session.environment.elevator = { frame: 1, playing: true };
   for (let frame = 0; frame < 22; frame += 1) advanceCampaignOneSessionEnvironment(session);
+  session.environment.door.playing = 'close';
+  for (let frame = 0; frame < 11; frame += 1) advanceCampaignOneSessionEnvironment(session);
   assert.deepEqual(session.environment, {
-    door: { frame: 12, playing: null },
+    door: { frame: 23, playing: null },
     elevator: { frame: 19, playing: false },
   });
 });

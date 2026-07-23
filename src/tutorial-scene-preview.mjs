@@ -1,6 +1,6 @@
 import { createTutorialActorBindings } from './tutorial-actor-bindings.mjs';
 import { advanceTutorialActorPlayback, beginTutorialActorGunAction, createTutorialActorPlayback, requestTutorialActorMotion, sampleTutorialActorPlayback, synchronizeTutorialActorWeapon } from './tutorial-actor-playback.mjs';
-import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame } from './campaign-one-session.mjs';
+import { advanceCampaignOneSessionAi, advanceCampaignOneSessionAiGuns, advanceCampaignOneSessionAiMovement, advanceCampaignOneSessionUnits, applyCampaignOneSessionDeath, applyCampaignOneSessionFrame, applyCampaignOneSessionPlayerGunSwap } from './campaign-one-session.mjs';
 import { advanceTutorialArenaPosition, getTutorialParallaxLayerPosition, worldToTutorialScreen } from './tutorial-arena-camera.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
@@ -8,7 +8,7 @@ import { TUTORIAL_M4_ARM_CALLBACKS } from './tutorial-m4-callback-source.mjs';
 import { traceTutorialLineBullet } from './tutorial-bullet-line-runtime.mjs';
 import { applyTutorialLineBulletHit } from './tutorial-bullet-hit-effects.mjs';
 import { renderTutorialLineBullet } from './tutorial-bullet-line-renderer.mjs';
-import { advanceTutorialGunRuntime, createTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
+import { advanceTutorialGunRuntime, tutorialPlayerMouseDown, tutorialPlayerMouseUp } from './tutorial-gun-runtime.mjs';
 import { advanceTutorialPlayerAim, canvasPointToTutorialStage, deriveTutorialUnitAim, tutorialArenaPointer } from './tutorial-aim-runtime.mjs';
 import { TUTORIAL_UNITMC_ROOT_FRAME_ACTIONS } from './tutorial-unitmc-root-frame-actions-source.mjs';
 import { loadTutorialUnitPoseAssets } from './tutorial-unit-pose-assets.mjs';
@@ -152,14 +152,11 @@ try {
     } else if (player.guns.active === 'M4' && actorState.weaponId !== 'M4') {
       actorState = synchronizeTutorialActorWeapon(actorState, 'M4');
     }
-    // `unitInfo.amm` is now the decoded initial SD save value. USP2 is
-    // noAmmo, but passing the original multiplier keeps this setGuns port
-    // valid when the decoded Campaign state changes weapon.
-    if ((player.guns.active === 'USP2' || player.guns.active === 'none') && gunState?.gunId !== player.guns.active) {
-      gunState = createTutorialGunRuntime({ gunId: player.guns.active, ammoMultiplier: player.sourcePlayerProfile.ammo });
-    } else if (player.guns.active !== 'USP2' && player.guns.active !== 'none') {
-      gunState = null;
-    }
+    // There is exactly one Guns record per source actor slot.  Rendering may
+    // support only a subset of arm timelines, but input and bullets still
+    // consume this authoritative record (including M4) rather than making a
+    // browser-only USP state or disabling the weapon outright.
+    gunState = sourcePlayer.gunRuntime;
     movementState = { ...movementState, noJump: player.noJump };
   }
 
@@ -193,7 +190,7 @@ try {
       aimRotation: 0,
       reloadRotation: 0,
     };
-    gunState = null;
+    gunState = session.actors.find(({ id }) => id === 'unit0')?.gunRuntime ?? null;
   }
 
   // Campaign actors retain their own source UnitMC child skin and the weapon
@@ -388,10 +385,12 @@ try {
           },
         });
         gunState = gunTick.state;
+        const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
+        if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable for Guns state');
+        sourcePlayer.gunRuntimes[sourcePlayer.gunSlot] = gunState;
+        sourcePlayer.gunRuntime = gunState;
         if (gunTick.fired) {
           actorState = beginTutorialActorGunAction(actorState, gunTick.action);
-          const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
-          if (!sourcePlayer) throw new Error('Campaign 1 source player is unavailable for Bullet.doHitEffect');
           Object.assign(sourcePlayer, {
             aimRotation: aimState.aimRotation,
             mcRotation: movementState.rotation,
@@ -525,6 +524,12 @@ try {
     gunState = tutorialPlayerMouseUp(gunState);
   });
   window.addEventListener('keydown', (event) => {
+    if (!event.repeat && (event.code === 'KeyQ' || event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
+      event.preventDefault();
+      applyCampaignOneSessionPlayerGunSwap(session);
+      syncPlayerRestrictionsFromSourceSession();
+      return;
+    }
     const bit = KEY_BITS[event.code];
     if (!bit) return;
     event.preventDefault();

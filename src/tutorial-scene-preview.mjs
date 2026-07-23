@@ -18,6 +18,8 @@ import { getTutorialUnitOverheadIcon } from './tutorial-unit-overhead-icon.mjs';
 import { getTutorialUnitJugMarker } from './tutorial-unit-jug-marker.mjs';
 import { getTutorialUnitOverheadLabels, TUTORIAL_UNIT_OVERHEAD_FONT } from './tutorial-unit-overhead-labels.mjs';
 import { getTutorialDownArrowRenderPlan } from './tutorial-down-arrow-render-plan.mjs';
+import { getTutorialEnvironmentRenderPlan } from './tutorial-environment-render-plan.mjs';
+import { drawTutorialEnvironment } from './tutorial-environment-renderer.mjs';
 import { advanceTutorialWorldGameTick, applyTutorialBulletEnvironmentHit } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { createTutorialMovementState, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
@@ -78,7 +80,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, downArrowRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage] = await Promise.all([
+  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, environmentAssets] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
@@ -86,6 +88,10 @@ try {
     }),
     fetch('./public/assets/tutorial-down-arrow-vector-runtime.local.json').then((response) => {
       if (!response.ok) throw new Error(`Tutorial DownArrow runtime failed to load (${response.status})`);
+      return response.json();
+    }),
+    fetch('./public/assets/tutorial-environment-timeline-runtime.local.json').then((response) => {
+      if (!response.ok) throw new Error(`Tutorial environment runtime failed to load (${response.status})`);
       return response.json();
     }),
     loadTutorialUnitPoseAssets({ loadImage }),
@@ -99,6 +105,11 @@ try {
     ].map(async (source) => [source, await loadImage(source)])),
     loadImage('./public/assets/original-swf/unit-jug-marker-686.png'),
     loadOriginalUnitOverheadFont(),
+    Promise.all([
+      './public/assets/original-swf/tutorial-environment/1359.svg',
+      './public/assets/original-swf/tutorial-environment/1360.svg',
+      './public/assets/original-swf/tutorial-environment/1387.svg',
+    ].map(loadImage)).then(([doorMask, doorPanel, elevator]) => ({ doorMask, doorPanel, elevator })),
   ]);
   const unitIcons = new Map(unitIconImages);
   const skyCrop = getMapLayerCrop(visual.sky);
@@ -311,11 +322,24 @@ try {
     }
   }
 
+  function renderTutorialEnvironment() {
+    const environmentPlan = getTutorialEnvironmentRenderPlan(session.environment, environmentTimelineRuntime, arenaPosition);
+    drawTutorialEnvironment(context, environmentPlan, environmentAssets, {
+      createCanvas: (width, height) => {
+        const sourceCanvas = document.createElement('canvas');
+        sourceCanvas.width = width;
+        sourceCanvas.height = height;
+        return sourceCanvas;
+      },
+    });
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
     drawParallax(layers.map, backgroundCrop, arenaPosition, wall);
     drawArena(layers.terrain, terrainCrop, arenaPosition);
+    renderTutorialEnvironment();
     renderTutorialDownArrows();
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
     if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) {

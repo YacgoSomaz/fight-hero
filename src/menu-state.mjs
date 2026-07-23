@@ -1,6 +1,7 @@
 // Source: Stats_Maps.as, Stats_Misc.as, MatchSettings.as and Stats_Campaign.as
 // from the locally decoded SWF. These are data records, not newly invented modes.
 import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
+import { getSourceMissionLaunch } from './source-mission-launch.mjs';
 export const ORIGINAL_MAPS = Object.freeze([
   ['tut', 'Facility'], ['foundry', 'Foundry'], ['foundry2', 'Foundry (Night)'],
   ['train', 'Speeding Train'], ['train2', 'Dormant Train'], ['plane', 'Hijack'],
@@ -97,11 +98,16 @@ export function isPlayableSelection(selection) {
   // A campaign/challenge item carries a complete Stats_Campaign record. Until
   // its actors, script and completion flow are actually migrated, launching
   // its map with quick-match defaults would be a false playable claim.
-  if (selection.definition) return false;
+  if (selection.definition) return Boolean(getSourceMissionLaunch(selection));
   return PLAYABLE_SOURCE_MAPS.has(selection.map) && PLAYABLE_SOURCE_MODES.has(selection.mode);
 }
 
 export function getQuickMatchStatus(selection) {
+  const sourceMissionLaunch = getSourceMissionLaunch(selection);
+  if (sourceMissionLaunch) return {
+    canLaunch: true,
+    message: `${sourceMissionLaunch.message} 它仍处于逐项原版验证中，不代表战役或游戏已完成。`,
+  };
   if (selection.definition) return {
     canLaunch: false,
     message: '该原始任务的角色、脚本、过场或胜负流程尚未完整迁移，不能伪装为快速对战。',

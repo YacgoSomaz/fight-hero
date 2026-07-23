@@ -39,13 +39,17 @@ test('selecting an extracted mission keeps its authored score instead of replaci
   );
 });
 
-test('source campaign and challenge records do not masquerade as ordinary quick matches before their full script runtime is migrated', () => {
+test('only Campaign 1 uses its dedicated source runtime; every remaining source mission stays unavailable', () => {
   const sourceMission = createMatchSelection(CAMPAIGN_MISSIONS[0]);
   const sourceChallenge = createMatchSelection(CHALLENGE_MISSIONS[8]);
 
-  assert.equal(isPlayableSelection(sourceMission), false);
+  assert.equal(isPlayableSelection(sourceMission), true);
   assert.equal(isPlayableSelection(sourceChallenge), false);
   assert.deepEqual(getQuickMatchStatus(sourceMission), {
+    canLaunch: true,
+    message: '第 1 关已接入原 Tutorial 场景承载。 它仍处于逐项原版验证中，不代表战役或游戏已完成。',
+  });
+  assert.deepEqual(getQuickMatchStatus(sourceChallenge), {
     canLaunch: false,
     message: '该原始任务的角色、脚本、过场或胜负流程尚未完整迁移，不能伪装为快速对战。',
   });

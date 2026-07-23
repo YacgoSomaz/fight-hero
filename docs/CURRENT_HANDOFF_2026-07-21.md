@@ -2,6 +2,13 @@
 
 本文件是下一位开发者或 AI 的当前入口。旧报告保留解包证据与历史过程；若它们和本文件冲突，以本文件、当前代码与测试为准。
 
+## 2026-07-23：主菜单的 Campaign 1 原场景入口（不是“已完成第一关”）
+
+- 原始依据：`Stats_Campaign.as:setMatch()` 的第一条记录为 Campaign stage `1`、`Under Siege`、`map="tut"`、`mode="tdm"`；`createCampaignOneSession()` 已逐字消费同一记录并建立 Tutorial Arena、玩家/四个来源 Unit、`runScripts()` 状态与 AI/Movement/Guns 会话。菜单是否可启动由这些**完整身份字段**决定，而不是仅按地图名猜测。
+- 网页承载：`src/source-mission-launch.mjs` 是唯一的任务专属路由表。仅该精确记录返回 `./tutorial-scene-preview.html?source=campaign-1`；`src/main.mjs` 必须在 generic quick-match 启动前消费它。其余 14 个战役和全部 15 个挑战仍返回 `null`，保留“未完整迁移，不能伪装为快速对战”的真实状态。
+- TDD：`42b1fc2`、`bdf1e11` 为有效 RED（路由模块和主菜单消费均缺失）；GREEN 覆盖任务身份、普通快速对战、其余战役/挑战拒绝，以及入口优先于 generic startup。当前完整回归为 **348/348 通过**，`npm run test:coverage` 为 **98.95% 行、83.51% 分支、96.63% 函数**。
+- 严格边界：该入口只让用户进入已存在的“原 Tutorial 场景承载”验证页，不能证明 cutscene、完整 mission flow、胜负、所有 HUD、所有声音、逐帧视觉一致或 Campaign 1 已通关；更不代表 1:1 完成。录屏仅在这些已有源码/时间轴迁移完成后的视觉节奏、合成与镜头验收阶段使用，当前不阻塞代码工作。
+
 ## 2026-07-22：原 AI 决策、Movement 与 Campaign 1 场景接入（仍未可玩）
 
 ### 后续：Unit symbol 687 头顶生命条、文字、职业图标与 Jug 标记（仍未完成 HUD）

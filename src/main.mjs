@@ -8,6 +8,7 @@ import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 import { MENU_SCREEN_ASSETS } from './menu-assets.mjs';
 import { DEFAULT_MENU_SCREEN, MENU_CHINESE_COPY, MENU_PRESENTATION_MODE, MENU_QUICK_SUMMARY_TOP, MENU_TRANSLATION_TOP, getMenuHitAreas, getMissionEntries } from './menu-ui.mjs';
 import { createMatchSelection, cycleQuickMatchSelection, formatQuickMatchSummary, getQuickMatchStatus, isPlayableSelection, updateMatchSelection } from './menu-state.mjs';
+import { getSourceMissionLaunch } from './source-mission-launch.mjs';
 import { getMapLayerCrop, getMapVisual } from './map-visuals.mjs';
 import { loadMapLayers } from './map-loader.mjs';
 import { loadSourceWallMask } from './source-wall-loader.mjs';
@@ -249,6 +250,11 @@ saveStatus.textContent = saved.score ? `读取存档：P1 ${saved.score.p1 ?? 0}
 difficulty.addEventListener('input', () => { difficultyValue.value = difficulty.value; if (world.bots[0]) world.bots[0].ai.difficulty = Number(difficulty.value); saveSettings(); });
 music.addEventListener('change', () => { audio.setMuted(!music.checked); if (music.checked && !running) audio.startMenu(); saveSettings(); });
 async function launchSelectedMatch() {
+  const sourceMissionLaunch = getSourceMissionLaunch(matchSelection);
+  if (sourceMissionLaunch) {
+    window.location.assign(sourceMissionLaunch.href);
+    return;
+  }
   if (!isPlayableSelection(matchSelection)) {
     quickSelectionChanged = true;
     quickStatus = getQuickMatchStatus(matchSelection).message;

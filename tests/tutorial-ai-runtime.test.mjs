@@ -121,11 +121,24 @@ test('AI uses the mirrored right-side crouch recovery probe from AI.EnterFrame',
   assert.deepEqual({ crouch: result.state.crouch, keys: result.keys }, { crouch: 0, keys: TUTORIAL_AI_KEYS.RIGHT });
 });
 
-test('AI has no generic fallback for corpse/noSpawn/bad source records', () => {
+test('AI uses the source PhysActor body while a previously acquired target is dead', () => {
   const arena = compileTutorialAiArena(ARENA_SOURCE_LAYOUTS.tut);
-  const self = actor(); const corpse = actor({ id: 'unit0', team: 1, dead: { id: 'corpse-unit0' } });
+  const self = actor();
+  const corpse = actor({
+    id: 'unit0',
+    team: 1,
+    dead: {
+      id: 'corpse-unit0',
+      parts: [{ kind: 'body', position: { x: 333, y: 444 }, impulses: [] }],
+    },
+  });
   const state = { ...createTutorialAiState({ actor: self, arena, random: () => 0 }), targetId: 'unit0', getTargetEvent: 12 };
-  assert.throws(() => advanceTutorialAi({ state, actor: self, units: [self, corpse], arena, wall: transparentWall }), /PhysActor body state/);
+  const aimedAtCorpse = advanceTutorialAi({ state, actor: self, units: [self, corpse], arena, wall: transparentWall });
+  assert.deepEqual({ focusX: aimedAtCorpse.state.focusX, focusY: aimedAtCorpse.state.focusY }, { focusX: 333, focusY: 454 });
+});
+
+test('AI has no generic fallback for noSpawn/bad source records', () => {
+  const arena = compileTutorialAiArena(ARENA_SOURCE_LAYOUTS.tut);
   const noSpawn = actor({ definition: { extra: { noSpawn: true } } }); const noSpawnState = createTutorialAiState({ actor: noSpawn, arena, random: () => 0 });
   assert.deepEqual(advanceTutorialAi({ state: noSpawnState, actor: noSpawn, units: [noSpawn], arena, wall: transparentWall }), { state: noSpawnState, keys: 0, jumpRequested: false, shouldShoot: false });
   assert.throws(() => compileTutorialAiArena({ nodes: [{ type: 'waypoint', name: 'a_b', x: 0, y: 0 }] }), /unavailable waypoint b/);

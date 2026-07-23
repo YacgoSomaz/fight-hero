@@ -380,6 +380,41 @@ test('Campaign 1 normal player kill applies original Score, TDM and experience-s
   });
 });
 
+// User journey: Under Siege is an authored 15-point TDM.  In the original
+// MatchSettings.updateScores() calls Game.endGame(true/false) immediately
+// when a team reaches that limit, which in turn sets Game.gameEnded and the
+// real Hud.won value before the end timeline is entered.  A boolean-only
+// browser `match.ended` marker loses the result and cannot reproduce the
+// first campaign level's end state.
+test('Campaign 1 source score limit enters the original Game and Hud win state', () => {
+  const session = createCampaignOneSession({ random: () => 0 });
+  const [player, target] = session.actors;
+  player.score.kills = 14;
+  player.pscore = 14;
+
+  applyCampaignOneSessionDeath(session, {
+    target,
+    attacker: player,
+    gun: player.gun.curGun,
+  });
+
+  assert.deepEqual({
+    team1score: session.match.team1score,
+    team2score: session.match.team2score,
+    ended: session.match.ended,
+    game: session.game,
+    hudWon: session.hud.won,
+    hudTimeline: session.hud.timeline,
+  }, {
+    team1score: 15,
+    team2score: 0,
+    ended: true,
+    game: { started: true, ended: true },
+    hudWon: true,
+    hudTimeline: 'end',
+  });
+});
+
 // Player.as and AI.as both decrement Unit.respawnTimer once per original
 // 30fps frame, then call their own spawn() only on the following frame. The
 // shared Unit.unitSpawn() selects an authored NodeSpawn; Player applies 75

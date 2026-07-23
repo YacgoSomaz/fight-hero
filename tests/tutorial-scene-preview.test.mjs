@@ -114,3 +114,17 @@ test('Tutorial scene preview renders original Speak_187 assets from the live Cam
   assert.match(script, /drawTutorialSpeak\(context, speakPlan, tutorialSpeakAssets/);
   assert.match(script, /renderTutorialSpeak\(\);/);
 });
+
+// Browser screenshot verification needs the values actually consumed by the
+// source tick, not a parallel debug simulation. These attributes make the
+// current Camera/Arena and source Unit position inspectable without drawing
+// any non-original diagnostic visual inside the 800x600 stage.
+test('Tutorial scene exposes its live source-tick camera and player coordinates for visual verification', () => {
+  const { script } = readPreview();
+  assert.match(script, /function publishTutorialSourceSnapshot\(\)/);
+  assert.match(script, /canvas\.dataset\.sourceGameFrame/);
+  assert.match(script, /canvas\.dataset\.sourceArenaPosition/);
+  assert.match(script, /canvas\.dataset\.sourcePlayerPosition/);
+  assert.match(script, /tutorialWorld\.tickRuntime\.gameFrame/);
+  assert.match(script, /publishTutorialSourceSnapshot\(\);/);
+});

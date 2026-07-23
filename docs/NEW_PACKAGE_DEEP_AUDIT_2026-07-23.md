@@ -130,6 +130,18 @@ Campaign.runScripts
 
 这些资源位于 `public/assets/original-swf/cutscene-1890/`；`src/campaign-one-cutscene-source.mjs` 只记录从源 SWF 读取的矩阵、层级与字段边界。它**不代表**动画、音频、后结局 Cutscene 或 Tutorial 本体已经逐帧一致。仍需将嵌套 Sprite 逐帧 timeline 与原音频一并纳入后续 trace/截图验收。
 
+### 4.4 2026-07-23：Tutorial 原图世界合成与 Unit 跑步标签已做浏览器回归
+
+新包的 `Arena` symbol 1413 / `tut` 第 8 帧仍以 Shape 1353 为世界基础层。浏览器黑屏问题的根因不是资源缺失：试玩页把原 HUD 图标和经验条使用的 `source-in` 着色直接施加在**主世界 canvas** 上；按 Canvas 合成规则，这会清掉遮罩以外已画好的 Shape 1353。现在这些原矢量的着色只在离屏画布完成，再以 `source-over` 合成回主画布。实际浏览器帧已确认世界像素为不透明的原始地图颜色，而不是透明/黑底；`source-tinted-image-renderer` 的 RED/GREEN 回归禁止把 `source-in` 再写回主画布。
+
+同一次输入回归还发现，`Movement.as` 并不固定跳到 `run`，它使用 `this.unit.unitInfo.runType` 组成 `run1` 等 UnitMC 标签。网页 actor 已保存 `unitInfo.runType`，但动作适配层此前错误地只读取顶层 `actor.runType`，从而在按 A/D 时抛出“run 标签不存在”并停止移动。当前适配层遵循原 `Unit.as → unitInfo.runType → Movement.as` 路径；固定浏览器输入下，D 会推进角色的 x 坐标，W 会经历起跳/落地且无运行时异常。该检查只证明这两个已知回退被关闭，**不是**逐帧视觉验收，更不是第一关完成。
+
+### 4.5 2026-07-23：Tutorial 前段真实路线复测与两个来源语义修复
+
+浏览器从 Campaign 1 的原 Cutscene 三页进入 Tutorial 后，初始 source snapshot 为 `state=1 / wall=1 / player=(285,708)`；按 D 的脚底读数使其进入 `state=2 / wall=2`。按 Wall_tut 第 2 帧的真实粉色区（约 `x=786–1020,y=620–643`）执行一次带右移的跳跃后，可达 `state=3 / wall=3`；随后进入 `state=4`。这不是预置状态：页面每帧从同一张当前 `Wall_tut` 位图读脚底颜色，并公开只读 source state/wall frame 以供浏览器验证。
+
+该复测还关闭了两个阻断点：第一，FFDec 导出的 DownArrow 1395 是根 Sprite JSON（`symbolId/frameCount/frames/shapes`），不是 `sprites[1395]` 容器；向量 Display List renderer 现在直接承认这两种原始导出布局，状态 3 的箭头不再因读取 `undefined[1395]` 停止循环。第二，原 `Movement.hitTest` 只把 alpha `ff` 当碰撞，但 `Unit.getPixel(0,1)` 与 Bullet 的颜色分支取 RGB 后缀；Wall_tut 第 4 帧的 `ff00ff` 节点 alpha 为 `7f`，可通行但必须触发教程。网页已把二者分开：`isSolid` 仍要求 `ff`，`colorAt` 保留 RGB。因此实测从 `state=4 / wall=4` 通过该半透明节点可到 `state=5 / wall=5`。后段路线、状态 9 子弹、电梯、状态 14 战斗与结局仍未做端到端验收。
+
 ## 5. 测试审计：什么被验证，什么没有
 
 本轮实际命令：
@@ -138,7 +150,7 @@ Campaign.runScripts
 npm run test:coverage
 ```
 
-结果：385 pass、0 fail；总体覆盖率为 line 98.76%、branch 82.88%、function 96.64%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395、门/电梯原始时间轴、Speak_187 原始播放/遮罩/头像/字体、Campaign 1 的 15 分 `endGame` 结果，以及试玩页 Hud 1540 来源资产绑定。
+结果：399 pass、0 fail；总体覆盖率为 line 98.68%、branch 82.43%、function 96.78%，达到项目的 80% 覆盖门槛。它可靠地防止以下回退：原文件哈希、AS3 解析表、Campaign 1 transition、Arena/Hud/actor phase 顺序、部分 Movement probes、AI path/LOS/action、来源素材路径/矩阵、M4/HUD 子项目录、wall-mask、DownArrow 1395、门/电梯原始时间轴、Speak_187 原始播放/遮罩/头像/字体、Campaign 1 的 15 分 `endGame` 结果、试玩页 Hud 1540 来源资产绑定，以及原图世界合成、`unitInfo.runType` 跑步标签、根 Sprite 时间轴和半透明教程触发。
 
 但当前测试体系存在以下不可替代的盲区：
 

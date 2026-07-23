@@ -2,7 +2,7 @@ import { ARENA_SOURCE_LAYOUTS } from './arena-source-layouts.mjs';
 import { SOURCE_CAMPAIGN_CATALOG } from './campaign-source.mjs';
 import { SOURCE_DEFAULT_CLASS_SAVES } from './sd-default-profile-source.mjs';
 import { SOURCE_GUNS } from './gun-source.mjs';
-import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
+import { applyCampaignOneBulletEnvironmentHit, applyCampaignOneGunSwap, applyCampaignOneScore, applyCampaignOneSurfaceContact, createCampaignOneRuntime, runCampaignOneFrame } from './campaign-one-runtime.mjs';
 import { advanceTutorialAi, compileTutorialAiArena, createTutorialAiState, setTutorialAiDifficulty } from './tutorial-ai-runtime.mjs';
 import { advanceTutorialAiGunRuntime, createTutorialGunRuntime } from './tutorial-gun-runtime.mjs';
 import { beginTutorialMovementJump, createTutorialMovementState, stepTutorialMovement } from './tutorial-movement.mjs';
@@ -153,7 +153,12 @@ function activateSourceActor(actor, aiArena, random, classSaves) {
     secondary: sourceGun(actor.guns.secondary),
     curGun: sourceGun(actor.guns.active),
   };
-  if (!actor.human) actor.gunRuntime = createTutorialGunRuntime({ gunId: actor.guns.active, ammoMultiplier: actor.unitInfo.amm });
+  actor.gunSlot = actor.gunSlot ?? 'primary';
+  actor.gunRuntimes = {
+    primary: createTutorialGunRuntime({ gunId: actor.guns.primary, ammoMultiplier: actor.unitInfo.amm }),
+    secondary: createTutorialGunRuntime({ gunId: actor.guns.secondary, ammoMultiplier: actor.unitInfo.amm }),
+  };
+  actor.gunRuntime = actor.gunRuntimes[actor.gunSlot];
   // Player.spawn() applies 2.5 seconds after Unit.unitSpawn(); AI.spawn()
   // applies its own half-second protection after the same reset.  Keep this
   // in the shared activation path so initial construction and a later source
@@ -187,19 +192,51 @@ function respawnSourceActor(session, actor) {
   // its own aim and spawn-protection setup.
   actor.position = sourceSpawnNode(session);
   actor.guns = { primary: actor.primary, secondary: actor.secondary, active: actor.primary };
+  actor.gunSlot = 'primary';
   activateSourceActor(actor, session.map.aiArena, session.random, session.classSaves);
   actor.aim = actor.human
     ? { x: actor.position.x + 200, y: actor.position.y - 50 }
     : { x: actor.ai.aimX, y: actor.ai.aimY };
 }
 
-function setActorGuns(actor, primary, secondary, active = primary) {
-  actor.guns = { primary, secondary, active };
+function setActorGuns(actor, primary, secondary, activeSlot = 'primary') {
+  actor.gunSlot = activeSlot;
+  actor.guns = { primary, secondary, active: actor.gunSlot === 'secondary' ? secondary : primary };
   if (!actor.gun) return;
   actor.gun.primary = sourceGun(primary);
   actor.gun.secondary = sourceGun(secondary);
-  actor.gun.curGun = sourceGun(active);
-  if (!actor.human && actor.unitInfo) actor.gunRuntime = createTutorialGunRuntime({ gunId: active, ammoMultiplier: actor.unitInfo.amm });
+  actor.gun.curGun = sourceGun(actor.guns.active);
+  if (!actor.unitInfo) return;
+  actor.gunRuntimes = {
+    primary: createTutorialGunRuntime({ gunId: primary, ammoMultiplier: actor.unitInfo.amm }),
+    secondary: createTutorialGunRuntime({ gunId: secondary, ammoMultiplier: actor.unitInfo.amm }),
+  };
+  actor.gunRuntime = actor.gunRuntimes[actor.gunSlot];
+}
+
+function activeGunSlot(actor) {
+  return actor.gunSlot ?? 'primary';
+}
+
+function ensureActorGunRuntime(actor) {
+  if (!actor?.gun || !actor?.unitInfo) return null;
+  const active = activeGunSlot(actor);
+  if (!actor.gunRuntimes) actor.gunRuntimes = {};
+  if (!actor.gunRuntimes[active] || actor.gunRuntimes[active].gunId !== actor.guns.active) {
+    actor.gunRuntimes[active] = createTutorialGunRuntime({ gunId: actor.guns.active, ammoMultiplier: actor.unitInfo.amm });
+  }
+  actor.gunRuntime = actor.gunRuntimes[active];
+  actor.gun.curGun = sourceGun(actor.guns.active);
+  return actor.gunRuntime;
+}
+
+function swapActorGuns(actor) {
+  const currentSlot = activeGunSlot(actor);
+  const nextSlot = currentSlot === 'primary' ? 'secondary' : 'primary';
+  if (actor.gunRuntime) actor.gunRuntimes[currentSlot] = actor.gunRuntime;
+  actor.gunSlot = nextSlot;
+  actor.guns = { ...actor.guns, active: actor.guns[actor.gunSlot] };
+  return ensureActorGunRuntime(actor);
 }
 
 function sourceActor(id, definition, { human, random, aiArena, classSaves }) {
@@ -238,6 +275,7 @@ function sourceActor(id, definition, { human, random, aiArena, classSaves }) {
     crouching: false,
     scaleX: definition.extra?.aimReverse ? -1 : 1,
     guns: { primary: definition.primary, secondary: definition.secondary, active: definition.primary },
+    gunSlot: 'primary',
     pscore: 0,
     score: createSourceScore(),
     definition,
@@ -291,8 +329,15 @@ function applySourceEffects(session, effects) {
       );
     }
     else if (effect.type === 'setGuns' && actor) setActorGuns(actor, effect.primary, effect.secondary);
-    else if (effect.type === 'swapGuns' && actor) setActorGuns(actor, actor.guns.primary, actor.guns.secondary, actor.guns.secondary);
-    else if (effect.type === 'setAmmo' && actor) actor.ammo = { clip: effect.clip, spare: effect.spare };
+    else if (effect.type === 'swapGuns' && actor) swapActorGuns(actor);
+    else if (effect.type === 'setAmmo' && actor) {
+      const gunRuntime = ensureActorGunRuntime(actor);
+      if (gunRuntime) {
+        gunRuntime.ammo.clipCur = effect.clip;
+        gunRuntime.ammo.spareCur = effect.spare;
+        gunRuntime.ammo.total = effect.clip + effect.spare;
+      }
+    }
     else if (effect.type === 'doorFrame') session.environment.doorFrame = effect.frameLabel;
     else if (effect.type === 'elevatorFrame') session.environment.elevatorFrame = effect.frameLabel;
   }
@@ -331,6 +376,19 @@ export function createCampaignOneSession({ random = Math.random } = {}) {
 
 export function applyCampaignOneSessionSurfaceContact(session, contact) {
   const effects = applyCampaignOneSurfaceContact(session.runtime, contact);
+  applySourceEffects(session, effects);
+  return effects;
+}
+
+// Player.as handles Q / Shift before Unit.EnterFrame.  Its generic Guns swap
+// must mutate the same two per-slot runtime records that later shooting and
+// reload logic use; only then can Campaign state 12 react by opening the
+// authored door.  This replaces the old preview-only active-gun flag.
+export function applyCampaignOneSessionPlayerGunSwap(session) {
+  const player = actorFor(session, 'player');
+  if (!player?.spawned || player.dead || !player.gun) return [];
+  swapActorGuns(player);
+  const effects = applyCampaignOneGunSwap(session.runtime);
   applySourceEffects(session, effects);
   return effects;
 }

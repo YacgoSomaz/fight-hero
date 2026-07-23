@@ -239,6 +239,25 @@ export function extractArenaFrameVisualBounds({ label, characters, swf = default
   return Object.freeze({ arenaCharacter: ARENA, label, layers: Object.freeze(layers) });
 }
 
+// Bg and BgSky are independent timeline symbols, not Arena children.  Their
+// own source-frame bounds provide the registration evidence for a checked-in
+// PNG export; alpha padding alone cannot supply that relationship.
+export function extractSymbolFrameVisualBounds({ character, frame, swf = defaultSwf } = {}) {
+  if (!Number.isInteger(character) || !Number.isInteger(frame) || frame < 1) {
+    throw new TypeError('original symbol character and frame are required');
+  }
+  const bytes = decompressSwf(swf);
+  const defs = definitionMap(bytes);
+  const definition = defs.get(character);
+  if (!definition) throw new Error(`original symbol is unavailable: ${character}`);
+  const sourceFrame = definition.code === 39
+    ? Math.min(frame, bytes.readUInt16LE(definition.body + 2))
+    : 1;
+  const bounds = visualBounds(bytes, defs, character, sourceFrame);
+  if (!bounds) throw new Error(`original symbol visual bounds are unavailable: ${character}/${sourceFrame}`);
+  return Object.freeze({ character, frame: sourceFrame, bounds: Object.freeze(bounds) });
+}
+
 /**
  * Arena's Display List is the authority for reassembling Foundry's dynamic
  * foreground.  This deliberately excludes wallMC and Node* authoring data.

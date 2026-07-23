@@ -17,9 +17,12 @@ import { getTutorialUnitOverheadHud } from './tutorial-unit-overhead-hud.mjs';
 import { getTutorialUnitOverheadIcon } from './tutorial-unit-overhead-icon.mjs';
 import { getTutorialUnitJugMarker } from './tutorial-unit-jug-marker.mjs';
 import { getTutorialUnitOverheadLabels, TUTORIAL_UNIT_OVERHEAD_FONT } from './tutorial-unit-overhead-labels.mjs';
+import { getTutorialDownArrowRenderPlan } from './tutorial-down-arrow-render-plan.mjs';
 import { advanceTutorialWorldGameTick, applyTutorialBulletEnvironmentHit } from './tutorial-world.mjs';
 import { loadTutorialWorld } from './tutorial-world-loader.mjs';
 import { createTutorialMovementState, TUTORIAL_MOVEMENT_KEYS } from './tutorial-movement.mjs';
+import { drawVectorRuntimeSprite } from './vector-runtime-renderer.mjs';
+import { drawRuntimeShape } from './vector-shape-canvas.mjs';
 
 const canvas = document.querySelector('#tutorialScene');
 const context = canvas.getContext('2d');
@@ -75,10 +78,14 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage] = await Promise.all([
+  const [layers, unitTimeline, downArrowRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);
+      return response.json();
+    }),
+    fetch('./public/assets/tutorial-down-arrow-vector-runtime.local.json').then((response) => {
+      if (!response.ok) throw new Error(`Tutorial DownArrow runtime failed to load (${response.status})`);
       return response.json();
     }),
     loadTutorialUnitPoseAssets({ loadImage }),
@@ -293,11 +300,23 @@ try {
     }
   }
 
+  function renderTutorialDownArrows() {
+    const arrows = getTutorialDownArrowRenderPlan(session.hud.arrows, tutorialWorld.tickRuntime.tick, arenaPosition);
+    for (const arrow of arrows) {
+      context.save();
+      context.translate(arrow.x, arrow.y);
+      context.transform(arrow.matrix.scaleX, arrow.matrix.rotateSkew0, arrow.matrix.rotateSkew1, arrow.matrix.scaleY, 0, 0);
+      drawVectorRuntimeSprite(context, downArrowRuntime, 1395, arrow.frame, drawRuntimeShape);
+      context.restore();
+    }
+  }
+
   function render() {
     context.clearRect(0, 0, STAGE.width, STAGE.height);
     drawParallax(layers.sky, skyCrop, arenaPosition, wall);
     drawParallax(layers.map, backgroundCrop, arenaPosition, wall);
     drawArena(layers.terrain, terrainCrop, arenaPosition);
+    renderTutorialDownArrows();
     const sourcePlayer = session.actors.find(({ id }) => id === 'unit0');
     if (sourcePlayer?.spawned && sourcePlayer.visible && !sourcePlayer.dead) {
       const screen = worldToTutorialScreen(player.position, arenaPosition);

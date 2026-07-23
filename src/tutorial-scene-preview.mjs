@@ -80,7 +80,7 @@ function drawArena(image, crop, arenaPosition) {
 
 try {
   const visual = getMapVisual('tut');
-  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, environmentAssets] = await Promise.all([
+  const [layers, unitTimeline, downArrowRuntime, environmentTimelineRuntime, assets, tutorialWorld, unitBarImage, unitIconImages, unitJugMarkerImage, originalUnitOverheadFont, environmentAssets] = await Promise.all([
     loadMapLayers(visual),
     fetch('./public/assets/unitmc-timeline.json').then((response) => {
       if (!response.ok) throw new Error(`UnitMC timeline failed to load (${response.status})`);

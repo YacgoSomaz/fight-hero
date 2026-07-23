@@ -79,7 +79,7 @@ test('Tutorial scene queues original mouse and swap inputs to the source runtime
 });
 
 // User journey: Under Siege must expose its live score, weapon/ammo, class,
-// HP and experience through Hud 1540 source children.  The playable Tutorial
+// HP and experience through Hud 1540 source children. The playable Tutorial
 // may not fall back to the previous prototype's handmade bars or fixed labels
 // merely because it has its own renderer entrypoint.
 test('Tutorial scene preview renders the Campaign 1 HUD from original Hud 1540 assets and plans', () => {
@@ -136,7 +136,7 @@ test('Tutorial scene exposes its live source-tick camera and player coordinates 
 });
 
 // The visual acceptance check must distinguish a source-map load failure from
-// a Canvas draw failure.  These attributes report only the already-loaded
+// a Canvas draw failure. These attributes report only the already-loaded
 // original image dimensions and the exact source crop/camera draw positions;
 // they do not add any diagnostic art to the stage.
 test('Tutorial scene exposes loaded original map dimensions and source draw positions for visual verification', () => {
@@ -148,4 +148,14 @@ test('Tutorial scene exposes loaded original map dimensions and source draw posi
   assert.match(script, /layers\.terrain\.naturalWidth/);
   assert.match(script, /getTutorialParallaxLayerPosition\(arenaPosition, wall, skyCrop, STAGE\)/);
   assert.match(script, /getTutorialParallaxLayerPosition\(arenaPosition, wall, backgroundCrop, STAGE\)/);
+});
+
+// User journey: on a short desktop window, the 800×600 SWF stage must remain
+// entirely visible. Browser-only explanatory copy must not make the source
+// stage taller than the viewport and crop the opening dialogue/cinematic.
+test('Tutorial page constrains the original 4:3 canvas to both viewport axes without a non-SWF instruction panel', () => {
+  const { page } = readPreview();
+  assert.match(page, /width:\s*min\(800px,\s*100vw,\s*calc\(\(100vh - 16px\) \* 4 \/ 3\)\)/);
+  assert.match(page, /main\s*\{[^}]*width:\s*fit-content[^}]*\}/);
+  assert.doesNotMatch(page, /Campaign 1 · tut 原 Sky\/Background\/Arena/);
 });

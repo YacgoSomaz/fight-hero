@@ -507,6 +507,7 @@ npm start
 - 原始证据：新包 `rabcdasm/war-heroes-4399-0/AI.class.asasm` 对 `AI.EnterFrame` 的控制流确认了与 FFDec `AI.as` 一致的两条行为：(1) AI 有 `crouch` 且正向左/右移动时，先执行 `mov.hitTest(-19,-20)` / `mov.hitTest(19,-20)`；命中即把 `crouch=0`，之后才决定是否写入 `DOWN`；(2) 已获取目标在重扫前死亡时，使用 `target.dead.rdBody.GetDefinition().userData.x/y`，瞄准 `(x,y+10)`，不应中断整个 AI tick。该包与当前 SWF 哈希同为 `BDC9216EDD31D8CF2B231182C7203655CFEF9A71F497E5708F9A649D8A40BD29`。
 - 网页承载：`tutorial-ai-runtime.mjs` 在 AI key 已确定后按两个原坐标探针读取同一 wall surface；命中边缘时取消蹲伏，避免继续发出 `DOWN` 而失去跳跃分支。其尸体适配只读取 `tutorial-corpse-runtime.mjs` 的原 `body` part 位置，并沿用原版 `body.y+10`。`campaign-one-session.mjs` 因而可以在玩家死亡、bot 仍保有上次 `targetId` 的短暂窗口继续处理 AI，而非抛异常。
 - TDD：`350798e` 是墙缘蹲伏 RED；`d9a43a0` 是其 GREEN。`9d1fc24` 是尸体 body aim RED；后续 GREEN 以 `tutorial-ai-runtime.test.mjs` 和 `campaign-one-session.test.mjs` 锁定纯 AI 与真实 Campaign actor 循环。全量 `npm test` 为 **345/345** 通过；覆盖率见本轮最终验证。
+- 新增路径核心：`AI.pathFind()` 由 `searchNode()` 枚举不含重复 waypoint 的字符串路径，`NodeWaypointPath` 逐段用 `UT.getDist` 求和排序，并从 `0..min(choice, paths.length-1)` 以 `UT.irand` 选出一条、去除当前 waypoint 首字母。`tutorial-ai-runtime.mjs:findTutorialAiPath()` 已直接端口该部分；`d2bb99c→1fdb6a3` 锁定两条路径、几何距离、候选随机和不可达情况。新 ASASM 同时确认 CTF 的 `getNextWaypoint` 触发条件含原始 `!path && path.charAt(0) != '@'`，因其字节码并非笔误，目前**不擅自纠正或声称 CTF AI 已接入**。
 - 严格边界：这不是 Box2D 尸体位移、可视尸体、AI 对尸体伤害、完整脱困、CTF/DOM 目标路径或原版输入/逐帧画面对照。当前 corpse body 仅保存 `PhysWorld.createCorpse` 的来源初始位置/冲量记录；在迁移 PhysActor 求解前，不能宣称尸体画面或后续移动与原版一致。
 
 ## 索引

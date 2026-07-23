@@ -35,6 +35,14 @@ export function advanceTutorialWorldGameTick(world, { onLineBullet = null, playe
     playerJumpRequested,
     gameStarted,
     onLineBullet,
+    onUnitSurface({ actor, position }) {
+      const effects = applyTutorialFootContact(world, {
+        x: position.x,
+        y: position.y + 1,
+        human: actor.human,
+      });
+      return { surface: world.wall.colorAt(position.x, position.y + 1), effects };
+    },
   });
 }
 

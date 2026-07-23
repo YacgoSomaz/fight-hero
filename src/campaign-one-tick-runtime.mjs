@@ -81,10 +81,12 @@ export function advanceCampaignOneGameTick(runtime, {
   playerJumpRequested = false,
   gameStarted = true,
   onLineBullet = null,
+  onUnitSurface = null,
 } = {}) {
   assertRuntime(runtime);
   if (typeof wall?.isSolid !== 'function') throw new TypeError('Campaign 1 Game tick requires decoded source Wall surface');
   if (onLineBullet !== null && typeof onLineBullet !== 'function') throw new TypeError('Campaign 1 line bullet callback must be a function');
+  if (onUnitSurface !== null && typeof onUnitSurface !== 'function') throw new TypeError('Campaign 1 unit surface callback must be a function');
 
   const { inputs, effects: inputEffects } = consumeQueuedInputs(runtime);
   runtime.gameFrame += 1;
@@ -111,6 +113,10 @@ export function advanceCampaignOneGameTick(runtime, {
         jumpRequested: playerJumpRequested,
       });
       trace.push({ phase: 'unitTail', actorId: actor.id });
+      if (onUnitSurface && tail?.movement?.position) {
+        const surface = onUnitSurface({ actorId: actor.id, actor, position: { ...tail.movement.position }, gameFrame: runtime.gameFrame });
+        trace.push({ phase: 'surface', actorId: actor.id, surface });
+      }
       actorResults.push({ id: actor.id, shot, tail });
       continue;
     }
@@ -131,6 +137,10 @@ export function advanceCampaignOneGameTick(runtime, {
       jumpRequested: Boolean(actor.aiJumpRequested),
     });
     trace.push({ phase: 'unitTail', actorId: actor.id });
+    if (onUnitSurface && tail?.movement?.position) {
+      const surface = onUnitSurface({ actorId: actor.id, actor, position: { ...tail.movement.position }, gameFrame: runtime.gameFrame });
+      trace.push({ phase: 'surface', actorId: actor.id, surface });
+    }
     actorResults.push({ id: actor.id, ai, shot, tail });
   }
 
